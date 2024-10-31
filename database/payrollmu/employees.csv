@@ -1,0 +1,5 @@
+id,eid,name,position_id,job_title_id,division,department,joiningDate,schedule_id,calendar_id,employee_status,sales_status,created_at,updated_at,deleted_at,status,city
+10,5010,Freya,1,1,Hospitality,Sales,2022-01-01,1,1,Contract,Yes,2024-09-08 14:34:08,2024-09-16 04:46:21,,,Seca
+12,5012,Hendry Putra Kurniawan,3,1,Embrodiery,Sales,2020-11-11,1,1,Contract,Yes,2024-09-10 08:35:01,2024-09-14 03:34:39,,,
+13,3013,Eko Suryono,4,2,Embrodiery,Operational,2020-02-20,1,1,Contract,Yes,2024-09-11 06:30:37,2024-09-16 04:01:28,,,
+14,5014,Sriyati,1,1,Hospitality,Sales,2023-01-01,1,1,Contract,No,2024-09-14 15:20:11,2024-09-14 15:20:11,,,

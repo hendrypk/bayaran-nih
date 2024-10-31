@@ -1,0 +1,722 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  background: #f6f9ff;
+  color: #444444;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px; /* Adds space between buttons */
+  align-items: center; /* Vertically center the buttons */
+}
+
+
+.custom-btn {
+    text-align: center;
+}
+
+.custom-btn.in{
+    background-color: rgb(83, 189, 41)
+}
+
+.custom-btn.out{
+    background-color: rgb(175, 61, 41)
+}
+
+.custom-btn i {
+    font-size: 24px; /* Ukuran ikon */
+}
+
+.custom-btn label {
+    font-size: 9px; /* Ukuran teks */
+    margin-top: 5px; /* Jarak antara ikon dan teks */
+    display: block;
+}
+
+/* Custom CSS for Mobile-Friendly Grid */
+.presensi-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.presensi-column {
+    flex: 0 1 23%; /* Full width on mobile */
+    max-width: 100%;
+    margin-bottom: 15px; /* Space between rows */
+}
+
+@media (min-width: 576px) {
+    .presensi-column {
+        flex: 0 1 30%; /* 3 columns in small and up */
+        max-width: 30%;
+    }
+}
+
+@media (min-width: 768px) {
+    .presensi-column {
+        flex: 0 1 23%; /* 4 columns in medium and up */
+        max-width: 23%;
+    }
+}
+
+.login-icon {
+    width: 100px;
+}
+
+.btn-tosca {
+    background: linear-gradient(to right, #118ab2, #06b6d4); 
+    color: #fff; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    border: none; 
+    transition: background 0.3s ease; 
+  }
+
+.btn-tosca:hover {
+  color: #118ab2;
+  background: #fff; 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  border: 2px solid #118ab2; 
+  transition: background 0.3s ease; 
+}
+
+.btn-untosca {
+  color: #118ab2;
+  background: #fff; 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  border: 2px solid #118ab2; 
+  transition: background 0.3s ease;     
+}
+
+.btn-untosca:hover {
+  background: linear-gradient(to right, #118ab2, #06b6d4); 
+  color: #fff; 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  border: none; 
+  transition: background 0.3s ease; 
+}
+
+a {
+    color: #118ab2;
+    text-decoration: none;
+  }
+  
+a:hover {
+    color: #046f92;
+    text-decoration: none;
+  }
+  
+/*--------------------------------------------------------------
+# Sidebar
+--------------------------------------------------------------*/
+.sidebar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    z-index: 996;
+    transition: all 0.3s;
+    padding: 20px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #aab7cf transparent;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+    background-color: #fff;
+  }
+  
+  @media (max-width: 1199px) {
+    .sidebar {
+      left: -300px;
+    }
+  }
+  
+  .sidebar::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: #fff;
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: #aab7cf;
+  }
+  
+  @media (min-width: 1200px) {
+  
+    #main,
+    #footer {
+      margin-left: 300px;
+    }
+  }
+  
+  @media (max-width: 1199px) {
+    .toggle-sidebar .sidebar {
+      left: 0;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+  
+    .toggle-sidebar #main,
+    .toggle-sidebar #footer {
+      margin-left: 0;
+    }
+  
+    .toggle-sidebar .sidebar {
+      left: -300px;
+    }
+  }
+  
+  .sidebar-nav {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .sidebar-nav li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .sidebar-nav .nav-item {
+    margin-bottom: 5px;
+  }
+  
+  .sidebar-nav .nav-heading {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #899bbd;
+    font-weight: 600;
+    margin: 10px 0 5px 15px;
+  }
+  
+  .sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.3;
+    background: #118ab2;
+    padding: 10px 15px;
+    border-radius: 4px;
+  }
+  
+  .sidebar-nav .nav-link i {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #118ab2;
+  }
+  
+  .sidebar-nav .nav-link.collapsed {
+    color: #012970;
+    background: #fff;
+  }
+  
+  .sidebar-nav .nav-link.collapsed i {
+    color: #899bbd;
+  }
+  
+  .sidebar-nav .nav-link:hover {
+    color: #f6f9ff;
+    background: #118ab2;
+  }
+  
+  .sidebar-nav .nav-link:hover i {
+    color: #fff;
+  }
+  
+  .sidebar-nav .nav-link .bi-chevron-down {
+    margin-right: 0;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .sidebar-nav .nav-link:not(.collapsed) .bi-chevron-down {
+    transform: rotate(180deg);
+  }
+  
+  .sidebar-nav .nav-content {
+    padding: 5px 0 0 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .sidebar-nav .nav-content a {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #012970;
+    transition: 0.3;
+    padding: 10px 0 10px 40px;
+    transition: 0.3s;
+  }
+  
+  .sidebar-nav .nav-content a i {
+    font-size: 6px;
+    margin-right: 8px;
+    line-height: 0;
+    border-radius: 50%;
+  }
+  
+  .sidebar-nav .nav-content a:hover,
+  .sidebar-nav .nav-content a.active {
+    color: #fff;
+    background: #118ab2;
+  }
+  
+  .sidebar-nav .nav-content a.active i {
+    background-color: #118ab2;
+    color: #fff;
+  }
+
+  .nav-item.active {
+    background-color: #118ab2; 
+  }
+
+  .nav-item.active .nav-link {
+    background-color: #118ab2;
+      color: #fff; 
+  }
+
+  .nav-item.active .nav-link i {
+    background-color: #118ab2;
+      color: #fff; 
+  }
+
+  
+
+/*--------------------------------------------------------------
+# Back to top button
+--------------------------------------------------------------*/
+.back-to-top {
+    position: fixed;
+    visibility: hidden;
+    opacity: 0;
+    right: 15px;
+    bottom: 15px;
+    z-index: 99999;
+    background: #118ab2;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    transition: all 0.4s;
+  }
+  
+  .back-to-top i {
+    font-size: 24px;
+    color: #fff;
+    line-height: 0;
+  }
+  
+  .back-to-top:hover {
+    background: #046f92;
+    color: #fff;
+  }
+  
+  .back-to-top.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+/* DATATABLE */
+.datatable-wrapper.no-header .datatable-container {
+	border-top: 1px solid #046f92;
+}
+
+.datatable-wrapper.no-footer .datatable-container {
+	border-bottom: 1px solid #d9d9d9;
+}
+
+.datatable-top,
+.datatable-bottom {
+	padding: 8px 10px;
+}
+
+.datatable-top > nav:first-child,
+.datatable-top > div:first-child,
+.datatable-bottom > nav:first-child,
+.datatable-bottom > div:first-child {
+	float: left;
+}
+
+.datatable-top > nav:last-child,
+.datatable-top > div:not(first-child),
+.datatable-bottom > nav:last-child,
+.datatable-bottom > div:last-child {
+	float: right;
+}
+
+.datatable-selector {
+	padding: 6px;
+}
+
+.datatable-input {
+	padding: 6px 12px;
+}
+
+.datatable-info {
+	margin: 7px 0;
+}
+
+/* PAGER */
+.datatable-pagination ul {
+	margin: 0;
+	padding-left: 0;
+}
+
+.datatable-pagination li {
+	list-style: none;
+	float: left;
+}
+
+.datatable-pagination li.datatable-hidden {
+    visibility: hidden;
+}
+
+.datatable-pagination a,
+.datatable-pagination button {
+	border: 1px solid transparent;
+	float: left;
+	margin-left: 2px;
+	padding: 6px 12px;
+	position: relative;
+	text-decoration: none;
+	color: #333;
+    cursor: pointer;
+}
+
+.datatable-pagination a:hover,
+.datatable-pagination button:hover {
+	background-color: #d9d9d9;
+}
+
+.datatable-pagination .datatable-active a,
+.datatable-pagination .datatable-active a:focus,
+.datatable-pagination .datatable-active a:hover,
+.datatable-pagination .datatable-active button,
+.datatable-pagination .datatable-active button:focus,
+.datatable-pagination .datatable-active button:hover {
+	background-color: #d9d9d9;
+	cursor: default;
+}
+
+.datatable-pagination .datatable-ellipsis a,
+.datatable-pagination .datatable-disabled a,
+.datatable-pagination .datatable-disabled a:focus,
+.datatable-pagination .datatable-disabled a:hover,
+.datatable-pagination .datatable-ellipsis button,
+.datatable-pagination .datatable-disabled button,
+.datatable-pagination .datatable-disabled button:focus,
+.datatable-pagination .datatable-disabled button:hover {
+    pointer-events: none;
+    cursor: default;
+}
+
+.datatable-pagination .datatable-disabled a,
+.datatable-pagination .datatable-disabled a:focus,
+.datatable-pagination .datatable-disabled a:hover,
+.datatable-pagination .datatable-disabled button,
+.datatable-pagination .datatable-disabled button:focus,
+.datatable-pagination .datatable-disabled button:hover {
+	cursor: not-allowed;
+	opacity: 0.4;
+}
+
+.datatable-pagination .datatable-pagination a,
+.datatable-pagination .datatable-pagination button {
+	font-weight: bold;
+}
+
+/* TABLE */
+.datatable-table {
+	max-width: 100%;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: separate;
+}
+
+.datatable-table > tbody > tr > td,
+.datatable-table > tbody > tr > th,
+.datatable-table > tfoot > tr > td,
+.datatable-table > tfoot > tr > th,
+.datatable-table > thead > tr > td,
+.datatable-table > thead > tr > th {
+	vertical-align: top;
+	padding: 8px 10px;
+  border-bottom: 0.2px solid #118ab2;
+}
+
+.datatable-table > thead > tr > th {
+	vertical-align: bottom;
+	text-align: left;
+	border-bottom: 1px solid #d9d9d9;
+}
+
+.datatable-table > tfoot > tr > th {
+	vertical-align: bottom;
+	text-align: left;
+	border-top: 1px solid #;
+}
+
+.datatable-table th {
+	vertical-align: bottom;
+	text-align: left;
+    background-color: #118ab2;
+    color: #fff;
+}
+
+.datatable-table th a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.datatable-table th button,
+.datatable-pagination-list button {
+    color: inherit;
+    border: 0;
+    background-color: inherit;
+    cursor: pointer;
+    text-align: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+}
+
+.datatable-sorter, .datatable-filter {
+	display: inline-block;
+	height: 100%;
+	position: relative;
+	width: 100%;
+}
+
+.datatable-sorter::before,
+.datatable-sorter::after {
+	content: "";
+	height: 0;
+	width: 0;
+	position: absolute;
+	right: 4px;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	opacity: 0.2;
+}
+
+
+.datatable-sorter::before {
+	border-top: 4px solid #fff;
+	bottom: 0px;
+}
+
+.datatable-sorter::after {
+	border-bottom: 4px solid #fff;
+	border-top: 4px solid transparent;
+	top: 0px;
+}
+
+.datatable-ascending .datatable-sorter::after,
+.datatable-descending .datatable-sorter::before,
+.datatable-ascending .datatable-filter::after,
+.datatable-descending .datatable-filter::before {
+	opacity: 0.6;
+}
+
+.datatable-filter::before {
+    content: "";
+    position: absolute;
+    right: 4px;
+    opacity: 0.2;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+	border-radius: 50%;
+    border-top: 10px solid #fff;
+    top: 25%;
+}
+
+.datatable-filter-active .datatable-filter::before {
+    opacity: 0.6;
+}
+
+.datatable-empty {
+	text-align: center;
+}
+
+.datatable-top::after, .datatable-bottom::after {
+	clear: both;
+	content: " ";
+	display: table;
+}
+
+table.datatable-table:focus tr.datatable-cursor > td:first-child {
+	border-left: 3px blue solid;
+}
+
+table.datatable-table:focus {
+	outline: solid 1px black;
+    outline-offset: -1px;
+}
+
+
+/* Card */
+.card {
+    margin-bottom: 30px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+  }
+  
+  .card-table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  .card-header,
+  .card-footer {
+    border-color: #ebeef4;
+    background-color: #fff;
+    color: #798eb3;
+    padding: 15px;
+  }
+  
+  .card-title {
+    padding: 20px 0 15px 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #046f92;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .card-title span {
+    color: #899bbd;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  .card-body {
+    padding: 0 20px 20px 20px;
+  }
+  
+  .card-img-overlay {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* NAV */
+  .nav {
+    --bs-nav-link-padding-x: 1rem;
+    --bs-nav-link-padding-y: 0.5rem;
+    --bs-nav-link-font-weight: ;
+    --bs-nav-link-color: ##212529;
+    --bs-nav-link-hover-color: #118ab2;
+    --bs-nav-link-disabled-color: var(--bs-secondary-color);
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+  .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff;
+    background-color: #118ab2;
+}
+
+.form-check-input:checked {
+    background-color: #118ab2;
+    border-color: #118ab2;
+}
+
+#map {
+  height: 200px;
+  width: 100%;
+}
+
+/* public/css/custom-alerts.css */
+
+.swal2-popup {
+  font-size: 1rem; /* Adjust font size */
+  border-radius: 10px; 
+}
+
+.swal2-title {
+  color: #118ab2; /* Custom title color */
+}
+
+.swal2-content {
+  font-weight: 500; /* Make the content bolder */
+}
+
+.swal2-success {
+  background-color: #d4edda; /* Light green background for success */
+}
+
+.swal2-error {
+  background-color: #f8d7da; /* Light red background for error */
+}
+
+/* Change the button colors */
+.swal2-cancel {
+  background: linear-gradient(to right, #118ab2, #06b6d4); 
+  color: #fff; 
+  padding: 10px 20px; 
+  border-radius: 5px; /* Rounded corners */
+  border: none; 
+  transition: background 0.3s ease; 
+}
+
+/* Optional: Add hover effect */
+.swal2-cancel:hover {
+  color: #118ab2;
+  background: #fff; 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  border: 2px solid #118ab2; 
+  transition: background 0.3s ease; 
+}
+
+
+.swal2-confirm {
+  background-color: #fff; /* Grey button color */
+  color: #118ab2; 
+  padding: 8px 20px;
+  border-radius: 5px;
+  border: 2px solid #118ab2;
+}
+
+.swal2-confirm:hover {
+  
+  background-color: #0f7f9e; /* Darker on hover */
+  color: #fff;
+}
+
+/* Change the color of the warning icon */
+.swal2-icon-warning {
+    color: #ffcc00; 
+    border-color: #ffcc00; 
+}
+.swal2-icon-warning .swal2-icon {
+    background-color: rgba(255, 204, 0, 0.2); 
+    border-radius: 50%; 
+}
+
+.swal2-html-container {
+  color: #333;
+}
+
+/* If you want to target the entire alert box */
+.swal2-popup {
+  color: #333; 
+}
