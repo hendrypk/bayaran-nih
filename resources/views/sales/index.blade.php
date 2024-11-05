@@ -21,10 +21,11 @@
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <h5 class="card-title mb-0 py-3">Sales List</h5>
-                    <div class="ms-auto my-auto">
-                        <!-- <a class="btn btn-outline-primary" href="{{route('employee.add')}}"><i class="ph-plus-circle me-1">Add Position</i></a> -->
-                        <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addSales">Add Sales Report</button>
-                    </div>
+                    @can('create sales')
+                        <div class="ms-auto my-auto">
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addSales">Add Sales Report</button>
+                        </div>
+                    @endcan
                 </div>
         
                 <table class="table datatable table-hover">
@@ -55,33 +56,27 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="{{ route('sales.edit', [
-                                'month' => $sale->month,
-                                'year' => $sale->year]) }}"
-                                class="btn btn-outline-success">
-                                <i class="ri-edit-fill"></i>
-                                </a>
+                                @can('update sales')
+                                    <a href="{{ route('sales.edit', [
+                                        'month' => $sale->month,
+                                        'year' => $sale->year]) }}"
+                                        class="btn btn-outline-success">
+                                        <i class="ri-edit-fill"></i>
+                                    </a>
+                                @endcan
                             </td>
                             <td>
-                                <button type="button" class="btn btn-outline-danger"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteModal" 
-                                    data-entity="sales" 
-                                    data-month="{{ $sale->month }}" 
-                                    data-year="{{ $sale->year }}" >
-                                    <i class="ri-delete-bin-fill"></i>
-                                </button>
+                                @can('delete sales')
+                                    <button type="button" class="btn btn-outline-danger"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal" 
+                                        data-entity="sales" 
+                                        data-month="{{ $sale->month }}" 
+                                        data-year="{{ $sale->year }}" >
+                                        <i class="ri-delete-bin-fill"></i>
+                                    </button>
+                                @endcan
                             </td>
-                            <!-- <td>
-                                <button type="button" class="btn btn-outline-danger"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#editSales" 
-                                    data-entity="sales" 
-                                    data-month="{{ $sale->month }}" 
-                                    data-year="{{ $sale->year }}" >
-                                    <i class="ri-delete-bin-fill"></i>
-                                </button>
-                            </td> -->
                         </tr>
                         @endforeach
                     </tbody>

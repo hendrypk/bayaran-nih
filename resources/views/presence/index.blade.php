@@ -16,21 +16,24 @@
                         <h5 class="card-title mb-0 py-3">Presences List</h5>
                     </div>
                     <div class="button-container">
-                        
+                        @can('presence export')
                         <div class="form-container">
-                        <form action="{{ route('presence.export') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                            <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                            <button type="submit" class="btn btn-tosca">Export</button>
-                        </form>
-                    </div>
+                            <form action="{{ route('presence.export') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                                <button type="submit" class="btn btn-tosca">Export</button>
+                            </form>
+                        </div>
+                        @endcan
 
-                        <button type="button" class="btn btn-untosca"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#addPresence">
-                        Add Presence
-                        </button>
+                        @can('create presence')
+                            <button type="button" class="btn btn-untosca"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#addPresence">
+                            Add Presence
+                            </button>
+                        @endcan
                     </div>
                 </div>
         
@@ -95,23 +98,27 @@
                                     </button>
                                 </td>
                                 <td>
-                                 <button type="button" class="btn btn-outline-success"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#editPresence" 
-                                        data-id="{{ $data['id'] }}" 
-                                        data-name="{{ $data->employee->name }}"
-                                        data-date="{{ $data['date'] }}"
-                                        data-workDay="{{ $data['work_day_id'] }}"
-                                        data-checkin="{{ $data['check_in'] }}"
-                                        data-checkout="{{ $data['check_out'] }}">
-                                    <i class="ri-edit-line"></i>
-                                </button>
+                                    @can('update presene')
+                                        <button type="button" class="btn btn-outline-success"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editPresence" 
+                                                data-id="{{ $data['id'] }}" 
+                                                data-name="{{ $data->employee->name }}"
+                                                data-date="{{ $data['date'] }}"
+                                                data-workDay="{{ $data['work_day_id'] }}"
+                                                data-checkin="{{ $data['check_in'] }}"
+                                                data-checkout="{{ $data['check_out'] }}">
+                                            <i class="ri-edit-line"></i>
+                                        </button>
+                                    @endcan
                                 </td>
                                 <td>
+                                    @can('delete presence')
                                     <button type="button" class="btn btn-outline-danger" 
                                         onclick="confirmDelete({{ $data->id }}, '{{ $data->employee->name }}', 'presences')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

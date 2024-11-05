@@ -6,10 +6,11 @@
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
                         <h5 class="card-title mb-0 py-3">Indicator for KPI</h5>
-                        <div class="ms-auto my-auto">
-                            <!-- <a class="btn btn-outline-primary" href="{{route('employee.add')}}"><i class="ph-plus-circle me-1">Add Department</i></a> -->
-                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">Add Indicator</button>
-                        </div>
+                        @can('create pm')
+                            <div class="ms-auto my-auto">
+                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">Add Indicator</button>
+                            </div>
+                        @endcan
                     </div>
                         <table class="table datatable table-hover">
                             <thead>
@@ -38,6 +39,7 @@
                                         @foreach ($indicator->kpis as $kpi)
                                             
                                         @endforeach
+                                        @can('update pm')
                                         <button type="button" 
                                             class="btn btn-outline-success" 
                                             data-bs-toggle="modal" 
@@ -47,44 +49,18 @@
                                             data-target="{{ $kpi->target }}">
                                             <i class="ri-edit-box-fill"></i>
                                         </button>
+                                        @endcan
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-danger" 
-                                            onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->name }}', 'indicator')">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button>
+                                        @can('delete pm')
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->name }}', 'indicator')">
+                                                <i class="ri-delete-bin-fill"></i>
+                                            </button>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @endforeach
-                                {{-- @foreach($indicators as $no=>$indicator)
-                                <tr>
-                                    <th scope="row">{{ $no+1 }}</th>
-                                    <td>{{ $indicator->kpi_id }}</td>
-                                    <td>
-                                    <a href="{{ route('indicator.detail', [
-                                        'kpi_id' => $indicator->kpi_id,
-                                        ]) }}" class="btn btn-outline-primary">
-                                        <i class="ri-eye-fill"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <button type="button" 
-                                            class="btn btn-outline-success" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#indicatorEditModal" 
-                                            data-id="{{ $indicator->id }}" 
-                                            data-name="{{ $indicator->kpi_id }}">
-                                            <i class="ri-edit-box-fill"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-outline-danger" 
-                                            onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->name }}', 'indicator')">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                @endforeach --}}
                             </tbody>
                         </table>
                 </div>
@@ -98,13 +74,13 @@
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
                         <h5 class="card-title mb-0 py-3">Indicator for PA</h5>
-                        <div class="ms-auto my-auto">
-                            <!-- <a class="btn btn-outline-primary" href="{{route('employee.add')}}"><i class="ph-plus-circle me-1">Add Department</i></a> -->
-                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button>
-                        </div>
+                        @can('create pm')
+                            <div class="ms-auto my-auto">
+                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button>
+                            </div>
+                        @endcan
                     </div>
-            
-                    <!-- Table with hoverable rows -->
+                    
                         <table class="table datatable table-hover">
                             <thead>
                                 <tr>
@@ -119,16 +95,17 @@
                                 <tr>
                                     <th scope="row">{{ $no+1 }}</th>
                                     <td>{{ $appraisal->name }}</td>
-                                    <!-- edit button -->
                                     <td>
-                                        <button type="button" 
-                                            class="btn btn-outline-success" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#paEditModal" 
-                                            data-id="{{ $appraisal->id }}" 
-                                            data-name="{{ $appraisal->name }}">
-                                            <i class="ri-edit-box-fill"></i>
-                                        </button>
+                                        @can('update pm')
+                                            <button type="button" 
+                                                class="btn btn-outline-success" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#paEditModal" 
+                                                data-id="{{ $appraisal->id }}" 
+                                                data-name="{{ $appraisal->name }}">
+                                                <i class="ri-edit-box-fill"></i>
+                                            </button>
+                                        @endcan
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-outline-danger" 
@@ -140,7 +117,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    <!-- End Table with hoverable rows -->
                 </div>
             </div>
         </div>

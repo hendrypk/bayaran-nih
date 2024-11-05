@@ -24,7 +24,12 @@
 
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li class="dropdown-header">
-          <h6>{{ Auth::user()->name }}</h6>
+          @if (Auth::guard('employee')->check())
+            <h6>{{ Auth::guard('employee')->user()->name }}</h6>
+          @else (Auth::guard('web')->check())
+            <h6>{{ Auth::guard('web')->user()->name }}</h6>
+          @endif
+      
           <span>Web Designer</span>
         </li>
         <li>

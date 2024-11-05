@@ -105,6 +105,10 @@ class PresenceController extends Controller
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;
 
+                case $checked_out->lt($check_in):
+                    $checkOutEarly = 0;
+                    break;
+
                 case $checked_out->lt($cutStart):
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false))-60, 0);
                     break;
@@ -113,9 +117,6 @@ class PresenceController extends Controller
                     $checkOutEarly = max(intval($cutEnd->diffInMinutes($check_out, false)), 0);
                     break;
 
-                case $checked_out->lt($check_in):
-                    $checkOutEarly = 0;
-            
                 default:
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;

@@ -10,9 +10,11 @@
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <h5 class="card-title mb-0 py-3">Employee Appraisal</h5>
-                    <div class="ms-auto my-auto">
-                        <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add Employee Appraisal</button>
-                    </div>
+                    @can('create pa')
+                        <div class="ms-auto my-auto">
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add Employee Appraisal</button>
+                        </div>
+                    @endcan
                 </div>
         
                 <!-- Table with hoverable rows -->
@@ -52,13 +54,15 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{{ route('appraisal.edit', [
-                                    'employee_id' => $employee->id,
-                                    'month' => $selectedMonth,
-                                    'year' => $selectedYear]) }}"
-                                    class="btn btn-outline-success">
-                                    <i class="ri-edit-line"></i>
-                                    </a>
+                                    @can('update pa')
+                                        <a href="{{ route('appraisal.edit', [
+                                            'employee_id' => $employee->id,
+                                            'month' => $selectedMonth,
+                                            'year' => $selectedYear]) }}"
+                                            class="btn btn-outline-success">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                    @endcan
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline-danger" 

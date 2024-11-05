@@ -206,23 +206,43 @@
           </div>
 
           <div class="row mb-3">
-    <label class="col-sm-4 col-form-label">Work Schedule</label>
-    <div class="col-sm-8">    
-        @foreach($workDay as $data)       
-        <div class="form-check">
-            <input class="form-check-input" 
-                   type="checkbox" 
-                   id="workDay{{ $data->id }}" 
-                   name="workDay[]" 
-                   value="{{ $data->id }}"
-                   {{ $employee->workDay && $employee->workDay->contains($data->id) ? 'checked' : '' }}>
-            <label class="form-check-label" for="workDay{{ $data->id }}">
-                {{ $data->name }}
-            </label>
+            <label class="col-sm-4 col-form-label">Work Schedule</label>
+            <div class="col-sm-8">    
+                @foreach($workDay as $data)       
+                <div class="form-check">
+                    <input class="form-check-input" 
+                          type="checkbox" 
+                          id="workDay{{ $data->id }}" 
+                          name="workDay[]" 
+                          value="{{ $data->id }}"
+                          {{ $employee->workDay && $employee->workDay->contains($data->id) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="workDay{{ $data->id }}">
+                        {{ $data->name }}
+                    </label>
+                </div>
+                @endforeach
+            </div>
         </div>
-        @endforeach
-    </div>
-</div>
+
+
+        <div class="row mb-3">
+          <label class="col-sm-4 col-form-label">Office Location</label>
+          <div class="col-sm-8">    
+              @foreach($officeLocations as $data)       
+              <div class="form-check">
+                  <input class="form-check-input" 
+                        type="checkbox" 
+                        id="officeLocations{{ $data->id }}" 
+                        name="officeLocations[]" 
+                        value="{{ $data->id }}"
+                        {{ $employee->officeLocations && $employee->officeLocations->contains($data->id) ? 'checked' : '' }}>
+                  <label class="form-check-label" for="officeLocations{{ $data->id }}">
+                      {{ $data->name }}
+                  </label>
+              </div>
+              @endforeach
+          </div>
+      </div>
 
 
           <div class="row mb-3">
@@ -252,7 +272,7 @@
             <label class="col-sm-4 col-form-label">KPI</label>
             <div class="col-sm-8">
               <select class="form-select" name="kpi_id" aria-label="Default select example">
-                <option selected>Select KPI</option>
+                <option value="" selected>Select KPI</option>
                 @foreach($kpi_id as $data)
                 <option value="{{ $data->id }}" {{ $data->id == $employee->kpi_id ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\WorkDay;
 use App\Models\Employee;
+use App\Models\OfficeLocation;
 use App\Models\Overtime;
 use App\Models\Presence;
 use Illuminate\Http\Request;
@@ -30,11 +31,12 @@ class EmployeeAppController extends Controller
 //Create Presence
     public function create(){
         $employeeId = Auth::id();
-        $employee = Employee::with('workDay')->findOrFail($employeeId);
+        $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
         $workDay = $employee->workDay;
         return view('_employee_app.presence', compact('employee'));
     }
 
+//Store Image
     public function imageStore(Request $request)
     {
         // Validasi input
@@ -58,7 +60,8 @@ class EmployeeAppController extends Controller
         $fileName = $eid . '-' . $datePhoto . '-' . $timePhoto;
 
         // Save the image to storage/app/public folder
-        $path = storage_path('app/public/presence/' . $fileName);
+        // $path = storage_path('app/public/presence/' . $fileName);
+        $path = public_path('vermuk/' . $fileName);
         file_put_contents($path, $imageData);
 
         return response()->json(['success' => 'Image saved successfully!']);
@@ -81,10 +84,15 @@ function distance($lat1, $lon1, $lat2, $lon2){
 
 //Store Presence
     public function store(Request $request){
+
+        //needle
         // $latOffice = -7.7022881;
         // $lonOffice = 110.3904715;
+
+        //maketees
         $latOffice = -7.761940915549656;
         $lonOffice = 110.31390577561152;
+
         $loc = $request->input('location');
         $location = explode(',', $loc);
         $latUser = $location[0];
@@ -114,10 +122,27 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $today = strtolower($date->format('l'));
         $workDay = WorkDay::where('name', $request->workDay)->where('day', $today)->first();
         $day_off = $workDay->day_off;
-        $break = $workDay->break;
         $photo = $employeeId . '-' . $datePhoto . '-' . $timePhoto;
 
-        if($radius > 20000) {
+        // $ol = $request->officeLocations;
+        // // $location = OfficeLocation::where('name', $request->officeLocations)->first;
+        // // $latOffice = $location->latitude;
+        // // $lonOffice = $location->longitude;
+        // // $maxRadius = $location->radius;
+
+        // dd($ol);
+
+        // $loc = $request->input('location');
+        // $location = explode(',', $loc);
+        // $latUser = $location[0];
+        // $lonUser = $location[1];
+
+        // $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
+
+        // $radius = round($distance["meters"]);
+        // $radiusKM = round($distance["kilometers"]);
+
+        if($radius > 2000000) {
             $message = 'Ohh no... You are out of office. Your radius is ' . $radiusKM . ' km or your GPS location is malfunction!';
             return redirect()->back()->with('error', $message);
         } else {
@@ -175,8 +200,10 @@ function distance($lat1, $lon1, $lat2, $lon2){
                 case !is_null($presence->check_in) && is_null($presence->check_out):
                     $lastedWorkDay = $presence->work_day_id;
                     $lastWorkDay = WorkDay::where('name', $lastedWorkDay)->where('day', $today)->first();
+                    $forCheckIn = $lastWorkDay->check_in;
                     $forCheckOut = $lastWorkDay->check_out;
-                  
+                    $break = $lastWorkDay->break;
+                    
                     if($now && $check_out){
                         $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
                         $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
@@ -186,23 +213,27 @@ function distance($lat1, $lon1, $lat2, $lon2){
                             case $excldueBreak:
                                 $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
                                 break;
+
+                            case $now->lt($forCheckIn):
+                                $checkOutEarly = 0;
+                                break;
             
                             case $now->lt($cutStart):
                                 $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false))-60, 0);
                                 break;
                             
                             case $now->between($cutStart, $cutEnd):
-                                $checkOutEarly = max(intval($cutEnd->diffInMinutes($forCheckOut, false)), 0);
+                                $checkOutEarly = max(intval($cutEnd->diffInMinutes($forCheckOut, false)), 4);
                                 break;
 
-                            case $now->lt($check_in):
-                                $checkOutEarly = 0;
                         
                             default:
                                 $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
                                 break;
                         }
+
                     }
+                    
                     $presence->update([
                         'check_out' => now()->toTimeString(),
                         'check_out_early' => $checkOutEarly,

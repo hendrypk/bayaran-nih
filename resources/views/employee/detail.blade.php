@@ -27,11 +27,15 @@
                             <div class="col-md-10">
                                 <div class="card-title">Employee Detail</div>
                             </div>
-                            <div class="col-md ms-auto align-self-center">
-                                <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-outline-success">
-                                    <i class="ri-edit-line"></i>
-                                </a>
-                            </div>
+                            @can('update employee')
+                                <div class="col-md ms-auto align-self-center">
+                                    <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-outline-success">
+                                        <i class="ri-edit-line"></i>
+                                    </a>
+                                </div>
+                            @endcan
+
+                            @can('delete employee')
                             <div class="col-md ms-auto align-self-center">
                                 <button type="button" class="btn btn-outline-danger"
                                     data-bs-toggle="modal" 
@@ -42,6 +46,7 @@
                                     <i class="ri-delete-bin-fill"></i>
                                 </button>
                             </div>
+                            @endcan
                         </div>
 
                         <div class="row">
@@ -114,7 +119,18 @@
                                             {{ $workDay->name }}@if(!$loop->last), @endif
                                         @endforeach
                                     @endif
-                                </div>
+                                </div>  
+                                <div class="col-lg-4 col-md-4 label">Office Locatin</div>
+                                <div class="col-lg-8 col-md-8">
+                                    <span>: </span>
+                                    @if($employee->officeLocations->isEmpty())
+                                        <span>No Location</span>
+                                    @else
+                                        @foreach($employee->officeLocations as $index => $officeLocations)
+                                            {{ $officeLocations->name }}@if(!$loop->last), @endif
+                                        @endforeach
+                                    @endif
+                                </div>  
                                 <div class="col-lg-4 col-md-4 label ">Employee Status</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->employee_status }}</div>
                                 <div class="col-lg-4 col-md-4 label ">Sales Status</div>

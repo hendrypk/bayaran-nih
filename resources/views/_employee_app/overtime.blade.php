@@ -38,7 +38,7 @@
 
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-tosca btn-block">
                             <ion-icon name="camera" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
                             </button>
                         </div>

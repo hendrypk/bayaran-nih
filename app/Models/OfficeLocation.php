@@ -17,4 +17,11 @@ class OfficeLocation extends Model
         'longitude',
         'radius',
     ];
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_office_location');
+    }
+
+
 }

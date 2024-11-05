@@ -212,6 +212,19 @@
                     </div>
                 @endforeach
             </div>
+
+            <div class="row mb-3">
+              <label class="col-sm-4 col-form-label">Office Location</label>
+              <div class="col-sm-8">    
+                  @foreach($officeLocations as $data)       
+                      <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="officeLocations{{ $data->id }}" name="officeLocations[]" value="{{ $data->id }}">
+                          <label class="form-check-label" for="officeLocations{{ $data->id }}">
+                              {{ $data->name }}
+                          </label>
+                      </div>
+                  @endforeach
+              </div>
             <!-- <p>Checkbox values:</p>
             <p id="debug-workdays"></p> -->
 

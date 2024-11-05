@@ -10,9 +10,11 @@
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <h5 class="card-title mb-0 py-3">Key Performance Indicator</h5>
-                    <div class="ms-auto my-auto">
-                        <a class="btn btn-tosca" href="{{ route('kpi.add') }}"><i class="ph-plus-circle me-1">Add KPI Report</i></a>
-                    </div>
+                    @can('create kpi')
+                        <div class="ms-auto my-auto">
+                            <a class="btn btn-tosca" href="{{ route('kpi.add') }}"><i class="ph-plus-circle me-1">Add KPI Report</i></a>
+                        </div>
+                    @endcan
                 </div>
         
                 <!-- Table with hoverable rows -->
@@ -48,19 +50,23 @@
                                     </a>
                                 </td>
                                 <td>
-                                <a href="{{ route('kpi.edit', [
-                                    'employee_id' => $gradeKpi->employee_id,
-                                    'month' => $gradeKpi->month,
-                                    'year' => $gradeKpi->year
-                                    ]) }}" class="btn btn-outline-success">
-                                    <i class="ri-edit-line"></i>
-                                    </a>
+                                    @can('edit kpi')
+                                        <a href="{{ route('kpi.edit', [
+                                            'employee_id' => $gradeKpi->employee_id,
+                                            'month' => $gradeKpi->month,
+                                            'year' => $gradeKpi->year
+                                            ]) }}" class="btn btn-outline-success">
+                                            <i class="ri-edit-line"></i>
+                                        </a>
+                                    @endcan
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-danger" 
-                                        onclick="confirmDelete({{ $gradeKpi->employee_id }}, '{{ $gradeKpi->month }}', '{{ $gradeKpi->year }}', '{{ $gradeKpi->employees->name }}', 'KPI')">
-                                        <i class="ri-delete-bin-fill"></i>
-                                    </button>
+                                    @can('delete kpi')
+                                        <button type="button" class="btn btn-outline-danger" 
+                                            onclick="confirmDelete({{ $gradeKpi->employee_id }}, '{{ $gradeKpi->month }}', '{{ $gradeKpi->year }}', '{{ $gradeKpi->employees->name }}', 'KPI')">
+                                            <i class="ri-delete-bin-fill"></i>
+                                        </button>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

@@ -16,6 +16,7 @@ use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
 use App\Models\EmployeeStatus;
 use App\Models\KpiAspect;
+use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -38,6 +39,7 @@ class EmployeeController extends Controller
         $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
             ->groupBy('name')
             ->get();
+        $officeLocations = OfficeLocation::all();
         $kpi_id = KpiAspect::all();
         $calendar = WorkCalendar::all();
         $status = EmployeeStatus::all();
@@ -76,7 +78,7 @@ class EmployeeController extends Controller
             'Bank Permata', 
             'Bank Mega'
         ];
-        return view('employee.add', compact('position', 'job_title', 'division', 'workDay', 'department', 'schedule', 'calendar', 'status',
+        return view('employee.add', compact('position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'schedule', 'calendar', 'status',
     'kpi_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
 
@@ -136,10 +138,11 @@ class EmployeeController extends Controller
             'joining_date' => $request->joining_date,
             'employee_status' => $request->employee_status,
             'sales_status' => $request->sales_status,
-            'kpi_id' => $request->kpi_id,
-            'bobot_kpi' => $request->bobot_kpi,
+            // 'kpi_id' => $request->kpi_id,
+            // 'bobot_kpi' => $request->bobot_kpi,
         ]);
         $employee->workDay()->sync($request->workDay);
+        $employee->officeLocations()->sync($request->officeLocations);
 
         return redirect()->route('employee.list');
     }
@@ -176,6 +179,7 @@ class EmployeeController extends Controller
         $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
         ->groupBy('name')
         ->get();
+        $officeLocations = OfficeLocation::all();
         $kpi_id = KpiAspect::all();
         $calendar = WorkCalendar::all();
         $status = EmployeeStatus::all();
@@ -225,7 +229,7 @@ class EmployeeController extends Controller
         //     ->get();
         // $onDay = WorkCalendar::all();
         // $status = EmployeeStatus::all();
-        return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'department', 'schedule', 'kpi_id', 'calendar', 'status',
+        return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'schedule', 'kpi_id', 'calendar', 'status',
         'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
     
@@ -237,6 +241,31 @@ class EmployeeController extends Controller
 
         //find employeeId
         $employee = Employee::findOrFail($id);
+
+        $request->validate([
+            'email' => 'required',
+            'name' => 'required',
+            'city' => 'required',
+            'domicile' => 'required',
+            'place_birth' => 'required',
+            'date_birth' => 'required',
+            'place_birth' => 'required',
+            'blood_type' => 'required',
+            'gender' => 'required',
+            'religion' => 'required',
+            'marriage' => 'required',
+            'education' => 'required',
+            'whatsapp' => 'required',
+            'bank' => 'required',
+            'bank_number' => 'required',
+            'position_id' => 'required',
+            'job_title_id' => 'required',
+            'joining_date' => 'required',
+            'employee_status' => 'required',
+            'sales_status' => 'required',
+            // 'kpi_id' => 'error',
+            // 'bobot_kpi' => 'required'
+        ]);
 
         $employee->update([
             'eid' => $eid,
@@ -266,7 +295,7 @@ class EmployeeController extends Controller
         ]);
 
         $employee->workDay()->sync($request->workDay);
-
+        $employee->officeLocations()->sync($request->officeLocations);
         return redirect()->route('employee.detail', ['id' => $employee->id])->with('success', 'Employee updated successfully');
     }
 

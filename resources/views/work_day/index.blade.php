@@ -8,13 +8,16 @@
                 <div class="col-md-10">
                     <h5 class="card-title">Work Day</h5>
                 </div>
-                <div class="col-md align-content-center">
-                    <button type="button" 
-                        class="btn btn-untosca content-align-center" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#addWorkDay">Add Work Day
-                    </button>
-                </div>
+
+                @can('create work pattern')
+                    <div class="col-md align-content-center">
+                        <button type="button" 
+                            class="btn btn-untosca content-align-center" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#addWorkDay">Add Work Day
+                        </button>
+                    </div>
+                @endcan
 
             </div>
             <table class="table datatable table-hover">
@@ -38,20 +41,25 @@
                             </a>
                         </td>
                         <td>
-                            <a href="{{ route('workDay.edit', [
-                                    'name' => $workDay->name]) }}"
-                                    class="btn btn-outline-success">
-                                    <i class="ri-edit-fill"></i>
-                            </a>
+                            @can('update work pattern')
+                                <a href="{{ route('workDay.edit', [
+                                        'name' => $workDay->name]) }}"
+                                        class="btn btn-outline-success">
+                                        <i class="ri-edit-fill"></i>
+                                </a>
+                            @endcan
                         </td>
                         <td>
-                        <a href="" class="btn btn-outline-danger"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#deleteModal" 
-                            data-entity="work-day"  
-                            data-id="{{ $workDays->first()->id }}" 
-                            data-name="{{ $workDays->first()->name }}" >
-                            <i class="ri-delete-bin-fill"></i></a>
+                            @can('delete work pattern')
+                                <a href="" class="btn btn-outline-danger"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal" 
+                                    data-entity="work-day"  
+                                    data-id="{{ $workDays->first()->id }}" 
+                                    data-name="{{ $workDays->first()->name }}" >
+                                    <i class="ri-delete-bin-fill"></i>
+                                </a>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

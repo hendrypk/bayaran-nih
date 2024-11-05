@@ -8,9 +8,11 @@
       <div class="card-body">
         <div class="card-header d-flex align-items-center py-0">
           <h5 class="card-title mb-0 py-3">Employee List</h5>
-          <div class="ms-auto my-auto">
-            <a class="btn btn-tosca" href="{{route('employee.add')}}"><i class="ph-plus-circle me-1">Add Employee</i></a>
-          </div>
+          @can('create employee')
+            <div class="ms-auto my-auto">
+              <a class="btn btn-tosca" href="{{route('employee.add')}}"><i class="ph-plus-circle me-1">Add Employee</i></a>
+            </div>
+          @endcan
         </div>
 
         <!-- Table with hoverable rows -->

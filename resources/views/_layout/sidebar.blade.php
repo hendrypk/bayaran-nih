@@ -115,6 +115,18 @@
           <span>Work pattern</span>
         </a>
       </li>
+      <li class="nav-item {{ request()->routeIs('role.index') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="{{route('role.index')}}">
+          <i class="ri-settings-4-fill"></i>
+          <span>Role</span>
+        </a>
+      </li>
+      <li class="nav-item {{ request()->routeIs('user.index') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="{{route('user.index')}}">
+          <i class="ri-settings-4-fill"></i>
+          <span>User</span>
+        </a>
+      </li>
       {{-- <li class="nav-item {{ request()->routeIs('logs.index') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{route('logs.index')}}">
           <i class="ri-settings-4-fill"></i>

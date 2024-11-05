@@ -48,6 +48,18 @@
                         </div>
                     </div>
                     <div class="row mb-2">
+                        <div class="col-md-2">
+                            <label for="">Select Shift :</label>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control" name="officeLocations" aria-label="Default select example">
+                                @foreach($employee->officeLocations as $index => $officeLocations)
+                                    <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
                         <div class="col">
                             <label for="note">Note :</label>
                             <input type="text" class="form-control" name="note">                    
@@ -55,7 +67,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary btn-block" id="take-presence">
+                            <button type="submit" class="btn btn-tosca btn-block" id="take-presence">
                             <ion-icon name="camera" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
                             </button>
                         </div>

@@ -37,12 +37,6 @@ class OptionsController extends Controller
         'salesPerson', 'employees', 'schedules', 'statuses', 'officeLocation'));
     }
 
-    // function IndexKpiPa(){
-    //     $indicators = KpiOptions::select('position_id')->groupBy('position_id')->distinct()->get();
-    //     $appraisals = PerformanceAppraisal::get();
-    //     return view('options.kpi-pa-index', compact('indicators', 'appraisals'));
-    // }
-
 //position add
     function positionAdd(Request $request){
         $request->validate([
@@ -134,7 +128,7 @@ class OptionsController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'The location has been deleted.',
+            'message' => 'The Job Title has been deleted.',
             'redirect' => route('options.list')
         ]);
     }
@@ -171,7 +165,7 @@ class OptionsController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'The location has been deleted.',
+            'message' => 'The division has been deleted.',
             'redirect' => route('options.list')
         ]);
     }
@@ -212,7 +206,7 @@ class OptionsController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'The location has been deleted.',
+            'message' => 'The department has been deleted.',
             'redirect' => route('options.list')
         ]);
     }
@@ -249,161 +243,7 @@ class OptionsController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'The location has been deleted.',
-            'redirect' => route('options.list')
-        ]);
-    }
-
-//Add sales person
-    function salesPersonAdd(Request $request){
-        $employee = Employee::where('name', $request->salesPerson)->first();
-        if (!$employee) {
-            return redirect()->back()->withErrors(['salesPerson' => 'Employee not found.']);
-        }
-
-        $salesPerson = new SalesPerson();
-        $salesPerson->id = $request->id; // Ensure this ID is unique and valid
-        $salesPerson->eid = $employee->eid; // Save the employee's ID
-        $salesPerson->employee_name = $request->salesPerson;
-        $salesPerson->save();
-        return redirect()->route('options.list')->with('success', ' ');
-    }
-
-//sales person edit
-    function salesPersonEdit($id){
-        $salesPerson = SalesPerson::findOrFail($id);
-        return view('salesPerson.edit', compact('salesPerson'));
-
-    }
-
-    function salesPersonUpdate(Request $request, $id){
-        $salesPerson = SalesPerson::findOrFail($id);
-        $request->validate([
-            'name'=> 'string',
-            'eid'=> 'string',
-        ]);
-        $salesPerson->employee_name = $request->name;
-        $salesPerson->eid = $request->eid;
-        $salesPerson->save();
-
-        return redirect()->route('options.list')->with('success', ' ');
-    }
-
-//sales person delete
-    public function salesPersonDelete($id){
-        $salesPerson = Salesperson::findOrFail($id);
-        $salesPerson->delete();
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'The location has been deleted.',
-            'redirect' => route('options.list')
-        ]);
-    }
-
-//schedule add
-    function scheduleAdd(Request $request){
-        $schedule = new WorkSchedule();
-        $schedule->id = $request->id;
-        $schedule->name = $request->name;
-        $schedule->arrival = $request->arrival;
-        $schedule->start_at = $request->start;
-        $schedule->end_at = $request->end;
-        $schedule->save();
-        return redirect()->route('options.list')->with('success', ' ');
-    }
-
-//schedule edit
-    function scheduletEdit($id){
-        $schedule = WorkSchedule::findOrFail($id);
-        return view('schedule.edit', compact('schedule'));
-
-    }
-
-    function scheduleUpdate(Request $request, $id){
-        $schedule = WorkSchedule::findOrFail($id);
-        $request->validate([
-            'name'=> 'string',
-            'arrival'=> ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'start'=> ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'end'=> ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-        ]);
-        $schedule->name = $request->name;
-        $schedule->arrival = $request->arrival;
-        $schedule->start_at = $request->start;
-        $schedule->end_at = $request->end;
-        $schedule->save();
-
-        return redirect()->route('options.list')->with('success', ' ');
-    }
-
-//schedule delete
-    function scheduleDelete($id){
-        $schedule = WorkSchedule::find($id);
-        $schedule->delete();
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'The location has been deleted.',
-            'redirect' => route('options.list')
-        ]);
-    }
-
-//on day calendar
-    function onDayCalendarAdd(Request $request){
-        $calendars = new WorkCalendar();
-        $calendars->id = $request->id;
-        $calendars->name = $request->name;
-        $calendars->jan = $request->jan;
-        $calendars->feb = $request->feb;
-        $calendars->mar = $request->mar;
-        $calendars->apr = $request->apr;
-        $calendars->may = $request->may;
-        $calendars->jun = $request->jun;
-        $calendars->jul = $request->jul;
-        $calendars->aug = $request->aug;
-        $calendars->sep = $request->sep;
-        $calendars->oct = $request->oct;
-        $calendars->nov = $request->nov;
-        $calendars->dec = $request->dec;
-        $calendars->save();
-        return redirect()->route('options.list')->with('success', ' ');
-    }
-
-// Edit Appraisal 
-    function onDayCalendarEdit($id){
-        $calendars = WorkCalendar::findOrFail($id);
-        return view('onDayCalendar.edit', compact('calendars'));
-        }
-        
-        function onDayCalendarUpdate(Request $request, $id){
-        $calendars = WorkCalendar::findOrFail($id);
-        $calendars->id = $request->id;
-        $calendars->name = $request->name;
-        $calendars->jan = $request->jan;
-        $calendars->feb = $request->feb;
-        $calendars->mar = $request->mar;
-        $calendars->apr = $request->apr;
-        $calendars->may = $request->may;
-        $calendars->jun = $request->jun;
-        $calendars->jul = $request->jul;
-        $calendars->aug = $request->aug;
-        $calendars->sep = $request->sep;
-        $calendars->oct = $request->oct;
-        $calendars->nov = $request->nov;
-        $calendars->dec = $request->dec;
-        $calendars->save();
-        return redirect()->route('options.list')->with('success', ' ');
-    }
-
-//on day delete
-    function onDayCalendarDelete($id){
-        $calendars = WorkCalendar::find($id);
-        $calendars->delete();
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'The location has been deleted.',
+            'message' => 'The employee status has been deleted.',
             'redirect' => route('options.list')
         ]);
     }
@@ -420,18 +260,41 @@ class OptionsController extends Controller
     }
 
 //Office Location Edit
-    // public function editLocation($id){
-    //     $ol = OfficeLocation::find($id);
-    //     $ol->update([
-    //         'name' => $request->name,
-    //         'latitude' => $request->latitude,
-    //         'longitude' => $request->longitude,
-    //         'radius' => $request->radius
-    //     ]);
-    //     return redirect()->route('options.list')->with('success', ' ');
-    // }
+    public function editLocation(Request $request, $id){
+        try {
 
-//Office Location Edit
+        $request->validate([
+            'name' => 'string',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'radius' => 'integer'
+        ]);
+
+        $officeLocation = OfficeLocation::updateOrCreate(
+            ['id' => $id], // Kriteria untuk mencari data
+            [ // Data yang akan diperbarui atau dibuat
+                'name' => $request->name,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'radius' => $request->radius
+            ]
+        );
+        
+        $message = $officeLocation->wasRecentlyCreated ? 'Office Location Added Successfully.' : 'Office Location Updated Successfully.';
+
+        return redirect()->route('options.list')->with('success', $message);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Log the validation errors
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            // Log any other exception
+            return redirect()->back()->with('error', 'There was an error updating the office location.');
+        }
+        
+    }
+
+//Office Location Delete
 public function deleteLocation($id){
     $ol = OfficeLocation::find($id);
     $ol->delete();

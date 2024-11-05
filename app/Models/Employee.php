@@ -127,7 +127,11 @@ class Employee extends Authenticatable
         return $this->role === $role;
     }
     
-    
+    public function officeLocations()
+    {
+        return $this->belongsToMany(OfficeLocation::class, 'employee_office_location');
+    }
+      
   
 
 }
