@@ -104,8 +104,9 @@
                         </div>
                     </div> 
                    
-                    <div class="content-align-end">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" name="action" class="btn btn-tosca me-3">Cancel</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">Save</button>
                     </div>
                 </form>
             </div>

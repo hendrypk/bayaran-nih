@@ -32,16 +32,19 @@ public function edit(Request $request, $name) {
 //Work Day Update
 public function update(Request $request, $name)
 {
-    // Validasi data
+    //Validasi data
     // $request->validate([
     //     'name' => 'required|string|max:255',
     //     'tolerance' => 'nullable|integer',
     //     'arrival.*' => 'required_if:dayOff.*,0|date_format:H:i',
     //     'checkIn.*' => 'required_if:dayOff.*,0|date_format:H:i',
     //     'checkOut.*' => 'required_if:dayOff.*,0|date_format:H:i',
+    //     'breakIn.*' => 'required_if:dayOff.*,0|date_format:H:i',
+    //     'breakOut.*' => 'required_if:dayOff.*,0|date_format:H:i',
     // ]);
 
     // Ambil data workDays berdasarkan name
+    $id = $request->id;
     $workDays = WorkDay::where('name', $name)->get();
     $newName = $request->input('name');
 
@@ -54,9 +57,24 @@ public function update(Request $request, $name)
             'arrival' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("arrival.{$workDay->day}"),
             'check_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkIn.{$workDay->day}"),
             'check_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkOut.{$workDay->day}"),
+            'break_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("breakIn.{$workDay->day}"),
+            'break_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("breakOut.{$workDay->day}"),
             'break' => $request->input("break.{$workDay->day}") == '1' ? 1 : 0,
         ]);
     }
+    // foreach ($workDays as $workDay) {
+    //     $workDay->update([
+    //         'name' => $request->input('name'),
+    //         'day_off' => $request->has("dayOff.{$workDay->day}") ? 1 : 0,
+    //         'tolerance' => $request->input('tolerance') ?? 0,
+    //         'arrival' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("arrival.{$workDay->day}"),
+    //         'check_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkIn.{$workDay->day}"),
+    //         'check_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkOut.{$workDay->day}"),
+    //         'break_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("breakIn.{$workDay->day}"),
+    //         'break_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("breakOut.{$workDay->day}"),
+    //         'break' => $request->input("break.{$workDay->day}") == '1' ? 1 : 0,
+    //     ]);
+    // }
     // Redirect setelah update
     return redirect()->route('workDay.detail', [$newName])->with('success', 'Work Day updated successfully.');
 }
@@ -87,37 +105,13 @@ public function create(Request $request)
         $workDay->arrival = isset($request->dayOff[$day]) ? null : ($request->arrival[$day] ?? null);
         $workDay->check_in = isset($request->dayOff[$day]) ? null : ($request->checkIn[$day] ?? null);
         $workDay->check_out = isset($request->dayOff[$day]) ? null : ($request->checkOut[$day] ?? null);
+        $workDay->break_in = isset($request->dayOff[$day]) ? null : ($request->breakIn[$day] ?? null);
+        $workDay->break_out = isset($request->dayOff[$day]) ? null : ($request->breakOut[$day] ?? null);
 
         $workDay->save();
     }
-
     return redirect()->route('workDay.index')->with('success', 'Work day schedule saved successfully!');
 }
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'tolerance' => 'nullable|integer',
-    //         'arrival.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //         'checkIn.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //         'checkOut.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //     ]);
-
-    //     foreach (['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day) {
-    //         WorkDay::create([
-    //             'name' => $request->input('name'),
-    //             'day' => $day,
-    //             'day_off' => $request->has("dayOff.$day") ? 1 : 0,
-    //             'tolerance' => $request->input('tolerance') ?? 0,
-    //             'arrival' => $request->has("dayOff.$day") ? null : $request->input("arrival.$day"),
-    //             'check_in' => $request->has("dayOff.$day") ? null : $request->input("checkIn.$day"),
-    //             'check_out' => $request->has("dayOff.$day") ? null : $request->input("checkOut.$day"),
-    //         ]);
-    //     }
-
-    //     return redirect()->back()->with('success', 'Work schedule saved successfully.');
-    // }
 
 //Work Day Delete
     public function delete(Request $request, $name){

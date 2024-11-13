@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\WorkDay;
 use App\Models\Employee;
+use App\Models\Leave;
 use App\Models\OfficeLocation;
 use App\Models\Overtime;
 use App\Models\Presence;
@@ -25,16 +26,33 @@ class EmployeeAppController extends Controller
         $employeeId = Auth::id();
         $employee = Employee::with('workDay')->findOrFail($employeeId);
         $workDay = $employee->workDay;
-        return view('_employee_app.index', compact('employee', 'workDay'));
+
+        $today = Carbon::today()->toDateString();
+        $presenceToday = Presence::where('employee_id', $employeeId)
+            ->whereDate('date', $today)
+            ->first();
+        $overtimeToday = Overtime::where('employee_id', $employeeId)
+            ->whereDate('date', $today)
+            ->first();
+
+        return view('_employee_app.index', compact('employee', 'workDay', 'presenceToday', 'overtimeToday'));
     }
 
-//Create Presence
-    public function create(){
+//Create Presence In
+    public function presenceIn(){
         $employeeId = Auth::id();
         $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
         $workDay = $employee->workDay;
-        return view('_employee_app.presence', compact('employee'));
+        return view('_employee_app.presence.presence_in', compact('employee'));
     }
+
+//Create Presence Out
+public function presenceOut(){
+    $employeeId = Auth::id();
+    $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
+    $workDay = $employee->workDay;
+    return view('_employee_app.presence.presence_out', compact('employee'));
+}
 
 //Store Image
     public function imageStore(Request $request)
@@ -84,26 +102,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
 
 //Store Presence
     public function store(Request $request){
-
-        //needle
-        // $latOffice = -7.7022881;
-        // $lonOffice = 110.3904715;
-
-        //maketees
-        $latOffice = -7.761940915549656;
-        $lonOffice = 110.31390577561152;
-
-        $loc = $request->input('location');
-        $location = explode(',', $loc);
-        $latUser = $location[0];
-        $lonUser = $location[1];
-
-        $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
-        $radius = round($distance["meters"]);
-        $radiusKM = round($distance["kilometers"]);
-
-        // $imageData = $request->input('image');
-
         $request->validate([
             'workDay' => 'required',
             'note' => 'required'
@@ -122,32 +120,30 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $today = strtolower($date->format('l'));
         $workDay = WorkDay::where('name', $request->workDay)->where('day', $today)->first();
         $day_off = $workDay->day_off;
+        $break = $workDay->break;
         $photo = $employeeId . '-' . $datePhoto . '-' . $timePhoto;
 
-        // $ol = $request->officeLocations;
-        // // $location = OfficeLocation::where('name', $request->officeLocations)->first;
-        // // $latOffice = $location->latitude;
-        // // $lonOffice = $location->longitude;
-        // // $maxRadius = $location->radius;
+        //Get Office Location From Table
+        $ol = $request->officeLocations;
+        $location = OfficeLocation::where('name', $request->officeLocations)->first();
+        $latOffice = $location->latitude;
+        $lonOffice = $location->longitude;
+        $maxRadius = $location->radius;
 
-        // dd($ol);
+        //Get Location User
+        $loc = $request->input('location');
+        $location = explode(',', $loc);
+        $latUser = $location[0];
+        $lonUser = $location[1];
 
-        // $loc = $request->input('location');
-        // $location = explode(',', $loc);
-        // $latUser = $location[0];
-        // $lonUser = $location[1];
+        $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
+        $radius = round($distance["meters"]);
+        $radiusKM = round($distance["kilometers"]);
 
-        // $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
-
-        // $radius = round($distance["meters"]);
-        // $radiusKM = round($distance["kilometers"]);
-
-        if($radius > 2000000) {
+        if($maxRadius < $radius) {
             $message = 'Ohh no... You are out of office. Your radius is ' . $radiusKM . ' km or your GPS location is malfunction!';
             return redirect()->back()->with('error', $message);
-        } else {
-
-        
+        } else {        
         
         if($day_off == 1){
             $message = 'Today is Off Day for You';
@@ -158,13 +154,43 @@ function distance($lat1, $lon1, $lat2, $lon2){
             return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
         };
 
+        //Get from Work Day table
         $arrival = $workDay ? $parseTime($workDay->arrival) : null;
         $check_in = $workDay ? $parseTime($workDay->check_in) : null;
-        $check_out = $workDay ? $parseTime($workDay->check_out) : null;       
+        $check_out = $workDay ? $parseTime($workDay->check_out) : null;
+        $break_in =  $workDay ? $parseTime($workDay->break_in) : null;
+        $break_out =  $workDay ? $parseTime($workDay->break_out) : null;
+        $excldueBreak = $break == 1;
+
+        //Break Duration
+        $breakDuration = max(intval($break_out->diffInMinutes($break_out, false)), 0);
+
+        //Get From Form
         $now = $parseTime (now()->toTimeString());
         $lateArrival = $now && $arrival ? ($arrival->diffInMinutes($now, false)> 1 ? 1 : 0) :0;
         $lateArrival = intval($lateArrival);
-        $lateCheckIn = $now && $check_in ? max(intval($check_in->diffInMinutes($now, false)), 0) : '0';
+        // $lateCheckIn = $now && $check_in ? max(intval($check_in->diffInMinutes($now, false)), 0) : '0';
+
+        
+        if($now && $check_in) {
+            switch(true) {
+                case $excldueBreak:
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
+                    break;
+
+                case $now->between($break_in, $break_out):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    break;
+
+                case $break_in->lt($now):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)) - $breakDuration, 0);
+                    break;
+
+                case $now->lt($break_in):
+                $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
+                    break;
+            }
+        }
 
             // Find existing presence for today
             $presence = Presence::where('employee_id', $employeeId)
@@ -173,7 +199,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
             
             $message = '';
 
-     
             // Switch case to handle presence states
             switch (true) {
                 // Case when there is no presence record for today (Check-in)
@@ -207,7 +232,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
                     if($now && $check_out){
                         $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
                         $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
-                        $excldueBreak = $break == 1;
             
                         switch(true) {
                             case $excldueBreak:
@@ -218,12 +242,12 @@ function distance($lat1, $lon1, $lat2, $lon2){
                                 $checkOutEarly = 0;
                                 break;
             
-                            case $now->lt($cutStart):
+                            case $now->lt($break_in):
                                 $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false))-60, 0);
                                 break;
                             
-                            case $now->between($cutStart, $cutEnd):
-                                $checkOutEarly = max(intval($cutEnd->diffInMinutes($forCheckOut, false)), 4);
+                            case $now->between($break_in, $break_out):
+                                $checkOutEarly = max(intval($break_out->diffInMinutes($forCheckOut, false)), 4);
                                 break;
 
                         
@@ -231,7 +255,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
                                 $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
                                 break;
                         }
-
                     }
                     
                     $presence->update([
@@ -335,6 +358,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
         return view('_employee_app.profile.index');
     }
 
+    
 //Reset username
     public function resetUsername(){
         return view('_employee_app.profile.username');
@@ -401,5 +425,55 @@ function distance($lat1, $lon1, $lat2, $lon2){
             session()->flash('error', 'Current password is incorrect. Please reenter the current password!');
         }
         return redirect()->route('change.password')->withInput();
+    }
+
+//Leave
+    public function leaveIndex() {
+        $employeeId = Auth::id();
+        $leaves = Leave::where('employee_id', $employeeId)->get();
+        return view('_employee_app.leave.index', compact('leaves'));
+    }
+
+    public function leaveApply() {
+        $category = [
+            'Annual leave', 
+            'Sick',
+            'Permit'
+        ];
+        return view('_employee_app.leave.modal', compact('category'));
+    }
+
+    public function leaveStore(Request $request) {
+        $request->validate([
+            'leave_dates' => 'required|array',
+            'category' => 'required|string',
+            'note' => 'required|string',
+        ]);
+        
+        $employeeId = Auth::id();
+        $leaveDates = $request->input('leave_dates');
+        $leaveDates = explode(',', $leaveDates[0]);
+        $leaveDates = array_map('trim', $leaveDates);
+        $category = $request->input('category');
+        $note = $request->input('note');
+
+        $existLeave = Leave::where('employee_id', $employeeId)
+                           ->whereIn('date', $leaveDates)
+                           ->pluck('date')->toArray();
+        if(count($existLeave) > 0) {
+            return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+        }
+        foreach ($leaveDates as $date) {
+            $leave = Leave::create([
+                'employee_id' => $employeeId,
+                'date' => $date,
+                // 'start_date' => $request->start_date,
+                // 'end_date' => $request->end_date,
+                'category' => $request->category,
+                'note' => $request->note
+            ]);
+        }
+
+        return redirect()->route('leave.index')->with('success', 'Cuti berhasil dibuat!');
     }
 }

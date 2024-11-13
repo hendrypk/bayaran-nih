@@ -18,6 +18,8 @@ class WorkDay extends Model
         'arrival',
         'check_in',
         'check_out',
+        'break_in',
+        'break_out',
         'break',
         'late_check_in',
         'late_arrival',

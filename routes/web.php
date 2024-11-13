@@ -19,6 +19,7 @@ use App\Http\Controllers\FinalGradeController;
 use App\Http\Controllers\EmployeeAppController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\KpiPaOptionsController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
 use App\Http\Controllers\RoleController;
@@ -246,6 +247,12 @@ Route::middleware(['auth:web'])->group(function () {
         });
     });
 
+    Route::prefix('leaves')->group(function () {
+        Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
+        Route::post('submit', [LeaveController::class, 'store'])->name('leaves.create');
+        Route::post('{id}/delete', [LeaveController::class, 'delete'])->name('leaves.delete');
+    });
+
     //Log
     Route::get('/logs', function () {
         $logFile = storage_path('logs/laravel.log');
@@ -261,7 +268,7 @@ Route::middleware(['auth:web'])->group(function () {
 
 
 //Employee Middleware Group
-Route::middleware(['auth:employee','auth:web'])->group(function () {
+Route::middleware(['auth:employee'])->group(function () {
     //logout
     Route::get('logout',[AuthController::class,'logout'])->name('auth.logout');
     // Employee App
@@ -272,7 +279,8 @@ Route::middleware(['auth:employee','auth:web'])->group(function () {
 
     // Presence Routes
     Route::prefix('presence')->group(function () {
-        Route::get('/', [EmployeeAppController::class, 'create'])->name('presence.create');
+        Route::get('/in', [EmployeeAppController::class, 'presenceIn'])->name('presence.in');
+        Route::get('/out', [EmployeeAppController::class, 'presenceOut'])->name('presence.out');
         Route::post('/submit', [EmployeeAppController::class, 'store'])->name('presence.submit');
         Route::post('/submit/image', [EmployeeAppController::class, 'imageStore'])->name('image.submit');
     });
@@ -296,6 +304,13 @@ Route::middleware(['auth:employee','auth:web'])->group(function () {
         // Reset Username or Password
         Route::post('/username/reset', [EmployeeAppController::class, 'resetUsernameStore'])->name('reset.username');
         Route::post('/password/reset', [EmployeeAppController::class, 'resetPasswordStore'])->name('reset.password');
+    });
+
+    //Leave
+    Route::prefix('leave')->group(function () {
+        Route::get('', [EmployeeAppController::class, 'leaveIndex'])->name('leave.index');
+        Route::get('add', [EmployeeAppController::class, 'leaveApply'])->name('leave.apply');
+        Route::post('add/submit', [EmployeeAppController::class, 'leaveStore'])->name('leave.create');
     });
     
     // Route::get('/', [EmployeeAppController::class, 'index'])->name('employee.app');
@@ -326,20 +341,16 @@ Route::middleware(['auth:employee','auth:web'])->group(function () {
 });
 
 // Route::middleware([Authenticate::class])->group(function(){
-Route::middleware(['auth'])->group(function(){
-    Route::middleware(['auth',  \App\Http\Middleware\RoleMiddleware::class . ':admin,user'])->group(function(){
+// Route::middleware(['auth'])->group(function(){
+//     Route::middleware(['auth',  \App\Http\Middleware\RoleMiddleware::class . ':admin,user'])->group(function(){
 
+//     });
 
-    });
-
-    Route::middleware(['auth',  \App\Http\Middleware\RoleMiddleware::class . ':admin'])->group(function(){
-    //dashboard
+//     Route::middleware(['auth',  \App\Http\Middleware\RoleMiddleware::class . ':admin'])->group(function(){
+//     //dashboard
     
-
-
-
-    });
-});
+//     });
+// });
 
 
 Route::get('createpermission', function() {

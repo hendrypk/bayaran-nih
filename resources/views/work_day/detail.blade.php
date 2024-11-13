@@ -10,18 +10,18 @@
                     <h5 class="card-title">Work Day Detail of {{ $workDays->first()->name }}</h5>
                 </div>
                 <div class="col-md-1 align-self-center">
-                    <a href="{{ route('workDay.edit', ['name' => $workDays->first()->name]) }}" class="btn btn-primary">Edit</a>
+                    <a href="{{ route('workDay.edit', ['name' => $workDays->first()->name]) }}" class="btn btn-tosca">Edit</a>
                 </div>
                 <div class="col-md-1 align-self-center">
-    <a href="#" class="btn btn-danger"
-       data-bs-toggle="modal" 
-       data-bs-target="#deleteModal" 
-       data-entity="work-day"  
-       data-name="{{ $workDays->first()->name }}"
-       data-id="{{ $workDays->first()->id }}">
-       Delete
-    </a>
-</div>
+                    <a href="#" class="btn btn-untosca"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteModal" 
+                    data-entity="work-day"  
+                    data-name="{{ $workDays->first()->name }}"
+                    data-id="{{ $workDays->first()->id }}">
+                    Delete
+                    </a>
+                </div>
 
                 <!-- <div class="col-md-1 align-self-center">
                     <a href="{{ route('workDay.delete', ['name' => $workDays->first()->name]) }}" class="btn btn-danger">Delete</a>
@@ -35,6 +35,8 @@
                         <th>Arrival</th>
                         <th>Check In</th>
                         <th>Check Out</th>
+                        <th>Break In</th>
+                        <th>Break Out</th>
                         <th>Exclude Break</th>
                     </thead>
                     <tbody>
@@ -66,6 +68,20 @@
                                 Off
                             @else
                                 <input type="time" class="form-control" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->check_out }}" disabled>
+                            @endif
+                            </td>
+                            <td>
+                            @if($workDay->day_off == 1)
+                                Off
+                            @else
+                                <input type="time" class="form-control" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->break_in }}" disabled>
+                            @endif
+                            </td>
+                            <td>
+                            @if($workDay->day_off == 1)
+                                Off
+                            @else
+                                <input type="time" class="form-control" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->break_out }}" disabled>
                             @endif
                             </td>
                             <td>

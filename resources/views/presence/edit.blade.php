@@ -119,8 +119,10 @@
 
                     <!-- Hidden input for ID -->
                     <input type="hidden" id="presenceId" name="id">
-                    
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" name="action" class="btn btn-untosca">Save</button>
+                    </div>
                 </form>
             </div>
         </div>

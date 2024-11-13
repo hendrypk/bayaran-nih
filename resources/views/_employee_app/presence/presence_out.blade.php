@@ -1,16 +1,8 @@
 @extends('_employee_app._layout_employee.main')
-<!-- @section('header.title', 'Presence') -->
+<!-- @section('header.title', 'Presence Out') -->
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
-<div class="appHeader blue text-light">
-        <div class="left">
-            <a href="{{ route('employee.app') }}" class="headerButton goBack">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-            </a>
-        </div>
-        <div class="pageTitle"> Presensi </div>
-        <div class="right"></div>
-    </div>
+
 @endsection -->
 @section('content')
 <div class="presence">
@@ -35,7 +27,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    {{-- <div class="row mb-2">
                         <div class="col-md-2">
                             <label for="">Select Shift :</label>
                         </div>
@@ -49,7 +41,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-md-2">
-                            <label for="">Select Shift :</label>
+                            <label for="">Select Location :</label>
                         </div>
                         <div class="col-md-2">
                             <select class="form-control" name="officeLocations" aria-label="Default select example">
@@ -58,7 +50,8 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    </div> --}}
+
                     <div class="row mb-2">
                         <div class="col">
                             <label for="note">Note :</label>

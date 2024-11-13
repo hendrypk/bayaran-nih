@@ -86,19 +86,47 @@ class PresenceController extends Controller
             return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
         };
         
+        //get from work dat table
         $arrival = $workDay ? $parseTime($workDay->arrival) : null;
         $check_in = $workDay ? $parseTime($workDay->check_in) : null;
         $check_out = $workDay ? $parseTime($workDay->check_out) : null;
+        $break_in = $workDay ? $parseTime($workDay->break_in) : null;
+        $break_out = $workDay ? $parseTime($workDay->break_out) : null;
+        $excldueBreak = $break == 1;
+
+        //Break Duration
+        $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
+
+        //get from form
         $checked_in = $request ? $parseTime($request->checkin) : null;
         $checked_out = $request ? $parseTime($request->checkout) : null;
         $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
         $lateArrival = intval($lateArrival);
-        $lateCheckIn = $checked_in && $check_in ? max(intval($check_in->diffInMinutes($checked_in, false)), 0) : '0';
+        // $lateCheckIn = $checked_in && $check_in ? max(intval($check_in->diffInMinutes($checked_in, false)), 0) : '0';
+
+        if($checked_in && $check_in) {
+            switch(true) {
+                case $excldueBreak:
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    break;
+
+                case $checked_in->between($break_in, $break_out):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    break;
+
+                case $break_in->lt($checked_in):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)) - $breakDuration, 0);
+                    break;
+
+                case $checked_in->lt($break_in):
+                $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    break;
+            }
+        }
 
         if($checked_out && $check_out){
             $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
             $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
-            $excldueBreak = $break == 1;
 
             switch(true) {
                 case $excldueBreak:
@@ -181,31 +209,55 @@ class PresenceController extends Controller
             return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
         };
         
+        //Get From Table
         $arrival = $workDay ? $parseTime($workDay->arrival) : null;
         $check_in = $workDay ? $parseTime($workDay->check_in) : null;
         $check_out = $workDay ? $parseTime($workDay->check_out) : null;
+        $break_in = $workDay ? $parseTime($workDay->break_in) : null;
+        $break_out = $workDay ? $parseTime($workDay->break_out) : null;
+        $excldueBreak = $break == 1;
+
+        //Break Duration
+        $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
+
+        //Get From Form
         $checked_in = $request ? $parseTime($request->checkin) : null;
         $checked_out = $request ? $parseTime($request->checkout) : null;
         $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
         $lateArrival = intval($lateArrival);
-        $lateCheckIn = $checked_in && $check_in ? max(intval($check_in->diffInMinutes($checked_in, false)), 0) : '0';
+
+        if($checked_in && $check_in) {
+            switch(true) {
+                case $excldueBreak:
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    break;
+
+                case $checked_in->between($break_in, $break_out):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    break;
+
+                case $break_in->lt($checked_in):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)) - $breakDuration, 0);
+                    break;
+
+                case $checked_in->lt($break_in):
+                $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    break;
+            }
+        }
 
         if($checked_out && $check_out){
-            $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
-            $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
-            $excldueBreak = $break == 1;
-
             switch(true) {
                 case $excldueBreak:
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;
 
-                case $checked_out->lt($cutStart):
+                case $checked_out->lt($break_in):
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false))-60, 0);
                     break;
                 
-                case $checked_out->between($cutStart, $cutEnd):
-                    $checkOutEarly = max(intval($cutEnd->diffInMinutes($check_out, false)), 0);
+                case $checked_out->between($break_in, $break_out):
+                    $checkOutEarly = max(intval($break_out->diffInMinutes($check_out, false)), 0);
                     break;
 
                 case $checked_out->lt($check_in):
@@ -233,7 +285,6 @@ class PresenceController extends Controller
         $presence->save();
         return redirect()->route('presence.list.admin', compact('employees'))->with('success', 'Update Manual Presence Successfull');
     }
-
 
 //Presence Delete
     public function delete($id){

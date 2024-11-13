@@ -26,10 +26,15 @@
 
     <link href="{{asset('assets/css/custom.css')}}" rel="stylesheet">
 
+    <!-- sweat alert -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  
     
+    <!-- flatpickr date -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     {{-- <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet"> --}}
@@ -192,6 +197,17 @@
         });
     @endif
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    flatpickr("#leave-dates", {
+        mode: "multiple",
+        dateFormat: "Y-m-d",
+    });
+});
+
+</script>
+
 
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

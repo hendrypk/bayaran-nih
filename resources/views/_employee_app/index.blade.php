@@ -37,12 +37,12 @@
                         </div>
                         <div class="item-menu text-center">
                             <div class="menu-icon">
-                                <a href="" class="danger" style="font-size: 40px;">
+                                <a href="{{ route('leave.index') }}" class="danger" style="font-size: 40px;">
                                     <ion-icon name="calendar-number"></ion-icon>
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Permit</span>
+                                <span class="text-center">Leave</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -72,12 +72,11 @@
         <div class="section mt-2" id="presence-section">
             <div class="todaypresence">
                 <div class="row mb-3">
+                    @if(!empty($presenceToday) && !empty($presenceToday->date))
                     <div class="col-6">
-                        <!-- <div class="card gradasigreen"> -->
-                            <a href="{{ route('presence.create') }}" class="clickable-link">
-                        <div class="card checkin">
-                            <div class="card-body">
-                                
+                        <a href="javascript:void(0);" onclick="showAlert('check in')">
+                            <div class="card checkin">
+                                <div class="card-body">
                                     <div class="presencecontent">
                                         <div class="iconpresence">
                                             <ion-icon name="camera"></ion-icon>
@@ -86,16 +85,33 @@
                                             <h4 class="presencetitle">Check In</h4>
                                         </div>
                                     </div>
-                               
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-                </a>
+                    @else
+                    <div class="col-6">
+                        <a href="{{ route('presence.in') }}" class="clickable-link">
+                            <div class="card checkin">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <ion-icon name="camera"></ion-icon>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">Check In</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @endif
 
                     <div class="col-6">
                         <div class="card checkout">
                             <div class="card-body">
-                                <a href="{{ route('presence.create') }}" class="clickable-link">
+                                <a href="{{ route('presence.out') }}" class="clickable-link">
                                     <div class="presencecontent">
                                         <div class="iconpresence">
                                             <ion-icon name="camera"></ion-icon>
@@ -114,8 +130,26 @@
                 </div>
 
                 <div class="row">
+                    @if(!@empty($overtimeToday) && !@empty($overtimeToday->date))
                     <div class="col-6">
-                        <!-- <div class="card gradasigreen"> -->
+                        <div class="card checkout">
+                            <div class="card-body">
+                                <a href="javascript:void(0);" onclick="showAlert('overtime in')">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <ion-icon name="camera"></ion-icon>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">Overtime In</h4>
+                                            <!-- <span>07:00</span> -->
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div class="col-6">
                         <div class="card checkout">
                             <div class="card-body">
                                 <a href="{{ route('overtime.create') }}" class="clickable-link">
@@ -132,6 +166,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                     <div class="col-6">
                         <div class="card checkin">
                             <div class="card-body">
@@ -331,6 +366,29 @@
 
 @include('_employee_app.modal.presence')
 @include('modal.message')
+
+<script>
+function showAlert(type) {
+    let message = '';
+    
+    // Tentukan pesan berdasarkan tipe
+    if (type === 'check in') {
+        message = 'Koe wis absen melbu, rasah absen neh!';
+    } else if (type === 'overtime in') {
+        message = 'Koe wis absen melbu lembur, rasah absen neh!';
+    } else {
+        message = 'Aksi tidak diizinkan!';
+    }
+
+    // Tampilkan SweetAlert dengan pesan sesuai
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message,
+    });
+}
+
+</script>
 
 @endsection
 

@@ -34,6 +34,9 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+  <!-- flatpickr date -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   
   <!-- Show Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -150,6 +153,14 @@
     @endif
 </script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      flatpickr("#leave-dates", {
+          mode: "multiple",
+          dateFormat: "Y-m-d",
+      });
+  });
+</script>
 
   @yield('script')
 

@@ -14,26 +14,30 @@
                     <div class="col-md-9">
                         <h5 class="card-title mb-0 py-3">Presences List</h5>
                     </div>
-                    @can('overtime export')
-                        <div class="col-md-1">
-                            <form action="{{ route('overtime.export') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                                <button type="submit" class="btn btn-tosca">Export</button>
-                            </form>
-                        </div>
-                    @endcan
-                    @can('create overtime')
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-untosca"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#addOvertime">
-                            Add Manual Overtime
-                            </button>
-                        </div>
-                    @endcan
+                    <div class="col-md-1">
+                        <form action="{{ route('overtime.export') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                            <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                            <button type="submit" class="btn btn-tosca">Export</button>
+                        </form>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-untosca"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#addOvertime">
+                        Add Manual Overtime
+                        </button>
+                    </div>
                 </div>
+                {{-- <div class="card-header d-flex align-items-center py-0">
+                    <h5 class="card-title mb-0 py-3">Overtime</h5>
+                    <div class="ms-auto my-auto">
+                        <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addOvertime">Add Overtime</button>
+                    </div>
+                </div> --}}
+        
+                <!-- Table with hoverable rows -->
                     <table class="table datatable table-hover">
                         <thead>
                             <tr>
@@ -59,31 +63,39 @@
                                 <td>{{ $overtime->end_at }}</td>
                                  <td> {{ $overtime->total }} <span>minutes</span></td>
                                  <td>
-                                    @can('update overtime')
-                                        <button type="button" class="btn btn-outline-success"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#overtimeEdit" 
-                                            data-id="{{ $overtime->id }}" 
-                                            data-name="{{ $overtime->name }}"
-                                            data-date="{{ $overtime->date }}"
-                                            data-start="{{ $overtime->start_at }}"
-                                            data-end="{{ $overtime->end_at }}">
-                                            <i class="ri-edit-line"></i>
-                                        </button>
-                                    @endcan
+                                 <button type="button" class="btn btn-outline-success"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#overtimeEdit" 
+                                    data-id="{{ $overtime->id }}" 
+                                    data-name="{{ $overtime->employees->name }}"
+                                    data-employee_id="{{ $overtime->employee_id }}"
+                                    data-date="{{ $overtime->date }}"
+                                    data-start="{{ $overtime->start_at }}"
+                                    data-end="{{ $overtime->end_at }}">
+                                    <i class="ri-edit-line"></i>
+                                </button>
                                 </td>
                                     <td>
-                                        @can('delete overtime')
-                                            <button type="button" class="btn btn-outline-danger" 
-                                                onclick="confirmDelete({{ $overtime->id }}, '{{ $overtime->employee_id }}', 'overtimes')">
-                                                <i class="ri-delete-bin-fill"></i>
-                                            </button>
-                                        @endcan
+                                        {{-- <button type="button" class="btn btn-outline-danger"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal" 
+                                            data-entity="overtime" 
+                                            data-id="{{ $overtime->id }}" 
+                                            data-name="{{ $overtime->employee_id }}"
+                                            data-date="{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}">
+                                            <i class="ri-delete-bin-fill"></i>
+                                        </button> --}}
+
+                                        <button type="button" class="btn btn-outline-danger" 
+                                            onclick="confirmDelete({{ $overtime->id }}, '{{ $overtime->employee_id }}', 'overtimes')">
+                                            <i class="ri-delete-bin-fill"></i>
+                                        </button>
                                     </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
+                <!-- End Table with hoverable rows -->
             </div>
         </div>
     </div>
@@ -121,6 +133,7 @@
     editModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget; // Button that triggered the modal
         const id = button.getAttribute('data-id');
+        const employee_id = button.getAttribute('data-employee_id');
         const name = button.getAttribute('data-name');
         const date = button.getAttribute('data-date');
         const start = button.getAttribute('data-start');
@@ -131,7 +144,7 @@
         form.action = form.action.replace('__id__', id);
 
         // Populate the form fields
-        document.getElementById('selectEmployee').value = name;
+        document.getElementById('selectEmployee').value = employee_id;
         document.getElementById('inputDate').value = date;
         document.getElementById('inputStart').value = start;
         document.getElementById('inputEnd').value = end;

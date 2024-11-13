@@ -70,7 +70,7 @@
  -->
 
  <div class="modal fade" id="addWorkDay" tabindex="-1" aria-labelledby="modalWorkDay" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -123,13 +123,22 @@
                                     <input type="time" class="form-control" id="checkOut[{{ $day }}]" name="checkOut[{{ $day }}]">
                                 </td>
                                 <td>
+                                    <input type="time" class="form-control" id="breakIn[{{ $day }}]" name="breakIn[{{ $day }}]">
+                                </td>
+                                <td>
+                                    <input type="time" class="form-control" id="breakOut[{{ $day }}]" name="breakOut[{{ $day }}]">
+                                </td>
+                                <td>
                                     <input type="checkbox" id="break[{{ $day }}]" name="break[{{ $day }}]" value="1">
                                 </td>
                             </tbody>
                             @endforeach
                         </table>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Schedule</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-untosca me-3">Submit</button>
+                    </div>
                 </form>
             </div>
 

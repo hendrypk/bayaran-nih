@@ -93,7 +93,7 @@ body {
 .btn-untosca {
   color: #118ab2;
   background: #fff; 
-  padding: 10px 20px; 
+  padding: 8px 18px; 
   border-radius: 5px; 
   border: 2px solid #118ab2; 
   transition: background 0.3s ease;     
@@ -720,3 +720,67 @@ table.datatable-table:focus {
 .swal2-popup {
   color: #333; 
 }
+
+.status-leave {
+  font-size: 24px;
+}
+
+.status-leave.wait {
+  font-size: 24px;
+  color: rgb(238, 145, 24);
+}
+
+.status-leave.reject {
+  font-size: 24px;
+  color: red;
+}
+
+.status-leave.accept {
+  font-size: 24px;
+  color: rgb(20, 107, 179);
+}
+
+@media (max-width: 768px) {
+  .status-leave {
+    font-size: 14px;
+  }
+  
+  .status-leave.wait {
+    font-size: 14px;
+    color: rgb(238, 145, 24);
+  }
+
+  .status-leave.reject {
+    font-size: 14px;
+    color: red;
+  }
+  
+  .status-leave.accept {
+    font-size: 14px;
+    color: rgb(20, 107, 179);
+  }
+}
+
+/* Floating button style */
+.floating-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  border-radius: 50%; /* Makes the button circular */
+  width: 50px; /* Set the width */
+  height: 50px; /* Set the height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #118ab2; /* Button color */
+  color: white;
+  font-size: 12px; /* Larger icon size */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+/* add leave */
+.floating-btn {
+  font-size: 32px;
+}
+

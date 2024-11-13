@@ -13,13 +13,7 @@
                 <strong>Calendar</strong>
             </div>
         </a>
-        <!-- <a href="{{ route('presence.create') }}" class="item">
-            <div class="col">
-                <div class="action-button large">
-                    <ion-icon name="camera" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
-                </div>
-            </div>
-        </a> -->
+
         <a href="{{ route('profileIndex') }}" class="item">
             <div class="col">
                 <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="people outline"></ion-icon>

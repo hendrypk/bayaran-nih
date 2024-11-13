@@ -12,7 +12,8 @@
                     <h5 class="card-title mb-0 py-3">Position</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button>
+                            <button id="openAddPositionModal" class="btn btn-untosca">Add Position</button>
+                            {{-- <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button> --}}
                         </div>
                     @endcan
                 </div>
@@ -68,7 +69,7 @@
                     <h5 class="card-title mb-0 py-3">Job Title</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addJobTitle">Add Job Title</button>
+                            <button id="openAddJobTitleModal" class="btn btn-untosca">Add Job Title</button>
                         </div>
                     @endcan
                 </div>
@@ -127,7 +128,7 @@
                     <h5 class="card-title mb-0 py-3">Division</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addDivision">Add Division</button>
+                            <button id="openAddDivisionModal" class="btn btn-untosca">Add Division</button>
                         </div>
                     @endcan
                 </div>
@@ -182,7 +183,7 @@
                     <h5 class="card-title mb-0 py-3">Department</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addDepartment">Add Department</button>
+                            <button id="openAddDepartmentModal" class="btn btn-untosca">Add Department</button>
                         </div>
                     @endcan
                 </div>
@@ -238,7 +239,7 @@
                     <h5 class="card-title mb-0 py-3">Employee Status</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addStatus">Add Status</button>
+                            <button id="openAddStatusModal" class="btn btn-untosca">Add Status</button>
                         </div>
                     @endcan
                 </div>
@@ -541,6 +542,68 @@ $('#locationEditModal').on('shown.bs.modal', function (event) {
 
 </script>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Function to open the modal and update content
+    function openModal(title, actionUrl, fieldsHtml) {
+        document.getElementById("modalEntityLabel").textContent = title;
+        document.getElementById("entityForm").action = actionUrl;
+        document.getElementById("entityFields").innerHTML = fieldsHtml;
+        new bootstrap.Modal(document.getElementById("addEntityModal")).show();
+    }
+
+    // Example usage for opening the modal
+    document.getElementById("openAddPositionModal").addEventListener("click", function() {
+        openModal(
+            "Add ",
+            "{{ route('position.add') }}",
+            `<label for="positionName" class="form-label">Name</label>
+             <input type="text" class="form-control" id="positionName" name="position" required>`
+        );
+    });
+
+    document.getElementById("openAddJobTitleModal").addEventListener("click", function() {
+        openModal(
+            "Add Job Title",
+            "{{ route('jobTitle.add') }}",
+            `<label for="jobTitleName" class="form-label">Name</label>
+             <input type="text" class="form-control" id="jobTitleName" name="name" required>
+             <label for="jobTitleSection" class="form-label">Section</label>
+             <input type="text" class="form-control" id="jobTitleSection" name="section" required>`
+        );
+    });
+
+    // Repeat for other entities
+    document.getElementById("openAddDivisionModal").addEventListener("click", function() {
+        openModal(
+            "Add Division",
+            "{{ route('division.add') }}",
+            `<label for="divisionName" class="form-label">Name</label>
+             <input type="text" class="form-control" id="divisionName" name="name" required>`
+        );
+    });
+
+    document.getElementById("openAddDepartmentModal").addEventListener("click", function() {
+        openModal(
+            "Add Department",
+            "{{ route('department.add') }}",
+            `<label for="departmentName" class="form-label">Name</label>
+             <input type="text" class="form-control" id="departmentName" name="name" required>`
+        );
+    });
+
+    document.getElementById("openAddStatusModal").addEventListener("click", function() {
+        openModal(
+            "Add Status",
+            "{{ route('status.add') }}",
+            `<label for="statusName" class="form-label">Name</label>
+             <input type="text" class="form-control" id="statusName" name="name" required>`
+        );
+    });
+});
+
+</script>
 
 
 @endsection

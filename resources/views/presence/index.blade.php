@@ -98,7 +98,7 @@
                                     </button>
                                 </td>
                                 <td>
-                                    @can('update presene')
+                                    @can('update presence')
                                         <button type="button" class="btn btn-outline-success"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editPresence" 

@@ -1,4 +1,4 @@
-<!-- Add Modal Position -->
+{{-- <!-- Add Modal Position -->
 <div class="modal fade" id="addPosition" tabindex="-1" aria-labelledby="modalPosition" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -110,7 +110,27 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
+
+{{-- <div class="modal fade" id="addEntityModal" tabindex="-1" aria-labelledby="modalEntityLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEntityLabel">Add Entity</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="entityForm" method="POST">
+                    @csrf
+                    <div class="mb-3" id="entityFields">
+                        <!-- Form fields will be added dynamically here -->
+                    </div>
+                    <button type="submit" class="btn btn-tosca">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> --}}
 
 {{-- <!-- Add Modal Office Location -->
 <div class="modal fade" id="addLocation" tabindex="-1" aria-labelledby="modalLocation" aria-hidden="true">
