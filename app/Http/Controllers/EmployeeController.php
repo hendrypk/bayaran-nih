@@ -35,13 +35,11 @@ class EmployeeController extends Controller
         $job_title = JobTitle::all();
         $division = Division::all();
         $department = Department::all();
-        $schedule = WorkSchedule::all();
         $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
             ->groupBy('name')
             ->get();
         $officeLocations = OfficeLocation::all();
         $kpi_id = KpiAspect::all();
-        $calendar = WorkCalendar::all();
         $status = EmployeeStatus::all();
         $genders = ['unkown', 'Male', 'Female'];
         $bloods = ['unkown', 'A', 'B', 'AB', 'O'];
@@ -78,7 +76,7 @@ class EmployeeController extends Controller
             'Bank Permata', 
             'Bank Mega'
         ];
-        return view('employee.add', compact('position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'schedule', 'calendar', 'status',
+        return view('employee.add', compact('position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'status',
     'kpi_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
 
@@ -132,14 +130,14 @@ class EmployeeController extends Controller
             'bank' => $request->bank,
             'bank_number' => $request->bank_number,
             'position_id' => $request->position_id,
-            'job_title_id' => $request->position_id,
+            'job_title_id' => $request->job_title_id,
             'division_id' => $request->division_id,
             'department_id' => $request->department_id,
             'joining_date' => $request->joining_date,
             'employee_status' => $request->employee_status,
             'sales_status' => $request->sales_status,
-            // 'kpi_id' => $request->kpi_id,
-            // 'bobot_kpi' => $request->bobot_kpi,
+            'kpi_id' => $request->kpi_id,
+            'bobot_kpi' => $request->bobot_kpi,
         ]);
         $employee->workDay()->sync($request->workDay);
         $employee->officeLocations()->sync($request->officeLocations);
@@ -149,7 +147,7 @@ class EmployeeController extends Controller
     
     //employee detail
     public function detail($id){
-        $employee = Employee::with('job_title', 'position', 'schedules', 'calendar', 'workDay', 'kpis')->findOrFail($id);
+        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
 
         // Menghitung interval hari dari joiningDate hingga sekarang
         $startDate = new DateTime($employee->joining_date);
@@ -174,14 +172,11 @@ class EmployeeController extends Controller
         $job_title = JobTitle::all();
         $division = Division::all();
         $department = Department::all();
-        $schedule = WorkSchedule::all();
-        // $workDay = WorkDay::select('id', 'name')->distinct('name')->get();
         $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
         ->groupBy('name')
         ->get();
         $officeLocations = OfficeLocation::all();
         $kpi_id = KpiAspect::all();
-        $calendar = WorkCalendar::all();
         $status = EmployeeStatus::all();
         $genders = ['unkown', 'Male', 'Female'];
         $bloods = ['unkown', 'A', 'B', 'AB', 'O'];
@@ -229,7 +224,7 @@ class EmployeeController extends Controller
         //     ->get();
         // $onDay = WorkCalendar::all();
         // $status = EmployeeStatus::all();
-        return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'schedule', 'kpi_id', 'calendar', 'status',
+        return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'kpi_id', 'status',
         'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
     

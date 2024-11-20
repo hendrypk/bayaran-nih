@@ -18,7 +18,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">View</th>
-                                    <th scope="col">Edit</th>
+                                    {{-- <th scope="col">Edit</th> --}}
                                     <th scope="col">Delete</th>
                                 </tr>
                             </thead>
@@ -34,22 +34,6 @@
                                             ]) }}" class="btn btn-outline-primary">
                                             <i class="ri-eye-fill"></i>
                                         </a>
-                                    </td>
-                                    <td>
-                                        @foreach ($indicator->kpis as $kpi)
-                                            
-                                        @endforeach
-                                        @can('update pm')
-                                        <button type="button" 
-                                            class="btn btn-outline-success" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#indicatorEditModal" 
-                                            data-id="{{ $indicator->id }}"
-                                            data-name ="{{ $indicator->name }}"
-                                            data-target="{{ $kpi->target }}">
-                                            <i class="ri-edit-box-fill"></i>
-                                        </button>
-                                        @endcan
                                     </td>
                                     <td>
                                         @can('delete pm')
@@ -68,7 +52,7 @@
         </div>
 
 
-    <!-- KPI -->
+    <!-- PA -->
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
@@ -167,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         indicatorGroup.remove();
         }
     });
+    
  // Update total bobot whenever bobot fields change
  document.addEventListener('input', function(event) {
         if (event.target && event.target.classList.contains('bobot-input')) {
@@ -193,120 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-document.querySelectorAll('.editIndicatorBtn').forEach(button => {
-    button.addEventListener('click', function() {
-        const aspect = button.getAttribute('data-aspect');
-        const target = button.getAttribute('data-target');
-        const bobot = button.getAttribute('data-bobot');
-
-        const form = document.querySelector('.edit-form');
-
-        // If you're using a loop or a container to manage multiple indicators,
-        // you might want to set the value of the inputs by their index.
-        const indicatorsContainer = document.getElementById('editIndicatorsContainer');
-
-        // Clear existing input values (if needed)
-        indicatorsContainer.innerHTML = '';
-
-        // Assuming you want to populate one indicator for now
-        const indicatorHTML = `
-            <div class="edit-indicator-group mb-3">
-                <input type="hidden" name="indicators[0][id]" value="${button.getAttribute('data-id')}">
-                <div class="row">
-                    <div class="col-7">
-                        <input type="text" class="form-control" name="indicators[0][aspect]" value="${aspect}" required>
-                    </div>
-                    <div class="col-2">
-                        <input type="number" class="form-control" name="indicators[0][target]" value="${target}" required>
-                    </div>
-                    <div class="col-2">
-                        <input type="number" class="form-control bobot-input" name="indicators[0][bobot]" value="${bobot}" required>
-                    </div>
-                    <div class="col-1">
-                        <button type="button" class="btn btn-danger removeIndicatorBtn">
-                            <i class="ri-delete-bin-fill"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Add the new indicator HTML to the container
-        indicatorsContainer.innerHTML += indicatorHTML;
-
-        // Optionally, calculate and display total bobot
-        calculateTotalBobot();
-    });
-});
-
 //script route
 window.routeUrls = {
-        indicatorUpdate: "{{ route('indicator.update', ['kpi_id' => 'kpi_id']) }}",
         appraisalUpdate: "{{ route('appraisal.update', ['id' => '__id__']) }}",
     };
-
-//script for edit modal
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.modal').forEach(function (modal) {
-        modal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget; // Button that triggered the modal
-            const id = button.getAttribute('data-id');
-            const name = button.getAttribute('data-name');
-            //Indicator
-            const jobTitle = button.getAttribute('data-jobTitle');
-            const aspect = button.getAttribute('data-aspect');
-            const target = button.getAttribute('data-target');
-            const bobot = button.getAttribute('data-bobot');
-
-            console.log('ID:', id);
-            console.log('Name:', name);
-            console.log('Job Title:', jobTitle);
-            console.log('Aspect:', aspect);
-            console.log('Target:', target);
-            console.log('Bobot:', bobot);
-
-            //edit form
-            const updateType = modal.querySelector('.edit-form').getAttribute('data-update-type');
-        
-            // Determine the correct route URL based on updateType
-            let actionUrl = '';
-            switch (updateType) {
-                // Add other cases as needed
-                case 'indicator':
-                    actionUrl = window.routeUrls.indicatorUpdate;
-                    break;
-                case 'appraisal':
-                    actionUrl = window.routeUrls.appraisalUpdate;
-                    break;
-            }
-        
-            // Replace __id__ with the actual ID
-            actionUrl = actionUrl.replace('__id__', id);
-
-            // Find the form and input within the current modal
-            const form = modal.querySelector('.edit-form');
-            const inputName = form.querySelector('input[name="name"]');
-            //indicator field
-            const inputJobTitle = form.querySelector('select[name="jobTitle"]');
-            const inputAspect = form.querySelector('input[name="aspect"]');
-            const inputTarget = form.querySelector('input[name="target"]');
-            const inputBobot = form.querySelector('input[name="bobot"]');
-
-
-
-            if (form && inputName) {
-                // Update form action and input values
-                form.action = actionUrl;
-                inputName.value = name || '';
-                //for indicator
-                if (inputJobTitle) inputJobTitle.value = jobTitle || '';
-                if (inputAspect) inputAspect.value = aspect || '';
-                if (inputTarget) inputTarget.value = target || '';
-                if (inputBobot) inputBobot.value = bobot || '';
-            }
-        });
-    });
-});
 
 //Delete Modal
 function confirmDelete(id, name, entity) {

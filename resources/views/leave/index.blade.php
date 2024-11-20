@@ -14,7 +14,7 @@
                     <div class="col-md-10">
                         <h5 class="card-title mb-0 py-3">Leave List</h5>
                     </div>
-                    @can('create overtime')
+                    @can('create leave')
                         <div class="col-md-2">
                             <button type="button" class="btn btn-untosca"
                             data-bs-toggle="modal" 
@@ -59,27 +59,30 @@
                                     @endif
                                 </td>
                                 <td>
-                                <button type="button" class="btn btn-outline-success"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#overtimeEdit" 
-                                    data-id="{{ $leave->id }}" 
-                                    data-name="{{ $leave->employees->name }}"
-                                    data-employee_id="{{ $leave->employee_id }}"
-                                    data-date="{{ $leave->date }}"
-                                    data-start="{{ $leave->start_date }}"
-                                    data-end="{{ $leave->end_date }}"
-                                    data-category="{{ $leave->category }}"
-                                    data-note="{{ $leave->note }}">
-                                    <i class="ri-edit-line"></i>
-                                </button>
-                                
+                                    @can('update leave')
+                                        <button type="button" class="btn btn-outline-success"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#overtimeEdit" 
+                                            data-id="{{ $leave->id }}" 
+                                            data-name="{{ $leave->employees->name }}"
+                                            data-employee_id="{{ $leave->employee_id }}"
+                                            data-date="{{ $leave->date }}"
+                                            data-start="{{ $leave->start_date }}"
+                                            data-end="{{ $leave->end_date }}"
+                                            data-category="{{ $leave->category }}"
+                                            data-note="{{ $leave->note }}">
+                                            <i class="ri-edit-line"></i>
+                                        </button>
+                                    @endcan                                
                                 </td>
-                                    <td>
-                                            <button type="button" class="btn btn-outline-danger" 
-                                                onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leave')">
-                                                <i class="ri-delete-bin-fill"></i>
-                                            </button>
-                                    </td>
+                                <td>
+                                    @can('delete leave')
+                                        <button type="button" class="btn btn-outline-danger" 
+                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leave')">
+                                            <i class="ri-delete-bin-fill"></i>
+                                        </button>                                            
+                                    @endcan
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

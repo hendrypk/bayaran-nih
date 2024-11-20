@@ -51,7 +51,9 @@
                                 <tr>
                                     <td>{{ ucfirst($workDay->day) }}</td>
                                     <td>
-                                        <input type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->day_off == 1 ? 'checked' : '' }}>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->day_off == 1 ? 'checked' : '' }}>
+                                        </div>
                                     </td>
                                     <td>
                                         <input type="time" id="{{ $workDay->day }}-arrival" class="form-control" name="arrival[{{ $workDay->day }}]" value="{{ $workDay->arrival }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
@@ -69,17 +71,9 @@
                                         <input type="time" id="{{ $workDay->day }}-breakOut" class="form-control" name="breakOut[{{ $workDay->day }}]" value="{{ $workDay->break_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
-                                    <div>
-                                            <label>
-                                                <input type="radio" name="break[{{ $workDay->day }}]" value="1" {{ $workDay->break == 1 ? 'checked' : '' }} {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
-                                                Yes
-                                            </label>
-                                            <label>
-                                                <input type="radio" name="break[{{ $workDay->day }}]" value="0" {{ $workDay->break == 0 ? 'checked' : '' }} {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
-                                                No
-                                            </label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="break[{{ $workDay->day }}]" value="1" {{ $workDay->break == 1 ? 'checked' : '' }} {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                         </div>
-
                                     </td>
                                 </tr>
                             @endforeach

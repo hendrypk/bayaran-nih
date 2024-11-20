@@ -2,7 +2,7 @@
     $activePerformance = [
         'performance.grade',
         'kpi.list',
-        'appraisal.list',
+        'pa.list',
         'kpi.pa.index',
     ];
 
@@ -95,7 +95,7 @@
           </a>
         </li>
         @endcan
-        @can('view overtime')
+        @can('view leave')
         <li class="nav-item {{ request()->routeIs('leaves.index') ? 'active' : '' }}">
           <a class="nav-link collapsed" href="{{route('leaves.index')}}">
             {{-- <i class="ri-dvd-fill"></i> --}}
@@ -127,7 +127,7 @@
         @endcan
         @can('view pa')
           <li>
-              <a class="nav-link collapsed {{ request()->routeIs('appraisal.list') ? 'active' : '' }}" href="{{ route('appraisal.list') }}">
+              <a class="nav-link collapsed {{ request()->routeIs('pa.list') ? 'active' : '' }}" href="{{ route('pa.list') }}">
                   <span>Performance Appraisal</span>
               </a>
           </li>

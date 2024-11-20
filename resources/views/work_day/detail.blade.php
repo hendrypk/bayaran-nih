@@ -44,7 +44,9 @@
                         <tr>
                             <td>{{ ucfirst($workDay->day) }}</td>
                             <td>
-                                <input type="checkbox" {{ $workDay->day_off == 1 ? 'checked' : '' }} disabled>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" {{ $workDay->day_off == 1 ? 'checked' : '' }} disabled>
+                                </div>
                             </td>
                             <!-- <td>{{ $workDay->arrival }}</td>
                             <td>{{ $workDay->check_in }}</td>
@@ -85,7 +87,9 @@
                             @endif
                             </td>
                             <td>
-                                <input type="checkbox" {{ $workDay->break == 1 ? 'checked' : '' }} disabled>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" {{ $workDay->break == 1 ? 'checked' : '' }} disabled>
+                                </div>
                             </td>
                         </tr>
                         @endforeach

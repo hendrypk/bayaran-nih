@@ -105,13 +105,17 @@
                                 <th>Arrival<span style="color: red; font-size: 15px;">*</span></th>
                                 <th>Check In<span style="color: red; font-size: 15px;">*</span></th>
                                 <th>Check Out<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>Break?<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>Break In<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>Break Out<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>Exclude Break</th>
                             </thead>
                             @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
                             <tbody>
                                 <th name="day" id="day">{{ ucfirst($day) }}</th>
                                 <td>
-                                    <input type="checkbox" id="dayOff[{{ $day }}]" name="dayOff[{{ $day }}]" value="1" onchange="toggleTimeInputs('{{ $day }}')">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="dayOff[{{ $day }}]" name="dayOff[{{ $day }}]" value="1" onchange="toggleTimeInputs('{{ $day }}')">
+                                    </div>
                                 </td>
                                 <td>
                                     <input type="time" class="form-control" id="arrival[{{ $day }}]" name="arrival[{{ $day }}]">
@@ -129,7 +133,9 @@
                                     <input type="time" class="form-control" id="breakOut[{{ $day }}]" name="breakOut[{{ $day }}]">
                                 </td>
                                 <td>
-                                    <input type="checkbox" id="break[{{ $day }}]" name="break[{{ $day }}]" value="1">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="break[{{ $day }}]" name="break[{{ $day }}]" value="1">
+                                    </div>
                                 </td>
                             </tbody>
                             @endforeach

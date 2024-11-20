@@ -155,11 +155,24 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-      flatpickr("#leave-dates", {
-          mode: "multiple",
-          dateFormat: "Y-m-d",
-      });
-  });
+    // Select multiple elements using a query selector
+    const datePickers = document.querySelectorAll("#leave-dates, #holiday-dates");
+
+    // Loop over each element and initialize flatpickr
+    datePickers.forEach(function(datePicker) {
+        flatpickr(datePicker, {
+            mode: "multiple",
+            dateFormat: "Y-m-d",
+        });
+    });
+});
+
+  // document.addEventListener("DOMContentLoaded", function() {
+  //     flatpickr("#leave-dates", "#holiday-dates" {
+  //         mode: "multiple",
+  //         dateFormat: "Y-m-d",
+  //     });
+  // });
 </script>
 
   @yield('script')

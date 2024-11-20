@@ -116,7 +116,11 @@ public function create(Request $request)
 //Work Day Delete
     public function delete(Request $request, $name){
         $workDays = WorkDay::where('name', $name)->delete();
-        return redirect()->route('workDay.index');
+        return response()->json([
+            'success' => true,
+            'message' => 'The location has been deleted.',
+            'redirect' => route('workDay.index')
+        ]);
     }
 
 

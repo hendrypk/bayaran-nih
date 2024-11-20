@@ -87,7 +87,7 @@
                                         </button> --}}
 
                                         <button type="button" class="btn btn-outline-danger" 
-                                            onclick="confirmDelete({{ $overtime->id }}, '{{ $overtime->employee_id }}', 'overtimes')">
+                                            onclick="confirmDelete({{ $overtime->id }}, '{{ $overtime->employees->name }}', 'overtimes')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
                                     </td>

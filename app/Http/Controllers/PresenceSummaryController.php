@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Leave;
 use App\Models\WorkDay;
 use App\Models\Employee;
 use App\Models\Overtime;
@@ -26,7 +27,7 @@ class PresenceSummaryController extends Controller
         $countStartDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->startOfMonth();
         $countEndDate = $endDate ? Carbon::parse($endDate) : Carbon::now();  
 
-        $totalDays = $countStartDate->diffInDays($countEndDate) + 1;
+        $totalDays = intval($countStartDate->diffInDays($countEndDate) + 1);
 
         $wd = $employee->workDay;
         $wdName = $wd->pluck('name')->first();
@@ -43,7 +44,7 @@ class PresenceSummaryController extends Controller
         }
         
         $effectiveDays = $totalDays - $dayOffCount;
-
+        
         $employee->presence = Presence::where('employee_id', $employee->id)
             ->whereBetween('date', [$countStartDate, $countEndDate])
             ->count('date'); //Total Presence
@@ -79,10 +80,38 @@ class PresenceSummaryController extends Controller
             }
             $employee->late_arrival = $late_arrival->where('late_arrival', 1)->count();
 
-            
+        //Count Annnual Leave
+            $annualLeave = 'Annual leave';
+            $annual_leave = Leave::where('employee_id', $employee->id);
 
+            if($startDate && $endDate) {
+                $annual_leave->whereBetween('date', [$startDate, $endDate]);
+            }
+            $employee->annual_leave = $annual_leave->where('category', $annualLeave)->count();
 
+        //Count Sick Leave
+            $sickLeave = 'Sick';
+            $sick_leave = Leave::where('employee_id', $employee->id)->where('status', '1');
+
+            if($startDate && $endDate) {
+                $sick_leave->whereBetween('date', [$startDate, $endDate]);
+            }
+            $employee->sick_leave = $sick_leave->where('category', $sickLeave)->count();
+
+        
+        //Count Permit Leave
+            $permitLeave = 'Permit';
+            $permit_leave = Leave::where('employee_id', $employee->id);
+
+            if($startDate && $endDate) {
+                $permit_leave->whereBetween('date', [$startDate, $endDate]);
+            }
+            $employee->permit_leave = $permit_leave->where('category', $permitLeave)->count();
+
+        //Count Alpha
+            $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence;
         });
+
 
         return view('presence_summary.index', [
             'employees' => $employees,

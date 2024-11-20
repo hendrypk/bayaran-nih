@@ -77,7 +77,7 @@
                             <label for="name" class="form-label">Name</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="name" name="name" readonly>
+                            <input type="text" class="form-control" id="name" name="name" disabled>
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@
                             <label for="date" class="form-label">Date</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="date" name="date" readonly>
+                            <input type="text" class="form-control" id="date" name="date" disabled>
                         </div>
                     </div>
 
@@ -95,7 +95,7 @@
                             <label for="workDay" class="form-label">Work Day</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="workDay" id="workDay" readonly>
+                            <input type="text" class="form-control" name="workDay" id="workDay" disabled>
                         </div>
                     </div>
 

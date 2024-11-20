@@ -13,42 +13,42 @@
                 <div class="card-header d-flex align-items-center py-0">
                     <h5 class="card-title mb-0 py-3">Presence Summary</h5>
                 </div>
-        
-                <!-- Table with hoverable rows -->
-                    <table class="table datatable table-hover">
-                        <thead>
+                <table class="table datatable table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">EID</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Presence</th>
+                            <th scope="col">Annual Leave</th>
+                            <th scope="col">Sick</th>
+                            <th scope="col">Permit</th>
+                            <th scope="col">Alpha</th>
+                            <th scope="col">Total Overtime</th>
+                            <th scope="col">Total Late Arrival</th>
+                            <th scope="col">Total Late Check In</th>
+                            <th scope="col">Total Check Out Early</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($employees as $no=>$employee)
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Presence</th>
-                                <th scope="col">Absence</th>
-                                <th scope="col">Total Overtime</th>
-                                <th scope="col">Total Late Arrival</th>
-                                <th scope="col">Total Late Check In</th>
-                                <th scope="col">Total Check Out Early</th>
-                                
+                                <td>{{ $no+1 }}</td>
+                                <td>{{ $employee->eid }}</td>
+                                <td>{{ $employee->name }}</td>
+                                <td>{{ $employee->presence }}</td>
+                                <td>{{ $employee->annual_leave }}</td>
+                                <td>{{ $employee->sick_leave }}</td>
+                                <td>{{ $employee->permit_leave }}</td>
+                                <td>{{ $employee->alpha }}</td>
+                                <td>{{ $employee->total_overtime }}</td>
+                                <td>{{ $employee->late_arrival }}</td>
+                                <td>{{ $employee->late_check_in }}</td>
+                                <td>{{ $employee->check_out_early }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            
-        @foreach($employees as $no=>$employee)
-        <tr>
-            <td>{{ $no+1 }}</td>
-            <td>{{ $employee->eid }}</td>
-            <td>{{ $employee->name }}</td>
-            <td>{{ $employee->presence }}</td>
-            <td>{{ $employee->absence }}</td>
-            <td>{{ $employee->total_overtime }}</td>
-            <td>{{ $employee->late_arrival }}</td>
-            <td>{{ $employee->late_check_in }}</td>
-            <td>{{ $employee->check_out_early }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-
-                    </table>
-                <!-- End Table with hoverable rows -->
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

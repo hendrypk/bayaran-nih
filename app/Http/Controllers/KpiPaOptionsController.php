@@ -9,6 +9,8 @@ use App\Models\PerformanceKpi;
 use App\Models\PerformanceAppraisal;
 use App\Models\Position;
 
+use function PHPUnit\Framework\isEmpty;
+
 class KpiPaOptionsController extends Controller
 {
 
@@ -26,8 +28,8 @@ function indicatorAdd(Request $request){
     $request->validate([
         'name' => 'required|string',
         'indicators.*.aspect' => 'required|string',
-        'indicators.*.target' => 'required|integer',
-        'indicators.*.bobot' => 'required|integer',
+        'indicators.*.target' => 'required',
+        'indicators.*.bobot' => 'required',
     ]);
 
     $kpi_name = KpiAspect::create([
@@ -55,41 +57,49 @@ function indicatorAdd(Request $request){
 //Indicator Detail
 public function indicatorDetail($kpi_id)
 {
-    $kpi_aspect = KpiAspect::with('kpis')->get();
+    // $kpi_aspect = KpiAspect::with('kpis')->get();
     $indicators = PerformanceKpi::where('kpi_id', $kpi_id)->get();
     $totalBobot = $indicators->sum('bobot');
-    $kpi_id = KpiAspect::where('id', $kpi_id)->get();
-    
-    if ($indicators->isEmpty()) {
-        return redirect()->route('kpi.pa.options.index')->with('error', 'No indicators found for the selected name.');
-    }
-
-    $totalBobot = $indicators->sum('bobot');
-
-    return view('performance.options.kpi-detail', compact('kpi_aspect', 'indicators', 'totalBobot', 'kpi_id', 'totalBobot'));
+    $kpi_id = KpiAspect::where('id', $kpi_id)->first();
+    $name = $kpi_id->name;
+   
+    return view('performance.options.kpi-detail', compact('indicators', 'totalBobot', 'kpi_id', 'name'));
 }
 
 
 //indicator update
-    function indicatorUpdate(Request $request, $position_id) {
-        $indicators = $request->input('indicators', []);
-        $existingIds = array_filter(array_column($indicators, 'id')); // Extract existing ids from form data
-
-        // Delete any indicators that were removed
-        foreach ($indicators as $indicator) {
-            $name = $indicator['name'];
-            $target = $indicator['target'];
-            $bobot = $indicator['bobot'];
-
-            KpiPaOptionsController::create([
-                'name' => $name,
-                'position_id' => $position_id,
-                'target' => $target,
-                'bobot' => $bobot,
+public function indicatorUpdate(Request $request, $kpi_id) {
+    $validatedData = $request->validate([
+        'indicators' => 'required|array',  
+        'indicators.*.id' => 'nullable|exists:performance_kpis,id', 
+        'indicators.*.aspect' => 'required|string|max:255',
+        'indicators.*.target' => 'required', 
+        'indicators.*.bobot' => 'required|min:0|max:100', 
+    ]);
+    
+    foreach ($validatedData['indicators'] as $indicator) {
+        if (isset($indicator['id'])) {
+        // Update existing aspect
+            $existingIndicator = PerformanceKpi::find($indicator['id']);
+            if ($existingIndicator) {
+                $existingIndicator->update([
+                    'aspect' => $indicator['aspect'],
+                    'target' => $indicator['target'],
+                    'bobot' => $indicator['bobot']
+                ]);
+            }
+        } else {
+            // Add new aspect
+            PerformanceKpi::create([
+                'kpi_id' => $kpi_id,
+                'aspect' => $indicator['aspect'],
+                'target' => $indicator['target'],
+                'bobot' => $indicator['bobot']
             ]);
         }
-        return redirect()->route('indicator.detail', $position_id)->with('success', 'Indikator KPI berhasil di-update.');
-    }
+    }    
+    return redirect()->route('indicator.detail', $kpi_id)->with('success', 'KPI updated successfully');
+}
 
 //Indicator Delete
 public function indicatorDelete($id){
@@ -103,6 +113,18 @@ public function indicatorDelete($id){
         'success' => true,
         'message' => 'The appraisal has been deleted.',
         'redirect' => route('kpi.pa.options.index')
+    ]);
+}
+
+//Indicator Delete
+public function aspectDelete($id){
+    $indicators = PerformanceKpi::where('id', $id);
+    $indicators->delete();
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'The aspect has been deleted.',
+        'redirect' => back()
     ]);
 }
 

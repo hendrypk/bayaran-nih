@@ -47,7 +47,7 @@
             </div>
             <div class="row mb-4">
                 <div class="col-md-1">
-                    <a href="{{ route('appraisal.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-primary">Edit</a>
+                    <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-primary">Edit</a>
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-outline-danger" 

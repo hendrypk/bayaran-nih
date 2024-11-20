@@ -784,3 +784,29 @@ table.datatable-table:focus {
   font-size: 32px;
 }
 
+/* Style for the danger class to make the asterisk red */
+.span-danger {
+  color: red;  /* Set the color to red */
+  font-weight: bold;  /* Optional: Make the asterisk bold */
+}
+
+.profile-card {
+  width: 240px; /* Set a fixed width for the card */
+  height: 240px; /* Set a fixed height for the card */
+  overflow: hidden; /* Hide overflow if the image is larger than the card */
+}
+
+.profile-card img {
+  width: 100%; /* Ensure the image fills the width of the card */
+  height: 100%; /* Ensure the image fills the height of the card */
+  object-fit: cover; /* This ensures the image covers the entire card, maintaining its aspect ratio */
+  object-position: center; /* Optionally, center the image inside the card */
+}
+
+
+.profile-rounded-circle {
+  width: 100px; /* Set the width */
+  height: 100px; /* Set the height, same as the width for a circle */
+  border-radius: 50% !important; /* Make the element circular */
+  border: 2px solid #118ab2 !important;
+}

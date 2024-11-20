@@ -103,6 +103,11 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('location/submit', [OptionsController::class, 'addLocation'])->name('location.add');
             Route::post('location/{id}/update', [OptionsController::class, 'editLocation'])->name('location.update');
             Route::post('location/{id}/delete', [OptionsController::class,'deleteLocation'])->name('location.delete');
+
+            //Holiday
+            Route::post('holiday/submit', [OptionsController::class, 'holidayAdd'])->name('holiday.add');
+            Route::post('holiday/{id}/update', [OptionsController::class, 'holidayUpdate'])->name('holiday.update');
+            Route::post('holiday/{id}/delete', [OptionsController::class,'holidayDelete'])->name('holiday.delete');
         });
     });
 
@@ -117,6 +122,7 @@ Route::middleware(['auth:web'])->group(function () {
         Route::post('indicator/{kpi_id}/update', [KpiPaOptionsController::class, 'indicatorUpdate'])->name('indicator.update');
         Route::post('indicator/{id}/delete', [KpiPaOptionsController::class, 'indicatorDelete'])->name('indicator.delete');
         Route::get('indicator/{kpi_id}/detail', [KpiPaOptionsController::class, 'indicatorDetail'])->name('indicator.detail');
+        Route::post('aspect/{id}/delete', [KpiPaOptionsController::class, 'aspectDelete'])->name('aspect.delete');
 
         //appraisal
         Route::post('/options/appraisal/submit', [KpiPaOptionsController::class, 'appraisalAdd'])->name('appraisal.add');
@@ -183,12 +189,12 @@ Route::middleware(['auth:web'])->group(function () {
     //appraisal
     Route::group(['middleware' => ['permission:view pa']], function() {
         Route::prefix('appraisal')->group(function () {
-            Route::get('', [AppraisalController::class, 'index'])->name('appraisal.list');
-            Route::post('submit', [AppraisalController::class, 'create'])->name('paGrade.add');
-            Route::get('{employee_id}/{month?}/{year}', [AppraisalController::class, 'detail'])->name('appraisal.detail'); 
-            Route::get('{employee_id}/{month?}/{year?}/edit', [AppraisalController::class, 'edit'])->name('appraisal.edit'); 
-            Route::post('{employee_id}/{month}/{year?}/update', [AppraisalController::class, 'update'])->name('appraisalGrade.update'); 
-            Route::post('{employee_id}/{month}/{year?}/delete', [AppraisalController::class, 'delete'])->name('appraisal.delete'); 
+            Route::get('', [AppraisalController::class, 'index'])->name('pa.list');
+            Route::post('submit', [AppraisalController::class, 'create'])->name('pa.add');
+            Route::get('{employee_id}/{month?}/{year}', [AppraisalController::class, 'detail'])->name('pa.detail'); 
+            Route::get('{employee_id}/{month?}/{year?}/edit', [AppraisalController::class, 'edit'])->name('pa.edit'); 
+            Route::post('{employee_id}/{month}/{year?}/update', [AppraisalController::class, 'update'])->name('pa.update'); 
+            Route::post('{employee_id}/{month}/{year?}/delete', [AppraisalController::class, 'delete'])->name('pa.delete'); 
         });
     });
 
@@ -246,11 +252,13 @@ Route::middleware(['auth:web'])->group(function () {
             // Route::get('loadModal', [RoleController::class, 'loadModal'])->name('role.load_modal');
         });
     });
-
-    Route::prefix('leaves')->group(function () {
-        Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
-        Route::post('submit', [LeaveController::class, 'store'])->name('leaves.create');
-        Route::post('{id}/delete', [LeaveController::class, 'delete'])->name('leaves.delete');
+    
+    Route::group(['middleware' => ['permission:view leave']], function() {
+        Route::prefix('leaves')->group(function () {
+            Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
+            Route::post('submit', [LeaveController::class, 'store'])->name('leaves.create');
+            Route::post('{id}/delete', [LeaveController::class, 'delete'])->name('leaves.delete');
+        });
     });
 
     //Log

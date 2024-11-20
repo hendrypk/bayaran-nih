@@ -1,4 +1,4 @@
-{{-- <!-- Edit Position -->
+<!-- Edit Position -->
 <div class="modal fade" id="positionEditModal" tabindex="-1" aria-labelledby="positionEditModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -96,6 +96,33 @@
 </div>
 
 <!-- Edit Status Modal -->
+<div class="modal fade" id="holidayEditModal" tabindex="-1" aria-labelledby="holidayEditModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="holidayEditModalLabel">Edit Holiday</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="edit-form" method="POST" action="" data-update-type="holiday">
+          @csrf
+          @method('POST')
+          <div class="mb-3">
+            <label for="inputHolidayName" class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" id="inputHolidayName">
+          </div>
+          <div class="mb-3">
+            <label class="col-sm-3 col-form-label">Select Date</label>
+            <input type="date" name="date" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-tosca">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Holiday Modal -->
 <div class="modal fade" id="statusEditModal" tabindex="-1" aria-labelledby="statusEditModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -116,28 +143,6 @@
       </div>
     </div>
   </div>
-</div> --}}
-
-<!-- Reusable Modal for Add/Edit -->
-<div class="modal fade" id="addEntityModal" tabindex="-1" aria-labelledby="modalEntityLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEntityLabel">Add Entity</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="entityForm" method="POST">
-                    @csrf
-                    <input type="hidden" id="entityId" name="id"> <!-- Hidden input for Edit -->
-                    <div class="mb-3" id="entityFields">
-                        <!-- Form fields will be added dynamically here -->
-                    </div>
-                    <button type="submit" class="btn btn-tosca" id="submitBtn">Submit</button>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Edit Modal Office Location -->
