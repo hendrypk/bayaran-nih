@@ -34,31 +34,32 @@
                         <td>{{ $no+1 }}</td>
                         <td>{{ $workDay->name }}</td>
                         <td>
-                            <a href="{{ route('workDay.detail', [
-                                    'name' => $workDay->name]) }}"
-                                    class="btn btn-outline-primary">
-                                    <i class="ri-eye-fill"></i>
+                            <a href="{{ route('workDay.detail', ['name' => $workDay->name]) }}" class="btn btn-outline-primary">
+                                <i class="ri-eye-fill"></i>
                             </a>
                         </td>
                         <td>
                             @can('update work pattern')
-                                <a href="{{ route('workDay.edit', [
-                                        'name' => $workDay->name]) }}"
-                                        class="btn btn-outline-success">
-                                        <i class="ri-edit-fill"></i>
+                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-outline-success">
+                                    <i class="ri-edit-fill"></i>
                                 </a>
                             @endcan
                         </td>
                         <td>
                             @can('delete work pattern')
-                                <a href="" class="btn btn-outline-danger"
+                                {{-- <a href="" class="btn btn-outline-danger"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#deleteModal" 
                                     data-entity="work-day"  
                                     data-id="{{ $workDays->first()->id }}" 
                                     data-name="{{ $workDays->first()->name }}" >
                                     <i class="ri-delete-bin-fill"></i>
-                                </a>
+                                </a> --}}
+                                
+                                <button type="button" class="btn btn-outline-danger" 
+                                    onclick="confirmDelete('{{ $workDay->name }}', 'work-pattern')">
+                                    <i class="ri-delete-bin-fill"></i>
+                                </button>
                             @endcan
                         </td>
                     </tr>
@@ -100,6 +101,52 @@
     });
 });
 
+    function confirmDelete(name, entity) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete the " + entity + ": " + name,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '',
+            cancelButtonColor: '',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/${entity}/${name}/delete`, { 
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: data.message, // Use message from the server
+                            icon: 'success'
+                        }).then(() => {
+                            // Reload the page or redirect to another route
+                            window.location.href = data.redirect; // Redirect to the desired route
+                        });
+                    } else {
+                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            }
+        });
+    }
+
 //Disabled if Day-Off
 document.addEventListener('DOMContentLoaded', function () {
     // Define the toggleTimeInputs function
@@ -112,11 +159,15 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelector(`input[id="arrival[${day}]"]`).disabled = true;
             document.querySelector(`input[id="checkIn[${day}]"]`).disabled = true;
             document.querySelector(`input[id="checkOut[${day}]"]`).disabled = true;
+            document.querySelector(`input[id="breakIn[${day}]"]`).disabled = true;
+            document.querySelector(`input[id="breakOut[${day}]"]`).disabled = true;
             document.querySelector(`input[id="break[${day}]"]`).disabled = true;
         } else {
             document.querySelector(`input[id="arrival[${day}]"]`).disabled = false;
             document.querySelector(`input[id="checkIn[${day}]"]`).disabled = false;
             document.querySelector(`input[id="checkOut[${day}]"]`).disabled = false;
+            document.querySelector(`input[id="breakIn[${day}]"]`).disabled = false;
+            document.querySelector(`input[id="breakOut[${day}]"]`).disabled = false;
             document.querySelector(`input[id="break[${day}]"]`).disabled = false;
         }
     }

@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="row">
-<x-month-year-picker :action="route('appraisal.list')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
+<x-month-year-picker :action="route('pa.list')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
 
     <div class="col-md">
         <div class="card">
@@ -45,7 +45,7 @@
                                 <td>{{ $employee->name }}</td>  
                                 <td>{{ number_format($grade->average_grade, 2) }}</td>                               
                                 <td>
-                                    <a href="{{ route('appraisal.detail', [
+                                    <a href="{{ route('pa.detail', [
                                     'employee_id' => $employee->id,
                                     'month' => $selectedMonth,
                                     'year' => $selectedYear]) }}"
@@ -55,7 +55,7 @@
                                 </td>
                                 <td>
                                     @can('update pa')
-                                        <a href="{{ route('appraisal.edit', [
+                                        <a href="{{ route('pa.edit', [
                                             'employee_id' => $employee->id,
                                             'month' => $selectedMonth,
                                             'year' => $selectedYear]) }}"

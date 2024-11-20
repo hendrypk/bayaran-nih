@@ -18,14 +18,6 @@
             </div>
           </div>
 
-
-          <div class="row mb-3">
-            <label for="inputEmail" class="col-sm-4 col-form-label">email</label>
-            <div class="col-sm-8">
-              <input type="email" name="email" value="{{old('email', $employee->email)}}" class="form-control">
-            </div>
-          </div>
-
           <div class="row mb-3">
             <label for="city" class="col-sm-4 col-form-label">Identity Address</label>
             <div class="col-sm-8">
@@ -114,6 +106,13 @@
             </div>
           </div>
 
+          <div class="row mb-3">
+            <label for="inputEmail" class="col-sm-4 col-form-label">email</label>
+            <div class="col-sm-8">
+              <input type="email" name="email" value="{{old('email', $employee->email)}}" class="form-control">
+            </div>
+          </div>
+          
           <div class="row mb-3">
             <label for="whatsapp" class="col-sm-4 col-form-label">WhatsApp Number</label>
             <div class="col-sm-8">

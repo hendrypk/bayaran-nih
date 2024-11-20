@@ -3,38 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Division;
-use App\Models\Employee;
 use App\Models\JobTitle;
 use App\Models\Position;
 use App\Models\Department;
-use App\Models\KpiOptions;
-use App\Models\SalesPerson;
-use App\Models\WorkCalendar;
-use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
-use App\Models\OnDayCalendar;
 use App\Models\EmployeeStatus;
+use App\Models\Holiday;
 use App\Models\OfficeLocation;
-use App\Models\PerformanceAppraisal;
-use App\Models\PerformanceKpi;
 
 class OptionsController extends Controller
 {
 
 
+//index
     function index(){
         $positions = Position::get();
         $divisions = Division::get();
         $job_titles = JobTitle::get();
         $departments = Department::get();
-        $calendars = WorkCalendar::get();
-        $salesPerson = SalesPerson::get();
-        $employees = Employee::get();
-        $schedules = WorkSchedule::get();
         $statuses = EmployeeStatus::get();
+        $holidays = Holiday::get();
         $officeLocation = OfficeLocation::get();
-        return view('options.index', compact('positions', 'divisions', 'job_titles', 'departments','calendars',
-        'salesPerson', 'employees', 'schedules', 'statuses', 'officeLocation'));
+        return view('options.index', compact('positions', 'divisions', 'job_titles', 'departments', 'statuses', 'holidays', 'officeLocation'));
     }
 
 //position add
@@ -86,7 +76,7 @@ class OptionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'The location has been deleted.',
+            'message' => 'The position has been deleted.',
             'redirect' => route('options.list') 
         ]);
         // return redirect()->route('options.list')->with('success', 'Position deleted successfully.');
@@ -250,6 +240,12 @@ class OptionsController extends Controller
 
 //Office Location Add
     public function addLocation(Request $request){
+        $request->validate([
+            'name' => 'required|string|unique:office_locations,name',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'radius' => 'required|integer'
+        ]);
         $ol = OfficeLocation::create([
             'name' => $request->name,
             'latitude' => $request->latitude,
@@ -261,18 +257,14 @@ class OptionsController extends Controller
 
 //Office Location Edit
     public function editLocation(Request $request, $id){
-        try {
-
         $request->validate([
             'name' => 'string',
-            'latitude' => 'required',
-            'longitude' => 'required',
             'radius' => 'integer'
         ]);
-
+        
         $officeLocation = OfficeLocation::updateOrCreate(
-            ['id' => $id], // Kriteria untuk mencari data
-            [ // Data yang akan diperbarui atau dibuat
+            ['id' => $id],
+            [
                 'name' => $request->name,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
@@ -283,28 +275,65 @@ class OptionsController extends Controller
         $message = $officeLocation->wasRecentlyCreated ? 'Office Location Added Successfully.' : 'Office Location Updated Successfully.';
 
         return redirect()->route('options.list')->with('success', $message);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Log the validation errors
-            return redirect()->back()->withErrors($e->validator)->withInput();
-        } catch (\Exception $e) {
-            // Log any other exception
-            return redirect()->back()->with('error', 'There was an error updating the office location.');
-        }
-        
     }
 
 //Office Location Delete
-public function deleteLocation($id){
-    $ol = OfficeLocation::find($id);
-    $ol->delete();
-    
-    return response()->json([
-        'success' => true,
-        'message' => 'The location has been deleted.',
-        'redirect' => route('options.list')
-    ]);
-}
+    public function deleteLocation($id){
+        $ol = OfficeLocation::find($id);
+        $ol->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'The location has been deleted.',
+            'redirect' => route('options.list')
+        ]);
+    }
+
+//Holidays
+    function holidayAdd(Request $request){
+        $request->validate([
+            'name' => 'required|string|unique:holidays,name,',
+        ], [
+            'name.required' => 'Holiday name is required',
+            'name.unique' => 'Holiday name Already Exist',            
+        ]);
+        
+        $dates = $request->input('dates');
+        $dates = explode(',', $dates[0]);
+        $dates = array_map('trim', $dates);
+        
+        foreach($dates as $date) {
+            $holiday = Holiday::updateOrCreate(
+                ['id' => $request->id],
+                ['name' => $request->name,
+                'date' => $date,]
+            );
+        }
+
+        return redirect()->route('options.list')->with('success', 'Holiday Added Successfully.');
+    }
+
+//Holiday update
+    public function holidayUpdate(Request $request, $id){
+        $holiday = Holiday::findOrFail($id);
+        $holiday->name = $request->name;
+        $holiday->date = $request->date;
+        $holiday->save();
+        
+        return redirect()->route('options.list')->with('success', 'Holiday Updated Successfully.');
+    }
+//Holiday delete
+    public function holidayDelete($id){
+        $holiday = Holiday::findOrFail($id);
+        $holiday->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Holiday has been deleted.',
+            'redirect' => route('options.list')
+        ]);
+    }
+
 }
 
 

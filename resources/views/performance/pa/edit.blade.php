@@ -11,7 +11,7 @@
 
         
         <h5 class="card-title">Edit Appriasal</h5>
-        <form action="{{ route('appraisalGrade.update', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" method="POST">
+        <form action="{{ route('pa.update', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" method="POST">
                     @csrf
                     @method('POST')
                     <div class="row mb-3">

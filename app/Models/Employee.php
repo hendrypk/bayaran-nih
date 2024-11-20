@@ -55,22 +55,10 @@ class Employee extends Authenticatable
         return $this->belongsTo(JobTitle::class, 'job_title_id', 'id');
     }
 
-    //relation table work_schedule
-    public function schedules()
-    {
-        return $this->belongsTo(WorkSchedule::class, 'schedule_id');
-    }
-
     public function workDay()
     {
         return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
     }      
-
-    //relation table work_calendar
-    public function calendar()
-    {
-        return $this->belongsTo(WorkCalendar::class, 'calendar_id');
-    }
 
     public function positionKpi()
     {

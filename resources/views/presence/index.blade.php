@@ -154,38 +154,6 @@
 function showPhoto(photoUrl) {
     document.getElementById('modalPhoto').src = photoUrl;
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    const deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-      const button = event.relatedTarget;
-      const entity = button.getAttribute('data-entity'); // e.g., 'position', 'department', etc.
-      const id = button.getAttribute('data-id'); // Entity ID
-      const name = button.getAttribute('data-name'); // Entity name (optional)
-      
-      // Update modal title and body text
-      const entityNameElement = document.getElementById('entityName');
-      entityNameElement.textContent = entity;
-      
-      // Update form action URL
-      const form = document.getElementById('deleteForm');
-      form.action = `/${entity}/${id}/delete`;
-
-      // Optionally update the modal title to include the entity's name
-      const modalTitle = document.getElementById('deleteModalLabel');
-      modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name}`;
-    });
-  });
-
-
-// Remove indicator group
-document.addEventListener('click', function(event) {
-    if (event.target && event.target.classList.contains('removePresenceBtn')) {
-    const presenceGroup = event.target.closest('.presence-group');
-    presenceGroup.remove();
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function () {
     const editModal = document.getElementById('editPresence');
     editModal.addEventListener('show.bs.modal', function (event) {
@@ -196,15 +164,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const workDay = button.getAttribute('data-workDay');
         const checkin = button.getAttribute('data-checkin');
         const checkout = button.getAttribute('data-checkout');
-
-        // Debugging: Check if data is being retrieved
-        console.log('ID:', id);
-        console.log('Name:', name);
-        console.log('Date:', date);
-        console.log('Work Day:', workDay);
-        console.log('Check-in:', checkin);
-        console.log('Check-out:', checkout);
-
 
         document.getElementById('name').value = name;
         document.getElementById('date').value = date;

@@ -14,14 +14,12 @@ return new class extends Migration
         schema::create('leaves', function(Blueprint $table) {
             $table->id();
             $table->integer('employee_id');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('date');
             $table->string('category');
             $table->string('note');
             $table->integer('status')->default('0');
             $table->timestamps();
 
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
         });
     }
 
