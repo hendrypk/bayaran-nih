@@ -78,7 +78,6 @@ public function presenceOut(){
 
         // Save the image to storage/app/public folder
         $path = storage_path('app/public/' . $fileName);
-        // $path = public_path('vermuk/' . $fileName);
         file_put_contents($path, $imageData);
 
         return response()->json(['success' => 'Image saved successfully!']);

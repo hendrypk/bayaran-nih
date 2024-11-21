@@ -87,13 +87,13 @@
                                 <td>{{ $data['location_out'] }}</td>
                                 <td>
                                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('' . $data['photo_in']) }}')">
+                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
                                             <i class="ri-eye-line"></i>
                                     </button>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('' . $data['photo_out']) }}')">
+                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_out']) }}')">
                                             <i class="ri-eye-line"></i>
                                     </button>
                                 </td>
@@ -157,7 +157,7 @@ function showPhoto(photoUrl) {
 document.addEventListener('DOMContentLoaded', function () {
     const editModal = document.getElementById('editPresence');
     editModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Button that triggered the modal
+        const button = event.relatedTarget; 
         const id = button.getAttribute('data-id');
         const name = button.getAttribute('data-name');
         const date = button.getAttribute('data-date');
@@ -174,9 +174,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Set form action dynamically with the correct ID
         const form = document.getElementById('editPresenceForm');
-        form.action = `{{ url('presences') }}/${id}/update`; // Set the action with the correct ID
-        document.getElementById('presenceId').value = id; // Set the hidden input value
-    
+        form.action = `{{ url('presences') }}/${id}/update`; 
+        document.getElementById('presenceId').value = id;    
     });
 });
 
