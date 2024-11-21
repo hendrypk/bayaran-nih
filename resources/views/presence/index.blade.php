@@ -87,13 +87,13 @@
                                 <td>{{ $data['location_out'] }}</td>
                                 <td>
                                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('presences/' . $data['photo_in']) }}')">
+                                            onclick="showPhoto('{{ Storage::url('' . $data['photo_in']) }}')">
                                             <i class="ri-eye-line"></i>
                                     </button>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('presences/' . $data['photo_out']) }}')">
+                                            onclick="showPhoto('{{ Storage::url('' . $data['photo_out']) }}')">
                                             <i class="ri-eye-line"></i>
                                     </button>
                                 </td>
