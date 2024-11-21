@@ -65,7 +65,7 @@ public function create(Request $request){
         $gradePa->save();
     }
 
-    return redirect()->route('appraisal.list', compact('appraisals'))->with('success', 'Appraisal successfully added for the employee.');
+    return redirect()->route('pa.list', compact('appraisals'))->with('success', 'Appraisal successfully added for the employee.');
 }
 
 //Appraisal Detail
@@ -146,7 +146,7 @@ public function delete($employee_id, $month, $year){
                              ->get();
 
     if ($gradePa->isEmpty()) {
-        return redirect()->route('appraisal.list')->with('error', 'No records found for deletion.');
+        return redirect()->route('pa.list')->with('error', 'No records found for deletion.');
     }
     foreach ($gradePa as $record) {
         $record->delete();
@@ -154,7 +154,7 @@ public function delete($employee_id, $month, $year){
     return response()->json([
         'success' => true,
         'message' => 'Appraisal has been deleted.',
-        'redirect' => route('appraisal.list')
+        'redirect' => route('pa.list')
     ]);
 }
 

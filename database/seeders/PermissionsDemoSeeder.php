@@ -162,37 +162,5 @@ class PermissionsDemoSeeder extends Seeder
             // Permission::create(['name' => 'delete-overtime']);
             // Permission::create(['name' => 'add-overtime']);
             // Permission::create(['name' => 'update-overtime']);
-
-        // // create roles and assign existing permissions
-        // $role1 = Role::create(['name' => 'kadiv']);
-        // $role1->givePermissionTo('view-overtime');
-
-        // $role2 = Role::create(['name' => 'staff hr']);
-        // $role2->givePermissionTo('view-overtime');
-        // $role2->givePermissionTo('delete-overtime');
-        // $role2->givePermissionTo('add-overtime');
-        // $role2->givePermissionTo('update-overtime');
-
-        // $role3 = Role::create(['name' => 'Super-Admin']);
-        // // gets all permissions via Gate::before rule; see AuthServiceProvider
-
-        // // create demo users
-        // $user = \App\Models\User::factory()->create([
-        //     'name' => 'hrga',
-        //     'email' => 'harga@maketees.com',
-        // ]);
-        // $user->assignRole($role2);
-
-        // $user = \App\Models\User::factory()->create([
-        //     'name' => 'kadiv',
-        //     'email' => 'kadiv@maketees.com',
-        // ]);
-        // $user->assignRole($role1);
-
-        // $user = \App\Models\User::factory()->create([
-        //     'name' => 'superadmin',
-        //     'email' => 'superadmin@example.com',
-        // ]);
-        // $user->assignRole($role3);
     }
 }
