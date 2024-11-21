@@ -287,7 +287,7 @@
             <label class="col-sm-2 col-form-label">KPI</label>
             <div class="col-sm-8">
               <select class="form-select" name="kpi_id" aria-label="Default select example">
-                <option selected>Select KPI</option>
+                <option value=" " selected>Select KPI</option>
                 @foreach($kpi_id as $data)
                 <option value="{{ $data->id }}">{{ $data->name }}</option>
                 @endforeach

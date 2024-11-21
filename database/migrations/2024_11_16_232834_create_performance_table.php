@@ -43,6 +43,7 @@ return new class extends Migration
         Schema::create('grade_kpis', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
             $table->integer('employee_id');
+            $table->integer('indicator_id');
             $table->decimal('achievement', 25,2);
             $table->integer('grade');
             $table->string('month');
@@ -55,6 +56,7 @@ return new class extends Migration
         Schema::create('grade_pas', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
             $table->integer('employee_id');
+            $table->integer('appraisal_id');
             $table->string('month');
             $table->integer('year');
             $table->integer('grade');
