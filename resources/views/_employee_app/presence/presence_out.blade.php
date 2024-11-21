@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    {{-- <div class="row mb-2">
+                    <div class="row mb-2">
                         <div class="col-md-2">
                             <label for="">Select Shift :</label>
                         </div>
@@ -50,7 +50,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div> --}}
+                    </div>
 
                     <div class="row mb-2">
                         <div class="col">
@@ -107,26 +107,6 @@
             // You can also provide a fallback or user-friendly message here
         }
     });
-
-    // $("#take-presence").click(function(e){
-    //     Webcam.snap(function(uri){
-    //         image = uri;
-    //     });
-    //     var location = $("#location").val();
-    //     $.ajax({
-    //         type:'POST'
-    //         , route:"{{ route('presence.submit') }}"
-    //         , data: {
-    //             _token: "{{ csrf_token() }}"
-    //             , image: image
-    //             , locatioin: location
-    //         }
-    //         , cache: false
-    //         , success: function(respond) {
-
-    //         }
-    //     });
-    // });
 
     Webcam.set({
         height: 480,

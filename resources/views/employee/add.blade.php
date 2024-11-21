@@ -243,21 +243,19 @@
             </div>
           </div>
 
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label">Office Location</label>
-              <div class="col-sm-8">    
-                  @foreach($officeLocations as $data)       
-                      <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="officeLocations{{ $data->id }}" name="officeLocations[]" value="{{ $data->id }}">
-                          <label class="form-check-label" for="officeLocations{{ $data->id }}">
-                              {{ $data->name }}
-                          </label>
-                      </div>
-                  @endforeach
-              </div>
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">Office Location</label>
+            <div class="col-sm-8">    
+              @foreach($officeLocations as $data)       
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="officeLocations{{ $data->id }}" name="officeLocations[]" value="{{ $data->id }}">
+                  <label class="form-check-label" for="officeLocations{{ $data->id }}">
+                    {{ $data->name }}
+                  </label>
+                </div>
+              @endforeach
             </div>
-            <!-- <p>Checkbox values:</p>
-            <p id="debug-workdays"></p> -->
+          </div>
 
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">Employee Status</label>
@@ -312,7 +310,6 @@
             </div>
 
         </form>
-        <!-- End General Form Elements -->
       </div>
     </div>
   </div>
@@ -322,15 +319,11 @@
 <script>
 document.querySelector('form').addEventListener('submit', (event) => {
     const selectedWorkDays = [...document.querySelectorAll('input[name="workDay[]"]:checked')]
-    //     .map(checkbox => checkbox.value);
-    // console.log(selectedWorkDays);
 });
 
 document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             const selectedValues = [...document.querySelectorAll('input[type="checkbox"]:checked')]
-            //     .map(checked => checked.value);
-            // document.getElementById('debug-workdays').innerText = JSON.stringify(selectedValues);
         });
     });
 </script>
