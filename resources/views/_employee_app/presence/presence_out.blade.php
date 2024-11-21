@@ -108,26 +108,6 @@
         }
     });
 
-    // $("#take-presence").click(function(e){
-    //     Webcam.snap(function(uri){
-    //         image = uri;
-    //     });
-    //     var location = $("#location").val();
-    //     $.ajax({
-    //         type:'POST'
-    //         , route:"{{ route('presence.submit') }}"
-    //         , data: {
-    //             _token: "{{ csrf_token() }}"
-    //             , image: image
-    //             , locatioin: location
-    //         }
-    //         , cache: false
-    //         , success: function(respond) {
-
-    //         }
-    //     });
-    // });
-
     Webcam.set({
         height: 480,
         width: 320,

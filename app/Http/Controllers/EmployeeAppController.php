@@ -57,7 +57,6 @@ public function presenceOut(){
 //Store Image
     public function imageStore(Request $request)
     {
-        // Validasi input
         $request->validate([
             'image' => 'required|string'
         ]);
