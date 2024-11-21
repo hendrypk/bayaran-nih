@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('marriage', 25);
             $table->string('education', 25);
             $table->string('whatsapp');
-            $table->string('bank', 20);
+            $table->string('bank');
             $table->string('bank_number');
             $table->integer('position_id');
             $table->integer('job_title_id');
