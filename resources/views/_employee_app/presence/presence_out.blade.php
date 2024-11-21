@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    {{-- <div class="row mb-2">
+                    <div class="row mb-2">
                         <div class="col-md-2">
                             <label for="">Select Shift :</label>
                         </div>
@@ -50,7 +50,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div> --}}
+                    </div>
 
                     <div class="row mb-2">
                         <div class="col">

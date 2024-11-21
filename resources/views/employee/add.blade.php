@@ -256,8 +256,6 @@
                   @endforeach
               </div>
             </div>
-            <!-- <p>Checkbox values:</p>
-            <p id="debug-workdays"></p> -->
 
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">Employee Status</label>

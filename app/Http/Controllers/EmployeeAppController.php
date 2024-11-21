@@ -75,11 +75,11 @@ public function presenceOut(){
         $eid = Auth::id();
         $datePhoto = now()->toDateString();
         $timePhoto = now()->toTimeString();
-        $fileName = $eid . '-' . $datePhoto . '-' . $timePhoto;
+        $fileName = $eid . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
 
         // Save the image to storage/app/public folder
-        // $path = storage_path('app/public/presence/' . $fileName);
-        $path = public_path('vermuk/' . $fileName);
+        $path = storage_path('app/public/presences/' . $fileName);
+        // $path = public_path('vermuk/' . $fileName);
         file_put_contents($path, $imageData);
 
         return response()->json(['success' => 'Image saved successfully!']);
@@ -103,10 +103,8 @@ function distance($lat1, $lon1, $lat2, $lon2){
 //Store Presence
     public function store(Request $request){
         $request->validate([
-            'workDay' => 'required',
             'note' => 'required'
         ],[
-            'workDay.required' => 'Shift is required!',
             'note.required' => 'Note is required!'
         ]);
 
@@ -121,7 +119,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $workDay = WorkDay::where('name', $request->workDay)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
-        $photo = $employeeId . '-' . $datePhoto . '-' . $timePhoto;
+        $photo = $employeeId . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
 
         //Get Office Location From Table
         $ol = $request->officeLocations;
