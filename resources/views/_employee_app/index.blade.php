@@ -373,9 +373,9 @@ function showAlert(type) {
     
     // Tentukan pesan berdasarkan tipe
     if (type === 'check in') {
-        message = 'Koe wis absen melbu, rasah absen neh!';
+        message = 'Wis absen melbu, rasah absen meneh!';
     } else if (type === 'overtime in') {
-        message = 'Koe wis absen melbu lembur, rasah absen neh!';
+        message = 'Wis absen melbu lembur, rasah absen neh!';
     } else {
         message = 'Aksi tidak diizinkan!';
     }

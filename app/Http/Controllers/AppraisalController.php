@@ -51,7 +51,7 @@ public function create(Request $request){
         'employee_id' => 'required|exists:employees,id',
         'month' => 'required',
         'year' => 'required',
-        'grades' => 'required|array',
+        'grades' => 'nullable|array',
         'grades.*' => 'integer|min:0|max:100',
     ]);
     
@@ -110,14 +110,14 @@ public function edit($employee_id, $month = null, $year = null){
 
 //Appraisal Update
 public function update(Request $request, $employee_id, $month, $year) {
-    // Validasi input
-    // $request->validate([
-    //     'employee_id' => 'required|exists:employees,id',
-    //     'month' => 'required',
-    //     'year' => 'required|integer',
-    //     'grades' => 'required|array',
-    //     'grades.*' => 'integer|min:0|max:100',
-    // ]);
+    Validasi input
+    $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'month' => 'required',
+        'year' => 'required|integer',
+        'grades' => 'nullable|array',
+        'grades.*' => 'integer|min:0|max:100',
+    ]);
 
     foreach ($request->input('grades') as $appraisalId => $grade) {
         // Find the existing record
@@ -134,7 +134,7 @@ public function update(Request $request, $employee_id, $month, $year) {
         }
     }
 
-    return redirect()->route('appraisal.detail', [$employee_id, $month, $year])->with('success', 'Appraisal grades updated successfully.');
+    return redirect()->route('pa.detail', [$employee_id, $month, $year])->with('success', 'Appraisal grades updated successfully.');
 }
 
 //Appraisal Delete

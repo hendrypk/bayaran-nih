@@ -137,12 +137,12 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $radiusKM = round($distance["kilometers"]);
 
         if($maxRadius < $radius) {
-            $message = 'Ohh no... You are out of office. Your radius is ' . $radiusKM . ' km or your GPS location is malfunction!';
+            $message = 'Posisimu kadoan seko pabrik' . $radiusKM . ' km, nek ora coba cek GPSmu!';
             return redirect()->back()->with('error', $message);
         } else {        
         
         if($day_off == 1){
-            $message = 'Today is Off Day for You';
+            $message = 'Dino iki jatahmu prei. Nek awakmu tetep kerjo, absen lembur.';
             return redirect()->back()->with('error', $message);
         }
 
@@ -214,7 +214,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
                             'location_in' => $loc
                     ]);
 
-                    $message = 'Check-in recorded successfully! But, you are late for ' . $lateCheckIn . ' minutes';
+                    $message = 'Absenmu melbu berhasil dicatet, tapi awakmu telat ' . $lateCheckIn . ' menit';
                     break;
         
                 // Case when the employee has checked in but not checked out (Check-out)
@@ -261,18 +261,18 @@ function distance($lat1, $lon1, $lat2, $lon2){
                         'location_out' => $loc
                     ]);
 
-                    $message = 'Check-out recorded successfully! You left ' . $checkOutEarly . ' minutes early';
+                    $message = 'Absenmu metu berhasil dicatet. Tapi awakmu muleh gasik' . $checkOutEarly . ' menit';
                     break;
         
                 // Case when both check-in and check-out are already recorded
                 case !is_null($presence->check_in) && !is_null($presence->check_out):
-                    $message = 'You have already checked out for today. No further presence allowed.';
+                    $message = 'Wis absen melbu, rasah absen meneh!';
                     return redirect()->back()->with('error', $message);
                     break;
         
                 // Default case to catch any unexpected scenarios
                 default:
-                    $message = 'Unexpected error occurred. Please try again later.';
+                    $message = 'Sistem eror, hubungi admin!';
                     return redirect()->back()->with('error', $message);
                     break;
             }
@@ -322,7 +322,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
                     'date' => $date,
                     'start_at' => now()->toTimeString(),
                 ]);
-                $message = 'Overtime-in recorded successfully!';
+                $message = 'Absenmu melbu lembur berhasil dicatet!';
                 break;
 
             // Case when the employee has checked in but not checked out (Check-out)
@@ -331,7 +331,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
                     'end_at' => now()->toTimeString(),
                     'total' => $total_overtime,
                     ]);
-                $message = 'Overtime-out recorded successfully!';
+                $message = 'Absenmu metu lembur berhasil dicatet!';
 
             // Case when both check-in and check-out are already recorded
             case !is_null($overtime->start_at) && !is_null($overtime->end_at):
