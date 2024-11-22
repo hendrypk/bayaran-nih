@@ -110,7 +110,7 @@ public function edit($employee_id, $month = null, $year = null){
 
 //Appraisal Update
 public function update(Request $request, $employee_id, $month, $year) {
-    Validasi input
+    //Validasi input
     $request->validate([
         'employee_id' => 'required|exists:employees,id',
         'month' => 'required',
