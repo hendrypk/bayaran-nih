@@ -110,6 +110,85 @@
 
 @section('script')
 <script>
+
+//script route
+window.routeUrls = {
+    positionUpdate: "{{ route('position.update', ['id' => '__id__']) }}",
+    divisionUpdate: "{{ route('division.update', ['id' => '__id__']) }}",
+    jobTitleUpdate: "{{ route('jobTitle.update', ['id' => '__id__']) }}",
+    departmentUpdate: "{{ route('department.update', ['id' => '__id__']) }}",
+    statusUpdate: "{{ route('status.update', ['id' => '__id__']) }}",
+    holidayUpdate: "{{ route('holiday.update', ['id' => '__id__']) }}",
+    locationUpdate: "{{ route('location.update', ['id' => '__id__']) }}",
+};
+
+//script for edit modal
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.modal').forEach(function (modal) {
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const section = button.getAttribute('data-section');
+            const radius = button.getAttribute('data-radius');
+            const latitude = button.getAttribute('data-latitude');
+            const longitude = button.getAttribute('data-longitude');
+            const date = button.getAttribute('data-date');
+
+            //edit form
+            const updateType = modal.querySelector('.edit-form').getAttribute('data-update-type');
+        
+            // Determine the correct route URL based on updateType
+            let actionUrl = '';
+            switch (updateType) {
+                case 'position':
+                    actionUrl = window.routeUrls.positionUpdate;
+                    break;
+                case 'division':
+                    actionUrl = window.routeUrls.divisionUpdate;
+                    break;
+                case 'jobTitle':
+                    actionUrl = window.routeUrls.jobTitleUpdate;
+                    break;
+                case 'department':
+                    actionUrl = window.routeUrls.departmentUpdate;
+                    break;
+                case 'status':
+                    actionUrl = window.routeUrls.statusUpdate;
+                    break;
+                case 'holiday':
+                    actionUrl = window.routeUrls.holidayUpdate;
+                    break;
+                case 'location':
+                    actionUrl = window.routeUrls.locationUpdate;
+                    break;
+            }
+        
+            // Replace __id__ with the actual ID
+            actionUrl = actionUrl.replace('__id__', id);
+
+            // Find the form and input within the current modal
+            const form = modal.querySelector('.edit-form');
+            const inputName = form.querySelector('input[name="name"]');
+            const inputSection = form.querySelector('input[name="section"]');
+            const inputRadius = form.querySelector('input[name="radius"]');
+            const inputlatitude = form.querySelector('input[name="latitude"]');
+            const inputLongitude = form.querySelector('input[name="longitude"]');
+            const selectDate = form.querySelector('input[name="date"]');
+
+            if (form && inputName) {
+                form.action = actionUrl;
+                inputName.value = name || '';
+                if (inputSection) inputSection.value = section || '';
+                if (inputRadius) inputRadius.value = radius || '';
+                if (inputlatitude) inputlatitude.value = latitude || '';
+                if (inputLongitude) inputLongitude.value = longitude || '';
+                if (selectDate) selectDate.value = date || '';
+            }
+        });
+    });
+});
+
 //Add Field on Add Inicators for KPI
 document.addEventListener('DOMContentLoaded', function() {
     let index = 1;
@@ -178,10 +257,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+
 //script route
 window.routeUrls = {
         appraisalUpdate: "{{ route('appraisal.update', ['id' => '__id__']) }}",
     };
+
+//script for edit modal
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.modal').forEach(function (modal) {
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+
+            //edit form
+            const updateType = modal.querySelector('.edit-form').getAttribute('data-update-type');
+        
+            // Determine the correct route URL based on updateType
+            let actionUrl = '';
+            switch (updateType) {
+                case 'appraisal':
+                    actionUrl = window.routeUrls.appraisalUpdate;
+                    break;
+            }
+        
+            // Replace __id__ with the actual ID
+            actionUrl = actionUrl.replace('__id__', id);
+
+            // Find the form and input within the current modal
+            const form = modal.querySelector('.edit-form');
+            const inputName = form.querySelector('input[name="name"]');
+
+            if (form && inputName) {
+                form.action = actionUrl;
+                inputName.value = name || '';
+            }
+        });
+    });
+});
 
 //Delete Modal
 function confirmDelete(id, name, entity) {

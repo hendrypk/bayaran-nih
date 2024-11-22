@@ -78,7 +78,7 @@
                                 <td>
                                     @can('delete leave')
                                         <button type="button" class="btn btn-outline-danger" 
-                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leave')">
+                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leaves')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>                                            
                                     @endcan
@@ -139,7 +139,7 @@ function updateAction(id, name, entity, currentStatus) {
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/leave/submit`, { // Adjust the URL if necessary
+            fetch(`/leaves/delete`, { // Adjust the URL if necessary
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}', // Ensure CSRF token is rendered
