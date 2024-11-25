@@ -60,7 +60,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-tosca btn-block" id="take-presence">
+                            <button type="button" class="btn btn-tosca btn-block" id="take-presence">
                             <ion-icon name="camera" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
                             </button>
                         </div>
@@ -108,36 +108,70 @@
         }
     });
 
+    //display web cam
     Webcam.set({
         height: 480,
         width: 320,
         image_format: 'jpeg',
         jpeg_quality: 80
     });
-
     Webcam.attach('.webcam-capture');
 
-    $('#take-presence').click(function () {
-        Webcam.snap(function (uri) {
-            // Tampilkan gambar yang ditangkap di elemen img
-            $('#capturedImage').attr('src', uri);
+//handle presence submit
+    $('#take-presence').click(function (event) {
+    event.preventDefault(); 
 
-            // Kirim data gambar ke server menggunakan AJAX
-            $.ajax({
-                url: '{{ route('image.submit') }}', // Rute ke controller Laravel Anda
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}', // Token CSRF Laravel
-                    image: uri // Gambar dalam format base64
-                },
-                success: function (response) {
-                },
-                error: function (error) {
-                    console.log(error);
+    Webcam.snap(function (uri) {
+        $('#capturedImage').attr('src', uri);
+        $.ajax({
+            url: '{{ route('presence.submit') }}', 
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}', 
+                image: uri, 
+                workDay: $('[name="workDay"]').val(), 
+                officeLocations: $('[name="officeLocations"]').val(), 
+                note: $('[name="note"]').val(), 
+                location: $('#location').val() 
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: response.message, 
+                    }).then(() => {
+                        window.location.href = response.redirectUrl; 
+                    });
+                } else if ( response.status = 'error') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Eror',
+                        text: response.message,
+                        confirmButtonText: 'Try Again'
+                    });
                 }
-            });
+            },
+            error: function (xhr, status, error,) {
+                if (xhr.status === 422) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON.message, 
+                        confirmButtonText: 'Try Again'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Terjadi kesalahan saat mengirim data!',
+                    });
+                }
+            }
         });
-    }); 
+    });
+});
+
     
 </script>
 <script type="text/javascript">
