@@ -83,10 +83,20 @@
                                 <td>{{ $data['check_out_early'] }}</td>
                                 <td>{{ $data['note_in']}}</td>
                                 <td>{{ $data['note_out'] }}</td>
-                                <td>{{ $data['location_in'] }}</td>
-                                <td>{{ $data['location_out'] }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                    <button class="btn btn-primary" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
+                                        <i class="ri-road-map-line"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline-primary" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
+                                        <i class="ri-road-map-line"></i>
+                                    </button>
+                                </td>
+                                {{-- <td>{{ $data['location_in'] }}</td>
+                                <td>{{ $data['location_out'] }}</td> --}}
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
                                             <i class="ri-eye-line"></i>
                                     </button>
@@ -131,7 +141,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+{{-- <!-- Modal -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -144,16 +154,104 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 
 @section('script')
 <script>
+//Show map
+let mapPresence, marker;  // Variabel untuk peta dan marker
+
+// Inisialisasi peta
+function initMapPresence() {
+    const mapElement = document.getElementById('mapPresence');
+
+    if (!mapElement) {
+        console.error('Element with ID "mapPresence" not found!');
+        return;
+    }
+
+    // Membuat peta dengan lat, lng default
+    mapPresence = L.map('mapPresence');  // Set lat, lng dan zoom default
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mapPresence);
+}
+
+// Menampilkan lokasi pada modal
+function showLocationModal(locationType, location) {
+    if (!mapPresence) {
+        console.error('Map is not initialized. Please call initMapPresence first.');
+        return;
+    }
+
+    if (!location) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Lokasi presensi tidak ditemukan!',
+        });
+        return;
+    }
+
+    // Memecah lat, lng yang diterima
+    const [lat, lng] = location.split(',').map(Number);
+
+    if (isNaN(lat) || isNaN(lng)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Koordinat lokasi tidak valid!',
+        });
+        return;
+    }
+
+    // Menampilkan modal Bootstrap
+    const modal = new bootstrap.Modal(document.getElementById('locationModal'));
+    modal.show();
+
+    // Menghapus marker lama jika ada
+    if (marker) mapPresence.removeLayer(marker);
+
+    // Update peta dan tambahkan marker
+    mapPresence.setView([lat, lng], 15);  // Set peta ke lat, lng yang baru
+    marker = L.marker([lat, lng]).addTo(mapPresence).bindPopup(`${locationType}`).openPopup();
+}
+
+// Memanggil initMapPresence setelah halaman selesai dimuat
+document.addEventListener('DOMContentLoaded', function () {
+    initMapPresence();
+});
+
 
 // Set the image src in the modal
 function showPhoto(photoUrl) {
-    document.getElementById('modalPhoto').src = photoUrl;
+    const img = new Image();
+
+    // Cek apakah gambar tersedia
+    img.onload = function() {
+        // Jika gambar berhasil dimuat, set gambar ke dalam modal dan buka modal
+        document.getElementById('modalPhoto').src = photoUrl;
+        
+        // Buka modal setelah gambar dimuat
+        const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+        photoModal.show();
+    };
+
+    img.onerror = function() {
+        // Jika gambar gagal dimuat, tampilkan error menggunakan SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Gambar tidak ditemukan!',
+        });
+    };
+
+    // Menetapkan URL gambar untuk memulai pengecekan
+    img.src = photoUrl;
 }
+
+//script for edit
 document.addEventListener('DOMContentLoaded', function () {
     const editModal = document.getElementById('editPresence');
     editModal.addEventListener('show.bs.modal', function (event) {
@@ -275,3 +373,5 @@ function confirmDelete(id, name, entity) {
 @endsection
 @include('presence.add')
 @include('presence.edit')
+@include('presence.map')
+@include('presence.photo')

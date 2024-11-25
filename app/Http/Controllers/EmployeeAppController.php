@@ -111,13 +111,28 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $employeeName = Auth::user()->name;
         $employee = Employee::with('workDay')->findOrFail($employeeId);
         $date = Carbon::parse(now()->toDateString());
-        $datePhoto = now()->toDateString();
-        $timePhoto = now()->toTimeString();
         $today = strtolower($date->format('l'));
         $workDay = WorkDay::where('name', $request->workDay)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
-        $photo = $employeeId . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
+        
+
+        //Get photo data
+        $request->validate([
+            'image' => 'required|string'
+        ]);
+        $datePhoto = now()->toDateString();
+        $timePhoto = now()->toTimeString();
+        $photoName = $employeeId . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
+        $imageData = $request->input('image');
+        $imageData = str_replace('data:image/jpeg;base64,', '', $imageData);
+        $imageData = base64_decode($imageData);
+
+        // Create unique file name
+        // $eid = Auth::id();
+        // $datePhoto = now()->toDateString();
+        // $timePhoto = now()->toTimeString();
+        // $fileName = $eid . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
 
         //Get Office Location From Table
         $ol = $request->officeLocations;
@@ -137,8 +152,12 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $radiusKM = round($distance["kilometers"]);
 
         if($maxRadius < $radius) {
-            $message = 'Posisimu kadoan seko pabrik' . $radiusKM . ' km, nek ora coba cek GPSmu!';
-            return redirect()->back()->with('error', $message);
+            $message = 'Posisimu kadoan ' . $radiusKM . ' km seko pabrik, nek ora coba cek GPSmu!';
+            // return redirect()->back()->with('error', $message);
+            return response()->json([
+                'status' => 'error',
+                'message' => $message,
+            ]);
         } else {        
         
         if($day_off == 1){
@@ -159,7 +178,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $excldueBreak = $break == 1;
 
         //Break Duration
-        $breakDuration = max(intval($break_out->diffInMinutes($break_out, false)), 0);
+        $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
 
         //Get From Form
         $now = $parseTime (now()->toTimeString());
@@ -172,18 +191,22 @@ function distance($lat1, $lon1, $lat2, $lon2){
             switch(true) {
                 case $excldueBreak:
                     $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
+                    // $lateCheckIn = 'exclude break';
                     break;
 
                 case $now->between($break_in, $break_out):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    // $lateCheckIn = 'when break';
                     break;
 
                 case $break_in->lt($now):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)) - $breakDuration, 0);
+                    // $lateCheckIn = 'after break out';
                     break;
 
                 case $now->lt($break_in):
                 $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
+                // $lateCheckIn = 'normal';
                     break;
             }
         }
@@ -199,18 +222,22 @@ function distance($lat1, $lon1, $lat2, $lon2){
             switch (true) {
                 // Case when there is no presence record for today (Check-in)
                 case is_null($presence):
+            
+                    // Save the image to storage/app/public folder
+                    $path = storage_path('app/public/presences/' . $photoName);
+                    file_put_contents($path, $imageData);
 
                     $presence =Presence::create([
                             'employee_id' => $employeeId,
                             'eid' => $eid,
                             'employee_name' => $employeeName,
                             'work_day_id' => $request->workDay,
-                            'date' => now()->toDateString(),
-                            'check_in' => now()->toTimeString(),
+                            'date' => $datePhoto,
+                            'check_in' => $timePhoto,
                             'late_check_in' => $lateCheckIn,
                             'late_arrival' => $lateArrival,
                             'note_in' => $request->note,
-                            'photo_in' => $photo,
+                            'photo_in' => $photoName,
                             'location_in' => $loc
                     ]);
 
@@ -253,15 +280,19 @@ function distance($lat1, $lon1, $lat2, $lon2){
                         }
                     }
                     
+                    // Save the image to storage/app/public folder
+                    $path = storage_path('app/public/presences/' . $photoName);
+                    file_put_contents($path, $imageData);
+
                     $presence->update([
                         'check_out' => now()->toTimeString(),
                         'check_out_early' => $checkOutEarly,
                         'note_out' => $request->note,
-                        'photo_out' => $photo,
+                        'photo_out' => $photoName,
                         'location_out' => $loc
                     ]);
 
-                    $message = 'Absenmu metu berhasil dicatet. Tapi awakmu muleh gasik' . $checkOutEarly . ' menit';
+                    $message = 'Absenmu metu berhasil dicatet. Tapi awakmu muleh gasik ' . $checkOutEarly . ' menit';
                     break;
         
                 // Case when both check-in and check-out are already recorded
@@ -277,7 +308,11 @@ function distance($lat1, $lon1, $lat2, $lon2){
                     break;
             }
         }
-        return redirect()->route('employee.app')->with('success', $message);
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'redirectUrl' => route('employee.app') 
+        ]);
     }
 
 //Presences History
@@ -325,21 +360,15 @@ function distance($lat1, $lon1, $lat2, $lon2){
                 $message = 'Absenmu melbu lembur berhasil dicatet!';
                 break;
 
-            // Case when the employee has checked in but not checked out (Check-out)
             case !is_null($overtime->start_at) && is_null($overtime->end_at):
                 $overtime->update([
                     'end_at' => now()->toTimeString(),
                     'total' => $total_overtime,
                     ]);
                 $message = 'Absenmu metu lembur berhasil dicatet!';
-
-            // Case when both check-in and check-out are already recorded
-            case !is_null($overtime->start_at) && !is_null($overtime->end_at):
-                $message = 'You have already overtime out for today. No further overtime allowed.';
-                break;
         }
 
-        return redirect()->route('employee.app')->with('message', $message);
+        return redirect()->route('employee.app')->with('success', $message);
     }
 //Overtime History
     public function overtimeHistory(){

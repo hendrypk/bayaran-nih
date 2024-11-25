@@ -26,14 +26,10 @@
                     <div class="row mb-3">
                         <div class="webcam-capture "></div>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col">
-                            <div id="map"></div>
-                        </div>
-                    </div> -->
 
-                    <div class="row mb-3 justify-content-center">
-                        <input class="justify-text-center" type="text" name="location" id="location" readonly>
+                    <div class="presence-camera">
+                        <p id="dateTime"></p>
+                        <input type="text" name="location" id="location">                        
                     </div>
 
                     <div class="row">
@@ -92,10 +88,35 @@
             console.error("Error retrieving location:", error);
             // You can also provide a fallback or user-friendly message here
         }
-    });
+    });   
+</script>
+<script type="text/javascript">
+    window.onload = function() {
+        dateTime();
+    }
 
+    function dateTime() {
+            var e = document.getElementById('dateTime'),
+                d = new Date(),
+                h = set(d.getHours()),
+                m = set(d.getMinutes()),
+                s = set(d.getSeconds());
 
-    
+            var day = d.toLocaleDateString('id-ID', { weekday: 'long' });
+            var date = d.getDate();
+            var month = d.toLocaleDateString('id-ID', { month: 'long' });
+            var year = d.getFullYear();
+
+            e.innerHTML = day + ', ' + date + ' ' + month + ' ' + year + ' | ' + h + ':' + m + ':' + s;
+
+            setTimeout(dateTime, 1000);
+        }
+
+        function set(e) {
+            e = e < 10 ? '0' + e : e;
+            return e;
+        }
+
 </script>
 @endsection
 @endsection

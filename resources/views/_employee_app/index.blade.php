@@ -108,6 +108,27 @@
                     </div>
                     @endif
 
+                    @if(!empty($presenceToday->check_out))
+                    <div class="col-6">
+                        <a href="javascript:void(0);" onclick="showAlert('check out')">
+                            <div class="card checkout">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <ion-icon name="camera"></ion-icon>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">Check Out</h4>
+                                            <!-- @foreach($employee->workDay as $index => $workDay)
+                                            <span>{{ $workDay->name }}</span>
+                                            @endforeach -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @else
                     <div class="col-6">
                         <div class="card checkout">
                             <div class="card-body">
@@ -127,6 +148,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <div class="row">
@@ -141,7 +163,6 @@
                                         </div>
                                         <div class="presencedetail">
                                             <h4 class="presencetitle">Overtime In</h4>
-                                            <!-- <span>07:00</span> -->
                                         </div>
                                     </div>
                                 </a>
@@ -159,7 +180,6 @@
                                         </div>
                                         <div class="presencedetail">
                                             <h4 class="presencetitle">Overtime In</h4>
-                                            <!-- <span>07:00</span> -->
                                         </div>
                                     </div>
                                 </a>
@@ -167,6 +187,27 @@
                         </div>
                     </div>
                     @endif
+                    @if(!@empty($overtimeToday->end_at))
+                    <div class="col-6">
+                        <div class="card checkin">
+                            <div class="card-body">
+                                <a href="javascript:void(0);" onclick="showAlert('overtime out')">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <ion-icon name="camera"></ion-icon>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">Overtime Out</h4>
+                                            <!-- @foreach($employee->workDay as $index => $workDay)
+                                            <span>{{ $workDay->name }}</span>
+                                            @endforeach -->
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @else
                     <div class="col-6">
                         <div class="card checkin">
                             <div class="card-body">
@@ -186,6 +227,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -374,10 +416,13 @@ function showAlert(type) {
     // Tentukan pesan berdasarkan tipe
     if (type === 'check in') {
         message = 'Wis absen melbu, rasah absen meneh!';
-    } else if (type === 'overtime in') {
+    } else if (type === 'check out') {
+        message = 'Wis absen metu, rasah absen meneh!';
+    }
+    if (type === 'overtime in') {
         message = 'Wis absen melbu lembur, rasah absen neh!';
-    } else {
-        message = 'Aksi tidak diizinkan!';
+    } else if (type === 'overtime out') {
+        message = 'Wis absen metu lembur, rasah absen neh!';
     }
 
     // Tampilkan SweetAlert dengan pesan sesuai
