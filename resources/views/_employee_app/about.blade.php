@@ -5,6 +5,16 @@
 <div class="presence">
     <div class="section full mt-2">
         <div class="wide-block pt-2 pb-2">
+              
+              <div id="releaseList">
+                <!-- All release versions will be displayed here -->
+              </div>
+              
+              <div id="latestRelease">
+                <!-- Latest release version will be displayed here -->
+              </div>
+
+                
             <h4>About</h4>
             <div class="row">
                 <div class="col">

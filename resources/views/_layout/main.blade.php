@@ -79,8 +79,9 @@
       &copy; Copyright <strong><span>Bayaran</span></strong>. All Rights Reserved
     </div> --}}
     <div class="credits">
-      Powered by <a href="https://hendrypk.my.id/">hendrypk</a> | <a href="{{ route('about.app') }}" class="tosca">Version 1.1.0</a>
+      Powered by <a href="https://hendrypk.my.id/">hendrypk</a>
     </div>
+    <div class="release-tag" id="releaseList"></div>
   </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -101,6 +102,7 @@
   <!-- Template Main JS File -->
   <script src="{{ asset('assets/js/main.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+  <script src="{{ asset('assets/js/release.js') }}"></script>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -173,6 +175,30 @@
   //         dateFormat: "Y-m-d",
   //     });
   // });
+
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const toggleIcons = document.querySelectorAll('.toggle-password');
+
+      toggleIcons.forEach(icon => {
+          icon.addEventListener('click', function () {
+              const targetId = this.getAttribute('data-target');
+              const input = document.getElementById(targetId);
+
+              if (input.type === 'password') {
+                  input.type = 'text';
+                  this.classList.remove('bi-eye-fill');
+                  this.classList.add('bi-eye-slash-fill');
+              } else {
+                  input.type = 'password';
+                  this.classList.remove('bi-eye-slash-fill');
+                  this.classList.add('bi-eye-fill');
+              }
+          });
+      });
+  });
 </script>
 
   @yield('script')

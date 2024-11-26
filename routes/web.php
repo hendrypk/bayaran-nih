@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Models\User;
 use App\Models\Options;
 use App\Http\Controllers\Test;
@@ -46,6 +47,9 @@ Route::get('password/reset', [ResetPasswordController::class, 'showLinkRequestFo
 Route::post('password/email', [ResetPasswordController::class, 'forgotPassword'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+//Get API
+Route::get('/github/releases', [ApiController::class, 'getReleases']);
 
 //Administrator Middleware Group
 Route::middleware(['auth:web'])->group(function () {

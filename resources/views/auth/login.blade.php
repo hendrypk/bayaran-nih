@@ -32,9 +32,12 @@
                     </div>
 
                     <div class="col-12">
-                        <label for="yourPassword" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" id="yourPassword" required>
-                        <div class="invalid-feedback">Please enter your password!</div>
+                        <label for="password" class="form-label">Password</label>
+                        <div class="position-relative password-field">
+                            <input id="password" class="form-control" type="password" name="password" placeholder="Enter current password" required>
+                            <i class="bi bi-eye-fill toggle-password" data-target="password"></i>
+                            <div class="invalid-feedback">Please enter your password!</div>
+                        </div>
                     </div>
 
                     <div class="col-12">

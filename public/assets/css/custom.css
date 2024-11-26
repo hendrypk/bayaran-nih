@@ -469,7 +469,7 @@ a:hover {
 .datatable-table > tfoot > tr > th {
 	vertical-align: bottom;
 	text-align: left;
-	border-top: 1px solid #;
+	border-top: 1px solid #d9d9d9;
 }
 
 .datatable-table th {
@@ -815,4 +815,65 @@ table.datatable-table:focus {
   height: 100px; /* Set the height, same as the width for a circle */
   border-radius: 50% !important; /* Make the element circular */
   border: 2px solid #118ab2 !important;
+}
+
+.release-tag {
+  position: absolute;
+  top: 10px; /* Atur sesuai kebutuhan */
+  right: 10px; /* Atur sesuai kebutuhan */
+  background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background */
+  color: #118ab2;
+  font-size: 14px; /* Ukuran lebih besar untuk desktop */
+  padding: 8px; /* Padding lebih besar */
+  border-radius: 5px;
+}
+
+@media (max-width: 767px) {
+  .release-tag {
+    font-size: 12px; /* Ukuran lebih kecil untuk mobile */
+    padding: 5px; /* Padding lebih kecil */
+  }
+}
+
+.release-tag-mobile {
+  position: absolute;
+  top: 10px; /* Atur sesuai kebutuhan */
+  right: 10px; /* Atur sesuai kebutuhan */
+  background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background */
+  color: white;
+  font-size: 14px; /* Ukuran lebih besar untuk desktop */
+  padding: 8px; /* Padding lebih besar */
+  border-radius: 5px;
+}
+
+@media (max-width: 767px) {
+  .release-tag {
+    font-size: 12px; /* Ukuran lebih kecil untuk mobile */
+    padding: 5px; /* Padding lebih kecil */
+  }
+}
+
+#releaseList {
+  list-style-type: none; /* Remove the bullet points */
+  padding: 0;
+}
+
+
+/* Password Field Styling */
+.password-field {
+  position: relative;
+}
+
+.password-field .toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #6c757d; /* Optional: default icon color */
+}
+
+.password-field .toggle-password:hover {
+  color: #000; /* Optional: hover effect for the icon */
 }

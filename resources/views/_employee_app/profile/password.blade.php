@@ -5,7 +5,7 @@
 <div class="presence">
     <div class="card">
         <div class="card-body">
-            <div class="box">Coming Soon</div>
+            {{-- <div class="box">Coming Soon</div> --}}
 
             @if (session('error'))
                 <div class="row mb-2">
@@ -39,35 +39,68 @@
                 </div>
             @endif
 
-            {{-- <form action="{{ route('reset.password') }}" method="POST">
+            <form action="{{ route('reset.password') }}" method="POST">
                 @csrf
                 <div class="row mb-1">
                     <div class="col-md-3">
-                        <label for="password">Current Password</label>
-                        <input class="form-control" type="text" name="currentPassword">
+                        <label for="currentPassword">Current Password</label>
+                        <div class="position-relative password-field">
+                            <input id="currentPassword" class="form-control" type="password" name="currentPassword" placeholder="Enter current password">
+                            <i class="bi bi-eye-fill toggle-password" data-target="currentPassword"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-1">
                     <div class="col-md-3">
-                        <label for="resetPassword">New Password</label>
-                        <input class="form-control" type="text" name="newPassword">
+                        <label for="newPassword">New Password</label>
+                        <div class="position-relative password-field">
+                            <input id="newPassword" class="form-control" type="password" name="newPassword" placeholder="Enter new password">
+                            <i class="bi bi-eye-fill toggle-password" data-target="newPassword"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-1">
                     <div class="col-md-3">
                         <label for="confirmPassword">Confirm New Password</label>
-                        <input class="form-control" type="text" name="confirmPassword">
+                        <div class="position-relative password-field">
+                            <input id="confirmPassword" class="form-control" type="password" name="confirmPassword" placeholder="Confirm new password">
+                            <i class="bi bi-eye-fill toggle-password" data-target="confirmPassword"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-1 mt-2">
                     <div class="col-md-1">
-                        <button class="btn btn-primary">Save Changes</button>
+                        <button class="btn btn-tosca">Update</button>
                     </div>
                 </div>
-            </form> --}}
-
+            </form>
+            
+                    
         </div>
     </div>
 </div>
+@section('script')
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleIcons = document.querySelectorAll('.toggle-password');
 
+        toggleIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('bi-eye-fill');
+                    this.classList.add('bi-eye-slash-fill');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('bi-eye-slash-fill');
+                    this.classList.add('bi-eye-fill');
+                }
+            });
+        });
+    });
+</script> --}}
+@endsection
 @endsection

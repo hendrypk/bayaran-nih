@@ -64,7 +64,7 @@ public function login (Request $request){
     $employee = Employee::where('username', $username)->first();
     if($employee) {
         if(auth::guard('employee')->attempt($infoLogin)) {
-            return redirect()->route('employee.app')->with('success', 'Login success');
+            return redirect()->route('employee.app');
         }
         return back()->with('error', 'Login failed, please check your password.');
     }

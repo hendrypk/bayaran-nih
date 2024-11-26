@@ -28,10 +28,10 @@
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{route('employee.app')}}">
-          <i class="ri-apps-2-fill"></i>
-          <span>Presence (beta)</span>
+      <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="{{route('home')}}">
+          <i class="ri-account-pin-circle-fill"></i>
+          <span>Dashboard</span>
         </a>
       </li>
       @can('view employee')

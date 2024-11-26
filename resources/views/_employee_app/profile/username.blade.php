@@ -5,33 +5,7 @@
 <div class="presence">
     <div class="card">
         <div class="card-body">
-            <div class="box">Coming Soon</div>
-
-            @if (session('error'))
-                <div class="row mb-2">
-                    <div class="col alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-
-            @if (session('success'))
-                <div class="row mb-2">
-                    <div class="col alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                </div>
-            @endif
-
-            @if($errors->has('username'))
-                <div class="row mb-3">
-                    <div class="col alert alert-danger">
-                        {{ $errors->first('username') }}
-                    </div>
-                </div>
-            @endif
-
-            {{-- <form action="{{ route('reset.username') }}" method="POST">
+            <form action="{{ route('reset.username') }}" method="POST">
                 @csrf
                 <div class="row mb-1">
                     <div class="col-md-3">
@@ -41,17 +15,19 @@
                 </div>
                 <div class="row mb-1">
                     <div class="col-md-3">
-                        <label for="password">Confirm Your Password</label>
-                        <input class="form-control" type="text" name="currentPassword">
+                        <label for="currentPassword">Current Password</label>
+                        <div class="position-relative password-field">
+                            <input id="currentPassword" class="form-control" type="password" name="currentPassword" placeholder="Enter current password">
+                            <i class="bi bi-eye-fill toggle-password" data-target="currentPassword"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-1 mt-2">
                     <div class="col-md-1">
-                        <button class="btn btn-primary">Save Changes</button>
+                        <button class="btn btn-tosca">Update</button>
                     </div>
                 </div>
-            </form> --}}
-
+            </form>
         </div>
     </div>
 </div>
