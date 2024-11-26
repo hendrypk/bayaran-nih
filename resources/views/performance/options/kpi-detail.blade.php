@@ -46,10 +46,10 @@
                                 <input type="text" class="form-control" name="indicators[0][aspect]" value="{{ $indicator->aspect }}" required>
                             </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                             <div class="col-2">
-                                <input type="text" class="form-control" name="indicators[0][target]" value="{{ $indicator->target }}" required>
+                                <input type="text" class="form-control" name="indicators[0][target]" value="{{ $indicator->target }}" step="0.01" required>
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control bobot-input" name="indicators[0][bobot]" value="{{ $indicator->bobot }}" required>
+                                <input type="text" class="form-control bobot-input" name="indicators[0][bobot]" value="{{ $indicator->bobot }}" step="0.01" required>
                             </div>
                             <div class="col-1">
                                 <button type="button" class="btn btn-outline-danger" 
@@ -101,10 +101,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" class="form-control" name="indicators[1][aspect]" required>
                 </div>
                 <div class="col-2">
-                    <input type="number" class="form-control" name="indicators[1][target]" required>
+                    <input type="number" class="form-control" name="indicators[1][target]" step="0.01" required>
                 </div>
                 <div class="col-2">
-                    <input type="number" class="form-control bobot-input" name="indicators[1][bobot]" required>
+                    <input type="number" class="form-control bobot-input" name="indicators[1][bobot]" step="0.01" required>
                 </div>
                 <div class="col-1">
                     <button type="button" class="btn btn-danger removeIndicatorBtn">
