@@ -237,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
             updateTotalBobot();
         }
     });
-
     function updateTotalBobot() {
         let totalBobot = 0;
         const bobotInputs = document.querySelectorAll('.bobot-input');

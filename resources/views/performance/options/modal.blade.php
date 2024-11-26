@@ -11,14 +11,12 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-7">
-                        <label for="inputPosition" class="form-label fw-bold">Name</label>
-                        <input type="text" name="name" class="form-control" required>
-
+                            <label for="inputPosition" class="form-label fw-bold">Name</label>
+                            <input type="text" name="name" class="form-control" required>
                         </div>
                     </div>
                     <div id="indicatorsContainer">
                         <div class="indicator-group mb-3">
-                            
                             <div class="row">
                                 <div class="col-7">
                                     <label for="inputAspect" class="form-label fw-bold">Indicator</label>
