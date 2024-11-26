@@ -16,9 +16,8 @@
                 @csrf
                 <div class="row mb-3">
                     <div class="col-md-7">
-                    <label for="inputPosition" class="form-label fw-bold">Name</label>
-                    <input type="text" name="name" class="form-control" value="{{ $name }}" required>
-
+                        <label for="inputPosition" class="form-label fw-bold">Name</label>
+                        <input type="text" name="name" class="form-control" value="{{ $name }}" required>
                     </div>
                 </div>
                 <div id="indicatorsContainer">

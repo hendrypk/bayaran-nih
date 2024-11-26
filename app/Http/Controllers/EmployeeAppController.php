@@ -390,31 +390,69 @@ function distance($lat1, $lon1, $lat2, $lon2){
     }
 
     public function resetUsernameStore(Request $request){
+        // Validasi input
         $request->validate([
             'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
             'currentPassword' => 'required|string',
         ],[
-            'username.required' => 'please fill the username',
-            'username.regex:/^\S*$/' => 'username contains invalid character',
-            'username.unique' => 'username already exist',
+            'username.required' => 'Please fill the username',
+            'username.regex' => 'Username contains invalid character',
+            'username.unique' => 'Username already exists',
+            'currentPassword.required' => 'Please enter your current password',
         ]);
-
+    
         $username = $request->username;
-        $password = Hash::make($request->currentPassword);
-        $passwordCheck = Hash::make(Auth::user()->password);
-
-        if (Hash::check($password, $passwordCheck)){
-            $employee = Auth::user();
+        $currentPassword = $request->currentPassword;
+    
+        // Ambil pengguna yang sedang login
+        $employee = Auth::user();
+    
+        // Cek apakah password yang dimasukkan cocok dengan password yang tersimpan
+        if (Hash::check($currentPassword, $employee->password)) {
+            // Update username
             $employee->update([
                 'username' => $username,
             ]);
+    
+            // Flash pesan sukses
             session()->flash('success', 'Username updated successfully!');
         } else {
+            // Flash pesan error jika password salah
             session()->flash('error', 'Password is incorrect. Please reenter the current password!');
         }
-
+    
+        // Redirect ke halaman yang sesuai
         return redirect()->route('change.username')->withInput();
     }
+
+    
+    // public function resetUsernameStore(Request $request){
+    //     $request->validate([
+    //         'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
+    //         'currentPassword' => 'required|string',
+    //     ],[
+    //         'username.required' => 'please fill the username',
+    //         'username.regex:/^\S*$/' => 'username contains invalid character',
+    //         'username.unique' => 'username already exist',
+    //     ]);
+
+    //     $username = $request->username;
+    //     $password = Hash::make($request->currentPassword);
+    //     $passwordCheck = Hash::make(Auth::user()->password);
+    //     $pass = Auth::user()->password;
+    //     dd($pass, $passwordCheck);
+    //     if (Hash::check($password, $passwordCheck)){
+    //         $employee = Auth::user();
+    //         $employee->update([
+    //             'username' => $username,
+    //         ]);
+    //         session()->flash('success', 'Username updated successfully!');
+    //     } else {
+    //         session()->flash('error', 'Password is incorrect. Please reenter the current password!');
+    //     }
+
+    //     return redirect()->route('change.username')->withInput();
+    // }
 
 //Reset Password
     public function resetPassword(){
@@ -422,35 +460,72 @@ function distance($lat1, $lon1, $lat2, $lon2){
     }
 
     public function resetPasswordStore(Request $request){
+        // Validasi input
         $request->validate([
+            'currentPassword' => 'required|string',
             'newPassword' => 'required|string|min:6',
-            'confirmPassword' => 'required|string|min:6'
+            'confirmPassword' => 'required|string|same:newPassword',
         ],[
+            'currentPassword.required' => 'Current password is required!',
             'newPassword.required' => 'New password is required!',
-            'newPassword.min' => 'Minimum password 6 characters!',
-            'confirmPassword' => 'Confirm new password is required!'
+            'newPassword.min' => 'Minimum password is 6 characters!',
+            'confirmPassword.required' => 'Confirm password is required!',
+            'confirmPassword.same' => 'Confirmation password must match the new password!',
         ]);
-
-        $password = $request->currentPassword;
-        $passwordCheck = Auth::user()->password;
+    
+        $currentPassword = $request->currentPassword;
         $newPassword = $request->newPassword;
-        $confirmPassword = $request->confirmPassword;
-
-        if (Hash::check($password, $passwordCheck)){
-            session()->flash('success', 'Username updated successfully!');
-            if(Hash::make($newPassword === $confirmPassword)){
-                $employee = Auth::user();
-                $employee->update([
-                    'password' => $confirmPassword
-                ]);
-            } else {
-                session()->flash('error', 'Password does not match. Please reenter the current password!');
-            }
+    
+        // Ambil password saat ini dari user
+        $employee = Auth::user();
+        $storedPassword = $employee->password;
+    
+        // Cek apakah current password benar
+        if (Hash::check($currentPassword, $storedPassword)) {
+            // Update password baru setelah dienkripsi
+            $employee->update([
+                'password' => Hash::make($newPassword),
+            ]);
+    
+            session()->flash('success', 'Password updated successfully!');
         } else {
-            session()->flash('error', 'Current password is incorrect. Please reenter the current password!');
+            session()->flash('error', 'Current password is incorrect. Please try again!');
         }
+    
         return redirect()->route('change.password')->withInput();
     }
+
+    
+    // public function resetPasswordStore(Request $request){
+    //     $request->validate([
+    //         'newPassword' => 'required|string|min:6',
+    //         'confirmPassword' => 'required|string|min:6'
+    //     ],[
+    //         'newPassword.required' => 'New password is required!',
+    //         'newPassword.min' => 'Minimum password 6 characters!',
+    //         'confirmPassword' => 'Confirm new password is required!'
+    //     ]);
+
+    //     $password = $request->currentPassword;
+    //     $passwordCheck = Auth::user()->password;
+    //     $newPassword = $request->newPassword;
+    //     $confirmPassword = $request->confirmPassword;
+
+    //     if (Hash::check($password, $passwordCheck)){
+    //         session()->flash('success', 'Username updated successfully!');
+    //         if(Hash::make($newPassword === $confirmPassword)){
+    //             $employee = Auth::user();
+    //             $employee->update([
+    //                 'password' => $confirmPassword
+    //             ]);
+    //         } else {
+    //             session()->flash('error', 'Password does not match. Please reenter the current password!');
+    //         }
+    //     } else {
+    //         session()->flash('error', 'Current password is incorrect. Please reenter the current password!');
+    //     }
+    //     return redirect()->route('change.password')->withInput();
+    // }
 
 //Leave
     public function leaveIndex() {
