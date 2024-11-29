@@ -10,7 +10,7 @@ class PerformanceAppraisal extends Model
     use HasFactory;
 
     protected $table = 'performance_appraisals';
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['appraisal_id', 'aspect'];
     
     public function gradePas()
     {

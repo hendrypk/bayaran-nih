@@ -24,7 +24,7 @@ class GradePa extends Model
 
     public function appraisal()
     {
-        return $this->belongsTo(PerformanceAppraisal::class, 'appraisal_id', 'id');
+        return $this->belongsTo(PerformanceAppraisal::class, 'appraisal_id');
     }
     
 }

@@ -17,7 +17,7 @@
                     <div class="row mb-3">
                         <label class="col-md-4 col-form-label fw-bold">Employee Name</label>
                         <div class="col">
-                            <select class="form-select" type="hidden" name="employee_id" aria-label="Default select example" disabled readonly>
+                            <select class="form-select" type="hidden" name="employee_id" aria-label="Default select example" disabled >
                                 <option selected value="{{ $employees->id }}">{{ $employees->name }}</option>
                             </select>
                         </div>
@@ -26,7 +26,7 @@
                     <div class="row mb-3">
                         <label class="col-md-4 col-form-label fw-bold">Month</label>
                         <div class="col">
-                            <select class="form-select" type="hidden" name="month" aria-label="Default select example" disabled readonly>
+                            <select class="form-select" type="hidden" name="month" aria-label="Default select example" disabled >
                                 <option selected>{{ $month }}</option>
                             </select>
                             <input type="hidden" name="month" value="{{ $month }}">
@@ -36,7 +36,7 @@
                     <div class="row mb-3">
                         <label class="col-md-4 col-form-label fw-bold">Year</label>
                         <div class="col">
-                            <select class="form-select" type="hidden" name="year" aria-label="Default select example" disabled readonly>
+                            <select class="form-select" type="hidden" name="year" aria-label="Default select example" disabled >
                                 @foreach(range(date('Y'), date('Y') + 5) as $y)
                                 <option value="{{ $y }}" {{ isset($year) && $year == $y ? 'selected' : '' }}>
                                     {{ $y }}
@@ -53,7 +53,7 @@
 
                     @foreach ($gradePas as $gradePa)
                     <div class="row mb-3">
-                        <label for="grade_{{ $gradePa->id }}" class="col-md-4 form-label">{{ $gradePa->appraisal->name }}</label>
+                        <label for="grade_{{ $gradePa->id }}" class="col-md-4 form-label">{{ $gradePa->appraisal->aspect }}</label>
                         <div class="col">
                             <input type="number" class="form-control" name="grades[{{ $gradePa->id }}]" id="grade_{{ $gradePa->id }}" min="0" max="100" required value="{{ $gradePa->grade }}">
                         </div>

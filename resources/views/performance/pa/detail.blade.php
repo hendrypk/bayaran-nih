@@ -29,11 +29,11 @@
                 </div>
                 <div class="row mb-2">
                     <div class="col-4 fw-bold"> Division </div>
-                    <div class="col">: {{ $employees->division }}</div>
+                    <div class="col">: {{ $employees->division->name }}</div>
                 </div>
                 <div class="row mb-2    ">
                     <div class="col-4 fw-bold"> Department </div>
-                    <div class="col">: {{ $employees->department }}</div>
+                    <div class="col">: {{ $employees->department->name }}</div>
                 </div>
             </div>
         </div>
@@ -47,7 +47,8 @@
             </div>
             <div class="row mb-4">
                 <div class="col-md-1">
-                    <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-primary">Edit</a>
+                    <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-outline-success">
+                        <i class="ri-edit-line"></i></a>
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-outline-danger" 
@@ -70,7 +71,7 @@
                     <tbody>
                         @foreach ($gradePas as $gradePa)
                             <tr>
-                                <td>{{ $gradePa->appraisal->name }}</td>
+                                <td>{{ $gradePa->appraisal->aspect }}</td>
                                 <td>{{ $gradePa->grade }}</td>
                             </tr>
                         @endforeach

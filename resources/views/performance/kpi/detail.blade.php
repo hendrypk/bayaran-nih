@@ -31,11 +31,11 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-6 fw-bold"> Division </div>
-                        <div class="col">: {{ $employees->division }}</div>
+                        <div class="col">: {{ $employees->division->name }}</div>
                     </div>
                     <div class="row mb-2    ">
                         <div class="col-lg-6 fw-bold"> Department </div>
-                        <div class="col">: {{ $employees->department }}</div>
+                        <div class="col">: {{ $employees->department->name }}</div>
                     </div>
                 </div>
             </div>
@@ -61,18 +61,10 @@
                     </a>
                 </div>
                 <div class="col-lg-1">
-                    <a href="" class="btn btn-outline-danger"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#deleteModal" 
-                        data-entity="appraisal" 
-                        data-eid="{{ $employees->id }}" 
-                        data-month="{{ $month }}" 
-                        data-year="{{ $year }}" ><i class="ri-delete-bin-fill"></i></a>
-
-                            <button type="button" class="btn btn-outline-danger" 
-                            onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
-                            <i class="ri-delete-bin-fill"></i>
-                        </button>
+                    <button type="button" class="btn btn-outline-danger" 
+                        onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
+                        <i class="ri-delete-bin-fill"></i>
+                    </button>
                 </div>
             </div>
         <div class="row">

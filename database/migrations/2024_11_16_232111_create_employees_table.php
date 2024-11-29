@@ -37,6 +37,7 @@ return new class extends Migration
             $table->date('joining_date');
             $table->string('employee_status');
             $table->integer('sales_status');
+            $table->integer('pa_id');
             $table->integer('kpi_id');
             $table->integer('bobot_kpi');
             $table->string('role')->default('user');
