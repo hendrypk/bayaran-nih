@@ -16,15 +16,23 @@
                             <input type="text" name="name" class="form-control" required>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="inputAspect" class="form-label fw-bold">Aspect</label>
+                        </div>
+                        <div class="col-2">
+                            <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label>
+                        </div>
+                    </div>
                     <div id="appraisalContainer">
                         <div class="appraisal-group mb-3">
                             <div class="row">
                                 <div class="col-10">
-                                    <label for="inputAspect" class="form-label fw-bold">Aspect</label>
+                                    {{-- <label for="inputAspect" class="form-label fw-bold">Aspect</label> --}}
                                     <input type="text" class="form-control" name="appraisals[0][aspect]" required>
                                 </div>
                                 <div class="col-2">
-                                    <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label>
+                                    {{-- <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label> --}}
                                     <button type="button" class="btn btn-danger removeAppraisalBtn">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
