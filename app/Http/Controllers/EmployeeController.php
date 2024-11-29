@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppraisalName;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\WorkDay;
@@ -39,6 +40,7 @@ class EmployeeController extends Controller
             ->groupBy('name')
             ->get();
         $officeLocations = OfficeLocation::all();
+        $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
         $status = EmployeeStatus::all();
         $genders = ['unkown', 'Male', 'Female'];
@@ -77,7 +79,7 @@ class EmployeeController extends Controller
             'Bank Mega'
         ];
         return view('employee.add', compact('position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'status',
-    'kpi_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
+        'pa_id', 'kpi_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
 
     //submit new employee
@@ -110,6 +112,7 @@ class EmployeeController extends Controller
             'joining_date' => 'required',
             'employee_status' => 'required',
             'sales_status' => 'required',
+            'pa_id' => 'required',
         ]);
         $employee = Employee::create([
             'eid' => $eid,
@@ -136,6 +139,7 @@ class EmployeeController extends Controller
             'joining_date' => $request->joining_date,
             'employee_status' => $request->employee_status,
             'sales_status' => $request->sales_status,
+            'pa_id' => $request->pa_id,
             'kpi_id' => $request->kpi_id,
             'bobot_kpi' => $request->bobot_kpi,
         ]);
@@ -176,6 +180,7 @@ class EmployeeController extends Controller
         ->groupBy('name')
         ->get();
         $officeLocations = OfficeLocation::all();
+        $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
         $status = EmployeeStatus::all();
         $genders = ['unkown', 'Male', 'Female'];
@@ -225,7 +230,7 @@ class EmployeeController extends Controller
         // $onDay = WorkCalendar::all();
         // $status = EmployeeStatus::all();
         return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'kpi_id', 'status',
-        'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
+        'pa_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
     
     public function update(Request $request, $id){
@@ -258,8 +263,7 @@ class EmployeeController extends Controller
             'joining_date' => 'required',
             'employee_status' => 'required',
             'sales_status' => 'required',
-            // 'kpi_id' => 'error',
-            // 'bobot_kpi' => 'required'
+            'pa_id' => 'required',
         ]);
 
         $employee->update([
@@ -285,6 +289,7 @@ class EmployeeController extends Controller
             'joining_date' => $request->joining_date,
             'employee_status' => $request->employee_status,
             'sales_status' => $request->sales_status,
+            'pa_id' => $request->pa_id,
             'kpi_id' => $request->kpi_id,
             'bobot_kpi' => $request->bobot_kpi,
         ]);

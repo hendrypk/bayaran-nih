@@ -60,7 +60,8 @@
                         <h5 class="card-title mb-0 py-3">Indicator for PA</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
-                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button>
+                                {{-- <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button> --}}
+                                <a href="{{ route('add.appraisal.form') }}" class=""><button type="button" class="btn btn-tosca">Add PA</button></a>
                             </div>
                         @endcan
                     </div>
@@ -75,20 +76,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($appraisals as $no=>$appraisal)
+                                @foreach($appraisal_id as $no=>$appraisal)
                                 <tr>
                                     <th scope="row">{{ $no+1 }}</th>
                                     <td>{{ $appraisal->name }}</td>
                                     <td>
                                         @can('update pm')
-                                            <button type="button" 
+                                        
+                                        <a href="{{ route('appraisal.detail', [
+                                            'appraisal_id' => $appraisal->id,
+                                            ]) }}" class="btn btn-outline-primary">
+                                            <i class="ri-eye-fill"></i>
+                                        </a>
+                                            {{-- <button type="button" 
                                                 class="btn btn-outline-success" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#paEditModal" 
                                                 data-id="{{ $appraisal->id }}" 
                                                 data-name="{{ $appraisal->name }}">
                                                 <i class="ri-edit-box-fill"></i>
-                                            </button>
+                                            </button> --}}
                                         @endcan
                                     </td>
                                     <td>
@@ -260,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //script route
 window.routeUrls = {
-        appraisalUpdate: "{{ route('appraisal.update', ['id' => '__id__']) }}",
+        appraisalUpdate: "{{ route('appraisal.update', ['appraisal_id' => '__id__']) }}",
     };
 
 //script for edit modal

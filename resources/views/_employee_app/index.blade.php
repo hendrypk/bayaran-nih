@@ -33,7 +33,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Profile</span>
+                                <span class="text-center">Profil</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -43,7 +43,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Leave</span>
+                                <span class="text-center">Ijin</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -53,7 +53,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Presence</span>
+                                <span class="text-center">Presensi</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -63,7 +63,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                Overtime
+                                Lembur
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Check In</h4>
+                                            <h4 class="presencetitle">Absen Masuk</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Check In</h4>
+                                            <h4 class="presencetitle">Absen Masuk</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -119,7 +119,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Check Out</h4>
+                                            <h4 class="presencetitle">Absen Keluar</h4>
                                             <!-- @foreach($employee->workDay as $index => $workDay)
                                             <span>{{ $workDay->name }}</span>
                                             @endforeach -->
@@ -139,7 +139,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Check Out</h4>
+                                            <h4 class="presencetitle">Absen Keluar</h4>
                                             <!-- @foreach($employee->workDay as $index => $workDay)
                                             <span>{{ $workDay->name }}</span>
                                             @endforeach -->
@@ -163,7 +163,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Overtime In</h4>
+                                            <h4 class="presencetitle">Masuk Lembur</h4>
                                         </div>
                                     </div>
                                 </a>
@@ -180,7 +180,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Overtime In</h4>
+                                            <h4 class="presencetitle">Keluar Lembur</h4>
                                         </div>
                                     </div>
                                 </a>

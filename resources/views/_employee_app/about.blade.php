@@ -54,5 +54,7 @@
         </div>
     </div>
 </div>
+@section('script')
 
+@endsection
 @endsection

@@ -16,7 +16,12 @@ fetch('/github/releases', {
     document.getElementById('releaseList').innerText = 'No releases available.';
   }
 })
-.catch(error => {
+ .catch(error => {
   console.error('Error fetching releases:', error);
   document.getElementById('releaseList').innerText = 'Error fetching release data.';
 });
+
+
+
+
+

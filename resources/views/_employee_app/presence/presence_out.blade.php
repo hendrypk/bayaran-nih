@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-<!-- @section('header.title', 'Presence Out') -->
+<!-- @section('header.title', 'Absen Keluar') -->
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 

@@ -14,8 +14,16 @@ return new class extends Migration
         // Create `performance_appraisals` table
         Schema::create('performance_appraisals', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
+            $table->integer('appraisal_id');
+            $table->string('aspect');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Create `performance_appraisals_name` table
+        Schema::create('performance_appraisal_name', function (Blueprint $table) {
+            $table->id(); // Auto-incrementing ID
             $table->string('name');
-            $table->string('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -75,6 +83,9 @@ return new class extends Migration
 
         // Drop `performance_kpis` table
         Schema::dropIfExists('performance_kpis');
+
+        // Drop `performance_appraisals_name` table
+        Schema::dropIfExists('performance_appraisal_name');
 
         // Drop `performance_appraisals` table
         Schema::dropIfExists('performance_appraisals');

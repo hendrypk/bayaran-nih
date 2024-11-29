@@ -169,7 +169,6 @@
             <div class="col-sm-8">
               <select class="form-select" name="division_id" aria-label="Default select example">
                 <option selected value ="">Select Division</option>
-                <option value="none">None</option>
                 @foreach($division as $data)
                 <option value="{{ $data->id }}" {{ !is_null($employee->division) && $data->name == $employee->division->name ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -182,7 +181,6 @@
             <div class="col-sm-8">
               <select class="form-select" name="department_id" aria-label="Default select example">
                 <option selected value="">Select Department</option>
-                <option value="none">None</option>
                 @foreach($department as $data)
                 <option value="{{ $data->id }}" {{ !is_null($employee->department) && $data->name == $employee->department->name ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -263,6 +261,18 @@
                 <option selected>Select Status</option>
                 <option value="1" {{ $employee->sales_status == '1' ? 'selected' : '' }}>Yes</option>
                 <option value="0"{{ $employee->sales_status == '0' ? 'selected' : '' }}>No</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-sm-4 col-form-label">Appraisal</label>
+            <div class="col-sm-8">
+              <select class="form-select" name="pa_id" aria-label="Default select example">
+                <option value="" selected>Select Appraisal</option>
+                @foreach($pa_id as $data)
+                <option value="{{ $data->id }}" {{ $data->id == $employee->pa_id ? 'selected' : '' }}>{{ $data->name }}</option>
+                @endforeach
               </select>
             </div>
           </div>

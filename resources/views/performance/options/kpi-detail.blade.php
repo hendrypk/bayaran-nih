@@ -20,7 +20,7 @@
                         <input type="text" name="name" class="form-control" value="{{ $name }}" required>
                     </div>
                 </div>
-                <div id="indicatorsContainer">
+                <div id="editIndicatorsContainer">
                     <div class="indicator-group mb-3">
                         <div class="row mb-3">
                             <div class="col-7">
@@ -35,21 +35,22 @@
 
                         </div>
 
-                        <div id="editIndicatorsContainer">
+                        {{-- <div id="editIndicatorsContainer">
                             <!-- Dynamic indicators will be inserted here via JavaScript -->
-                        </div>
+                        </div> --}}
 
-                        @foreach ($indicators as $indicator)
+                        @foreach ($indicators as $index => $indicator)
                         <div class="row mb-3">
-                            <input type="text" class="form-control" name="indicators[0][id]" value="{{ $indicator->id }}" hidden required>
+
+                            <input type="text" class="form-control" name="indicators[{{ $index }}][id]" value="{{ $indicator->id }}" hidden required>    
                             <div class="col-7">
-                                <input type="text" class="form-control" name="indicators[0][aspect]" value="{{ $indicator->aspect }}" required>
+                                <input type="text" class="form-control" name="indicators[{{ $index }}][aspect]" value="{{ $indicator->aspect }}" required>
                             </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                             <div class="col-2">
-                                <input type="text" class="form-control" name="indicators[0][target]" value="{{ $indicator->target }}" step="0.01" required>
+                                <input type="text" class="form-control" name="indicators[{{ $index }}][target]" value="{{ $indicator->target }}" step="0.01" required>
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control bobot-input" name="indicators[0][bobot]" value="{{ $indicator->bobot }}" step="0.01" required>
+                                <input type="text" class="form-control bobot-input" name="indicators[{{ $index }}][bobot]" value="{{ $indicator->bobot }}" step="0.01" required>
                             </div>
                             <div class="col-1">
                                 <button type="button" class="btn btn-outline-danger" 
@@ -85,7 +86,7 @@
 <script>
 //Add Field on Edit Inicators for KPI
 document.addEventListener('DOMContentLoaded', function() {
-    let index = 1;
+    let index = {{ count($indicators) }};
     const editIndicatorsContainer = document.getElementById('editIndicatorsContainer');
     const totalBobotInput = document.getElementById('totalBobot');
     const submitBtn = document.getElementById('submitBtn');
@@ -97,14 +98,15 @@ document.addEventListener('DOMContentLoaded', function() {
         newIndicatorGroup.classList.add('edit-indicator-group', 'mb-3');
         newIndicatorGroup.innerHTML = `
             <div class="row">
+                                            <input type="text" class="form-control" name="indicators[${index}][id]" value="" hidden>  
                 <div class="col-7">
-                    <input type="text" class="form-control" name="indicators[1][aspect]" required>
+                    <input type="text" class="form-control" name="indicators[${index}][aspect]" required>
                 </div>
                 <div class="col-2">
-                    <input type="number" class="form-control" name="indicators[1][target]" step="0.01" required>
+                    <input type="number" class="form-control" name="indicators[${index}][target]" step="0.01" required>
                 </div>
                 <div class="col-2">
-                    <input type="number" class="form-control bobot-input" name="indicators[1][bobot]" step="0.01" required>
+                    <input type="number" class="form-control bobot-input" name="indicators[${index}][bobot]" step="0.01" required>
                 </div>
                 <div class="col-1">
                     <button type="button" class="btn btn-danger removeIndicatorBtn">

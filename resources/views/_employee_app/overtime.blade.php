@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-@section('header.title', 'Overtime')
+@section('header.title', 'Lembur')
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 <div class="appHeader blue text-light">

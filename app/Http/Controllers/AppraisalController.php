@@ -42,7 +42,12 @@ function index(Request $request){
     return view('performance.pa.index', [$gradePa], compact('averageGrades', 'gradePa', 'employees', 'appraisals', 'finalGrade', 'selectedMonth', 'selectedYear', 'avgGrade'));
 }
 
-    
+//Get PA per pa_id
+public function getPaByEmployee($paId){
+    $appraisals = PerformanceAppraisal::where('appraisal_id', $paId)->get();
+    return response()->json($appraisals);
+}
+
 
 //Appraisal Add
 public function create(Request $request){
@@ -55,6 +60,21 @@ public function create(Request $request){
         'grades.*' => 'integer|min:0|max:100',
     ]);
     
+    $employee_id = $request->employee_id;
+    $employee = Employee::where('id', $employee_id)->first();
+    $employee_name = $employee->name;
+    $month = $request->month;
+    $year = $request->year;
+
+    $existingPa = GradePa::where('employee_id', $employee_id)
+                  ->where('month', $month)
+                  ->where('year', $year)
+                  ->first();
+
+    if($existingPa) {
+        return back()->with('error', 'Kpi ' . $employee_name . ' pada ' . $month . ' ' . $year . ' sudah ada.');
+    }
+
     foreach($request->input('grades') as $appraisalId => $grade){
         $gradePa = new GradePa();
         $gradePa->employee_id = $request->employee_id;
@@ -82,6 +102,7 @@ public function detail($employee_id, $month = null, $year = null){
     $gradePas = $query->get();
     $totalGrade = $gradePas->sum('grade');
     $avgGrade = $gradePas->avg('grade');
+    $avgGrade = number_format($avgGrade, 2);
     if ($gradePas->isEmpty()) {
         return redirect()->back()->with('error', 'No appraisal records found for the given criteria.');
     }
@@ -112,11 +133,10 @@ public function edit($employee_id, $month = null, $year = null){
 public function update(Request $request, $employee_id, $month, $year) {
     //Validasi input
     $request->validate([
-        'employee_id' => 'required|exists:employees,id',
         'month' => 'required',
         'year' => 'required|integer',
         'grades' => 'nullable|array',
-        'grades.*' => 'integer|min:0|max:100',
+        'grades.*' => 'min:0|max:100',
     ]);
 
     foreach ($request->input('grades') as $appraisalId => $grade) {

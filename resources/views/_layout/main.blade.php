@@ -11,7 +11,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{{asset('e-presensi/assets/img/bayaran-favicon.png')}}" rel="icon">
+  {{-- <link href="{{asset('e-presensi/assets/img/bayaran-favicon.png')}}" rel="icon"> --}}
+  <link href="{{asset('e-presensi/assets/img/logo/favicon.jpg')}}" rel="icon">
   <link href="{{asset('assets/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->

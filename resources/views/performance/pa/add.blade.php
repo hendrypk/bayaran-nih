@@ -12,10 +12,10 @@
                     <div class="row mb-3">
                         <label class="col-md-4 col-form-label fw-bold">Employee Name</label>
                         <div class="col">
-                            <select class="form-select" name="employee_id" aria-label="Default select example">
+                            <select class="form-select" name="employee_id" id="employee" aria-label="Default select example">
                                 <option selected>Select Employeee</option>
                                 @foreach ($employees as $employee)
-                                <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                <option value="{{ $employee->id }}" data-pa-id="{{ $employee->pa_id }}">{{ $employee->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,14 +47,17 @@
                         <h5 class="title mb-0 py-3 fw-bold">Appraisals Aspect</h5>
                     </div>
 
-                    @foreach ($appraisals as $appraisal)
+
+                    <div id="appraisalContainer"></div>
+
+                    {{-- @foreach ($appraisals as $appraisal)
                     <div class="row mb-3">
                         <label for="grade_{{ $appraisal->id }}" class="col-md-4 form-label">{{ $appraisal->name }}</label>
                         <div class="col">
                             <input type="number" class="form-control" name="grades[{{ $appraisal->id }}]" id="grade_{{ $appraisal->id }}" min="0" max="100" required>
                         </div>
                     </div>
-                    @endforeach
+                    @endforeach --}}
 
                     <div class="row g-3 d-grid gap-2 col-6 mx-auto">
                         <button type="submit" class="btn btn-tosca">Submit</button>

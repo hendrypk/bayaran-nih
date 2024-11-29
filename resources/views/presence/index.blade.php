@@ -6,9 +6,7 @@
     <x-date-filter action="{{ route('presence.list.admin') }}" 
                     :startDate="request()->get('start_date')" 
                     :endDate="request()->get('end_date')" />
-    
-
-    <div class="col-md">
+        <div class="col-md">
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
@@ -36,12 +34,13 @@
                         @endcan
                     </div>
                 </div>
-        
-                <!-- Table with hoverable rows -->
                 <div class="card-table-wrapper"> 
                     <table class="table datatable table-hover">
                         <thead>
                             <tr>
+                                <th scope="col">
+                                    <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
+                                </th>
                                 <th scope="col">#</th>
                                 <th scope="col">EID</th>
                                 <th scope="col">Employee Name</th>
@@ -65,6 +64,9 @@
                         <tbody>
                             @foreach($presence as $no=>$data)
                             <tr>
+                                <td>
+                                    <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
+                                </td>                                       
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $data->employee->eid }}</td>
                                 <td>{{ $data->employee->name }}</td>
@@ -93,8 +95,6 @@
                                         <i class="ri-road-map-line"></i>
                                     </button>
                                 </td>
-                                {{-- <td>{{ $data['location_in'] }}</td>
-                                <td>{{ $data['location_out'] }}</td> --}}
                                 <td>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
@@ -135,7 +135,6 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- End Table with hoverable rows -->
             </div>
         </div>
     </div>
@@ -159,6 +158,16 @@
 
 @section('script')
 <script>
+
+//Select all
+function toggleSelectAll(source) {
+    const checkboxes = document.querySelectorAll('.select-item');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = source.checked;
+    });
+}
+
+
 //Show map
 let mapPresence, marker;  // Variabel untuk peta dan marker
 

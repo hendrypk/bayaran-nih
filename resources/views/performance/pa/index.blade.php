@@ -95,6 +95,43 @@
 @section('script')
 
 <script>
+document.getElementById('employee').addEventListener('change', function() {
+    var selectedOption = this.options[this.selectedIndex];
+    var paId = selectedOption.getAttribute('data-pa-id');
+
+    if (paId) {
+        fetchPasBypaId(paId);
+    } else {
+        console.error('KPI ID not found for the selected employee');
+    }
+});
+
+function fetchPasBypaId(paId) {
+    fetch(`/appraisal/get-by-pa-id/${paId}`)
+        .then(response => response.json())
+        .then(data => {
+            updatePa(data);
+        })
+        .catch(error => console.error('Error fetching Pas:', error));
+}
+
+function updatePa(appraisals) {
+    var appraisalContainer = document.getElementById('appraisalContainer');
+    appraisalContainer.innerHTML = ''; // Clear any existing content
+
+    appraisals.forEach(function(appraisal) {
+        var appraisalRow = `
+            <div class="row mb-3">
+                <label for="grade_${appraisal.id}" class="col-md-4 form-label">${appraisal.aspect}</label>
+                <div class="col">
+                    <input type="number" class="form-control" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
+                </div>
+            </div>
+        `;
+        appraisalContainer.insertAdjacentHTML('beforeend', appraisalRow);
+    });
+}
+
 //Script for Delete Modal
 function confirmDelete(id, month, year, name, entity) {
     Swal.fire({

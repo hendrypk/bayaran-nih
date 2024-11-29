@@ -280,6 +280,17 @@
             </div>
           </div>
           
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">Appraisal</label>
+            <div class="col-sm-8">
+              <select class="form-select" name="pa_id" aria-label="Default select example">
+                <option value="" selected>Select Appraisal</option>
+                @foreach($pa_id as $data)
+                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
 
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">KPI</label>

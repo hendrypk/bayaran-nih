@@ -78,7 +78,7 @@
                         <label for="" class="col-md-2 form-label">{{ $gradeKpi->indicator->target }}</label>
                         <label for="" class="col-md-2 form-label">{{ $gradeKpi->indicator->bobot }}</label>
                         <div class="col-md-2">
-                            <input type="number" step="0.01" min="0" class="form-control" name="grades[{{ $gradeKpi->indicator_id }}]" id="grade_{{ $gradeKpi->indicator_id }}" min="0" max="100" required value="{{ $gradeKpi->achievement }}">
+                            <input type="number" step="0.01" min="0" class="form-control" name="grades[{{ $gradeKpi->indicator_id }}]" id="grade_{{ $gradeKpi->indicator_id }}" min="0" max="100" required value="{{ $gradeKpi->achievement }}" step="0.01">
                         </div>
                     </div>
                     @endforeach
