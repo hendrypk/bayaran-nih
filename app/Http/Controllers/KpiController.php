@@ -7,32 +7,81 @@ use App\Models\Employee;
 use App\Models\GradeKpi;
 use App\Models\KpiOptions;
 use Illuminate\Http\Request;
-use App\Models\PerformanceAppraisal;
 use App\Models\PerformanceKpi;
+use App\Models\PerformanceAppraisal;
+use Illuminate\Support\Facades\Auth;
 
 class KpiController extends Controller
 {
 
 //KPI Index
-    function indexKpi(Request $request){
+    public function indexKpi(Request $request) {
 
+        // Get selected month and year from the request, default to current month and year
         $selectedMonth = $request->input('month', date('F'));
-        $selectedYear = $request->input('year', date('Y'));    
+        $selectedYear = $request->input('year', date('Y'));
 
-        $gradeKpi = GradeKpi::with('indicator', 'employees')
-        ->select('employee_id', 'month','year')
-        ->where('month', $selectedMonth)
-        ->where('year', $selectedYear)
-        ->groupBy('employee_id', 'month', 'year')
-        ->get();
+        // Get division and department from the authenticated user
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+
+        // Start the GradeKpi query
+        $query = GradeKpi::with('indicator', 'employees')
+            ->select('employee_id', 'month', 'year')
+            ->where('month', $selectedMonth)
+            ->where('year', $selectedYear)
+            ->groupBy('employee_id', 'month', 'year');
+
+        // Apply filtering conditions based on the user's division and department
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('employees', function($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('employees', function($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        } elseif ($userDivision && $userDepartment) {
+            $query->whereHas('employees', function($query) use ($userDivision, $userDepartment) {
+                $query->where('division_id', $userDivision)
+                    ->where('department_id', $userDepartment);
+            });
+        }
+
+        // Execute the query to get the grade kpis
+        $gradeKpi = $query->get();
+
+        // Return the view with the grade kpis, selected month, and selected year
         return view('performance.kpi.index', compact('gradeKpi', 'selectedMonth', 'selectedYear'));
     }
 
+
 //Kpi Add
     public function addKpi(Request $request){
-        $employees = Employee::get();
+        // Get division and department from the authenticated user
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+
+        // Start the Employee query
+        $query = Employee::query();
+
+        // Apply filtering conditions based on the user's division and department
+        if ($userDivision && !$userDepartment) {
+            $query->where('division_id', $userDivision);
+        } elseif (!$userDivision && $userDepartment) {
+            $query->where('department_id', $userDepartment);
+        } elseif ($userDivision && $userDepartment) {
+            $query->where('division_id', $userDivision)
+                ->where('department_id', $userDepartment);
+        }
+
+        // Execute the query to get the employees
+        $employees = $query->get();
+
+        // Return the view with the filtered employees
         return view('performance.kpi.add', compact('employees'));
     }
+
 
 //Kpi Create
     public function create(Request $request){

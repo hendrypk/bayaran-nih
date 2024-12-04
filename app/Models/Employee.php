@@ -17,9 +17,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\EmployeeResetPasswordNotification;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Authenticatable 
 {
+    use SoftDeletes;
     use HasFactory;
     use Notifiable;
 
@@ -28,8 +30,14 @@ class Employee extends Authenticatable
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
         'blood_type', 'gender', 'religion', 'marriage', 'education', 'whatsapp', 'bank', 'bank_number',
         'position_id', 'job_title_id', 'division_id', 'department_id', 'joining_date', 'employee_status',
-        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role'];
+        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date'];
     protected $hidden = ['password']; 
+
+    //Relation table options
+    public function option()
+    {
+        return $this->belongsTo(Option::class);
+    }
 
     //relation table position
     public function position()
@@ -58,7 +66,12 @@ class Employee extends Authenticatable
     public function workDay()
     {
         return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
-    }      
+    }
+
+    public function employeeStatus()
+    {
+        return $this->belongsTo(EmployeeStatus::class, 'employee_status', 'id');
+    }
 
     public function positionKpi()
     {

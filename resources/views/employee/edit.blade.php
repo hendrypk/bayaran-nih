@@ -9,40 +9,40 @@
         <h5 class="card-title">Edit Employee</h5>
 
         <!-- General Form Elements -->
-         <form action="{{route('employee.update', $employee->id)}}" method="POST">
+         <form action="{{route('employee.update', $employee->id)}}" id="editEmployee" method="POST">
           @csrf
           <div class="row mb-3">
             <label for="inputEmail" class="col-sm-4 col-form-label">Full Name</label>
             <div class="col-sm-8">
-              <input type="name" name="name" value="{{old('name', $employee->name)}}" class="form-control">
+              <input type="name" name="name" value="{{old('name', $employee->name)}}" class="form-control" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label for="city" class="col-sm-4 col-form-label">Identity Address</label>
             <div class="col-sm-8">
-              <input type="text" name="city" value="{{old('city', $employee->city)}}" class="form-control">
+              <input type="text" name="city" value="{{old('city', $employee->city)}}" class="form-control" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label for="domicile" class="col-sm-4 col-form-label">Current Address</label>
             <div class="col-sm-8">
-              <input type="text" name="domicile" value="{{old('domicile', $employee->domicile)}}" class="form-control">
+              <input type="text" name="domicile" value="{{old('domicile', $employee->domicile)}}" class="form-control" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label for="place_birth" class="col-sm-4 col-form-label">Place of Birth</label>
             <div class="col-sm-8">
-              <input type="text" name="place_birth" value="{{old('place_birth', $employee->place_birth)}}" class="form-control">
+              <input type="text" name="place_birth" value="{{old('place_birth', $employee->place_birth)}}" class="form-control" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label for="date_birth" class="col-sm-4 col-form-label">Date of Birth</label>
             <div class="col-sm-8">
-              <input type="date" name="date_birth" value="{{old('date_birth', $employee->date_birth)}}" class="form-control">
+              <input type="date" name="date_birth" value="{{old('date_birth', $employee->date_birth)}}" class="form-control" required>
             </div>
           </div>
 
@@ -61,7 +61,7 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Gender</label>
             <div class="col-sm-8">
-              <select class="form-select" name="gender" aria-label="Default select example">
+              <select class="form-select" name="gender" aria-label="Default select example" required>
                 <option selected disabled>- Select Gender -</option>
                 @foreach($genders as $gender)
                 <option value="{{ $gender }}" {{ $gender == $employee->gender ? 'selected' : '' }}>{{ $gender }}</option>
@@ -73,7 +73,7 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Religion</label>
             <div class="col-sm-8">
-              <select class="form-select" name="religion" aria-label="Default select example">
+              <select class="form-select" name="religion" aria-label="Default select example" required>
                 <option selected disabled>- Select Religion -</option>
                 @foreach($religions as $religion)
                 <option value="{{ $religion }}" {{ $religion == $employee->religion ? 'selected' : '' }}>{{ $religion }}</option>
@@ -85,7 +85,7 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Marrital Status</label>
             <div class="col-sm-8">
-              <select class="form-select" name="marriage" aria-label="Default select example">
+              <select class="form-select" name="marriage" aria-label="Default select example" required>
                 <option selected disabled>- Select Marrital Status -</option>
                 @foreach($marriage as $marriage)
                 <option value="{{ $marriage }}" {{ $marriage == $employee->marriage ? 'selected' : '' }}>{{ $marriage }}</option>
@@ -97,7 +97,7 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Education</label>
             <div class="col-sm-8">
-              <select class="form-select" name="education" aria-label="Default select example">
+              <select class="form-select" name="education" aria-label="Default select example" required>
                 <option selected disabled>- Select Education -</option>
                 @foreach($educations as $education)
                 <option value="{{ $education }}" {{ $education == $employee->education ? 'selected' : '' }}>{{ $education }}</option>
@@ -109,14 +109,14 @@
           <div class="row mb-3">
             <label for="inputEmail" class="col-sm-4 col-form-label">email</label>
             <div class="col-sm-8">
-              <input type="email" name="email" value="{{old('email', $employee->email)}}" class="form-control">
+              <input type="email" name="email" value="{{old('email', $employee->email)}}" class="form-control" required>
             </div>
           </div>
           
           <div class="row mb-3">
             <label for="whatsapp" class="col-sm-4 col-form-label">WhatsApp Number</label>
             <div class="col-sm-8">
-              <input type="number" name="whatsapp" value="{{old('whatsapp', $employee->whatsapp)}}" class="form-control">
+              <input type="number" name="whatsapp" value="{{old('whatsapp', $employee->whatsapp)}}" class="form-control" required>
             </div>
           </div>
           
@@ -124,7 +124,7 @@
             <label class="col-sm-4 col-form-label">Bank</label>
             <div class="col-sm-8">
               <select class="form-select" name="bank" aria-label="Default select example">
-                <option selected disabled>- Select Bank -</option>
+                <option selected value="">- Select Bank -</option>
                 @foreach($banks as $bank)
                 <option value="{{ $bank }}" {{ $bank == $employee->bank ? 'selected' : '' }}>{{ $bank }}</option>
                 @endforeach
@@ -142,8 +142,8 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Position</label>
             <div class="col-sm-8">
-              <select class="form-select" name="position_id" aria-label="Default select example">
-                <option selected>Select position</option>
+              <select class="form-select" name="position_id" aria-label="Default select example" required>
+                <option selected value="">Select position</option>
                 @foreach($position as $data)
                 <option value="{{ $data->id }}" {{ $data->name == $employee->position->name ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -154,8 +154,8 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Job Title</label>
             <div class="col-sm-8">
-              <select class="form-select" name="job_title_id" aria-label="Default select example">
-                <option selected>Select Job Title</option>
+              <select class="form-select" name="job_title_id" aria-label="Default select example" required>
+                <option selected value="">Select Job Title</option>
                 @foreach($job_title as $data)
                 <option value="{{ $data->id }}" {{ $data->name == $employee->job_title->name ? 'selected' : '' }}>{{ $data->name }}</option>
 
@@ -191,14 +191,7 @@
           <div class="row mb-3">
             <label for="inputDate" class="col-sm-4 col-form-label">Joining Date</label>
             <div class="col-sm-8">
-              <input type="date" name="joining_date" class="form-control" value="{{ old('joining_date', $employee->joining_date )}}">
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <label for="inputCity" class="col-sm-4 col-form-label">City</label>
-            <div class="col-sm-8">
-              <input type="text"  name="city" class="form-control" value="{{ old('city', $employee->city )}}" >
+              <input type="date" name="joining_date" class="form-control" value="{{ old('joining_date', $employee->joining_date )}}" required>
             </div>
           </div>
 
@@ -212,7 +205,7 @@
                           id="workDay{{ $data->id }}" 
                           name="workDay[]" 
                           value="{{ $data->id }}"
-                          {{ $employee->workDay && $employee->workDay->contains($data->id) ? 'checked' : '' }}>
+                          {{ $employee->workDay && $employee->workDay->contains($data->id) ? 'checked' : '' }} @required(true)>
                     <label class="form-check-label" for="workDay{{ $data->id }}">
                         {{ $data->name }}
                     </label>
@@ -232,7 +225,7 @@
                         id="officeLocations{{ $data->id }}" 
                         name="officeLocations[]" 
                         value="{{ $data->id }}"
-                        {{ $employee->officeLocations && $employee->officeLocations->contains($data->id) ? 'checked' : '' }}>
+                        {{ $employee->officeLocations && $employee->officeLocations->contains($data->id) ? 'checked' : '' }} @required(true)>
                   <label class="form-check-label" for="officeLocations{{ $data->id }}">
                       {{ $data->name }}
                   </label>
@@ -245,10 +238,10 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Employee Status</label>
             <div class="col-sm-8">
-              <select class="form-select" name="employee_status" aria-label="Default select example">
-                <option selected>Select Status</option>
+              <select class="form-select" name="employee_status" aria-label="Default select example" required>
+                <option disabled>Select Status</option>
                 @foreach($status as $data)
-                <option value="{{ $data->name }}" {{ $data->name == $employee->employee_status ? 'selected' : '' }}>{{ $data->name }}</option>
+                <option value="{{ $data->id }}" {{ $data->name == $employee->employee_status ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
               </select>
             </div>
@@ -257,8 +250,8 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Sales Status</label>
             <div class="col-sm-8">
-              <select class="form-select" name="sales_status" aria-label="Default select example">
-                <option selected>Select Status</option>
+              <select class="form-select" name="sales_status" aria-label="Default select example" required>
+                <option disabled>Select Status</option>
                 <option value="1" {{ $employee->sales_status == '1' ? 'selected' : '' }}>Yes</option>
                 <option value="0"{{ $employee->sales_status == '0' ? 'selected' : '' }}>No</option>
               </select>
@@ -312,5 +305,4 @@
     </div>
   </div>
 </div>
-
 @endsection

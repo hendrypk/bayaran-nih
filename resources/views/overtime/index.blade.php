@@ -48,6 +48,7 @@
                                 <th scope="col">Start at</th>
                                 <th scope="col">End at</th>
                                 <th scope="col">Total</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Delete</th>
                             </tr>
@@ -62,6 +63,14 @@
                                 <td>{{ $overtime->start_at }}</td>
                                 <td>{{ $overtime->end_at }}</td>
                                  <td> {{ $overtime->total }} <span>minutes</span></td>
+                                 <td>
+
+                                    @if ($overtime->status === 0)
+                                    <i class="status-leave reject ri-close-fill"></i>
+                                    @elseif ($overtime->status === 1)
+                                        <i class="status-leave accept ri-check-double-fill"></i>
+                                    @endif
+                                 </td>
                                  <td>
                                  <button type="button" class="btn btn-outline-success"
                                     data-bs-toggle="modal" 
@@ -139,11 +148,8 @@
         const start = button.getAttribute('data-start');
         const end = button.getAttribute('data-end');
 
-        // Set the form action URL
-        const form = document.getElementById('editOvertimeForm');
-        form.action = form.action.replace('__id__', id);
-
         // Populate the form fields
+        document.getElementById('id').value = id;
         document.getElementById('selectEmployee').value = employee_id;
         document.getElementById('inputDate').value = date;
         document.getElementById('inputStart').value = start;

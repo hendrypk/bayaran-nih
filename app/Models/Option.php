@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Holiday extends Model
+class Option extends Model
 {
     use SoftDeletes;
-    
-    protected $table = 'holidays';
+
     protected $fillable = [
         'name',
-        'date',
+        'type'
     ];
+
+    public function employee()
+    {
+        return $this->hasMany(Employee::class);
+    }
+    
 }
