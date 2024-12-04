@@ -8,80 +8,39 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\PerformanceAppraisal;
-use Illuminate\Support\Facades\Auth;
 
 class AppraisalController extends Controller
 {
 //Appraisal Index
-public function index(Request $request)
-{
-    // Get the selected month and year, default to current month and year
-    $selectedMonth = $request->input('month', date('F'));
-    $selectedYear = $request->input('year', date('Y'));
+function index(Request $request){
+        $employees = Employee::get();
+        $appraisals = PerformanceAppraisal::get();
+        $selectedMonth = $request->input('month', date('F'));
+        $selectedYear = $request->input('year', date('Y'));
 
-    // Get division and department from the authenticated user
-    $userDivision = Auth::user()->division_id;
-    $userDepartment = Auth::user()->department_id;
+        $gradePa = GradePa::with('employees')
+            ->select('employee_id', 'month', 'year')
+            ->where('month', $selectedMonth)
+            ->where('year', $selectedYear)
+            ->groupBy('employee_id', 'month', 'year')
+            ->get();
 
-    // Get employees filtered by the user's division and department
-    $employeesQuery = Employee::query();
+            $averageGrades = GradePa::select('employee_id', DB::raw('AVG(grade) as average_grade'))
+            ->where('month', $selectedMonth)
+            ->where('year', $selectedYear)
+            ->groupBy('employee_id')
+            ->get();
 
-    if ($userDivision && !$userDepartment) {
-        // Filter by division only
-        $employeesQuery->where('division_id', $userDivision);
-    } elseif (!$userDivision && $userDepartment) {
-        // Filter by department only
-        $employeesQuery->where('department_id', $userDepartment);
-    } elseif ($userDivision && $userDepartment) {
-        // Filter by both division and department
-        $employeesQuery->where('division_id', $userDivision)
-            ->where('department_id', $userDepartment);
-    }
+        $avgGrade = $gradePa->groupBy('employee_id')->map(function($group){
+            return $group->avg('grade');
+        });
 
-    $employees = $employeesQuery->get();
+        $finalGrade = $gradePa->groupBy(['employee_id'])->map(function ($group) {
+                return $group->avg('grade');
+            });
 
-    // Get appraisals
-    $appraisals = PerformanceAppraisal::get();
-
-    // Get grade data for selected month and year
-    $gradePa = GradePa::with('employees')
-        ->select('employee_id', 'month', 'year')
-        ->where('month', $selectedMonth)
-        ->where('year', $selectedYear)
-        ->whereIn('employee_id', $employees->pluck('id')) // Filter by the selected employees
-        ->groupBy('employee_id', 'month', 'year')
-        ->get();
-
-    // Get average grades for selected month and year
-    $averageGrades = GradePa::select('employee_id', DB::raw('AVG(grade) as average_grade'))
-        ->where('month', $selectedMonth)
-        ->where('year', $selectedYear)
-        ->whereIn('employee_id', $employees->pluck('id')) // Filter by the selected employees
-        ->groupBy('employee_id')
-        ->get();
-
-    // Map the grades and calculate final grade
-    $avgGrade = $gradePa->groupBy('employee_id')->map(function ($group) {
-        return $group->avg('grade');
-    });
-
-    $finalGrade = $gradePa->groupBy(['employee_id'])->map(function ($group) {
-        return $group->avg('grade');
-    });
-
-    // Return the view with the filtered data
-    return view('performance.pa.index', compact(
-        'averageGrades',
-        'gradePa',
-        'employees',
-        'appraisals',
-        'finalGrade',
-        'selectedMonth',
-        'selectedYear',
-        'avgGrade'
-    ));
+    return view('performance.pa.index', [$gradePa], compact('averageGrades', 'gradePa', 'employees', 'appraisals', 'finalGrade', 'selectedMonth', 'selectedYear', 'avgGrade'));
 }
-
 
 //Get PA per pa_id
 public function getPaByEmployee($paId){

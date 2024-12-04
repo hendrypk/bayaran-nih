@@ -21,10 +21,8 @@ use App\Http\Controllers\EmployeeAppController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\KpiPaOptionsController;
 use App\Http\Controllers\LeaveController;
-use App\Http\Controllers\OptionController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
-use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
@@ -57,11 +55,6 @@ Route::get('/github/releases', [ApiController::class, 'getReleases']);
 Route::middleware(['auth:web'])->group(function () {
     //Dashboard
     Route::get('/home', function () {return view('home');})->name('home');
-
-    //Options
-    Route::prefix('option')->group(function () {
-        Route::get('', [OptionController::class, 'index'])->name('option.index');
-    });
 
     //Options
     Route::prefix('options')->group(function () {
@@ -157,14 +150,6 @@ Route::middleware(['auth:web'])->group(function () {
         });
     });
 
-    //Resignation
-    Route::prefix('resignation')->group(function() {
-        Route::get('', [ResignationController::class, 'index'])->name('resignation.index');
-        Route::post('store', [ResignationController::class, 'store'])->name('resignation.store');
-        Route::post('update', [ResignationController::class, 'update'])->name('resignation.update');
-        Route::post('{id}/delete', [ResignationController::class, 'delete'])->name('resignation.delete');
-    });
-
     //presence
     Route::group(['middleware' => ['permission:view presence']], function() {
         Route::prefix('presences')->group(function () {
@@ -186,7 +171,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::get('', [OvertimeController::class, 'index'])->name('overtime.list');
             Route::post('submit',[OvertimeController::class,'submit'])->name('overtime.add');
             Route::post('{id}/delete', [OvertimeController::class,'delete'])->name('overtime.delete');
-            route::post('update', [OvertimeController::class,'update'])->name('overtime.update');
+            route::post('{id}/update', [OvertimeController::class,'update'])->name('overtime.update');
             Route::get('summary', [OvertimeController::class, 'recapOvertime'])->name('overtime.summary');
             Route::post('export', [OvertimeController::class, 'export'])->name('overtime.export');
         });

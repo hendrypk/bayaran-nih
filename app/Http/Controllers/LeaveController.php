@@ -2,61 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Leave;
 use App\Models\Employee;
+use App\Models\Leave;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
 //Index
-public function index()
-{
-    // Get the authenticated user's division and department
-    $userDivision = Auth::user()->division_id;
-    $userDepartment = Auth::user()->department_id;
-
-    // Start the query for leaves with related employees
-    $query = Leave::with('employees');
-    
-    // Apply conditions based on the division and department of the logged-in user
-    if ($userDivision && !$userDepartment) {
-        $query->whereHas('employees', function ($query) use ($userDivision) {
-            $query->where('division_id', $userDivision);
+    public function index () {
+        $leaves = Leave::with('employees')->get()->map(function($leave) {
+            // $leave->start_date = \Carbon\Carbon::parse($leave->start_date)->format('d F Y');
+            // $leave->end_date = \Carbon\Carbon::parse($leave->end_date)->format('d F Y');
+            return $leave;
         });
-    } elseif (!$userDivision && $userDepartment) {
-        $query->whereHas('employees', function ($query) use ($userDepartment) {
-            $query->where('department_id', $userDepartment);
-        });
-    } elseif ($userDivision && $userDepartment) {
-        $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
-            $query->where('division_id', $userDivision)
-                  ->where('department_id', $userDepartment);
-        });
+        $employees = Employee::all();
+        $category = [
+            'Annual leave', 
+            'Sick',
+            'Permit'
+        ];
+        return view('leave.index', compact('leaves', 'employees', 'category'));
     }
-
-    // Retrieve the leaves with related employee data
-    $leaves = $query->get()->map(function($leave) {
-        // Optional: Format the date fields as needed
-        // $leave->start_date = \Carbon\Carbon::parse($leave->start_date)->format('d F Y');
-        // $leave->end_date = \Carbon\Carbon::parse($leave->end_date)->format('d F Y');
-        return $leave;
-    });
-
-    // Retrieve all employees (you can add more filtering if necessary)
-    $employees = Employee::all();
-
-    // Leave categories
-    $category = [
-        'Annual leave', 
-        'Sick',
-        'Permit'
-    ];
-
-    // Return the view with the necessary data
-    return view('leave.index', compact('leaves', 'employees', 'category'));
-}
-
 
     public function store (Request $request) {
         $id = $request->id;
