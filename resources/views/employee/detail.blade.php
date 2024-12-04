@@ -100,7 +100,7 @@
                                 <div class="col-lg-4 col-md-4 label ">Employee ID</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
                                 <div class="col-lg-4 col-md-4 label ">Position</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->name ?? '-' }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->name }}</div>
                                 <div class="col-lg-4 col-md-4 label ">Job Title</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->job_title->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">Division</div>
