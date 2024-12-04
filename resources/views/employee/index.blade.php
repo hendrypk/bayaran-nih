@@ -32,11 +32,12 @@
           </thead>
           <tbody>
             @foreach($employee as $no=>$data)
-            <tr onclick="window.location='{{ route('employee.detail', $data->id) }}'">
+            <tr onclick="window.open('{{ route('employee.detail', $data->id) }}', '_blank')">
+
               <th scope="row">{{ $no+1 }}</th>
               <td>{{ $data->eid }}</td>
               <td>{{ $data->name }}</td>
-              <td>{{ $data->employee_status ?? '-' }}</td>
+              <td>{{ $data->employeeStatus->name ?? '-' }}</td>
               <td>{{ $data->position->name ?? '-' }}</td>
               <td>{{ $data->job_title->name ?? '-' }}</td>
               <td>{{ $data->division->name ?? '-' }}</td>

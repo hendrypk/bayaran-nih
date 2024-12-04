@@ -17,7 +17,7 @@
                                 <option value="" disabled selected>Select Employee</option>
                                 @foreach ($employees as $employee)
                                 {{-- <option value="{{ $employee->id }}" data-eid="{{ $employee->eid }}" data-position-id="{{ $employee->position_id }}" data-position="{{ $employee->position->name }}" >{{ $employee->name }}</option> --}}
-                                <option value="{{ $employee->id }}" data-eid="{{ $employee->eid }}" data-kpi-id="{{ $employee->kpi_id }}" data-position="{{ $employee->position->name }}" >{{ $employee->name }}</option>
+                                <option value="{{ $employee->id }}" data-eid="{{ $employee->eid }}" data-kpi-id="{{ $employee->kpi_id }}" data-position="{{ $employee->position ? $employee->position->name : 'No Position' }}" >{{ $employee->name }}</option>
                                 @endforeach
                             </select>
                         </div>

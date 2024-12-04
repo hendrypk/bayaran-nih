@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppraisalName;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\WorkDay;
@@ -11,15 +10,17 @@ use App\Models\Employee;
 use App\Models\JobTitle;
 use App\Models\Overtime;
 use App\Models\Position;
+use App\Models\KpiAspect;
 use App\Models\Department;
 use App\Models\WorkCalendar;
 use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
+use App\Models\AppraisalName;
 use App\Models\EmployeeStatus;
-use App\Models\KpiAspect;
 use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -112,7 +113,6 @@ class EmployeeController extends Controller
             'joining_date' => 'required',
             'employee_status' => 'required',
             'sales_status' => 'required',
-            'pa_id' => 'required',
         ]);
         $employee = Employee::create([
             'eid' => $eid,
@@ -187,7 +187,6 @@ class EmployeeController extends Controller
         $bloods = ['unkown', 'A', 'B', 'AB', 'O'];
         $marriage = ['unkown', 'Single', 'Married', 'Divorced', 'Widowed'];
         $religions = [
-            'unkown', 
             'Islam', 
             'Christian', 
             'Catholic', 
@@ -197,7 +196,6 @@ class EmployeeController extends Controller
             'Others'
         ];
         $educations = [
-            'unkown', 
             'Junior School',
             'High School', 
             'Diploma', 
@@ -206,7 +204,6 @@ class EmployeeController extends Controller
             'Doctorate'
         ];
         $banks = [
-            'unkown', 
             'Bank Mandiri', 
             'Bank BNI', 
             'Bank BRI', 
@@ -242,28 +239,26 @@ class EmployeeController extends Controller
         //find employeeId
         $employee = Employee::findOrFail($id);
 
-        $request->validate([
-            'email' => 'required',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
             'name' => 'required',
             'city' => 'required',
             'domicile' => 'required',
             'place_birth' => 'required',
-            'date_birth' => 'required',
-            'place_birth' => 'required',
+            'date_birth' => 'required|date',
             'blood_type' => 'required',
             'gender' => 'required',
             'religion' => 'required',
             'marriage' => 'required',
             'education' => 'required',
-            'whatsapp' => 'required',
+            'whatsapp' => 'required|regex:/^[0-9]+$/',
             'bank' => 'required',
-            'bank_number' => 'required',
-            'position_id' => 'required',
-            'job_title_id' => 'required',
-            'joining_date' => 'required',
+            'bank_number' => 'required|numeric',
+            'position_id' => 'required|integer',
+            'job_title_id' => 'required|integer',
+            'joining_date' => 'required|date',
             'employee_status' => 'required',
             'sales_status' => 'required',
-            'pa_id' => 'required',
         ]);
 
         $employee->update([
