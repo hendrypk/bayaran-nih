@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PresencesExport;
 use Carbon\Carbon;
 use App\Models\WorkDay;
 use App\Models\Employee;
@@ -10,9 +11,7 @@ use App\Models\Presence;
 use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
 use App\Imports\PresenceImport;
-use App\Exports\PresencesExport;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PresenceController extends Controller
@@ -22,9 +21,6 @@ class PresenceController extends Controller
     public function index(Request $request){
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $userDivision = Auth::user()->division_id;
-        $userDepartment = Auth::user()->department_id;
-    
         $employees = Employee::with('workDay')->get();
         $workDay = [];
         foreach ($employees as $employee) {
@@ -32,28 +28,9 @@ class PresenceController extends Controller
         }
 
         $query = Presence::with('employee');
-
-        // Conditions for division_id and department_id on the Presence model
-        if ($userDivision && !$userDepartment) {
-            $query->whereHas('employee', function ($query) use ($userDivision) {
-                $query->where('division_id', $userDivision);
-            });
-        } elseif (!$userDivision && $userDepartment) {
-            $query->whereHas('employee', function ($query) use ($userDepartment) {
-                $query->where('department_id', $userDepartment);
-            });
-        } elseif ($userDivision && $userDepartment) {
-            $query->whereHas('employee', function ($query) use ($userDivision, $userDepartment) {
-                $query->where('division_id', $userDivision)
-                    ->where('department_id', $userDepartment);
-            });
-        }
-
-        // Filter by the date range if provided
-        if ($startDate && $endDate) {
+        if($startDate && $endDate){
             $query->whereBetween('date', [$startDate, $endDate]);
         }
-
         $presence = $query->get();
         $workDays = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
         ->groupBy('name')
