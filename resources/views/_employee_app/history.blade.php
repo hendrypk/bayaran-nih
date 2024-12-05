@@ -1,20 +1,13 @@
 @extends('_employee_app._layout_employee.main')
 @section('header.title', 'History')
 @include('_employee_app._layout_employee.header')
-<!-- @section('header')
-<div class="appHeader blue text-light">
-        <div class="left">
-            <a href="{{ route('employee.app') }}" class="headerButton goBack">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-            </a>
-        </div>
-        <div class="pageTitle"> {{ Auth::user()->name }} Presences History </div>
-        <div class="right"></div>
-    </div>
-@endsection -->
 
 @section('content')
 <div class="presence">
+    <x-date-filter action="{{ route('overtime.list') }}" 
+                    :startDate="request()->get('start_date')" 
+                    :endDate="request()->get('end_date')" />
+                    
     <div class="card">
         <div class="card-body">
             <table class="table">
@@ -30,12 +23,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
-                    
-                    @foreach($presences as $no=>$presence)
+                    @foreach($presence as $no=>$presence)
                     <tr>
                         {{-- <td>{{ $no+1 }}</td> --}}
-                        <td>{{ $presence->date }}</td>
+                        <td>{{ \Carbon\Carbon::parse($presence->date)->format('d-m-Y') }}</td>
                         <td>{{ $presence->check_in }}</td>
                         <td>{{ $presence->check_out ?? '-' }}</td>
                         <td>{{ $presence->late_arrival == 1 ? 'Late' : "On Time" }}</td>

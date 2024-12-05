@@ -101,9 +101,11 @@ function distance($lat1, $lon1, $lat2, $lon2){
 //Store Presence
     public function store(Request $request){
         $request->validate([
+            'workDay' => 'required',
             'note' => 'required'
         ],[
-            'note.required' => 'Note is required!'
+            'workDay.required' => 'Pilih shift sik!',
+            'note.required' => 'Note diisi sik!'
         ]);
 
         $employeeId = Auth::id();
@@ -316,12 +318,24 @@ function distance($lat1, $lon1, $lat2, $lon2){
     }
 
 //Presences History
-    public function history(){
+    public function history(Request $request){
         $employeeId = Auth::id();
-        $employee = Employee::findOrFail($employeeId);
-        $presences = Presence::where('employee_id', $employeeId)->get();
-        // dd($employeeId, $employee, $presences);
-        return view('_employee_app.history', compact('presences'));
+        $presences = Presence::where('employee_id', $employeeId);
+        $startMonth = now()->startOfMonth()->toDateString();
+        $now = now()->toDateString();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($startDate && $endDate) {
+            $presences->whereBetween('date', [$startDate, $endDate]);
+        } else {
+            $presences->whereBetWeen('date', [$startMonth, $now]);
+        }
+
+        $presence = $presences->get();
+        
+        
+        return view('_employee_app.history', compact('presence'));
     }
 
 //Overtime
@@ -371,14 +385,26 @@ function distance($lat1, $lon1, $lat2, $lon2){
         return redirect()->route('employee.app')->with('success', $message);
     }
 //Overtime History
-    public function overtimeHistory(){
+    public function overtimeHistory(Request $request){
         $employeeId = Auth::id();
-        $overtime = Overtime::where('employee_id', $employeeId)->get();
+        $overtimes = Overtime::where('employee_id', $employeeId);
+        $startMonth = now()->startOfMonth()->toDateString();
+        $now = now()->toDateString();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($startDate && $endDate) {
+            $overtimes->whereBetween('date', [$startDate, $endDate]);
+        } else {
+            $overtimes->whereBetWeen('date', [$startMonth, $now]);
+        }
+
+        $overtime = $overtimes->get();
 
         return view('_employee_app.overtime-history', compact('overtime'));
     }
 
-//Overtime
+//Profile
     public function profileIndex(){
         return view('_employee_app.profile.index');
     }
