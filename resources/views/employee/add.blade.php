@@ -42,7 +42,7 @@
       </div> --}}
         <!-- General Form Elements -->
             
-      <form action="{{route('employee.submit')}}" method="POST" id="addEmployee">
+      <form action="{{route('employee.submit')}}" method="POST">
         @csrf
               
         <div class="row mt-10"></div>
@@ -328,49 +328,16 @@
 
 @section('script')
 <script>
-  document.getElementById('addEmployee').addEventListener('submit', function (event) {
-      event.preventDefault(); 
-      const form = event.target;
+document.querySelector('form').addEventListener('submit', (event) => {
+    const selectedWorkDays = [...document.querySelectorAll('input[name="workDay[]"]:checked')]
+});
 
-      fetch(form.action, {
-          method: form.method,
-          body: new FormData(form),
-          headers: {
-              'Accept': 'application/json'
-          }
-      })
-      .then(response => response.json())
-      .then(data => {
-          if (!data.success) {
-              let errorMessage = '';
-              for (let field in data.errors) {
-                  errorMessage += `<p>${data.errors[field].join('<br>')}</p>`;
-              }
-
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Validation Error',
-                  html: errorMessage, 
-              });
-          } else {
-              Swal.fire({
-                  icon: 'success',
-                  title: 'Success',
-                  text: data.message,
-              }).then(() => {
-                  location.reload();
-              });
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong!',
-          });
-      });
-  });
+document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const selectedValues = [...document.querySelectorAll('input[type="checkbox"]:checked')]
+        });
+    });
 </script>
+
 @endsection
 @endsection
