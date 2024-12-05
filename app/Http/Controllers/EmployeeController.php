@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppraisalName;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\WorkDay;
@@ -11,19 +10,20 @@ use App\Models\Employee;
 use App\Models\JobTitle;
 use App\Models\Overtime;
 use App\Models\Position;
+use App\Models\KpiAspect;
 use App\Models\Department;
 use App\Models\WorkCalendar;
 use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
+use App\Models\AppraisalName;
 use App\Models\EmployeeStatus;
-use App\Models\KpiAspect;
 use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
-
     //Employee List
     function employeelist(){
         $employee = Employee::with('job_title', 'position')->get();
@@ -163,17 +163,14 @@ class EmployeeController extends Controller
     public function detail($id){
         $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
 
-        // Menghitung interval hari dari joiningDate hingga sekarang
         $startDate = new DateTime($employee->joining_date);
         $currentDate = new DateTime();
         $interval = $startDate->diff($currentDate);
 
-        // Menghitung tahun, bulan, dan hari dari interval
         $years = $interval->y;
         $months = $interval->m;
         $days = $interval->d;
 
-        //overtime
         $totalOvertime = Overtime::where('employee_id', $employee->eid)
         ->sum('total');
         return view('employee.detail', compact('employee', 'years', 'months', 'days', 'totalOvertime'));
@@ -242,7 +239,7 @@ class EmployeeController extends Controller
         $employee = Employee::findOrFail($id);
 
 
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
             'city' => 'required',
