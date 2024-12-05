@@ -85,6 +85,38 @@ class EmployeeController extends Controller
 
     //submit new employee
     function submit(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'name' => 'required',
+            'city' => 'required',
+            'domicile' => 'required',
+            'place_birth' => 'required',
+            'date_birth' => 'required|date',
+            'blood_type' => 'required',
+            'gender' => 'required',
+            'religion' => 'required',
+            'marriage' => 'required',
+            'education' => 'required',
+            'whatsapp' => 'required|regex:/^[0-9]+$/',
+            'bank' => 'required',
+            'bank_number' => 'required|numeric',
+            'position_id' => 'required|integer',
+            'job_title_id' => 'required|integer',
+            'joining_date' => 'required|date',
+            'employee_status' => 'required',
+            'sales_status' => 'required',
+            'workDay' => 'required|array|min:1',
+            'officeLocations' => 'required|array|min:1'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $section = JobTitle::find($request->job_title_id);
         $id = Employee::max('id') + 1; 
         $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
@@ -92,28 +124,7 @@ class EmployeeController extends Controller
         $password = Carbon::parse($request->date_birth)->format('dmY');
         $defaultPassword = Hash::make($password);
 
-        $request->validate([
-            'email' => 'required|unique:employees,email',
-            'name' => 'required',
-            'city' => 'required',
-            'domicile' => 'required',
-            'place_birth' => 'required',
-            'date_birth' => 'required',
-            'place_birth' => 'required',
-            'blood_type' => 'required',
-            'gender' => 'required',
-            'religion' => 'required',
-            'marriage' => 'required',
-            'education' => 'required',
-            'whatsapp' => 'required',
-            'bank' => 'required',
-            'bank_number' => 'required',
-            'position_id' => 'required',
-            'job_title_id' => 'required',
-            'joining_date' => 'required',
-            'employee_status' => 'required',
-            'sales_status' => 'required',
-        ]);
+
         $employee = Employee::create([
             'eid' => $eid,
             'email' => $request->email,
@@ -215,23 +226,12 @@ class EmployeeController extends Controller
             'Bank Permata', 
             'Bank Mega'
         ];
-        // $position_id = Position::all();
-        // $job_title = JobTitle::all();
-        // $division = Division::all();
-        // $department = Department::all();
-        // $schedule = WorkSchedule::all();
-        // // $workDay = WorkDay::select('name')->groupBy('name')->get();
-        // $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-        //     ->groupBy('name')
-        //     ->get();
-        // $onDay = WorkCalendar::all();
-        // $status = EmployeeStatus::all();
+
         return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'kpi_id', 'status',
         'pa_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
     }
     
     public function update(Request $request, $id){
-
         $section = JobTitle::find($request->job_title_id);
         $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
         $eid = $section->section . $formattedId;
@@ -240,8 +240,8 @@ class EmployeeController extends Controller
         $employee = Employee::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
             'name' => 'required',
+            'email' => 'required|email',
             'city' => 'required',
             'domicile' => 'required',
             'place_birth' => 'required',
@@ -259,7 +259,16 @@ class EmployeeController extends Controller
             'joining_date' => 'required|date',
             'employee_status' => 'required',
             'sales_status' => 'required',
+            'workDay' => 'required|array|min:1',
+            'officeLocations' => 'required|array|min:1'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $employee->update([
             'eid' => $eid,
@@ -291,10 +300,15 @@ class EmployeeController extends Controller
 
         $employee->workDay()->sync($request->workDay);
         $employee->officeLocations()->sync($request->officeLocations);
-        return redirect()->route('employee.detail', ['id' => $employee->id])->with('success', 'Employee updated successfully');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee updated successfully', 
+            'route' => route('employee.detail', ['id' => $employee->id])
+        ], 200);
     }
 
-    //employee delete
+//employee delete
     function delete($id){
         $employee = Employee::find($id);
         $employee->delete();

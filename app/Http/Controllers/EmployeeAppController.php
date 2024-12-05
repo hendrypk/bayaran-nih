@@ -116,7 +116,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $day_off = $workDay->day_off;
         $break = $workDay->break;
         
-
         //Get photo data
         $request->validate([
             'image' => 'required|string'
