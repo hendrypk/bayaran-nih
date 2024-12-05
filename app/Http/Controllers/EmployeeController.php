@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppraisalName;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\WorkDay;
@@ -10,17 +11,15 @@ use App\Models\Employee;
 use App\Models\JobTitle;
 use App\Models\Overtime;
 use App\Models\Position;
-use App\Models\KpiAspect;
 use App\Models\Department;
 use App\Models\WorkCalendar;
 use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
-use App\Models\AppraisalName;
 use App\Models\EmployeeStatus;
+use App\Models\KpiAspect;
 use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -198,6 +197,7 @@ class EmployeeController extends Controller
         $bloods = ['unkown', 'A', 'B', 'AB', 'O'];
         $marriage = ['unkown', 'Single', 'Married', 'Divorced', 'Widowed'];
         $religions = [
+            'unkown', 
             'Islam', 
             'Christian', 
             'Catholic', 
@@ -207,6 +207,7 @@ class EmployeeController extends Controller
             'Others'
         ];
         $educations = [
+            'unkown', 
             'Junior School',
             'High School', 
             'Diploma', 
@@ -215,6 +216,7 @@ class EmployeeController extends Controller
             'Doctorate'
         ];
         $banks = [
+            'unkown', 
             'Bank Mandiri', 
             'Bank BNI', 
             'Bank BRI', 
@@ -239,24 +241,26 @@ class EmployeeController extends Controller
         //find employeeId
         $employee = Employee::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
+
+        $validator = Validator::make($request->all(),
             'name' => 'required',
             'email' => 'required|email',
             'city' => 'required',
             'domicile' => 'required',
             'place_birth' => 'required',
-            'date_birth' => 'required|date',
+            'date_birth' => 'required',
+            'place_birth' => 'required',
             'blood_type' => 'required',
             'gender' => 'required',
             'religion' => 'required',
             'marriage' => 'required',
             'education' => 'required',
-            'whatsapp' => 'required|regex:/^[0-9]+$/',
+            'whatsapp' => 'required',
             'bank' => 'required',
-            'bank_number' => 'required|numeric',
-            'position_id' => 'required|integer',
-            'job_title_id' => 'required|integer',
-            'joining_date' => 'required|date',
+            'bank_number' => 'required',
+            'position_id' => 'required',
+            'job_title_id' => 'required',
+            'joining_date' => 'required',
             'employee_status' => 'required',
             'sales_status' => 'required',
             'workDay' => 'required|array|min:1',

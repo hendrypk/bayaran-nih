@@ -643,6 +643,10 @@ function initializeMap(lat, lng) {
         });
     }
 
+</script>
+
+
+<script>
     document.addEventListener("DOMContentLoaded", function() {
     // Function to open the modal and update content
     function openModal(title, actionUrl, fieldsHtml) {

@@ -263,7 +263,7 @@
               <select class="form-select" name="employee_status" aria-label="Default select example">
                 <option selected disabled>Select Status</option>
                 @foreach($status as $data)
-                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                <option value="{{ $data->name }}">{{ $data->name }}</option>
                 @endforeach
               </select>
             </div>
