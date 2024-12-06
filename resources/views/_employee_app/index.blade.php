@@ -180,7 +180,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Keluar Lembur</h4>
+                                            <h4 class="presencetitle">Masuk Lembur</h4>
                                         </div>
                                     </div>
                                 </a>
@@ -198,7 +198,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Overtime Out</h4>
+                                            <h4 class="presencetitle">Keluar Lembur</h4>
                                             <!-- @foreach($employee->workDay as $index => $workDay)
                                             <span>{{ $workDay->name }}</span>
                                             @endforeach -->
@@ -218,7 +218,7 @@
                                             <ion-icon name="camera"></ion-icon>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Overtime Out</h4>
+                                            <h4 class="presencetitle">Keluar Lembur</h4>
                                             <!-- @foreach($employee->workDay as $index => $workDay)
                                             <span>{{ $workDay->name }}</span>
                                             @endforeach -->
