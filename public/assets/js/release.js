@@ -10,7 +10,7 @@ fetch('/github/releases', {
     const releaseLink = release.html_url; 
 
     const releaseElement = document.getElementById('releaseList');
-    releaseElement.innerHTML = `${releaseVersion}`;
+    releaseElement.innerHTML = `<a href="${releaseLink}" target="_blank">${releaseVersion}</a>`;
 
   } else {
     document.getElementById('releaseList').innerText = 'No releases available.';
@@ -20,8 +20,4 @@ fetch('/github/releases', {
   console.error('Error fetching releases:', error);
   document.getElementById('releaseList').innerText = 'Error fetching release data.';
 });
-
-
-
-
 
