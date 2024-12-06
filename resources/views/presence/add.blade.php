@@ -12,7 +12,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Name</label>
                         <div class="col-sm-9">
-                            <select class="form-select" id="employeeSelect" name="employee_id" aria-label="Default select example">
+                            <select class="form-select" id="employeeSelect" name="employee_id" aria-label="Default select example" required>
                                 <option selected>Select Employee</option>
                                 @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -24,28 +24,28 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">workDay</label>
                         <div class="col-sm-9" id="workDayContainer">
-                            <select id="workDaySelect" class="form-select" name="workDay"></select>
+                            <select id="workDaySelect" class="form-select" name="workDay" required></select>
                         </div>
                     </div>  
  
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Date</label>
                         <div class="col-sm-9">
-                            <input type="date" name="date" class="form-control" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                            <input type="date" name="date" class="form-control" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
                         </div>
                     </div>  
                     
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Check In</label>
                         <div class="col-sm-9">
-                            <input type="time" step="1" name="checkin" class="form-control">
+                            <input type="time" step="1" name="checkin" class="form-control" required>
                         </div>
                     </div>   
 
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Check Out</label>
                         <div class="col-sm-9">
-                            <input type="time" step="1" name="checkout" class="form-control">
+                            <input type="time" step="1" name="checkout" class="form-control" required>
                         </div>
                     </div> 
                    

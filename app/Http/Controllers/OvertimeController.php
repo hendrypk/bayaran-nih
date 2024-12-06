@@ -56,12 +56,12 @@ class OvertimeController extends Controller
             'end' => ['required', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],        
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors()
+        //     ], 422);
+        // }
         
         // Parse start and end times using Carbon
         $start = Carbon::createFromFormat('H:i:s', $request->start);
@@ -84,10 +84,7 @@ class OvertimeController extends Controller
         $overtime->end_at = $request->end;
         $overtime->total = $totalMinutes;
         $overtime->save();
-        return response()->json([
-            'success' => true,
-            'message' => 'Overtime added successfully', 
-            'route' => route('overtime.list')]);
+        return redirect()->route('overtime.list')->with('success', 'Overtime added successfully');
     }
 
 //Overtime Delete
