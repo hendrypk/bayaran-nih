@@ -119,6 +119,11 @@ class Employee extends Authenticatable
     {
         return $this->belongsToMany(OfficeLocation::class, 'employee_office_location');
     }
+
+    public function employeeStatus()
+    {
+        return $this->belongsTo(EmployeeStatus::class, 'employee_status');
+    }
       
   
 

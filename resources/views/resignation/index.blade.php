@@ -138,9 +138,6 @@ $('#resignForm').submit(function(e) {
     });
 });
 
-
-//Delete
-
 //Delete
 function confirmDelete(id, name, entity) {
         Swal.fire({
