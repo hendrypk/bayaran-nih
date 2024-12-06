@@ -6,7 +6,6 @@ use App\Models\Division;
 use App\Models\JobTitle;
 use App\Models\Position;
 use App\Models\Department;
-use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\EmployeeStatus;
 use App\Models\Holiday;
@@ -72,15 +71,6 @@ class OptionsController extends Controller
 
 //position delete
     public function positionDelete($id){
-
-        $exist = Employee::where('position_id', $id)->exists();
-        if ($exist) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This position cannot be deleted because it is assigned to an employee.',
-            ]);
-        }
-
         $position = Position::find($id);
         $position->delete();
 
@@ -89,6 +79,7 @@ class OptionsController extends Controller
             'message' => 'The position has been deleted.',
             'redirect' => route('options.list') 
         ]);
+        // return redirect()->route('options.list')->with('success', 'Position deleted successfully.');
     }
         
 //jobtitle add
@@ -122,14 +113,6 @@ class OptionsController extends Controller
 
 //jobtitle delete
     public function jobTitleDelete($id){
-        $exist = Employee::where('job_title_id', $id)->exists();
-        if ($exist) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This job title cannot be deleted because it is assigned to an employee.',
-            ]);
-        }
-
         $jobTitle = JobTitle::find($id);
         $jobTitle->delete();
         
@@ -165,16 +148,8 @@ class OptionsController extends Controller
     }
 
 //division delete
-    public function divisionDelete($id){
-
-        $exist = Employee::where('division_id', $id)->exists();
-        if ($exist) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This division cannot be deleted because it is assigned to an employee.',
-            ]);
-        }
-        
+    public function divisionDelete($id)
+    {
         $division = Division::find($id);
         $division->delete();
         
@@ -216,14 +191,6 @@ class OptionsController extends Controller
 
 //department delete
     public function departmentDelete($id){
-        $exist = Employee::where('department_id', $id)->exists();
-        if ($exist) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This department    cannot be deleted because it is assigned to an employee.',
-            ]);
-        }
-
         $department = Department::find($id);
         $department->delete();
         
@@ -261,14 +228,6 @@ class OptionsController extends Controller
 
 //Employee Status delete
     public function statusDelete($id){
-        $exist = Employee::where('employee_status', $id)->exists();
-        if ($exist) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This employee status cannot be deleted because it is assigned to an employee.',
-            ]);
-        }
-
         $status = EmployeeStatus::findOrFail($id);
         $status->delete();
         
@@ -321,15 +280,6 @@ class OptionsController extends Controller
 //Office Location Delete
     public function deleteLocation($id){
         $ol = OfficeLocation::find($id);
-        $exist = $ol->employees()->exists();
-        if ($exist) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This location cannot be deleted because it is assigned to an employee.',
-            ]);
-        }
-
-        
         $ol->delete();
         
         return response()->json([

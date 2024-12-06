@@ -40,13 +40,13 @@
                         <label class="col-sm-3 col-form-label">Role</label>
                         <div class="col-sm-9">
                             <select class="form-select" name="role_id" id="selectRole" aria-label="Default select example" required>
-                                <option value="">Select Role</option>
+                                <option selected>Select Role</option>
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    </div>   
 
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Division</label>
@@ -71,7 +71,6 @@
                             </select>
                         </div>
                     </div>
-
 
                     <button type="submit" class="btn btn-tosca">Submit</button>
                 </form>

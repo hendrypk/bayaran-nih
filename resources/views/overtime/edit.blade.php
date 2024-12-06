@@ -7,9 +7,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editOvertimeForm" action="{{ route('overtime.update') }}" method="POST">
+                <form id="editOvertimeForm" action="{{ route('overtime.update', ['id' => '__id__']) }}" method="POST">
                     @csrf
-<input type="text" name="id" id="id" hidden>
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
@@ -44,11 +43,10 @@
                     </div> 
 
                     <div class="d-flex justify-content-end">
-                        <button type="submit" name="action" value="accept" class="btn btn-untosca me-3">Save & Accept</button>
+                        <button type="submit" name="action" value="accept" class="btn btn-tosca me-3">Save & Accept</button>
                         <button type="submit" name="action" value="reject" class="btn btn-untosca">Save & Reject</button>
                     </div>
-{{--                     
-                    <button type="submit" class="btn btn-tosca">Submit</button> --}}
+
                 </form>
             </div>
         </div>

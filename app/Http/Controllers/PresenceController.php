@@ -19,48 +19,43 @@ class PresenceController extends Controller
 {
 
 //Presences List
-    public function index(Request $request){
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $userDivision = Auth::user()->division_id;
-        $userDepartment = Auth::user()->department_id;
-    
-        $employees = Employee::with('workDay')->get();
-        $workDay = [];
-        foreach ($employees as $employee) {
-            $workDay[$employee->id] = $employee->workDay->toArray(); 
-        }
+public function index(Request $request){
+    $query = Presence::with('employee');
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+    $userDivision = Auth::user()->division_id;
+    $userDepartment = Auth::user()->department_id;
 
-        $query = Presence::with('employee');
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDivision) {
+            $query->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDepartment) {
+            $query->where('department_id', $userDepartment);
+        });
+    } elseif ($userDivision && $userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDivision, $userDepartment) {
+            $query->where('division_id', $userDivision)
+                  ->where('department_id', $userDepartment);
+        });
+    }
 
-        // Conditions for division_id and department_id on the Presence model
-        if ($userDivision && !$userDepartment) {
-            $query->whereHas('employee', function ($query) use ($userDivision) {
-                $query->where('division_id', $userDivision);
-            });
-        } elseif (!$userDivision && $userDepartment) {
-            $query->whereHas('employee', function ($query) use ($userDepartment) {
-                $query->where('department_id', $userDepartment);
-            });
-        } elseif ($userDivision && $userDepartment) {
-            $query->whereHas('employee', function ($query) use ($userDivision, $userDepartment) {
-                $query->where('division_id', $userDivision)
-                    ->where('department_id', $userDepartment);
-            });
-        }
+    if ($startDate && $endDate) {
+        $query->whereBetween('date', [$startDate, $endDate]);
+    }
 
-        // Filter by the date range if provided
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        }
+    $presence = $query->get();
 
-        $presence = $query->get();
-        $workDays = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
+    $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
         ->groupBy('name')
         ->get();
 
-        return view('presence.index', compact('employees', 'presence', 'workDay', 'workDays'));
-    }
+    $employees = Employee::get();
+    
+    return view('presence.index', compact('presence', 'workDay', 'employees'));
+}
+
 
 //Import Prresences
     public function import(){

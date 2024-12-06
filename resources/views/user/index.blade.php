@@ -47,8 +47,8 @@
                                                 username: '{{ $user->username }}',
                                                 email: '{{ $user->email }}',
                                                 role_id: '{{ $user->roles->first()->id ?? '' }}',
-                                                division_id: '{{ $user->divisions->id ?? '' }}',
-                                                department_id: '{{ $user->departments->id ?? '' }}'
+                                                division: '{{ $user->division_id }}',
+                                                department: '{{ $user->department_id }}'
                                             })">
                                             <i class="ri-edit-box-fill"></i>
                                         </button>
@@ -79,8 +79,6 @@ function openUserModal(action, data = {}) {
         $('#userForm').attr('action', "{{ route('user.store') }}");
         $('#userModalTitle').text('Add User');
         $('#inputName').val('');
-        $('#username').val('');
-        $('#email').val('');
         $('#selectRole').val('');
         $('#division').val('');
         $('#department').val('');
@@ -91,54 +89,12 @@ function openUserModal(action, data = {}) {
         $('#username').val(data.username);
         $('#email').val(data.email);
         $('#selectRole').val(data.role_id);
-        $('#division').val(data.division_id);
-        $('#department').val(data.department_id);
+        $('#division').val(data.division);
+        $('#department').val(data.department);
     }
+
     $('#userModal').modal('show');
 }
-
-function saveUser(form) {
-    let formData = new FormData(form);
-
-    fetch(form.action, {
-        method: form.method,
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: data.message,
-            }).then(() => {
-                location.reload(); // Reload page or update table
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.message,
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong. Please try again.',
-        });
-    });
-}
-
-// Example usage in your modal form
-document.querySelector('#userForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent form submission
-    saveUser(this);
-});
 
 
 function confirmDelete(id, name, entity) {
@@ -185,27 +141,6 @@ function confirmDelete(id, name, entity) {
             }
         });
     }
-    
-
-// Optional: Handle form submission with AJAX
-// $('#userForm').on('submit', function(e) {
-//     e.preventDefault();
-    
-//     const formAction = $(this).attr('action');
-//     const formData = $(this).serialize();
-
-//     $.post(formAction, formData)
-//         .done(function(response) {
-//             if (response.success) {
-//                 showSuccessAlert(response.message);
-//                 $('#userModal').modal('hide');
-//                 setTimeout(() => location.reload(), 2000); // Reload page after 2 seconds
-//             }
-//         })
-//         .fail(function() {
-//             showErrorAlert('An error occurred while saving.');
-//         });
-// });
 
 </script>
 @endsection

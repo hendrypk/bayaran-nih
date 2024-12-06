@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Employees')
+@section('title', 'Employee Resignation')
 @section('content')
 
 <div class="row">
@@ -7,10 +7,13 @@
     <div class="card">
       <div class="card-body">
         <div class="card-header d-flex align-items-center py-0">
-          <h5 class="card-title mb-0 py-3">Employee List</h5>
-          @can('create employee')
+          <h5 class="card-title mb-0 py-3">Employee Resignation</h5>
+          @can('create resignation')
             <div class="ms-auto my-auto">
-              <button type="button" class="btn btn-untosca" onclick="resignationModal('add')">Add Resignation</button>
+                <button type="button"
+                class="btn btn-tosca" onclick="openResignModal('add')">
+                Add Resignation
+            </button>
             </div>
           @endcan
         </div>
@@ -32,30 +35,35 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($resignEmployees as $no=>$employee)
+            @foreach($resignEmployees as $no=>$data)
             <tr>
               <th scope="row">{{ $no+1 }}</th>
-              <td>{{ $employee->eid }}</td>
-              <td>{{ $employee->name }}</td>
-              <td>{{ $employee->resignation ?? '-' }}</td>
-              <td>{{ \Carbon\Carbon::parse($employee->resignation_date)->format('d F Y') }}</td>
-              <td>{{ $employee->position->name ?? '-' }}</td>
-              <td>{{ $employee->job_title->name ?? '-' }}</td>
-              <td>{{ $employee->division->name ?? '-' }}</td>
-              <td>{{ $employee->department->name ?? '-' }}</td>
+              <td>{{ $data->eid }}</td>
+              <td>{{ $data->name }}</td>
+              <td>{{ $data->resignation ?? '-' }}</td>
+              <td>{{ $data->resignation_date ?? '-' }}</td>
+              <td>{{ $data->position->name ?? '-' }}</td>
+              <td>{{ $data->job_title->name ?? '-' }}</td>
+              <td>{{ $data->division->name ?? '-' }}</td>
+              <td>{{ $data->department->name ?? '-' }}</td>
               <td>
-                <button type="button" class="btn btn-outline-success" onclick="resignationModal('edit',
-                {
-                    id: '{{ $employee->id }}',
-                    name: '{{ $employee->name }}',
-                    category: '{{ $employee->resignation }}',
-                    date: '{{ $employee->resignation_date }}'
-                })"><i class="ri-edit-line"></i></button>
-                
+                @can('update resignation')
+                <button type="button"
+                    class="btn btn-outline-success" onclick="openResignModal('edit', {
+                        id: '{{ $data->id }}',
+                        name: '{{ $data->name }}',
+                        category: '{{ $data->resignation }}',
+                        date: '{{ $data->resignation_date }}',
+                    })">
+                    <i class="ri-edit-box-fill"></i>
+                </button>
+                @endcan
+                @can('delete resignation')
                 <button type="button" class="btn btn-outline-danger" 
-                    onclick="confirmDelete({{ $employee->id }}, '{{ $employee->name }}', 'resignation')">
-                <i class="ri-delete-bin-fill"></i>
-            </button>
+                    onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'resignation')">
+                    <i class="ri-delete-bin-fill"></i>
+                </button>
+                @endcan
               </td>
             </tr>
             @endforeach
@@ -70,64 +78,68 @@
 
 @section('script')
 <script>
-function resignationModal(action, data = {}) {
+function openResignModal(action, data = {}) {
     if (action === 'add') {
-        $('#resignationForm').attr('action', "{{ route('resignation.store') }}");
-        $('#resignationModalTitle').text('Add Resignation');
-        $('#employee').val('');
+        $('#resignForm').attr('action', "{{ route('resignation.store') }}");
+        $('#resignModalTitle').text('Add Resignation');
+        $('#name').val('');
         $('#category').val('');
         $('#date').val('');
+        $('#name').prop('disabled', false);
     } else if (action === 'edit') {
-        $('#resignationForm').attr('action', "{{ route('resignation.update') }}");
-        $('#resignationModalTitle').text('Edit Resignation');
-        $('#employee').val(data.id).trigger('change');;
+        $('#resignForm').attr('action', "{{ route('resignation.update') }}");
+        $('#resignModalTitle').text('Edit Resignation');
+        $('#name').val(data.id);
         $('#category').val(data.category);
         $('#date').val(data.date);
+        $('#name').prop('disabled', false);
     }
-    $('#resignationModal').modal('show');
+
+    $('#resignModal').modal('show');
 }
 
-function save(form) {
-    let formData = new FormData(form);
 
-    fetch(form.action, {
-        method: form.method,
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: data.message,
-            }).then(() => {
-                location.reload(); // Reload page or update table
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.message,
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong. Please try again.',
-        });
-    });
-}
-
-document.querySelector('#resignationForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent form submission
-    save(this);
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
 });
+
+//Handle Alert
+$('#resignForm').submit(function(e) {
+    e.preventDefault(); 
+    
+    var form = $(this);
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = "{{ route('resignation.index') }}";
+                });
+            }
+        },
+        error: function(xhr) {
+            // Handle error case
+            Swal.fire({
+                title: 'Error!',
+                text: xhr.responseJSON?.message || 'Something went wrong.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});
+
+
+//Delete
 
 //Delete
 function confirmDelete(id, name, entity) {
@@ -174,7 +186,6 @@ function confirmDelete(id, name, entity) {
             }
         });
     }
-
 </script>
 @endsection
 @endsection

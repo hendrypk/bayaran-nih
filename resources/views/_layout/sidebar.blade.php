@@ -1,5 +1,4 @@
 @php
-
   $activeEmployee = [
         'employee.add',
         'employee.list',
@@ -37,48 +36,12 @@
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{route('home')}}">
-          <i class="ri-home-smile-2-fill"></i>
+          <i class="ri-account-pin-circle-fill"></i>
           <span>Dashboard</span>
         </a>
       </li>
-      {{-- @can('view employee')
-      <li class="nav-item {{ request()->routeIs('employee.list') ? 'active' : '' }}">
-        <a class="nav-link collapsed" href="{{route('employee.list')}}">
-          <i class="ri-account-pin-circle-fill"></i>
-          <span>Employee</span>
-        </a>
-      </li>
-      @endcan --}}
 
-      @can('view employee')
-      <a class="nav-link collapsed" data-bs-target="#employee-nav" data-bs-toggle="collapse" href="#">
-        <i class="ri-account-pin-circle-fill"></i>
-        <span>Employee</span>
-        <i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul id="employee-nav" class="nav-content collapse {{ request()->routeIs($activeEmployee) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-        <li class="nav-item {{ request()->routeIs('employee.add') ? 'active' : '' }}">
-          <a class="nav-link collapsed" href="{{route('employee.add')}}">
-            {{-- <i class="ri-calendar-check-fill"></i> --}}
-            <span>Add Employee</span>
-          </a>
-        </li>
-        <li class="nav-item {{ request()->routeIs('employee.list') ? 'active' : '' }}">
-          <a class="nav-link collapsed" href="{{ route('employee.list') }}">
-            {{-- <i class="ri-arrow-up-down-fill"></i> --}}
-            <span>Employee List</span>
-          </a>
-        </li>
-        <li class="nav-item {{ request()->routeIs('resignation.index') ? 'active' : '' }}">
-          <a class="nav-link collapsed" href="{{route('resignation.index')}}">
-            {{-- <i class="ri-dvd-fill"></i> --}}
-            <span>Resignation</span>
-          </a>
-        </li>
-      </ul>
-      @endcan
-
-      <a class="nav-link collapsed" data-bs-target="#payroll-nav" data-bs-toggle="collapse" href="#">
+      {{-- <a class="nav-link collapsed" data-bs-target="#payroll-nav" data-bs-toggle="collapse" href="#">
           <i class="ri-money-dollar-box-fill"></i>
           <span>Payroll</span>
           <i class="bi bi-chevron-down ms-auto"></i>
@@ -99,7 +62,41 @@
                   <span>Pay Report</span>
               </a>
           </li>
+      </ul> --}}
+
+      @can('view employee')
+      <a class="nav-link collapsed" data-bs-target="#employee-nav" data-bs-toggle="collapse" href="#">
+        <i class="ri-account-pin-circle-fill"></i>
+        <span>Employee</span>
+        <i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="employee-nav" class="nav-content collapse {{ request()->routeIs($activeEmployee) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+        @can('create employee')
+        <li class="nav-item {{ request()->routeIs('employee.add') ? 'active' : '' }}">
+          <a class="nav-link collapsed" href="{{route('employee.add')}}">
+            {{-- <i class="ri-calendar-check-fill"></i> --}}
+            <span>Add Employee</span>
+          </a>
+        </li>
+        @endcan
+        @can('view employee')
+        <li class="nav-item {{ request()->routeIs('employee.list') ? 'active' : '' }}">
+          <a class="nav-link collapsed" href="{{ route('employee.list') }}">
+            {{-- <i class="ri-arrow-up-down-fill"></i> --}}
+            <span>Employee List</span>
+          </a>
+        </li>
+        @endcan
+        @can('view resignation')
+        <li class="nav-item {{ request()->routeIs('resignation.index') ? 'active' : '' }}">
+          <a class="nav-link collapsed" href="{{route('resignation.index')}}">
+            {{-- <i class="ri-dvd-fill"></i> --}}
+            <span>resignation</span>
+          </a>
+        </li>
+        @endcan
       </ul>
+      @endcan
 
       <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse" href="#">
         <i class="ri-dvd-fill"></i>
@@ -227,7 +224,7 @@
       </ul>
       <li class="nav-item {{ request()->routeIs('auth.logout') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{route('auth.logout')}}">
-          <i class="ri-logout-box-r-fill"></i>
+          <i class="bi bi-box-arrow-right"></i>
           <span>Log Out</span>
         </a>
       </li>

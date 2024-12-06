@@ -13,75 +13,44 @@ use Illuminate\Support\Facades\Auth;
 class AppraisalController extends Controller
 {
 //Appraisal Index
-public function index(Request $request)
-{
-    // Get the selected month and year, default to current month and year
-    $selectedMonth = $request->input('month', date('F'));
-    $selectedYear = $request->input('year', date('Y'));
-
-    // Get division and department from the authenticated user
+function index(Request $request){
     $userDivision = Auth::user()->division_id;
     $userDepartment = Auth::user()->department_id;
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->where('division_id', $userDivision);
+        } elseif (!$userDivision && $userDepartment) {
+            $query->where('department_id', $userDepartment);
+        } 
 
-    // Get employees filtered by the user's division and department
-    $employeesQuery = Employee::query();
+        $employees = $query->get();
+        $appraisals = PerformanceAppraisal::get();
+        $selectedMonth = $request->input('month', date('F'));
+        $selectedYear = $request->input('year', date('Y'));
 
-    if ($userDivision && !$userDepartment) {
-        // Filter by division only
-        $employeesQuery->where('division_id', $userDivision);
-    } elseif (!$userDivision && $userDepartment) {
-        // Filter by department only
-        $employeesQuery->where('department_id', $userDepartment);
-    } elseif ($userDivision && $userDepartment) {
-        // Filter by both division and department
-        $employeesQuery->where('division_id', $userDivision)
-            ->where('department_id', $userDepartment);
-    }
+        $gradePa = GradePa::with('employees')
+            ->select('employee_id', 'month', 'year')
+            ->where('month', $selectedMonth)
+            ->where('year', $selectedYear)
+            ->groupBy('employee_id', 'month', 'year')
+            ->get();
 
-    $employees = $employeesQuery->get();
+            $averageGrades = GradePa::select('employee_id', DB::raw('AVG(grade) as average_grade'))
+            ->where('month', $selectedMonth)
+            ->where('year', $selectedYear)
+            ->groupBy('employee_id')
+            ->get();
 
-    // Get appraisals
-    $appraisals = PerformanceAppraisal::get();
+        $avgGrade = $gradePa->groupBy('employee_id')->map(function($group){
+            return $group->avg('grade');
+        });
 
-    // Get grade data for selected month and year
-    $gradePa = GradePa::with('employees')
-        ->select('employee_id', 'month', 'year')
-        ->where('month', $selectedMonth)
-        ->where('year', $selectedYear)
-        ->whereIn('employee_id', $employees->pluck('id')) // Filter by the selected employees
-        ->groupBy('employee_id', 'month', 'year')
-        ->get();
+        $finalGrade = $gradePa->groupBy(['employee_id'])->map(function ($group) {
+                return $group->avg('grade');
+            });
 
-    // Get average grades for selected month and year
-    $averageGrades = GradePa::select('employee_id', DB::raw('AVG(grade) as average_grade'))
-        ->where('month', $selectedMonth)
-        ->where('year', $selectedYear)
-        ->whereIn('employee_id', $employees->pluck('id')) // Filter by the selected employees
-        ->groupBy('employee_id')
-        ->get();
-
-    // Map the grades and calculate final grade
-    $avgGrade = $gradePa->groupBy('employee_id')->map(function ($group) {
-        return $group->avg('grade');
-    });
-
-    $finalGrade = $gradePa->groupBy(['employee_id'])->map(function ($group) {
-        return $group->avg('grade');
-    });
-
-    // Return the view with the filtered data
-    return view('performance.pa.index', compact(
-        'averageGrades',
-        'gradePa',
-        'employees',
-        'appraisals',
-        'finalGrade',
-        'selectedMonth',
-        'selectedYear',
-        'avgGrade'
-    ));
+    return view('performance.pa.index', [$gradePa], compact('averageGrades', 'gradePa', 'employees', 'appraisals', 'finalGrade', 'selectedMonth', 'selectedYear', 'avgGrade'));
 }
-
 
 //Get PA per pa_id
 public function getPaByEmployee($paId){
