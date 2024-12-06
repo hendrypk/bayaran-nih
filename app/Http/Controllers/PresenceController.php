@@ -47,11 +47,23 @@ public function index(Request $request){
 
     $presence = $query->get();
 
-    $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-        ->groupBy('name')
-        ->get();
+    // $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
+    //     ->groupBy('name')
+    //     ->get();
 
-    $employees = Employee::get();
+    // $workDay = Employee::with('workDay')->get()->keyBy('id');
+
+    $employees = Employee::all();
+    $workDays = [];
+    foreach ($employees as $employee) {
+        // Ambil semua work days untuk masing-masing employee
+        $workDay[$employee->id] = $employee->workDay->map(function ($workDay) {
+            return [
+                'id' => $workDay->id,
+                'name' => $workDay->name,
+            ];
+        });
+    }
     
     return view('presence.index', compact('presence', 'workDay', 'employees'));
 }
@@ -61,9 +73,10 @@ public function index(Request $request){
     public function import(){
         return view('presence.import');
     }
-    public function __construct(Excel $excel){
-        $this->excel = $excel;
-    }
+    
+    // public function __construct(Excel $excel){
+    //     $this->excel = $excel;
+    // }
 
     public function importStore(Request $request){  
         $errors = []; // Array to store errors
@@ -171,7 +184,7 @@ public function index(Request $request){
 
         $request->validate([
             'check_in'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
-            'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
             'late_arrival'=>'integer',
             'late_check_in'=>'integer',
             'check_out_early'=>'integer',
@@ -289,7 +302,7 @@ public function index(Request $request){
         
         $request->validate([
                 'check_in'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
-                'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+                'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
                 'late_arrival'=>'integer',
                 'late_check_in'=>'integer',
                 'check_out_early'=>'integer',
@@ -320,9 +333,6 @@ public function index(Request $request){
     public function export(Request $request) {
         $startDate = $request->start_date;
         $endDate = $request->end_date;
-
-        \Log::info("Attempting to export from $startDate to $endDate");
-
         $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
         $formattedEndDate = Carbon::parse($endDate)->format('Y-m-d');
     

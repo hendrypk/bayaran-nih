@@ -40,18 +40,20 @@
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Start at</label>
                         <div class="col-sm-10">
-                            <input type="time" name="start" class="form-control">
+                            <input type="time" step="1" name="start" class="form-control">
                         </div>
                     </div>   
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">End at</label>
                         <div class="col-sm-10">
-                            <input type="time" name="end" class="form-control">
+                            <input type="time" step="1" name="end" class="form-control">
                         </div>
                     </div> 
-
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">Save</button>
+                    </div>
                 </form>
             </div>
         </div>

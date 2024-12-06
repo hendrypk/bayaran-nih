@@ -60,10 +60,10 @@ class Employee extends Authenticatable
         return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
     }      
 
-    public function positionKpi()
-    {
-        return $this->belongsTo(KpiOptions::class);
-    }
+    // public function positionKpi()
+    // {
+    //     return $this->belongsTo(KpiOptions::class);
+    // }
 
     //relation table grade_pa
     public function gradePas()

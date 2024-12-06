@@ -286,21 +286,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-//Work Day On Add Presence Modal
-document.getElementById('employeeSelect').addEventListener('change', function() {
-    var employeeId = this.value;
+document.getElementById('employeeSelect').addEventListener('change', function () {
+    var employeeId = this.value; 
+    var workDays = @json($workDay);
     var workDaySelect = document.getElementById('workDaySelect');
     var workDayContainer = document.getElementById('workDayContainer');
 
     // Clear previous options
     workDaySelect.innerHTML = '<option selected disabled>Select Work Day</option>';
 
-    // Check if an employee is selected
-    if (employeeId) {
-        // Fetch the work days for the selected employee
-        var workDays = @json($workDay);
-        var selectedWorkDays = workDays[employeeId] || [];
-console.log(workDays);
+    // Cek jika employee_id ada di workDays
+    if (employeeId && workDays[employeeId]) {
+        var selectedWorkDays = workDays[employeeId];
+
         // Check if there is more than one work day
         if (selectedWorkDays.length > 1) {
             selectedWorkDays.forEach(function(workDay) {
@@ -322,10 +320,10 @@ console.log(workDays);
             workDaySelect.disabled = false; // Keep it enabled
             workDayContainer.style.display = 'block';
         } else {
-            workDayContainer.style.display = 'none'; // No work days
+            workDayContainer.style.display = 'block'; // No work days
         }
     } else {
-        workDayContainer.style.display = 'none'; // No employee selected
+        workDayContainer.style.display = 'block'; // No employee selected
     }
 });
 

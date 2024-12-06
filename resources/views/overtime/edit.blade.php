@@ -31,14 +31,14 @@
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Start at</label>
                         <div class="col-sm-10">
-                            <input type="time" name="start" class="form-control" id="inputStart">
+                            <input type="time" step="1" name="start" class="form-control" id="inputStart">
                         </div>
                     </div>   
 
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">End at</label>
                         <div class="col-sm-10">
-                            <input type="time" name="end" class="form-control" id="inputEnd">
+                            <input type="time" step="1" name="end" class="form-control" id="inputEnd">
                         </div>
                     </div> 
 

@@ -168,6 +168,7 @@
             dateFormat: "Y-m-d",
         });
     });
+
 });
 
   // document.addEventListener("DOMContentLoaded", function() {
