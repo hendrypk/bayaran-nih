@@ -104,7 +104,7 @@
                             <label for="checkin" class="form-label">Check In</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="time" class="form-control" id="checkin" name="checkin">
+                            <input type="time" step="1" class="form-control" id="checkin" name="checkin" required>
                         </div>
                     </div>
 
@@ -113,7 +113,7 @@
                             <label for="checkout" class="form-label">Check Out</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="time" class="form-control" id="checkout" name="checkout">
+                            <input type="time" step="1" class="form-control" id="checkout" name="checkout" required>
                         </div>
                     </div>
 
