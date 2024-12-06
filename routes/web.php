@@ -23,6 +23,7 @@ use App\Http\Controllers\KpiPaOptionsController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
+use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
@@ -246,7 +247,6 @@ Route::middleware(['auth:web'])->group(function () {
     });
 
     //Role
-    
     Route::group(['middleware' => ['permission:view role']], function() {
         Route::prefix('role')->group(function () {
             Route::get('', [RoleController::class, 'index'])->name('role.index');
@@ -279,7 +279,17 @@ Route::middleware(['auth:web'])->group(function () {
     
         return view('logs', ['logs' => array_reverse($logs)]);
     })->name('logs.index');
+
+    //Resignation
+    Route::prefix('resignation')->group(function () {
+        Route::get('', [ResignationController::class, 'index'])->name('resignation.index');
+        Route::post('store', [ResignationController::class, 'store'])->name('resignation.store');
+        Route::post('update', [ResignationController::class, 'update'])->name('resignation.update');
+        Route::post('{id}/delete', [ResignationController::class, 'delete'])->name('resignation.delete');
+    });
+
 });
+
 
 
 //Employee Middleware Group

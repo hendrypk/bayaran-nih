@@ -46,7 +46,9 @@
                                                 name: '{{ $user->name }}',
                                                 username: '{{ $user->username }}',
                                                 email: '{{ $user->email }}',
-                                                role_id: '{{ $user->roles->first()->id ?? '' }}'
+                                                role_id: '{{ $user->roles->first()->id ?? '' }}',
+                                                division: '{{ $user->division_id }}',
+                                                department: '{{ $user->department_id }}'
                                             })">
                                             <i class="ri-edit-box-fill"></i>
                                         </button>
@@ -78,6 +80,8 @@ function openUserModal(action, data = {}) {
         $('#userModalTitle').text('Add User');
         $('#inputName').val('');
         $('#selectRole').val('');
+        $('#division').val('');
+        $('#department').val('');
     } else if (action === 'edit') {
         $('#userForm').attr('action', "{{ route('user.update', ['id' => '__id__']) }}".replace('__id__', data.id));
         $('#userModalTitle').text('Edit User');
@@ -85,6 +89,8 @@ function openUserModal(action, data = {}) {
         $('#username').val(data.username);
         $('#email').val(data.email);
         $('#selectRole').val(data.role_id);
+        $('#division').val(data.division);
+        $('#department').val(data.department);
     }
 
     $('#userModal').modal('show');
@@ -135,26 +141,6 @@ function confirmDelete(id, name, entity) {
             }
         });
     }
-
-// Optional: Handle form submission with AJAX
-// $('#userForm').on('submit', function(e) {
-//     e.preventDefault();
-    
-//     const formAction = $(this).attr('action');
-//     const formData = $(this).serialize();
-
-//     $.post(formAction, formData)
-//         .done(function(response) {
-//             if (response.success) {
-//                 showSuccessAlert(response.message);
-//                 $('#userModal').modal('hide');
-//                 setTimeout(() => location.reload(), 2000); // Reload page after 2 seconds
-//             }
-//         })
-//         .fail(function() {
-//             showErrorAlert('An error occurred while saving.');
-//         });
-// });
 
 </script>
 @endsection

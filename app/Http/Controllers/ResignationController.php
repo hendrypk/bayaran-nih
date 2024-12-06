@@ -13,7 +13,6 @@ class ResignationController extends Controller
         $resignEmployees = Employee::whereNotNull('resignation_date')->get();
         $category = [
             'Non Aktif',
-            'Masa Percobaan',
             'Mengundurkan Diri',
             'Diberhentikan'
         ];
@@ -23,12 +22,12 @@ class ResignationController extends Controller
 //Store
     public function store(Request $request) {
         $request->validate([
-            'employee' => 'required',
+            'name' => 'required',
             'category' => 'required',
             'date' => 'required'
         ]);
-
-        $employee = Employee::where('id', $request->employee)->first();
+        
+        $employee = Employee::where('id', $request->name)->first();
         if($employee && $employee->resignation_date !== null) {
             return response()->json([
                 'success' => false,
@@ -50,18 +49,18 @@ class ResignationController extends Controller
 //Update
     public function update(Request $request) {
         $request->validate([
-            'employee' => 'required',
+            'name' => 'required|exists:employees,id',
             'category' => 'required',
             'date' => 'required'
         ]);
 
-        $employee = Employee::where('id', $request->employee)->first();
-        if($employee && $employee->resignation_date !== null) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This employee has already resigned and cannot be added.'
-            ]);
-        }
+        $employee = Employee::find($request->name);
+        // if($employee && $employee->resignation_date !== null) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'This employee has already resigned and cannot be added.'
+        //     ]);
+        // }
            
         $employee->update([
             'resignation'=> $request->category,

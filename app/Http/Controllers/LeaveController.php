@@ -2,19 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
 use App\Models\Leave;
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
 //Index
     public function index () {
-        $leaves = Leave::with('employees')->get()->map(function($leave) {
-            // $leave->start_date = \Carbon\Carbon::parse($leave->start_date)->format('d F Y');
-            // $leave->end_date = \Carbon\Carbon::parse($leave->end_date)->format('d F Y');
-            return $leave;
-        });
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+    
+        // Start with a query to get all leaves
+        $query = Leave::query();
+    
+        // Filter by division and/or department if set
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        } elseif ($userDivision && $userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
+                $query->where('division_id', $userDivision)
+                      ->where('department_id', $userDepartment);
+            });
+        }
+    
+        $leaves = $query->with('employees')->get();
+
         $employees = Employee::all();
         $category = [
             'Annual leave', 

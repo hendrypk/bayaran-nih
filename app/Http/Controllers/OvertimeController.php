@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\OvertimeExport;
 use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\Overtime;
 use Illuminate\Http\Request;
+use App\Exports\OvertimeExport;
 use App\Models\PresenceSummary;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OvertimeController extends Controller
@@ -18,6 +19,24 @@ class OvertimeController extends Controller
         $query = Overtime::with('employees');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        } elseif ($userDivision && $userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
+                $query->where('division_id', $userDivision)
+                      ->where('department_id', $userDepartment);
+            });
+        }
+    
         if ($startDate && $endDate) {
             $query->whereBetween('date', [$startDate, $endDate]);
         }
@@ -76,14 +95,11 @@ class OvertimeController extends Controller
         $request->validate([
             'name'=>'string',
             'date'=>'date',
-            'start' => ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'end' => ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
         ]);
         
         // Parse start and end times using Carbon
-        $start = Carbon::createFromFormat('H:i', $request->start);
-        $end = Carbon::createFromFormat('H:i', $request->end);
-        
+        $start = Carbon::createFromFormat('H:i:s', $request->start);
+        $end = Carbon::createFromFormat('H:i:s', $request->end);
 
         //If end time is before start time
         if($end->lt($start)){
@@ -94,11 +110,15 @@ class OvertimeController extends Controller
         $totalMinutes = $start->diffInMinutes($end);
         $employee = Employee::where('name', $request->name)->first();
 
+        $action = $request->input('action');
+        $status = ($action === 'accept') ? 1 : 0;
+
         $overtime->employee_id = $request->employee_id;
         $overtime->date = $request->date;
         $overtime->start_at = $request->start;
         $overtime->end_at = $request->end;
         $overtime->total = $totalMinutes;
+        $overtime->status = $status;
         $overtime->save();
         return redirect()->route('overtime.list')->with('success', 'Overtime updated successfully');
     }

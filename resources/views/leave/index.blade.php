@@ -98,24 +98,18 @@
     document.addEventListener('DOMContentLoaded', function () {
     const editModal = document.getElementById('overtimeEdit');
     editModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Button that triggered the modal
+        const button = event.relatedTarget; 
         const id = button.getAttribute('data-id');
         const employee_id = button.getAttribute('data-employee_id');
         const name = button.getAttribute('data-name');
         const date = button.getAttribute('data-date');
-        // const start = button.getAttribute('data-start');
-        // const end = button.getAttribute('data-end');
         const category = button.getAttribute('data-category');
         const note = button.getAttribute('data-note');
 
-        console.log('date', date)
-        
         // Populate the form fields
         document.getElementById('id').value = id;
         document.getElementById('selectEmployee').value = employee_id;
         document.getElementById('leave-date').value = date;
-        // document.getElementById('inputStart').value = start;
-        // document.getElementById('inputEnd').value = end;
         document.getElementById('selectCategory').value = category;
         document.getElementById('inputNote').value = note;
 
@@ -124,58 +118,6 @@
         modalTitle.textContent = `Edit Leave for ${name}`;
     });
 });
-
-function updateAction(id, name, entity, currentStatus) {
-    const status = currentStatus == 1 ? 0 : 1; // Switch status: if current is 1, set to 0; otherwise, set to 1
-
-    Swal.fire({
-        title: status === 1 ? 'Are you sure to accept?' : 'Are you sure to reject?',
-        text: `You are about to ${status === 1 ? 'accept' : 'reject'} the ${entity} for ${name}.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '',
-        cancelButtonColor: '',
-        confirmButtonText: status === 1 ? 'Yes, accept it!' : 'Yes, reject it!',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/leaves/delete`, { // Adjust the URL if necessary
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}', // Ensure CSRF token is rendered
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id, status }) // Send ID and new status in the request body
-            })
-            
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        title: 'Updated!',
-                        text: data.message,
-                        icon: 'success'
-                    }).then(() => {
-                        location.reload(); // Reload the page or redirect as needed
-                    });
-                } else {
-                    Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
-                }
-            })
-            .catch(error => {
-                Swal.fire('Error!', 'Failed to update. Please try again.', 'error');
-                console.error('There was a problem with the fetch operation:', error);
-            });
-        }
-    });
-}
-
-
 
 function confirmDelete(id, name, entity) {
         Swal.fire({
@@ -192,7 +134,7 @@ function confirmDelete(id, name, entity) {
                 fetch(`/${entity}/${id}/delete`, { 
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' 
                     }
                 })
                 .then(response => {
@@ -205,11 +147,10 @@ function confirmDelete(id, name, entity) {
                     if (data.success) {
                         Swal.fire({
                             title: 'Deleted!',
-                            text: data.message, // Use message from the server
+                            text: data.message, 
                             icon: 'success'
                         }).then(() => {
-                            // Reload the page or redirect to another route
-                            window.location.href = data.redirect; // Redirect to the desired route
+                            window.location.href = data.redirect;
                         });
                     } else {
                         Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');

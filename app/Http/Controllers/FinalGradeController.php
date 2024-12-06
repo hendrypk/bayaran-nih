@@ -6,14 +6,23 @@ use App\Models\GradePa;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\PerformanceAppraisal;
+use Illuminate\Support\Facades\Auth;
 
 class FinalGradeController extends Controller
 {
     public function index(Request $request) {
         $selectedMonth = $request->input('month', date('F'));
         $selectedYear = $request->input('year', date('Y'));
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->where('division_id', $userDivision);
+        } elseif (!$userDivision && $userDepartment) {
+            $query->where('department_id', $userDepartment);
+        } 
 
-        $employees = Employee::with([
+        $employees = $query->with([
             'GradePas' => function($query) use ($selectedMonth, $selectedYear) {
                 $query->select('employee_id', 'month', 'year', \DB::raw('avg(grade) as final_pa'))
                     ->where('month', $selectedMonth)

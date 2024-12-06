@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PresencesExport;
 use Carbon\Carbon;
 use App\Models\WorkDay;
 use App\Models\Employee;
@@ -11,33 +10,52 @@ use App\Models\Presence;
 use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
 use App\Imports\PresenceImport;
+use App\Exports\PresencesExport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PresenceController extends Controller
 {
 
 //Presences List
-    public function index(Request $request){
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $employees = Employee::with('workDay')->get();
-        $workDay = [];
-        foreach ($employees as $employee) {
-            $workDay[$employee->id] = $employee->workDay->toArray(); 
-        }
+public function index(Request $request){
+    $query = Presence::with('employee');
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+    $userDivision = Auth::user()->division_id;
+    $userDepartment = Auth::user()->department_id;
 
-        $query = Presence::with('employee');
-        if($startDate && $endDate){
-            $query->whereBetween('date', [$startDate, $endDate]);
-        }
-        $presence = $query->get();
-        $workDays = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDivision) {
+            $query->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDepartment) {
+            $query->where('department_id', $userDepartment);
+        });
+    } elseif ($userDivision && $userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDivision, $userDepartment) {
+            $query->where('division_id', $userDivision)
+                  ->where('department_id', $userDepartment);
+        });
+    }
+
+    if ($startDate && $endDate) {
+        $query->whereBetween('date', [$startDate, $endDate]);
+    }
+
+    $presence = $query->get();
+
+    $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
         ->groupBy('name')
         ->get();
 
-        return view('presence.index', compact('employees', 'presence', 'workDay', 'workDays'));
-    }
+    $employees = Employee::get();
+    
+    return view('presence.index', compact('presence', 'workDay', 'employees'));
+}
+
 
 //Import Prresences
     public function import(){

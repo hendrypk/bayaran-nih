@@ -10,16 +10,26 @@ use App\Models\Overtime;
 use App\Models\Presence;
 use Illuminate\Http\Request;
 use App\Models\PresenceSummary;
+use Illuminate\Support\Facades\Auth;
 
 class PresenceSummaryController extends Controller
 {
     function index(Request $request){
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
 
         //Get Employee
-        $employees = Employee::with('overtimes', 'presences', 'WorkDay')->get();
-        // $workDays = WorkDay::all();
+        $query = Employee::with('overtimes', 'presences', 'WorkDay')->get();
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->where('division_id', $userDivision);
+        } elseif (!$userDivision && $userDepartment) {
+            $query->where('department_id', $userDepartment);
+        } 
+
+        $employees = $query->get();
 
         $employees->each(function ($employee) use ($startDate, $endDate){
 
@@ -52,7 +62,7 @@ class PresenceSummaryController extends Controller
         $employee->absence = intval($effectiveDays - $employee->presence); //Total Absence
 
         //Overtime Total
-            $overtime = Overtime::where('employee_id', $employee->id);
+            $overtime = Overtime::where('employee_id', $employee->id)->where('status', 1);
             if($startDate && $endDate){
                 $overtime->whereBetween('date', [$startDate, $endDate]);
             }

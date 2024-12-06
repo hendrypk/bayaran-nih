@@ -48,6 +48,7 @@
                                 <th scope="col">Start at</th>
                                 <th scope="col">End at</th>
                                 <th scope="col">Total</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Delete</th>
                             </tr>
@@ -61,19 +62,26 @@
                                 <td>{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}</td>
                                 <td>{{ $overtime->start_at }}</td>
                                 <td>{{ $overtime->end_at }}</td>
-                                 <td> {{ $overtime->total }} <span>minutes</span></td>
-                                 <td>
-                                 <button type="button" class="btn btn-outline-success"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#overtimeEdit" 
-                                    data-id="{{ $overtime->id }}" 
-                                    data-name="{{ $overtime->employees->name }}"
-                                    data-employee_id="{{ $overtime->employee_id }}"
-                                    data-date="{{ $overtime->date }}"
-                                    data-start="{{ $overtime->start_at }}"
-                                    data-end="{{ $overtime->end_at }}">
-                                    <i class="ri-edit-line"></i>
-                                </button>
+                                <td> {{ $overtime->total }} <span>minutes</span></td>
+                                <td>
+                                    @if ($overtime->status === 1)
+                                        <i class="status-leave accept ri-check-double-fill"></i>
+                                    @else
+                                        <i class="status-leave reject ri-close-fill"></i>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-success"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#overtimeEdit" 
+                                        data-id="{{ $overtime->id }}" 
+                                        data-name="{{ $overtime->employees->name }}"
+                                        data-employee_id="{{ $overtime->employee_id }}"
+                                        data-date="{{ $overtime->date }}"
+                                        data-start="{{ $overtime->start_at }}"
+                                        data-end="{{ $overtime->end_at }}">
+                                        <i class="ri-edit-line"></i>
+                                    </button>
                                 </td>
                                     <td>
                                         {{-- <button type="button" class="btn btn-outline-danger"
@@ -139,9 +147,12 @@
         const start = button.getAttribute('data-start');
         const end = button.getAttribute('data-end');
 
+        console.log('id', id);
         // Set the form action URL
         const form = document.getElementById('editOvertimeForm');
-        form.action = form.action.replace('__id__', id);
+        let actionUrl = form.getAttribute('action');
+        form.setAttribute('action', actionUrl.replace('__id__', id));
+        console.log(actionUrl)
 
         // Populate the form fields
         document.getElementById('selectEmployee').value = employee_id;

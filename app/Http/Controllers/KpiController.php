@@ -7,30 +7,63 @@ use App\Models\Employee;
 use App\Models\GradeKpi;
 use App\Models\KpiOptions;
 use Illuminate\Http\Request;
-use App\Models\PerformanceAppraisal;
 use App\Models\PerformanceKpi;
+use App\Models\PerformanceAppraisal;
+use Illuminate\Support\Facades\Auth;
 
 class KpiController extends Controller
 {
 
 //KPI Index
-    function indexKpi(Request $request){
+public function indexKpi(Request $request){
+    $selectedMonth = $request->input('month', date('F'));
+    $selectedYear = $request->input('year', date('Y'));    
 
-        $selectedMonth = $request->input('month', date('F'));
-        $selectedYear = $request->input('year', date('Y'));    
+    // Ambil division_id dan department_id dari user yang sedang login
+    $userDivision = Auth::user()->division_id;
+    $userDepartment = Auth::user()->department_id;
 
-        $gradeKpi = GradeKpi::with('indicator', 'employees')
-        ->select('employee_id', 'month','year')
+    // Query untuk ambil data GradeKpi
+    $query = GradeKpi::with('indicator', 'employees')
+        ->select('employee_id', 'month', 'year')
         ->where('month', $selectedMonth)
-        ->where('year', $selectedYear)
-        ->groupBy('employee_id', 'month', 'year')
-        ->get();
-        return view('performance.kpi.index', compact('gradeKpi', 'selectedMonth', 'selectedYear'));
+        ->where('year', $selectedYear);
+
+    // Filter berdasarkan division_id dan department_id dari user
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('employees', function ($query) use ($userDivision) {
+            $query->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('employees', function ($query) use ($userDepartment) {
+            $query->where('department_id', $userDepartment);
+        });
+    } elseif ($userDivision && $userDepartment) {
+        $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
+            $query->where('division_id', $userDivision)
+                  ->where('department_id', $userDepartment);
+        });
     }
+
+    // Ambil data gradeKpi sesuai dengan filter
+    $gradeKpi = $query->groupBy('employee_id', 'month', 'year')->get();
+
+    return view('performance.kpi.index', compact('gradeKpi', 'selectedMonth', 'selectedYear'));
+}
 
 //Kpi Add
     public function addKpi(Request $request){
-        $employees = Employee::get();
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->where('division_id', $userDivision);
+        } elseif (!$userDivision && $userDepartment) {
+            $query->where('department_id', $userDepartment);
+        } 
+
+        $employees = $query->get();
+
         return view('performance.kpi.add', compact('employees'));
     }
 
