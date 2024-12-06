@@ -87,7 +87,7 @@ class OvertimeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Overtime added successfully', 
-            'route' => route('employee.detail')]);
+            'route' => route('overtime.list')]);
     }
 
 //Overtime Delete
