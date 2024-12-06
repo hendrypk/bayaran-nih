@@ -9,7 +9,7 @@
         <h5 class="card-title">Edit Employee</h5>
 
         <!-- General Form Elements -->
-         <form action="{{route('employee.update', $employee->id)}}" method="POST">
+         <form action="{{route('employee.update', $employee->id)}}" method="POST" id="editEmployee">
           @csrf
           <div class="row mb-3">
             <label for="inputEmail" class="col-sm-4 col-form-label">Full Name</label>
@@ -196,13 +196,6 @@
           </div>
 
           <div class="row mb-3">
-            <label for="inputCity" class="col-sm-4 col-form-label">City</label>
-            <div class="col-sm-8">
-              <input type="text"  name="city" class="form-control" value="{{ old('city', $employee->city )}}" >
-            </div>
-          </div>
-
-          <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Work Schedule</label>
             <div class="col-sm-8">    
                 @foreach($workDay as $data)       
@@ -220,7 +213,6 @@
                 @endforeach
             </div>
         </div>
-
 
         <div class="row mb-3">
           <label class="col-sm-4 col-form-label">Office Location</label>
@@ -241,14 +233,13 @@
           </div>
       </div>
 
-
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Employee Status</label>
             <div class="col-sm-8">
               <select class="form-select" name="employee_status" aria-label="Default select example">
-                <option selected>Select Status</option>
+                <option value="" selected>Select Status</option>
                 @foreach($status as $data)
-                <option value="{{ $data->name }}" {{ $data->name == $employee->employee_status ? 'selected' : '' }}>{{ $data->name }}</option>
+                <option value="{{ $data->id }}" {{ !is_null($employee->employee_status) && $data->id == $employee->employee_status ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
               </select>
             </div>
@@ -312,5 +303,64 @@
     </div>
   </div>
 </div>
+
+@section('script')
+<script>
+$('#editEmployee').submit(function(e) {
+    e.preventDefault(); 
+    
+    var form = $(this);
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = "{{ route('employee.list', ['id' => $employee->id]) }}";
+                });
+            }
+        },
+        error: function(xhr) {
+            // Handle error case
+            if (xhr.status === 422) {
+                // Validation error
+                var errors = xhr.responseJSON.errors;
+                var errorMessages = '';
+                
+                // Loop through validation errors and append them to a string
+                for (var field in errors) {
+                    if (errors.hasOwnProperty(field)) {
+                        errorMessages += errors[field].join(', ') + '\n';
+                    }
+                }
+
+                // Show SweetAlert with error messages
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessages || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Show generic error message for other issues
+                Swal.fire({
+                    title: 'Error!',
+                    text: xhr.responseJSON?.message || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    });
+});
+
+</script>
+@endsection
 
 @endsection

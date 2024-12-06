@@ -42,7 +42,7 @@
       </div> --}}
         <!-- General Form Elements -->
             
-      <form action="{{route('employee.submit')}}" method="POST">
+      <form action="{{route('employee.submit')}}" method="POST" id="addEmployee">
         @csrf
               
         <div class="row mt-10"></div>
@@ -263,7 +263,7 @@
               <select class="form-select" name="employee_status" aria-label="Default select example">
                 <option selected disabled>Select Status</option>
                 @foreach($status as $data)
-                <option value="{{ $data->name }}">{{ $data->name }}</option>
+                <option value="{{ $data->id }}">{{ $data->name }}</option>
                 @endforeach
               </select>
             </div>
@@ -328,15 +328,68 @@
 
 @section('script')
 <script>
-document.querySelector('form').addEventListener('submit', (event) => {
-    const selectedWorkDays = [...document.querySelectorAll('input[name="workDay[]"]:checked')]
-});
+// document.querySelector('form').addEventListener('submit', (event) => {
+//     const selectedWorkDays = [...document.querySelectorAll('input[name="workDay[]"]:checked')]
+// });
 
-document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            const selectedValues = [...document.querySelectorAll('input[type="checkbox"]:checked')]
-        });
+// document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+//         checkbox.addEventListener('change', () => {
+//             const selectedValues = [...document.querySelectorAll('input[type="checkbox"]:checked')]
+//         });
+//     });
+$('#addEmployee').submit(function(e) {
+    e.preventDefault(); 
+    
+    var form = $(this);
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = "{{ route('employee.list') }}";
+                });
+            }
+        },
+        error: function(xhr) {
+            // Handle error case
+            if (xhr.status === 422) {
+                // Validation error
+                var errors = xhr.responseJSON.errors;
+                var errorMessages = '';
+                
+                // Loop through validation errors and append them to a string
+                for (var field in errors) {
+                    if (errors.hasOwnProperty(field)) {
+                        errorMessages += errors[field].join(', ') + '\n';
+                    }
+                }
+
+                // Show SweetAlert with error messages
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessages || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Show generic error message for other issues
+                Swal.fire({
+                    title: 'Error!',
+                    text: xhr.responseJSON?.message || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
     });
+});
 </script>
 
 @endsection

@@ -156,7 +156,11 @@ class EmployeeController extends Controller
         $employee->workDay()->sync($request->workDay);
         $employee->officeLocations()->sync($request->officeLocations);
 
-        return redirect()->route('employee.list');
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee added successfully', 
+            'route' => route('employee.detail', ['id' => $employee->id])
+        ], 200);
     }
     
     //employee detail
