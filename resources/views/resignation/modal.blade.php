@@ -31,8 +31,8 @@
                         <label class="col-sm-3 col-form-label">Category</label>
                         <div class="col-sm-9">
                             <select class="form-select" name="category" id="category" aria-label="Default select example">
-                                @foreach($category as $category)
-                                    <option value="{{ $category }}">{{ $category }}</option>
+                                @foreach($category as $data)
+                                    <option value="{{ $data }}">{{ $data }}</option>
                                 @endforeach
                             </select>
                         </div>

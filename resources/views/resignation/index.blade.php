@@ -98,6 +98,13 @@ function openResignModal(action, data = {}) {
     $('#resignModal').modal('show');
 }
 
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 //Handle Alert
 $('#resignForm').submit(function(e) {
     e.preventDefault(); 
@@ -119,11 +126,11 @@ $('#resignForm').submit(function(e) {
                 });
             }
         },
-        error: function(response) {
+        error: function(xhr) {
             // Handle error case
             Swal.fire({
                 title: 'Error!',
-                text: response.message,
+                text: xhr.responseJSON?.message || 'Something went wrong.',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
