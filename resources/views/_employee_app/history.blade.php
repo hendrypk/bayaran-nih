@@ -3,6 +3,11 @@
 @include('_employee_app._layout_employee.header')
 @section('content')
 <div class="presence">
+
+<x-date-filter action="{{ route('presence.history') }}" 
+    :startDate="request()->get('start_date')" 
+    :endDate="request()->get('end_date')" />
+
     <div class="card">
         <div class="card-body">
             <table class="table">

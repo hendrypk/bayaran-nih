@@ -14,8 +14,8 @@ body {
 
 .button-container {
   display: flex;
-  gap: 10px; /* Adds space between buttons */
-  align-items: center; /* Vertically center the buttons */
+  gap: 10px; 
+  align-items: center; 
 }
 
 
@@ -32,12 +32,12 @@ body {
 }
 
 .custom-btn i {
-    font-size: 24px; /* Ukuran ikon */
+    font-size: 24px; 
 }
 
 .custom-btn label {
-    font-size: 9px; /* Ukuran teks */
-    margin-top: 5px; /* Jarak antara ikon dan teks */
+    font-size: 9px; 
+    margin-top: 5px;
     display: block;
 }
 
@@ -49,21 +49,21 @@ body {
 }
 
 .presensi-column {
-    flex: 0 1 23%; /* Full width on mobile */
+    flex: 0 1 23%; 
     max-width: 100%;
-    margin-bottom: 15px; /* Space between rows */
+    margin-bottom: 15px; 
 }
 
 @media (min-width: 576px) {
     .presensi-column {
-        flex: 0 1 30%; /* 3 columns in small and up */
+        flex: 0 1 30%; 
         max-width: 30%;
     }
 }
 
 @media (min-width: 768px) {
     .presensi-column {
-        flex: 0 1 23%; /* 4 columns in medium and up */
+        flex: 0 1 23%; 
         max-width: 23%;
     }
 }
@@ -109,12 +109,12 @@ body {
 }
 
 a {
-    color: #118ab2;
+    color: inherit;
     text-decoration: none;
   }
   
 a:hover {
-    color: #046f92;
+    color: inherit;
     text-decoration: none;
   }
   
@@ -645,32 +645,31 @@ table.datatable-table:focus {
 }
 
 #mapPresence {
-  width: 100%; /* Atau bisa menggunakan ukuran tertentu seperti 600px */
-  height: 400px; /* Atau ukuran tertentu */
+  width: 100%; 
+  height: 400px; /
 }
 
 
 /* public/css/custom-alerts.css */
-
 .swal2-popup {
-  font-size: 1rem; /* Adjust font size */
+  font-size: 1rem; 
   border-radius: 10px; 
 }
 
 .swal2-title {
-  color: #118ab2; /* Custom title color */
+  color: #118ab2; 
 }
 
 .swal2-content {
-  font-weight: 500; /* Make the content bolder */
+  font-weight: 500;
 }
 
 .swal2-success {
-  background-color: #d4edda; /* Light green background for success */
+  background-color: #d4edda; 
 }
 
 .swal2-error {
-  background-color: #f8d7da; /* Light red background for error */
+  background-color: #f8d7da; 
 }
 
 /* Change the button colors */
@@ -678,7 +677,7 @@ table.datatable-table:focus {
   background: linear-gradient(to right, #118ab2, #06b6d4); 
   color: #fff; 
   padding: 10px 20px; 
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px; 
   border: none; 
   transition: background 0.3s ease; 
 }
@@ -695,7 +694,7 @@ table.datatable-table:focus {
 
 
 .swal2-confirm {
-  background-color: #fff; /* Grey button color */
+  background-color: #fff; 
   color: #118ab2; 
   padding: 8px 20px;
   border-radius: 5px;
@@ -704,7 +703,7 @@ table.datatable-table:focus {
 
 .swal2-confirm:hover {
   
-  background-color: #0f7f9e; /* Darker on hover */
+  background-color: #0f7f9e; 
   color: #fff;
 }
 
@@ -772,15 +771,15 @@ table.datatable-table:focus {
   position: fixed;
   bottom: 80px;
   right: 20px;
-  border-radius: 50%; /* Makes the button circular */
-  width: 50px; /* Set the width */
-  height: 50px; /* Set the height */
+  border-radius: 50%;
+  width: 50px; 
+  height: 50px; 
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #118ab2; /* Button color */
+  background-color: #118ab2;
   color: white;
-  font-size: 12px; /* Larger icon size */
+  font-size: 12px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s;
 }
@@ -792,69 +791,80 @@ table.datatable-table:focus {
 
 /* Style for the danger class to make the asterisk red */
 .span-danger {
-  color: red;  /* Set the color to red */
-  font-weight: bold;  /* Optional: Make the asterisk bold */
+  color: red; 
+  font-weight: bold;
 }
 
 .profile-card {
-  width: 240px; /* Set a fixed width for the card */
-  height: 240px; /* Set a fixed height for the card */
-  overflow: hidden; /* Hide overflow if the image is larger than the card */
+  width: 240px; 
+  height: 240px;
+  overflow: hidden;
 }
 
 .profile-card img {
-  width: 100%; /* Ensure the image fills the width of the card */
-  height: 100%; /* Ensure the image fills the height of the card */
-  object-fit: cover; /* This ensures the image covers the entire card, maintaining its aspect ratio */
-  object-position: center; /* Optionally, center the image inside the card */
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  object-position: center;
 }
 
 
 .profile-rounded-circle {
-  width: 100px; /* Set the width */
-  height: 100px; /* Set the height, same as the width for a circle */
-  border-radius: 50% !important; /* Make the element circular */
+  width: 100px; 
+  height: 100px;
+  border-radius: 50% !important; 
   border: 2px solid #118ab2 !important;
 }
 
 .release-tag {
   position: absolute;
-  top: 10px; /* Atur sesuai kebutuhan */
-  right: 10px; /* Atur sesuai kebutuhan */
-  background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background */
+  top: 10px; 
+  right: 10px; 
+  background-color: rgba(0, 0, 0, 0.0); 
   color: #118ab2;
-  font-size: 14px; /* Ukuran lebih besar untuk desktop */
-  padding: 8px; /* Padding lebih besar */
+  font-size: 14px; 
+  padding: 8px; 
   border-radius: 5px;
+}
+
+.release-tag:hover {
+  background-color: #118ab2; 
+  color: white; 
 }
 
 @media (max-width: 767px) {
   .release-tag {
-    font-size: 12px; /* Ukuran lebih kecil untuk mobile */
-    padding: 5px; /* Padding lebih kecil */
+    font-size: 12px;
+    padding: 5px; 
   }
 }
 
 .release-tag-mobile {
   position: absolute;
-  top: 10px; /* Atur sesuai kebutuhan */
-  right: 10px; /* Atur sesuai kebutuhan */
-  background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background */
+  top: 10px; 
+  right: 10px; 
+  background-color: rgba(0, 0, 0, 0.0); 
   color: white;
-  font-size: 14px; /* Ukuran lebih besar untuk desktop */
-  padding: 8px; /* Padding lebih besar */
+  font-size: 14px; 
+  padding: 8px; 
   border-radius: 5px;
 }
 
+.release-tag-mobile:hover {
+  background-color: white;
+  color: #118ab2;
+}
+
+
 @media (max-width: 767px) {
   .release-tag {
-    font-size: 12px; /* Ukuran lebih kecil untuk mobile */
-    padding: 5px; /* Padding lebih kecil */
+    font-size: 12px; 
+    padding: 5px;
   }
 }
 
 #releaseList {
-  list-style-type: none; /* Remove the bullet points */
+  list-style-type: none;
   padding: 0;
 }
 
@@ -871,9 +881,17 @@ table.datatable-table:focus {
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 1.2rem;
-  color: #6c757d; /* Optional: default icon color */
+  color: #6c757d; 
 }
 
 .password-field .toggle-password:hover {
-  color: #000; /* Optional: hover effect for the icon */
+  color: #000;
 }
+
+/* Login Page */
+.username-icon {
+  font-size: 18px;
+  color: #118ab2; 
+}
+
+

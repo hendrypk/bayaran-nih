@@ -21,3 +21,7 @@ fetch('/github/releases', {
   document.getElementById('releaseList').innerText = 'Error fetching release data.';
 });
 
+
+
+
+

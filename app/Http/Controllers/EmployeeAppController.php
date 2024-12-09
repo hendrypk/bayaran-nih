@@ -315,11 +315,16 @@ function distance($lat1, $lon1, $lat2, $lon2){
     }
 
 //Presences History
-    public function history(){
+    public function history(Request $request){
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $employeeId = Auth::id();
         $employee = Employee::findOrFail($employeeId);
-        $presences = Presence::where('employee_id', $employeeId)->get();
-        // dd($employeeId, $employee, $presences);
+        $query = Presence::where('employee_id', $employeeId);
+        if ($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+        $presences = $query->get();
         return view('_employee_app.history', compact('presences'));
     }
 
@@ -370,9 +375,15 @@ function distance($lat1, $lon1, $lat2, $lon2){
         return redirect()->route('employee.app')->with('success', $message);
     }
 //Overtime History
-    public function overtimeHistory(){
+    public function overtimeHistory(Request $request){
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $employeeId = Auth::id();
-        $overtime = Overtime::where('employee_id', $employeeId)->get();
+        $query = Overtime::where('employee_id', $employeeId);
+        if($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+        $overtime = $query->get();
 
         return view('_employee_app.overtime-history', compact('overtime'));
     }
@@ -389,7 +400,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
     }
 
     public function resetUsernameStore(Request $request){
-        // Validasi input
         $request->validate([
             'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
             'currentPassword' => 'required|string',
@@ -402,56 +412,18 @@ function distance($lat1, $lon1, $lat2, $lon2){
     
         $username = $request->username;
         $currentPassword = $request->currentPassword;
-    
-        // Ambil pengguna yang sedang login
         $employee = Auth::user();
-    
-        // Cek apakah password yang dimasukkan cocok dengan password yang tersimpan
         if (Hash::check($currentPassword, $employee->password)) {
-            // Update username
             $employee->update([
                 'username' => $username,
             ]);
-    
-            // Flash pesan sukses
             session()->flash('success', 'Username updated successfully!');
         } else {
-            // Flash pesan error jika password salah
             session()->flash('error', 'Password is incorrect. Please reenter the current password!');
         }
     
-        // Redirect ke halaman yang sesuai
         return redirect()->route('change.username')->withInput();
     }
-
-    
-    // public function resetUsernameStore(Request $request){
-    //     $request->validate([
-    //         'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
-    //         'currentPassword' => 'required|string',
-    //     ],[
-    //         'username.required' => 'please fill the username',
-    //         'username.regex:/^\S*$/' => 'username contains invalid character',
-    //         'username.unique' => 'username already exist',
-    //     ]);
-
-    //     $username = $request->username;
-    //     $password = Hash::make($request->currentPassword);
-    //     $passwordCheck = Hash::make(Auth::user()->password);
-    //     $pass = Auth::user()->password;
-    //     dd($pass, $passwordCheck);
-    //     if (Hash::check($password, $passwordCheck)){
-    //         $employee = Auth::user();
-    //         $employee->update([
-    //             'username' => $username,
-    //         ]);
-    //         session()->flash('success', 'Username updated successfully!');
-    //     } else {
-    //         session()->flash('error', 'Password is incorrect. Please reenter the current password!');
-    //     }
-
-    //     return redirect()->route('change.username')->withInput();
-    // }
 
 //Reset Password
     public function resetPassword(){
@@ -494,38 +466,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
         return redirect()->route('change.password')->withInput();
     }
 
-    
-    // public function resetPasswordStore(Request $request){
-    //     $request->validate([
-    //         'newPassword' => 'required|string|min:6',
-    //         'confirmPassword' => 'required|string|min:6'
-    //     ],[
-    //         'newPassword.required' => 'New password is required!',
-    //         'newPassword.min' => 'Minimum password 6 characters!',
-    //         'confirmPassword' => 'Confirm new password is required!'
-    //     ]);
-
-    //     $password = $request->currentPassword;
-    //     $passwordCheck = Auth::user()->password;
-    //     $newPassword = $request->newPassword;
-    //     $confirmPassword = $request->confirmPassword;
-
-    //     if (Hash::check($password, $passwordCheck)){
-    //         session()->flash('success', 'Username updated successfully!');
-    //         if(Hash::make($newPassword === $confirmPassword)){
-    //             $employee = Auth::user();
-    //             $employee->update([
-    //                 'password' => $confirmPassword
-    //             ]);
-    //         } else {
-    //             session()->flash('error', 'Password does not match. Please reenter the current password!');
-    //         }
-    //     } else {
-    //         session()->flash('error', 'Current password is incorrect. Please reenter the current password!');
-    //     }
-    //     return redirect()->route('change.password')->withInput();
-    // }
-
 //Leave
     public function leaveIndex() {
         $employeeId = Auth::id();
@@ -566,8 +506,6 @@ function distance($lat1, $lon1, $lat2, $lon2){
             $leave = Leave::create([
                 'employee_id' => $employeeId,
                 'date' => $date,
-                // 'start_date' => $request->start_date,
-                // 'end_date' => $request->end_date,
                 'category' => $request->category,
                 'note' => $request->note
             ]);
