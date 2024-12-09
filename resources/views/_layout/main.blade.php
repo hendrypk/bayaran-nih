@@ -171,13 +171,6 @@
 
 });
 
-  // document.addEventListener("DOMContentLoaded", function() {
-  //     flatpickr("#leave-dates", "#holiday-dates" {
-  //         mode: "multiple",
-  //         dateFormat: "Y-m-d",
-  //     });
-  // });
-
 </script>
 
 <script>
