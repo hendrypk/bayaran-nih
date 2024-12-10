@@ -1,10 +1,11 @@
 @extends('_employee_app._layout_employee.main')
-<!-- @section('header.title', 'Absen') -->
+<!-- @section('header.title', 'Absen Masuk') -->
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 
 @endsection -->
 @section('content')
+<div class="appCapsule">
 <div class="presence">
     <div class="card">
         <div class="card-body">
@@ -73,6 +74,7 @@
                 </form>
         </div>
     </div>
+</div>
 </div>
 @section('script')
 <script>
@@ -176,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
         height: 480,
         width: 480,
         image_format: 'jpeg',
-        flip_horiz: false,
+        flip_horiz: true,
         jpeg_quality: 80
     });
     Webcam.attach('.webcam-capture');
