@@ -63,7 +63,11 @@ class EmployeeAppController extends Controller
         $employeeId = Auth::id();
         $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
         $workDay = $employee->workDay;
-        return view('_employee_app.presence.presence_in', compact('employee'));
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude; 
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
+        return view('_employee_app.presence.presence_in', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
     }
 
 //Create Presence Out
@@ -75,9 +79,14 @@ public function presenceOut(){
 
     $workDay = $existPresence->work_day_id;
 
+    $lokasi = $employee->officeLocations->first();
+    $officeLatitude = $lokasi->latitude; 
+    $officeLongitude = $lokasi->longitude;
+    $radius = $lokasi->radius;
+
 
     // $workDay = $employee->workDay;
-    return view('_employee_app.presence.presence_out', compact('employee', 'workDay'));
+    return view('_employee_app.presence.presence_out', compact('employee', 'workDay', 'officeLatitude', 'officeLongitude', 'radius'));
 }
 
 //Store Image
