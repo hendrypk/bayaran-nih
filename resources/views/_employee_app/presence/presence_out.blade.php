@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
         height: 480,
         width: 480,
         image_format: 'jpeg',
+        flip_horiz: true,
         jpeg_quality: 80
     });
     Webcam.attach('.webcam-capture');
