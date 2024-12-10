@@ -109,7 +109,7 @@
     //display web cam
     Webcam.set({
         height: 480,
-        width: 320,
+        width: 480,
         image_format: 'jpeg',
         jpeg_quality: 80
     });

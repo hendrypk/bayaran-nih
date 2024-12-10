@@ -111,11 +111,9 @@
     });
 
     //display webcam
-    const height = 480; // Tinggi tetap
-    const width = Math.floor(height / 16 * 9);
     Webcam.set({
-        height: height,
-        width: width,
+        height: 480,
+        width: 480,
         image_format: 'jpeg',
         flip_horiz: false,
         jpeg_quality: 80
