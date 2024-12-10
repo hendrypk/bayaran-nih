@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Leave;
 use App\Models\WorkDay;
 use App\Models\Employee;
-use App\Models\Leave;
-use App\Models\OfficeLocation;
 use App\Models\Overtime;
 use App\Models\Presence;
 use Illuminate\Http\Request;
+use App\Models\OfficeLocation;
+use App\Traits\PresenceSummaryTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 class EmployeeAppController extends Controller
 {
 
+    use PresenceSummaryTrait;
+    
 //About
     public function about(){
         return view('_employee_app.about');
@@ -34,8 +37,25 @@ class EmployeeAppController extends Controller
         $overtimeToday = Overtime::where('employee_id', $employeeId)
             ->whereDate('date', $today)
             ->first();
+            
+        $employees = collect([$employee]); // Gunakan koleksi untuk 1 karyawan
+        $employees = $this->calculatePresenceSummary($employees, Carbon::now()->startOfMonth(), Carbon::now());
 
-        return view('_employee_app.index', compact('employee', 'workDay', 'presenceToday', 'overtimeToday'));
+        // Prepare data for chart
+        $chartData = [
+            'labels' => ['Alpha', 'Hadir', 'Sakit', 'Izin', 'Cuti'], // Use the actual labels
+            'data' => [
+                $employee->alpha,
+                $employee->presence, 
+                $employee->sick_leave, 
+                $employee->permit_leave, 
+                $employee->annual_leave,
+            ]
+        ];
+
+        // return response()->json($chartData);
+
+        return view('_employee_app.index', compact('employee', 'workDay', 'presenceToday', 'overtimeToday', 'chartData'));
     }
 
 //Create Presence In
@@ -43,15 +63,30 @@ class EmployeeAppController extends Controller
         $employeeId = Auth::id();
         $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
         $workDay = $employee->workDay;
-        return view('_employee_app.presence.presence_in', compact('employee'));
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude; 
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
+        return view('_employee_app.presence.presence_in', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
     }
 
 //Create Presence Out
 public function presenceOut(){
     $employeeId = Auth::id();
     $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
-    $workDay = $employee->workDay;
-    return view('_employee_app.presence.presence_out', compact('employee'));
+    $today = Carbon::today()->toDateString();
+    $existPresence = Presence::where('employee_id', $employeeId)->where('date', $today)->first();
+
+    $workDay = $existPresence->work_day_id;
+
+    $lokasi = $employee->officeLocations->first();
+    $officeLatitude = $lokasi->latitude; 
+    $officeLongitude = $lokasi->longitude;
+    $radius = $lokasi->radius;
+
+
+    // $workDay = $employee->workDay;
+    return view('_employee_app.presence.presence_out', compact('employee', 'workDay', 'officeLatitude', 'officeLongitude', 'radius'));
 }
 
 //Store Image
