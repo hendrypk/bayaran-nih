@@ -27,34 +27,33 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <label for="">Select Shift :</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-control" name="workDay" aria-label="Default select example">
-                                @foreach($employee->workDay as $index => $workDay)
-                                    <option value="{{ $workDay->name }}">{{ $workDay->name }}</option>
-                                @endforeach
-                            </select>
+                    <div class="rekappresence">
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="col-md-2">
+                                    <label for="">Shif Sekarang :</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col-md-2">
+                                    <label for="">Pilih Lokasi :</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" name="officeLocations" aria-label="Default select example">
+                                        @foreach($employee->officeLocations as $index => $officeLocations)
+                                            <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <label for="">Select Location :</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-control" name="officeLocations" aria-label="Default select example">
-                                @foreach($employee->officeLocations as $index => $officeLocations)
-                                    <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="note">Note :</label>
+                            <label for="note">Catatan :</label>
                             <input type="text" class="form-control" name="note">                    
                         </div>
                     </div>
@@ -65,7 +64,6 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
         </div>
     </div>

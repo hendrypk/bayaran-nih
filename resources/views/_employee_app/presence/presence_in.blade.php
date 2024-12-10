@@ -27,33 +27,37 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <label for="">Select Shift :</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-control" name="workDay" aria-label="Default select example">
-                                @foreach($employee->workDay as $index => $workDay)
-                                    <option value="{{ $workDay->name }}">{{ $workDay->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <label for="">Select Location :</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-control" name="officeLocations" aria-label="Default select example">
-                                @foreach($employee->officeLocations as $index => $officeLocations)
-                                    <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
-                                @endforeach
-                            </select>
+                    <div class="rekappresence">
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="col-md-2">
+                                    <label for="">Pilih Shift :</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" name="workDay" aria-label="Default select example">
+                                        @foreach($employee->workDay as $index => $workDay)
+                                            <option value="{{ $workDay->name }}">{{ $workDay->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col-md-2">
+                                    <label for="">Pili Lokasi :</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" name="officeLocations" aria-label="Default select example">
+                                        @foreach($employee->officeLocations as $index => $officeLocations)
+                                            <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="note">Note :</label>
+                            <label for="note">Catatan :</label>
                             <input type="text" class="form-control" name="note">                    
                         </div>
                     </div>
@@ -107,10 +111,13 @@
     });
 
     //display webcam
+    const height = 480; // Tinggi tetap
+    const width = Math.floor(height / 16 * 9);
     Webcam.set({
-        height: 480,
-        width: 320,
+        height: height,
+        width: width,
         image_format: 'jpeg',
+        flip_horiz: false,
         jpeg_quality: 80
     });
     Webcam.attach('.webcam-capture');
