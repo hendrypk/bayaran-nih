@@ -139,6 +139,8 @@
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->kpis->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">Bobot KPI</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->bobot_kpi ?? '-' }}</div>
+                                <div class="col-lg-4 col-md-4 label ">PA</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->pas->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">Masa Kerja</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $years }} tahun {{ $months }} bulan {{ $days }} hari</div>
                             </div>

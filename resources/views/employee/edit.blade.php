@@ -320,9 +320,11 @@ $('#editEmployee').submit(function(e) {
                     title: 'Success!',
                     text: response.message,
                     icon: 'success',
-                    confirmButtonText: 'OK'
+                    // confirmButtonText: 'OK'
+                    timer: 2000, // Auto close after 2 seconds
+                    showConfirmButton: false 
                 }).then(() => {
-                    window.location.href = "{{ route('employee.list', ['id' => $employee->id]) }}";
+                    window.location.href = "{{ route('employee.detail', ['id' => $employee->id]) }}";
                 });
             }
         },
