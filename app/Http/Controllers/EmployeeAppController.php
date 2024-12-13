@@ -42,6 +42,29 @@ class EmployeeAppController extends Controller
         $employees = $this->calculatePresenceSummary($employees, Carbon::now()->startOfMonth(), Carbon::now());
 
         // Prepare data for chart
+        // $chartData = [
+        //     [
+        //         'name' => 'Alpha',
+        //         'data' => [$employee->alpha],
+        //     ],
+        //     [
+        //         'name' => 'Hadir',
+        //         'data' => [$employee->presence],
+        //     ],
+        //     [
+        //         'name' => 'Sakit',
+        //         'data' => [$employee->sick_leave],
+        //     ],
+        //     [
+        //         'name' => 'Izin',
+        //         'data' => [$employee->permit_leave],
+        //     ],
+        //     [
+        //         'name' => 'Cuti',
+        //         'data' => [$employee->annual_leave],
+        //     ],
+        // ];
+        
         $chartData = [
             'labels' => ['Alpha', 'Hadir', 'Sakit', 'Izin', 'Cuti'], // Use the actual labels
             'data' => [

@@ -137,42 +137,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-
-
-    // document.addEventListener("DOMContentLoaded", function() {
-    //     var getLocation = document.getElementById('location');
-
-    //     // Attempt to get the user's location
-    //     if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
-    //     } else {
-    //         console.log("Geolocation is not supported by this browser.");
-    //     }
-
-    //     function successCallBack(position) {
-    //         // Display latitude and longitude in the input field
-    //         getLocation.value = position.coords.latitude + ", " + position.coords.longitude;
-
-    //         // Optional: Initialize your map or any other logic here
-    //         var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
-    //         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //             maxZoom: 19,
-    //             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    //         }).addTo(map);
-    //         var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-    //         var circle = L.circle([-7.761940915549656, 110.31390577561152], {
-    //             color: 'red',
-    //             fillColor: '#f03',
-    //             fillOpacity: 0.5,
-    //             radius: 30
-    //         }).addTo(map).addTo(map);;
-    //     }
-        
-    //     function errorCallBack(error) {
-    //         console.error("Error retrieving location:", error);
-    //     }
-    // });
-
     //display webcam
     Webcam.set({
         height: 480,
