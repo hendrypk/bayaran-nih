@@ -88,6 +88,11 @@ class Employee extends Authenticatable
         return $this->belongsTo(KpiAspect::class, 'kpi_id');
     }
 
+    public function pas()
+    {
+        return $this->belongsTo(AppraisalName::class, 'pa_id');
+    }
+
     public function performanceKpis()
     {
         return $this->belongsTo(PerformanceKpi::class, 'kpi_id');
