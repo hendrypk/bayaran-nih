@@ -46,10 +46,12 @@
 </div>
 @section('script')
 <script>
+    //display webcam
     Webcam.set({
         height: 480,
         width: 480,
         image_format: 'jpeg',
+        flip_horiz: true,
         jpeg_quality: 80
     });
 

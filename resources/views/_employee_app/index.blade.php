@@ -231,14 +231,14 @@ function showAlert(type) {
 
 document.addEventListener("DOMContentLoaded", () => {
         // Data dari controller
-        const months = @json($chartData['labels']); // Ambil bulan dalam format string
-        const quantities = @json($chartData['data']); // Ambil total quantity
+        const category = @json($chartData['labels']); // Ambil bulan dalam format string
+        const presence = @json($chartData['data']); // Ambil total quantity
 
         // Render chart dengan data dari database
         new ApexCharts(document.querySelector("#chart"), {
             series: [{
                 name: 'Sales',
-                data: quantities // Gunakan data qty
+                data: presence // Gunakan data qty
             }],
             chart: {
                 height: 150,
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             xaxis: {
                 type: 'category', // Kategori x-axis adalah tipe kategori
-                categories: months // Data bulan dalam format string
+                categories: category // Data bulan dalam format string
             },
             tooltip: {
                 x: {

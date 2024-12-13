@@ -64,7 +64,7 @@
     @yield('content')
 
     <!-- App Bottom Menu -->
-    @if(!request()->is('presence'))
+    @if(!request()->is('presence.in'))
         @include('_employee_app._layout_employee.bottom-nav')
     @endif
     <!-- * App Bottom Menu -->
