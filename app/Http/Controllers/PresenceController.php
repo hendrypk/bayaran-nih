@@ -21,8 +21,11 @@ class PresenceController extends Controller
 //Presences List
 public function index(Request $request){
     $query = Presence::with('employee');
-    $startDate = $request->input('start_date');
-    $endDate = $request->input('end_date');
+    $today = now();
+    $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+    $defaultEndDate = $today->toDateString();
+    $startDate = $request->input('start_date', $defaultStartDate);
+    $endDate = $request->input('end_date', $defaultEndDate);
     $userDivision = Auth::user()->division_id;
     $userDepartment = Auth::user()->department_id;
 
@@ -314,7 +317,8 @@ public function index(Request $request){
         $presence->late_check_in = $lateCheckIn;
         $presence->check_out_early = $checkOutEarly;
         $presence->save();
-        return redirect()->route('presence.list.admin', compact('employees'))->with('success', 'Update Manual Presence Successfull');
+        // return redirect()->route('presence.list.admin', compact('employees'))->with('success', 'Update Manual Presence Successfull');
+        return redirect()->back()->with('success', 'Update Manual Presence Successfull');
     }
 
 //Presence Delete
@@ -325,7 +329,7 @@ public function index(Request $request){
         return response()->json([
             'success' => true,
             'message' => 'Employee presence has been deleted.',
-            'redirect' => route('presence.list.admin') 
+            'redirect' => url()->previous() 
         ]);
     }
 

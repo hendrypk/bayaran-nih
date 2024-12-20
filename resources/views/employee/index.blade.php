@@ -28,6 +28,12 @@
               <th scope="col">Division</th>
               <th scope="col">Department</th>
               <th scope="col">Sales Status</th>
+              <th scope="col">
+                <button type="button" id="customButton" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#columnsModal">
+                  custom
+                </button>
+              </th>
+              
             </tr>
           </thead>
           <tbody>
@@ -37,13 +43,15 @@
               <th scope="row">{{ $no+1 }}</th>
               <td>{{ $data->eid }}</td>
               <td>{{ $data->name }}</td>
-              <td>{{ $data->employee_status ?? '-' }}</td>
+              <td>{{ $data->employeeStatus->name ?? '-' }}</td>
               <td>{{ $data->position->name ?? '-' }}</td>
               <td>{{ $data->job_title->name ?? '-' }}</td>
               <td>{{ $data->division->name ?? '-' }}</td>
               <td>{{ $data->department->name ?? '-' }}</td>
               <td>{!! $data->sales_status == 1 ? '<i class="ri-check-double-fill"></i>' : '-' !!}</td>
+              <td>
 
+              </td>
             </tr>
             @endforeach
           </tbody>
@@ -54,5 +62,91 @@
     </div>
   </div>
 </div>
+@section('script')
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const customButton = document.getElementById("customButton");
+  const columnsSelect = document.getElementById("columns");
+
+  // Event listener saat form disubmit
+  document.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault(); // Mencegah submit form untuk testing
+
+    // Ambil nilai yang dipilih
+    const selectedColumns = Array.from(columnsSelect.selectedOptions).map(option => option.value);
+
+    // Update teks tombol
+    if (selectedColumns.length > 0) {
+      customButton.textContent = selectedColumns.join(", ");
+    } else {
+      customButton.textContent = "custom";
+    }
+
+    // Kirim request ke server menggunakan route
+    fetch("{{ route('employee.updateTableColumns') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+      },
+      body: JSON.stringify({ columns: selectedColumns })
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Update tabel dengan data karyawan
+      updateEmployeeTable(data);
+    })
+    .catch(error => console.error('Error:', error));
+
+    // Tutup modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('columnsModal'));
+    modal.hide();
+  });
+});
+
+function updateEmployeeTable(data) {
+  const tableBody = document.querySelector("table tbody");
+  tableBody.innerHTML = ""; // Kosongkan tabel sebelum update
+
+  // Menampilkan data karyawan berdasarkan kolom yang dipilih
+  data.employees.forEach(employee => {
+    const tr = document.createElement("tr");
+
+    data.columns.forEach(column => {
+      const td = document.createElement("td");
+      td.textContent = employee[column] || "-"; // Tampilkan "-" jika data tidak ada
+      tr.appendChild(td);
+    });
+
+    tableBody.appendChild(tr);
+  });
+}
+
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   const customButton = document.getElementById("customButton");
+  //   const columnsSelect = document.getElementById("columns");
+
+  //   // Event listener saat form disubmit
+  //   document.querySelector("form").addEventListener("submit", function (e) {
+  //     e.preventDefault(); // Mencegah submit form untuk testing
+
+  //     // Ambil nilai yang dipilih
+  //     const selectedColumns = Array.from(columnsSelect.selectedOptions).map(option => option.text);
+
+  //     // Update teks tombol
+  //     if (selectedColumns.length > 0) {
+  //       customButton.textContent = selectedColumns.join(", ");
+  //     } else {
+  //       customButton.textContent = "custom";
+  //     }
+
+  //     // Tutup modal
+  //     const modal = bootstrap.Modal.getInstance(document.getElementById('columnsModal'));
+  //     modal.hide();
+  //   });
+  // });
+</script>
 
 @endsection
+@endsection
+@include('employee.custom_column')

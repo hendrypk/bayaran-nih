@@ -28,6 +28,7 @@ public function login (Request $request){
 
     $username = $request->name;
     $password = $request->password;
+    $remember = $request->has('remember');
 
     // $loginAdmin = [
     //     'name' => $username, 
@@ -50,12 +51,12 @@ public function login (Request $request){
 
     $infoLogin = [
         'username' => $username,
-        'password' => $password
+        'password' => $password,
     ];
 
     $admin = User::where('username', $username)->first();
     if($admin) {
-        if(auth::guard('web')->attempt($infoLogin)) {
+        if(auth::guard('web')->attempt($infoLogin, $remember)) {
             return redirect()->route('home')->with('success'. 'You are success login as administrator!');
         }
         return back()->with('error', 'Login failed, please check your password.');
@@ -63,7 +64,7 @@ public function login (Request $request){
 
     $employee = Employee::where('username', $username)->first();
     if($employee) {
-        if(auth::guard('employee')->attempt($infoLogin)) {
+        if(auth::guard('employee')->attempt($infoLogin, $remember)) {
             return redirect()->route('employee.app');
         }
         return back()->with('error', 'Login failed, please check your password.');

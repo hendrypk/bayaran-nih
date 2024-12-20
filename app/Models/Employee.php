@@ -29,7 +29,11 @@ class Employee extends Authenticatable
         'blood_type', 'gender', 'religion', 'marriage', 'education', 'whatsapp', 'bank', 'bank_number',
         'position_id', 'job_title_id', 'division_id', 'department_id', 'joining_date', 'employee_status',
         'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date'];
-    protected $hidden = ['password']; 
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     //relation table position
     public function position()

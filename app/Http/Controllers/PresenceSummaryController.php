@@ -15,8 +15,11 @@ use Illuminate\Support\Facades\Auth;
 class PresenceSummaryController extends Controller
 {
     function index(Request $request){
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $today = now();
+        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+        $defaultEndDate = $today->toDateString();
+        $startDate = $request->input('start_date', $defaultStartDate);
+        $endDate = $request->input('end_date', $defaultEndDate);
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
 
@@ -97,7 +100,7 @@ class PresenceSummaryController extends Controller
             if($startDate && $endDate) {
                 $annual_leave->whereBetween('date', [$startDate, $endDate]);
             }
-            $employee->annual_leave = $annual_leave->where('category', $annualLeave)->count();
+            $employee->annual_leave = $annual_leave->where('category', $annualLeave)->where('status', 1)->count();
 
         //Count Sick Leave
             $sickLeave = 'Sick';
@@ -106,7 +109,7 @@ class PresenceSummaryController extends Controller
             if($startDate && $endDate) {
                 $sick_leave->whereBetween('date', [$startDate, $endDate]);
             }
-            $employee->sick_leave = $sick_leave->where('category', $sickLeave)->count();
+            $employee->sick_leave = $sick_leave->where('category', $sickLeave)->where('status', 1)->count();
 
         
         //Count Permit Leave
@@ -116,7 +119,7 @@ class PresenceSummaryController extends Controller
             if($startDate && $endDate) {
                 $permit_leave->whereBetween('date', [$startDate, $endDate]);
             }
-            $employee->permit_leave = $permit_leave->where('category', $permitLeave)->count();
+            $employee->permit_leave = $permit_leave->where('category', $permitLeave)->where('status', 1)->count();
 
         //Count Alpha
             $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence;

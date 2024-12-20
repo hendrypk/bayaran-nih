@@ -10,12 +10,15 @@ use Illuminate\Support\Facades\Auth;
 class LeaveController extends Controller
 {
 //Index
-    public function index () {
+    public function index (Request $request) {
+        $query = Leave::query();
+        $today = now();
+        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+        $defaultEndDate = $today->toDateString();
+        $startDate = $request->input('start_date', $defaultStartDate);
+        $endDate = $request->input('end_date', $defaultEndDate);
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
-    
-        // Start with a query to get all leaves
-        $query = Leave::query();
     
         // Filter by division and/or department if set
         if ($userDivision && !$userDepartment) {
@@ -33,6 +36,10 @@ class LeaveController extends Controller
             });
         }
     
+        if ($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+        
         $leaves = $query->with('employees')->get();
 
         $employees = Employee::all();
@@ -84,7 +91,7 @@ class LeaveController extends Controller
             ]);
         }
 
-        return redirect()->route('leaves.index')->with('success', 'Leave for ' . $name . ' updated successfully');
+        return redirect()->back()->with('success', 'Leave for ' . $name . ' updated successfully');
     }
 
 //Delete
@@ -94,7 +101,7 @@ class LeaveController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Leave has been deleted.',
-            'redirect' => route('leaves.index') 
+            'redirect' => url()->previous()
         ]);
     }
 }

@@ -71,8 +71,7 @@
         @yield('content')
       </div>
     </section>
-
-  </main><!-- End #main -->
+  </main>
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
