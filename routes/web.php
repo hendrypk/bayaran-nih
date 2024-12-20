@@ -148,6 +148,10 @@ Route::middleware(['auth:web'])->group(function () {
             Route::get('{id}/edit', [EmployeeController::class, 'edit'])->name('employee.edit'); 
             Route::post('{id}/update', [EmployeeController::class, 'update'])->name('employee.update'); 
             Route::post('{id}/delete', [EmployeeController::class, 'delete'])->name('employee.delete'); 
+            Route::post('{id}/account-reset', [EmployeeController::class, 'resetUsernamePassword'])->name('employee.account.reset');
+            Route::get('custom-columns', [EmployeeController::class, 'customColumns'])->name('employee.customColumns');
+            Route::post('update-columns', [EmployeeController::class, 'updateTableColumns'])->name('employee.updateTableColumns');
+
         });
     });
 

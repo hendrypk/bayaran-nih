@@ -19,8 +19,11 @@ class OvertimeController extends Controller
 //Overtimes List
     function index(Request $request){
         $query = Overtime::with('employees');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $today = now();
+        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+        $defaultEndDate = $today->toDateString();
+        $startDate = $request->input('start_date', $defaultStartDate);
+        $endDate = $request->input('end_date', $defaultEndDate);
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
 
@@ -94,7 +97,7 @@ class OvertimeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Employee presence has been deleted.',
-            'redirect' => route('overtime.list') 
+            'redirect' => url()->previous()
         ]);
     }
 
@@ -138,7 +141,7 @@ class OvertimeController extends Controller
         $overtime->total = $totalMinutes;
         $overtime->status = $status;
         $overtime->save();
-        return redirect()->route('overtime.list')->with('success', 'Overtime updated successfully');
+        return redirect()->back()->with('success', 'Overtime updated successfully');
     }
 
 //Overtime Export

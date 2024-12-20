@@ -26,9 +26,45 @@ class EmployeeController extends Controller
 {
     //Employee List
     function employeelist(){
-        $employee = Employee::with('job_title', 'position')->get();
+        $employee = Employee::get();
         return view('employee.index', compact('employee'));
     }
+    public function customColumns(Request $request)
+    {
+        // Ambil kolom yang dipilih dari form
+        $selectedColumns = $request->input('columns', []);
+
+        // Fetch data dengan hanya kolom yang dipilih
+        $columnsToSelect = array_merge(['id'], $selectedColumns); // Tambahkan 'id' untuk routing detail
+        $employees = Employee::select($columnsToSelect)->get();
+
+        return view('employee.index', compact('employees', 'selectedColumns'));
+    }
+
+    public function updateTableColumns(Request $request)
+    {
+        // Ambil kolom yang dipilih
+        $selectedColumns = $request->input('columns', []);
+
+        // Kolom valid yang bisa dipilih
+        $validColumns = [
+            'eid', 'name', 'employee_status', 'position_id', 'job_title_id',
+            'division_id', 'department_id', 'sales_status'
+        ];
+
+        // Filter kolom yang dipilih, hanya yang valid
+        $columnsToQuery = array_intersect($selectedColumns, $validColumns);
+
+        // Query data karyawan dengan kolom yang dipilih
+        $employees = Employee::select($columnsToQuery)->get();
+
+        // Kirimkan kolom dan data karyawan sebagai response
+        return response()->json([
+            'columns' => $columnsToQuery,
+            'employees' => $employees
+        ]);
+    }
+
 
     //Add employee modal
     function create(){
@@ -312,6 +348,33 @@ class EmployeeController extends Controller
             'route' => route('employee.detail', ['id' => $employee->id])
         ], 200);
     }
+//Reset Username Password
+    public function resetUsernamePassword(Request $request, $id) {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $username = $request->username;
+        $password = $request->password;
+        $employee = Employee::find($id);
+        $employee->update ([
+            'username' => $username,
+            'password' => Hash::make($password),
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Account reset successfully', 
+            'route' => route('employee.detail', ['id' => $employee->id])
+        ], 200);
+    }
+
 
 //employee delete
     function delete($id){

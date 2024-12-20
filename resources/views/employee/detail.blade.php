@@ -11,7 +11,8 @@
                 <div class="nav flex-column nav-pills me-3 mt-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#biodata" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Biodata</button>
                     <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Staffing</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Paslip</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Paslip</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Account</button>
                 </div>
             </div>
         </div>
@@ -146,8 +147,59 @@
                             </div>
                     </div>
 
-                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-                        
+                    <div class="tab-pane fade" id="payslip" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="card-title">Payslip Detail</div>
+                            </div>
+                            <div class="col-md ms-auto align-self-center">
+                                <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-outline-success">
+                                    <i class="ri-edit-line"></i>
+                                </a>
+                            </div>
+                            <div class="col-md ms-auto align-self-center">
+                                <button type="button" class="btn btn-outline-danger"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal" 
+                                    data-entity="employee" 
+                                    data-id="{{ $employee->id }}" 
+                                    data-name="{{ $employee->name }}">
+                                    <i class="ri-delete-bin-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <div class="row mb-3">
+                            <div class="col-md-10">
+                                <div class="card-title">Account Detail</div>
+                            </div>
+                        </div>
+                        <form action="{{ route('employee.account.reset', $employee->id) }}" method="POST" id="resetUsernamePassword">
+                            @csrf
+                            <div class="row mb-3">
+                                <div class="col-lg-2 col-md-3 col-sm-2">
+                                    <label for="username">Username</label>
+                                </div>
+                                <div class="col-lg-4 col-md-3 col-sm-2">
+                                    <input type="text" name="username" class="form-control" value="{{ $employee->username }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-lg-2 col-md-3 col-sm-2">
+                                    <label for="password">Password</label>
+                                </div>
+                                <div class="col-lg-4 col-md-3 col-sm-2">
+                                    <input id="password" class="form-control" type="password" name="password">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="">
+                                    <button type="submit" class="btn btn-tosca">Update Account</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -180,6 +232,62 @@
       modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
     });
   });
+
+  $('#resetUsernamePassword').submit(function(e) {
+    e.preventDefault(); 
+    
+    var form = $(this);
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    // confirmButtonText: 'OK'
+                    timer: 2000, // Auto close after 2 seconds
+                    showConfirmButton: false 
+                }).then(() => {
+                    window.location.href = "{{ route('employee.detail', ['id' => $employee->id]) }}";
+                });
+            }
+        },
+        error: function(xhr) {
+            // Handle error case
+            if (xhr.status === 422) {
+                // Validation error
+                var errors = xhr.responseJSON.errors;
+                var errorMessages = '';
+                
+                // Loop through validation errors and append them to a string
+                for (var field in errors) {
+                    if (errors.hasOwnProperty(field)) {
+                        errorMessages += errors[field].join(', ') + '\n';
+                    }
+                }
+
+                // Show SweetAlert with error messages
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessages || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Show generic error message for other issues
+                Swal.fire({
+                    title: 'Error!',
+                    text: xhr.responseJSON?.message || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    });
+});
 </script>
 @endsection
 

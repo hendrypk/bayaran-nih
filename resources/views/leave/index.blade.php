@@ -3,9 +3,9 @@
 @section('content')
 
 <div class="row">
-{{-- <x-date-filter action="{{ route('overtime.list') }}" 
+<x-date-filter action="{{ route('overtime.list') }}" 
                     :startDate="request()->get('start_date')" 
-                    :endDate="request()->get('end_date')" /> --}}
+                    :endDate="request()->get('end_date')" />
 
     <div class="col-md">
         <div class="card">
