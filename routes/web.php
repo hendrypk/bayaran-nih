@@ -165,6 +165,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('submit', [PresenceController::class, 'create'])->name('presence.create.admin');
             Route::post('{id}/update', [PresenceController::class, 'update'])->name('presence.update.admin');
             Route::post('export', [PresenceController::class, 'export'])->name('presence.export');
+            Route::get('import/template', [PresenceController::class, 'template'])->name('template.import');
             //presence_summary
             Route::get('summary', [PresenceSummaryController::class, 'index'])->name('presenceSummary.list');
         });

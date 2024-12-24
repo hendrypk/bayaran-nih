@@ -65,6 +65,7 @@ private function calculatePresenceSummary($employees, $startDate, $endDate)
         // Leaves
         $employee->annual_leave = Leave::where('employee_id', $employee->id)
             ->where('category', 'Annual leave')
+            ->where('status', 1)
             ->whereBetween('date', [$countStartDate, $countEndDate])
             ->count();
         $employee->sick_leave = Leave::where('employee_id', $employee->id)
@@ -74,6 +75,7 @@ private function calculatePresenceSummary($employees, $startDate, $endDate)
             ->count();
         $employee->permit_leave = Leave::where('employee_id', $employee->id)
             ->where('category', 'Permit')
+            ->where('status', 1)
             ->whereBetween('date', [$countStartDate, $countEndDate])
             ->count();
 

@@ -85,12 +85,12 @@
 
                                 <div class="col-12">
                                     <label for="password" class="form-label">Password</label>
-                                    <div class="input-group has-validation">
-                                        <span class="input-group-text" id="inputGroupPrepend"><i class="ri-lock-unlock-line"></i></span>
-                                        <input type="password" name="password" class="form-control" id="password" required>
-                                        <div class="invalid-feedback">Please enter your password.</div>
+                                    <div class="position-relative password-field">
+                                        <input id="password" class="form-control" type="password" name="password" placeholder="Enter current password">
+                                        <i class="bi bi-eye-fill toggle-password" data-target="password"></i>
                                     </div>
                                 </div>
+                            
                                 <div class="col-12">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
@@ -132,6 +132,28 @@
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleIcons = document.querySelectorAll('.toggle-password');
+
+        toggleIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('bi-eye-fill');
+                    this.classList.add('bi-eye-slash-fill');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('bi-eye-slash-fill');
+                    this.classList.add('bi-eye-fill');
+                }
+            });
+        });
+    });
+</script>
 
   <script>
     function showSuccessAlert(message) {
