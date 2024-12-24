@@ -125,11 +125,26 @@ class PresenceImport implements ToCollection
     }
 
     // Helper untuk konversi waktu Excel
-    private function convertExcelTime($excelTime)
-    {
-        $secondsInADay = 86400; // Jumlah detik dalam sehari
-        $seconds = $excelTime * $secondsInADay;
-        return gmdate('H:i:s', $seconds);
+    // private function convertExcelTime($excelTime)
+    // {
+    //     $secondsInADay = 86400; // Jumlah detik dalam sehari
+    //     $seconds = $excelTime * $secondsInADay;
+    //     return gmdate('H:i:s', $seconds);
+    // }
+
+    private function convertExcelTime($excelTime) {
+        try {
+            if (is_numeric($excelTime)) {
+                // Convert Excel time fraction to H:i:s format
+                $secondsInDay = 86400; // 24*60*60
+                $seconds = $excelTime * $secondsInDay;
+                return gmdate('H:i:s', $seconds);
+            }
+            return Carbon::parse($excelTime)->format('H:i:s');
+        } catch (\Exception $e) {
+            \Log::error('Invalid time format:', ['time' => $excelTime, 'error' => $e->getMessage()]);
+            return null;
+        }
     }
 
     // Helper untuk konversi tanggal Excel
