@@ -20,6 +20,7 @@
                             <th scope="col">EID</th>
                             <th scope="col">Employee Name</th>
                             <th scope="col">Presence</th>
+                            <th scope="col">Holiday</th>
                             <th scope="col">Annual Leave</th>
                             <th scope="col">Sick</th>
                             <th scope="col">Permit</th>
@@ -37,6 +38,7 @@
                                 <td>{{ $employee->eid }}</td>
                                 <td>{{ $employee->name }}</td>
                                 <td>{{ $employee->presence }}</td>
+                                <td>{{ $employee->holiday }}</td>
                                 <td>{{ $employee->annual_leave }}</td>
                                 <td>{{ $employee->sick_leave }}</td>
                                 <td>{{ $employee->permit_leave }}</td>

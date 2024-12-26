@@ -342,6 +342,11 @@ Route::middleware(['auth:employee'])->group(function () {
         Route::get('add', [EmployeeAppController::class, 'leaveApply'])->name('leave.apply');
         Route::post('add/submit', [EmployeeAppController::class, 'leaveStore'])->name('leave.create');
     });
+
+    //Payslip
+    Route::prefix('payslip')->group(function () {
+        Route::get('', [EmployeeAppController::class, 'payslipIndex'])->name('payslip.index');
+    });
     
     // Route::get('/', [EmployeeAppController::class, 'index'])->name('employee.app');
     // //About

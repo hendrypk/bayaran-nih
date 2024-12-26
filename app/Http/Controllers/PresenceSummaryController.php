@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Leave;
 use App\Models\WorkDay;
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\Overtime;
 use App\Models\Presence;
 use Illuminate\Http\Request;
@@ -121,8 +122,17 @@ class PresenceSummaryController extends Controller
             }
             $employee->permit_leave = $permit_leave->where('category', $permitLeave)->where('status', 1)->count();
 
+        //Holiday
+            $holidays = Holiday::get();
+            $job = $employee->job_title_id;
+            
+            if($startDate && $endDate) {
+                $holidays->whereBetween('date', [$startDate, $endDate]);
+            }
+            $employee->holiday = $holidays->count('date');
+
         //Count Alpha
-            $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence;
+            $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence - $employee->holiday;
         });
 
 
