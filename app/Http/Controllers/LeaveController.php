@@ -42,7 +42,7 @@ class LeaveController extends Controller
         
         $leaves = $query->with('employees')->get();
 
-        $employees = Employee::all();
+        $employees = Employee::whereNull('resignation')->get();
         $category = [
             'Annual leave', 
             'Sick',

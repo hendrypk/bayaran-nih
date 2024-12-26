@@ -57,7 +57,7 @@ public function index(Request $request){
 
     // $workDay = Employee::with('workDay')->get()->keyBy('id');
 
-    $employees = Employee::all();
+    $employees = Employee::whereNull('resignation')->get();
     $workDays = [];
     foreach ($employees as $employee) {
         // Ambil semua work days untuk masing-masing employee

@@ -15,7 +15,9 @@ class FinalGradeController extends Controller
         $selectedYear = $request->input('year', date('Y'));
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
+        
         $query = Employee::query();
+        $query->whereNull('resignation');
         if ($userDivision && !$userDepartment) {
             $query->where('division_id', $userDivision);
         } elseif (!$userDivision && $userDepartment) {

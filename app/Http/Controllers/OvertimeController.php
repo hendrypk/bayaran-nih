@@ -46,7 +46,7 @@ class OvertimeController extends Controller
             $query->whereBetween('date', [$startDate, $endDate]);
         }
         $overtimes = $query->get();
-        $employees = Employee::get();
+        $employees = Employee::whereNull('resignation')->get();
         return view('overtime.index', compact('overtimes', 'employees'));
     }
 

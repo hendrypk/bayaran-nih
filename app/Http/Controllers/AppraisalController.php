@@ -22,8 +22,9 @@ function index(Request $request){
         } elseif (!$userDivision && $userDepartment) {
             $query->where('department_id', $userDepartment);
         } 
-
+        $query->whereNull('resignation');
         $employees = $query->get();
+        
         $appraisals = PerformanceAppraisal::get();
         $selectedMonth = $request->input('month', date('F'));
         $selectedYear = $request->input('year', date('Y'));
