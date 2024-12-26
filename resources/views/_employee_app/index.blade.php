@@ -187,7 +187,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div class="presence-summary-title">
+                    <div class="presence-summary-title mb-3">
                         Ringkasann Kehadiran
                     </div>
                     <div id="chart"></div>
