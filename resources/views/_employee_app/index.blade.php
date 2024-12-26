@@ -285,7 +285,12 @@ function showAlert(type) {
                                 fontWeight: 600,
                                 color: '#118ab2',
                                 fontFamily: 'Arial, sans-serif',
-                                formatter: () => total, // Tampilkan total
+                                formatter: function (value, opts) {
+                                    // Menampilkan nilai spesifik dari label yang dipilih
+                                    const seriesIndex = opts.seriesIndex; // Mendapatkan index dari data
+                                    const seriesValue = opts.w.globals.series[seriesIndex]; // Nilai data tersebut
+                                    return seriesValue; // Menampilkan nilai spesifik
+                                },
                             },
                             total: {
                                 show: true,
@@ -293,12 +298,13 @@ function showAlert(type) {
                                 fontSize: '14px',
                                 fontWeight: 400,
                                 color: '#118ab2',
-                                formatter: () => total, // Tampilkan total
+                                formatter: () => total, // Tetap menampilkan total di tengah grafik
                             }
                         }
                     }
                 }
-            }        
+            }
+
             // series: [{
             //     name: '',
             //     data: presence // Gunakan data qty

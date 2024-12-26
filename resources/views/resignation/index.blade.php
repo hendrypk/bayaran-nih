@@ -27,6 +27,7 @@
               <th scope="col">Name</th>
               <th scope="col">Category</th>
               <th scope="col">Resign Date</th>
+              <th scope="col">Resign Note</th>
               <th scope="col">Last Position</th>
               <th scope="col">Last Job Title</th>
               <th scope="col">Last Division</th>
@@ -42,6 +43,7 @@
               <td>{{ $data->name }}</td>
               <td>{{ $data->resignation ?? '-' }}</td>
               <td>{{ $data->resignation_date ?? '-' }}</td>
+              <td>{{ $data->resignation_note ?? '-' }}</td>
               <td>{{ $data->position->name ?? '-' }}</td>
               <td>{{ $data->job_title->name ?? '-' }}</td>
               <td>{{ $data->division->name ?? '-' }}</td>

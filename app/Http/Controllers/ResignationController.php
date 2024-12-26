@@ -24,6 +24,7 @@ class ResignationController extends Controller
         $request->validate([
             'name' => 'required',
             'category' => 'required',
+            'note' => 'required',
             'date' => 'required'
         ]);
         
@@ -37,6 +38,7 @@ class ResignationController extends Controller
 
         $employee->update([
             'resignation'=> $request->category,
+            'resignation_note' => $request->note,
             'resignation_date' => $request->date
         ]);
         
