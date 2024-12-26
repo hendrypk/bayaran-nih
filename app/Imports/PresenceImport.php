@@ -85,7 +85,7 @@ class PresenceImport implements ToCollection
                 }
 
                 // Validasi dan konversi waktu check-in
-                if (!empty($check_in) && is_numeric($check_in)) {
+                if (!empty($check_in)) {
                     $check_in = $this->convertExcelTime($check_in);
                 } else {
                     $this->errors[] = "Baris {$index}: Format check-in tidak valid.";
@@ -93,7 +93,7 @@ class PresenceImport implements ToCollection
                 }
 
                 // Validasi dan konversi waktu check-out
-                if (!empty($check_out) && is_numeric($check_out)) {
+                if (!empty($check_out)) {
                     $check_out = $this->convertExcelTime($check_out);
                 } else {
                     $this->errors[] = "Baris {$index}: Format check-out tidak valid.";
@@ -134,18 +134,37 @@ class PresenceImport implements ToCollection
 
     private function convertExcelTime($excelTime) {
         try {
+            // Jika waktu dalam format Excel (numerik)
             if (is_numeric($excelTime)) {
-                // Convert Excel time fraction to H:i:s format
-                $secondsInDay = 86400; // 24*60*60
+                $excelTime = rtrim($excelTime, "'"); 
+                $secondsInDay = 86400; // 24 * 60 * 60
                 $seconds = $excelTime * $secondsInDay;
                 return gmdate('H:i:s', $seconds);
             }
-            return Carbon::parse($excelTime)->format('H:i:s');
+    
+            // Jika waktu dalam format string, pastikan format 'H:i' atau 'H:i:s'
+            $formattedTime = null;
+            if (strtotime($excelTime)) {
+                // Jika strtotime valid, konversi ke H:i:s
+                $formattedTime = Carbon::parse($excelTime)->format('H:i:s');
+            } else {
+                // Cek jika format hanya jam dan menit 'H:i'
+                $excelTime = rtrim($excelTime, "'"); // Menghapus tanda kutip jika ada
+                if (preg_match('/^(\d{2}):(\d{2})$/', $excelTime)) {
+                    // Format 'H:i' ditemukan, konversi ke 'H:i:s'
+                    $formattedTime = Carbon::createFromFormat('H:i', $excelTime)->format('H:i:s');
+                }
+            }
+    
+            return $formattedTime;
+    
         } catch (\Exception $e) {
             \Log::error('Invalid time format:', ['time' => $excelTime, 'error' => $e->getMessage()]);
             return null;
         }
     }
+    
+    
 
     // Helper untuk konversi tanggal Excel
     private function convertExcelDate($excelDate)
