@@ -56,6 +56,7 @@
                         name: '{{ $data->name }}',
                         category: '{{ $data->resignation }}',
                         date: '{{ $data->resignation_date }}',
+                        note: '{{ $data->resignation_note }}',
                     })">
                     <i class="ri-edit-box-fill"></i>
                 </button>
@@ -87,6 +88,7 @@ function openResignModal(action, data = {}) {
         $('#name').val('');
         $('#category').val('');
         $('#date').val('');
+        $('#note').val('');
         $('#name').prop('disabled', false);
     } else if (action === 'edit') {
         $('#resignForm').attr('action', "{{ route('resignation.update') }}");
@@ -94,6 +96,7 @@ function openResignModal(action, data = {}) {
         $('#name').val(data.id);
         $('#category').val(data.category);
         $('#date').val(data.date);
+        $('#note').val(data.note);
         $('#name').prop('disabled', false);
     }
 
