@@ -163,28 +163,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleIcons = document.querySelectorAll('.toggle-password');
-
-        toggleIcons.forEach(icon => {
-            icon.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.classList.remove('bi-eye-fill');
-                    this.classList.add('bi-eye-slash-fill');
-                } else {
-                    input.type = 'password';
-                    this.classList.remove('bi-eye-slash-fill');
-                    this.classList.add('bi-eye-fill');
-                }
-            });
-        });
-    });
-</script>
 
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

@@ -8,22 +8,26 @@
     <div class="col-lg">
         <div class="card">
             <div class="card-body">
+                <div class="row pt-3">
+                    @if ($errors->has('import_errors'))
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->get('import_errors') as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                </div>
 
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
+
+
 
                 <h5 class="card-title">Import Presence Data</h5>
 
@@ -37,7 +41,8 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-primary" id="importButton">Import</button>
+                    <button type="submit" class="btn btn-untosca">Import</button>
+                    <a href="{{ route('template.import') }}" class="btn btn-tosca">Download Template</a>
                 </form>
                 <!-- End Import Form -->
             </div>

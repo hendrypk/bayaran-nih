@@ -25,6 +25,10 @@
                         </div>
                         @endcan
 
+                        <div class="form-container">
+                            <a href="{{ route('presence.import') }}" class="btn btn-tosca">Import</a>
+                        </div>
+
                         @can('create presence')
                             <button type="button" class="btn btn-untosca"
                             data-bs-toggle="modal" 

@@ -14,6 +14,7 @@ use App\Exports\PresencesExport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TemplateExportPresence;
 
 class PresenceController extends Controller
 {
@@ -76,26 +77,51 @@ public function index(Request $request){
     public function import(){
         return view('presence.import');
     }
-    
-    // public function __construct(Excel $excel){
-    //     $this->excel = $excel;
-    // }
 
-    public function importStore(Request $request){  
-        $errors = []; // Array to store errors
-
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx',
-        ]);
-            
-        $file = $request->file('file');
-        Excel::import(new PresenceImport, $file);
-
-        if (!empty($errors)) {
-            return redirect()->route('presence.import')->withErrors($errors);
-        }
-        return redirect()->route('presence.import')->with('success', 'Data imported successfully!');
+    //import template
+    public function template() {
+        return Excel::download(new TemplateExportPresence, 'template_import.xlsx');
     }
+    
+    public function importStore(Request $request)
+    {
+        // Validasi file
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        // Proses impor
+        $import = new PresenceImport();
+        Excel::import($import, $request->file('file'));
+
+        // Dapatkan error dari import
+        $errors = $import->getErrors();
+
+        // Redirect dengan error jika ada
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors(['import_errors' => $errors]);
+        }
+
+        return redirect()->back()->with('success', 'Data presensi berhasil diimpor.');
+    }
+
+    
+
+    // public function importStore(Request $request){  
+    //     $errors = []; // Array to store errors
+
+    //     $request->validate([
+    //         'file' => 'required|file|mimes:xlsx',
+    //     ]);
+            
+    //     $file = $request->file('file');
+    //     Excel::import(new PresenceImport, $file);
+
+    //     if (!empty($errors)) {
+    //         return redirect()->route('presence.import')->withErrors($errors);
+    //     }
+    //     return redirect()->route('presence.import')->with('success', 'Data imported successfully!');
+    // }
 
 //Presence Add Manual
     public function create(Request $request){
