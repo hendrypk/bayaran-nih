@@ -66,13 +66,13 @@ class EmployeeAppController extends Controller
         // ];
         
         $chartData = [
-            'labels' => ['Alpha', 'Hadir', 'Sakit', 'Izin', 'Cuti'], // Use the actual labels
+            'labels' => ['Hadir', 'Sakit', 'Izin', 'Cuti', 'Alpha'], // Use the actual labels
             'data' => [
-                $employee->alpha,
                 $employee->presence, 
                 $employee->sick_leave, 
                 $employee->permit_leave, 
                 $employee->annual_leave,
+                $employee->alpha,
             ]
         ];
 
@@ -570,5 +570,9 @@ function distance($lat1, $lon1, $lat2, $lon2){
         }
 
         return redirect()->route('leave.index')->with('success', 'Cuti berhasil dibuat!');
+    }
+//Gaji
+    public function payslipIndex() {
+        return view('_employee_app.payslip.index');
     }
 }

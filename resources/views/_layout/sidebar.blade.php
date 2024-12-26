@@ -41,7 +41,7 @@
         </a>
       </li>
 
-      {{-- <a class="nav-link collapsed" data-bs-target="#payroll-nav" data-bs-toggle="collapse" href="#">
+      <a class="nav-link collapsed" data-bs-target="#payroll-nav" data-bs-toggle="collapse" href="#">
           <i class="ri-money-dollar-box-fill"></i>
           <span>Payroll</span>
           <i class="bi bi-chevron-down ms-auto"></i>
@@ -62,7 +62,7 @@
                   <span>Pay Report</span>
               </a>
           </li>
-      </ul> --}}
+      </ul>
 
       @can('view employee')
       <a class="nav-link collapsed" data-bs-target="#employee-nav" data-bs-toggle="collapse" href="#">

@@ -187,7 +187,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div class="presence-summary-title">
+                    <div class="presence-summary-title mb-3">
                         Ringkasann Kehadiran
                     </div>
                     <div id="chart"></div>
@@ -229,20 +229,18 @@ function showAlert(type) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
         // Data dari controller
         const category = @json($chartData['labels']); // Ambil bulan dalam format string
         const presence = @json($chartData['data']); // Ambil total quantity
+        const colors = ['#118ab2', '#f29c11', '#323335', '#8e44ad', '#d8315b'];
+        const total = presence.reduce((acc, value) => acc + value, 0);
 
         // Render chart dengan data dari database
         new ApexCharts(document.querySelector("#chart"), {
-            series: [{
-                name: 'Sales',
-                data: presence // Gunakan data qty
-            }],
             chart: {
+                type: 'donut',
                 height: 150,
-                type: 'bar',
                 toolbar: {
                     show: false
                 },
@@ -250,13 +248,13 @@ document.addEventListener("DOMContentLoaded", () => {
             markers: {
                 size: 4
             },
-            colors: ['#118ab2'],
+            colors: colors,
             fill: {
                 type: "gradient",
                 gradient: {
                     shadeIntensity: 1,
-                    opacityFrom: 0.3,
-                    opacityTo: 0.4,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.9,
                     stops: [0, 90, 100]
                 }
             },
@@ -267,17 +265,84 @@ document.addEventListener("DOMContentLoaded", () => {
                 curve: 'smooth',
                 width: 2
             },
-            xaxis: {
-                type: 'category', // Kategori x-axis adalah tipe kategori
-                categories: category // Data bulan dalam format string
-            },
-            tooltip: {
-                x: {
-                    format: 'MMMM' // Format tooltip untuk menampilkan bulan penuh
-                },
-            }
+            series: presence,
+            labels: category,
+            plotOptions: {
+                pie: {
+                    donut: {
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '16px',
+                                color: '#333',
+                                fontFamily: 'Arial, sans-serif',
+                                offsetY: -10,
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '20px',
+                                fontWeight: 600,
+                                color: '#118ab2',
+                                fontFamily: 'Arial, sans-serif',
+                                formatter: () => total, // Tampilkan total
+                            },
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                fontSize: '14px',
+                                fontWeight: 400,
+                                color: '#118ab2',
+                                formatter: () => total, // Tampilkan total
+                            }
+                        }
+                    }
+                }
+            }        
+            // series: [{
+            //     name: '',
+            //     data: presence // Gunakan data qty
+            // }],
+            // chart: {
+            //     height: 150,
+            //     type: 'bar',
+            //     toolbar: {
+            //         show: false
+            //     },
+            // },
+            // markers: {
+            //     size: 4
+            // },
+            // colors: ['#118ab2'],
+            // fill: {
+            //     type: "gradient",
+            //     gradient: {
+            //         shadeIntensity: 1,
+            //         opacityFrom: 0.3,
+            //         opacityTo: 0.4,
+            //         stops: [0, 90, 100]
+            //     }
+            // },
+            // dataLabels: {
+            //     enabled: false
+            // },
+            // stroke: {
+            //     curve: 'smooth',
+            //     width: 2
+            // },
+            // xaxis: {
+            //     type: 'category', // Kategori x-axis adalah tipe kategori
+            //     categories: category // Data bulan dalam format string
+            // },
+            // tooltip: {
+            //     x: {
+            //         format: 'MMMM' // Format tooltip untuk menampilkan bulan penuh
+            //     },
+            // }
         }).render();
     });
+
+
 
 //Chart
 // var ctx = document.getElementById('presenceChart').getContext('2d');
