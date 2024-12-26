@@ -38,6 +38,13 @@
                         </div>
                     </div>
 
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label">Note</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="note" name="note" class="form-control" required>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-tosca">Submit</button>
                 </form>
             </div>
