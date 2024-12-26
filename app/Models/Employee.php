@@ -28,7 +28,7 @@ class Employee extends Authenticatable
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
         'blood_type', 'gender', 'religion', 'marriage', 'education', 'whatsapp', 'bank', 'bank_number',
         'position_id', 'job_title_id', 'division_id', 'department_id', 'joining_date', 'employee_status',
-        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date'];
+        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date', 'resignation_note'];
 
     protected $hidden = [
         'password',
