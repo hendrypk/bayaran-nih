@@ -66,9 +66,10 @@ class EmployeeAppController extends Controller
         // ];
         
         $chartData = [
-            'labels' => ['Hadir', 'Sakit', 'Izin', 'Cuti', 'Alpha'], // Use the actual labels
+            'labels' => ['Hadir', 'Libur', 'Sakit', 'Izin', 'Cuti', 'Alpha'], // Use the actual labels
             'data' => [
                 $employee->presence, 
+                $employee->holiday, 
                 $employee->sick_leave, 
                 $employee->permit_leave, 
                 $employee->annual_leave,

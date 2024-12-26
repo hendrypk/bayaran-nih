@@ -240,7 +240,7 @@ function showAlert(type) {
         new ApexCharts(document.querySelector("#chart"), {
             chart: {
                 type: 'donut',
-                height: 150,
+                height: 160,
                 toolbar: {
                     show: false
                 },
