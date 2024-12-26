@@ -233,7 +233,7 @@ function showAlert(type) {
         // Data dari controller
         const category = @json($chartData['labels']); // Ambil bulan dalam format string
         const presence = @json($chartData['data']); // Ambil total quantity
-        const colors = ['#118ab2', '#f29c11', '#323335', '#8e44ad', '#d8315b'];
+        const colors = ['#118ab2', '004cda', '#f29c11', '#323335', '#8e44ad', '#d8315b'];
         const total = presence.reduce((acc, value) => acc + value, 0);
 
         // Render chart dengan data dari database
