@@ -129,13 +129,10 @@ class PresenceSummaryController extends Controller
             $employee->permit_leave = $permit_leave->where('category', $permitLeave)->where('status', 1)->count();
 
         //Holiday
-            $holidays = Holiday::get();
-            $job = $employee->job_title_id;
-            
             if($startDate && $endDate) {
-                $holidays->whereBetween('date', [$startDate, $endDate]);
+                $holidays = Holiday::whereBetween('date', [$startDate, $endDate])->get();
             }
-            $employee->holiday = $holidays->count('date');
+            $employee->holiday = $holidays->count();
 
         //Count Alpha
             $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence - $employee->holiday;
