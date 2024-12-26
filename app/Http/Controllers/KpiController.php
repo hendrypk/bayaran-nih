@@ -62,6 +62,7 @@ public function indexKpi(Request $request){
             $query->where('department_id', $userDepartment);
         } 
 
+        $query->whereNull('resignation');
         $employees = $query->get();
 
         return view('performance.kpi.add', compact('employees'));
