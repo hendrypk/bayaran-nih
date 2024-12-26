@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Carbon\Carbon;
 use App\Models\Leave;
+use App\Models\Holiday;
 use App\Models\WorkDay;
 use App\Models\Overtime;
 use App\Models\Presence;
@@ -78,9 +79,13 @@ private function calculatePresenceSummary($employees, $startDate, $endDate)
             ->where('status', 1)
             ->whereBetween('date', [$countStartDate, $countEndDate])
             ->count();
-
+            
+        //Holiday
+        $employee->holiday = Holiday::whereBetween('date', [$countStartDate, $countEndDate])
+            ->count('date');
+        
         // Alpha
-        $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence;
+        $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence - $employee->holiday;
     });
 
     return $employees;
