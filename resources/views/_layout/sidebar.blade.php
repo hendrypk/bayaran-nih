@@ -91,7 +91,15 @@
         <li class="nav-item {{ request()->routeIs('resignation.index') ? 'active' : '' }}">
           <a class="nav-link collapsed" href="{{route('resignation.index')}}">
             {{-- <i class="ri-dvd-fill"></i> --}}
-            <span>resignation</span>
+            <span>Resignation</span>
+          </a>
+        </li>
+        @endcan
+        @can('view resignation')
+        <li class="nav-item {{ request()->routeIs('position.change.index') ? 'active' : '' }}">
+          <a class="nav-link collapsed" href="{{route('position.change.index')}}">
+            {{-- <i class="ri-dvd-fill"></i> --}}
+            <span>Position Change</span>
           </a>
         </li>
         @endcan

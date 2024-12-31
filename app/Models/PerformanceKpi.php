@@ -6,10 +6,12 @@ use App\Models\Employee;
 use App\Models\Position;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PerformanceKpi extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     
     protected $table = ('performance_kpis');
 
@@ -20,6 +22,7 @@ class PerformanceKpi extends Model
         'target',
         'bobot',
     ];
+    protected $dates = ['deleted_at']; 
 
     protected $casts = [
         'target' => 'decimal:2', // Cast to decimal with 2 decimal places

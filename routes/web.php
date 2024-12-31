@@ -1,13 +1,18 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use App\Models\User;
 use App\Models\Options;
 use App\Http\Controllers\Test;
+use Spatie\Permission\Models\Role;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use Spatie\Permission\Models\Permission;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\PayrollController;
@@ -18,16 +23,13 @@ use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\AppraisalController;
 use App\Http\Controllers\FinalGradeController;
 use App\Http\Controllers\EmployeeAppController;
+use App\Http\Controllers\EmployeePositionChangeController;
 use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\KpiPaOptionsController;
-use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
-use App\Http\Controllers\ResignationController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\EmployeePositionChange;
 
 //error page
 Route::get('/test',[Test::class, 'test'])->name('test');
@@ -293,6 +295,14 @@ Route::middleware(['auth:web'])->group(function () {
         Route::post('{id}/delete', [ResignationController::class, 'delete'])->name('resignation.delete');
     });
 
+    //Employee Position Change
+    Route::prefix('position-change')->group(function () {
+        Route::get('', [EmployeePositionChangeController::class, 'index'])->name('position.change.index');
+        Route::post('store', [EmployeePositionChangeController::class, 'store'])->name('position.change.store');
+        Route::post('{id}/delete', [EmployeePositionChangeController::class, 'delete'])->name('position.change.delete');
+    });
+
+    
 });
 
 

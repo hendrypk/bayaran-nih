@@ -142,7 +142,7 @@
           <div class="row mb-3">
             <label class="col-sm-4 col-form-label">Position</label>
             <div class="col-sm-8">
-              <select class="form-select" name="position_id" aria-label="Default select example">
+              <select class="form-select" name="position_id" aria-label="Default select example" disabled>
                 <option selected>Select position</option>
                 @foreach($position as $data)
                 <option value="{{ $data->id }}" {{ $data->name == $employee->position->name ? 'selected' : '' }}>{{ $data->name }}</option>
