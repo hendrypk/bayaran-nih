@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <form id="positionChangeForm" action="" method="POST">
                     @csrf
-                    {{-- <input type="" id="id" name="id"> --}}
+                    <input type="hidden" id="id" name="id">
                     {{-- <input type="" id="hiddenPositionId" name="oldPosition">
                     <input type="" id="hiddenEmployeeId" name="employeeId"> --}}
 

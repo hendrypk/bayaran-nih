@@ -41,46 +41,35 @@ class EmployeePositionChangeController extends Controller
         $oldPosition = $employee->position_id;
         $newPosition = $request->newPosition;
 
-        
-        switch (true) {
-            case ($oldPosition == $newPosition):
-                return response()->json([
-                    'success' => false,
-                    'message' => 'The same position cannot be changed',
-                ]);
-        
-            case (!$employee):
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Employee not found.'
-                ]);
-        
-            default:
-                // Proceed with the position change
-                EmployeePositionChange::updateOrCreate(
-                    ['id' => $request->id],
-                    [
-                        'employee_id' => $request->employee_id,
-                        'old_position' => $oldPosition,
-                        'new_position' => $newPosition,
-                        'effective_date' => $request->date,
-                        'reason' => $request->note,
-                        'category' => $request->category,
-                    ]
-                );
-        
-                // Update employee position
-                $employee->update([
-                    'position_id' => $newPosition,
-                ]);
-        
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Position change saved successfully.',
-                    'redirect' => route('position.change.index')
-                ]);
+        if($oldPosition == $newPosition) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The same position cannot be changed',
+            ]);
+        } else {
+            EmployeePositionChange::updateOrCreate(
+                ['id' => $request->id],
+                [
+                    'employee_id' => $request->employee_id,
+                    'old_position' => $oldPosition,
+                    'new_position' => $newPosition,
+                    'effective_date' => $request->date,
+                    'reason' => $request->note,
+                    'category' => $request->category,
+                ]
+            );
+    
+            // Update employee position
+            $employee->update([
+                'position_id' => $newPosition,
+            ]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Position change saved successfully.',
+                'redirect' => route('position.change.index')
+            ]);
         }
-        
     }
 
     //delete
