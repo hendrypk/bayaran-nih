@@ -74,27 +74,7 @@ class EmployeePositionChangeController extends Controller
 
     //delete
     public function delete($id){
-        $data = EmployeePositionChange::find($id);    
-        if (!$data) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data not found.'
-            ], 404);
-        }
-
-        $allChanges = EmployeePositionChange::where('employee_id', $data->employee_id)
-            ->whereNull('deleted_at')
-            ->orderBy('effective_date', 'desc') 
-            ->get();
-        $lastChange = $allChanges->first()->id;
-
-        if ($lastChange !== $id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Only the most recent position change can be deleted.'
-            ]); 
-        }
-            
+        $data = EmployeePositionChange::find($id);               
         $employee = Employee::find($data->employee_id);
         $oldPosition = $data->old_position;
         $employee->update([
