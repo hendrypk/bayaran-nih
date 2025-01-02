@@ -1,8 +1,10 @@
 @extends('_layout.main')
 @section('title', 'Options')
 @section('content')
-<div class="row">
 
+{{ Breadcrumbs::render('role') }}
+
+<div class="row">
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">
@@ -23,8 +25,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">View</th>
-                            <th scope="col">Edit</th>
+                            <th scope="col">Detail</th>
                             <th scope="col">Delete</th>
                         </tr>
                     </thead>
@@ -34,23 +35,23 @@
                             <th scope="row">{{ $no+1 }}</th>
                             <td>{{ $role->name }}</td>
                             @csrf
-                            <td>
+                            {{-- <td>
                                 <a href="{{ route('role.detail', $role->id) }}"
                                     class="btn btn-outline-primary">
                                     <i class="ri-eye-fill"></i>
                                 </a>
-                            </td>
+                            </td> --}}
                              <td>
                                 @can('update role')
                                     <a href="{{ route('role.edit', $role->id) }}"
-                                        class="btn btn-outline-success">
+                                        class="btn btn-tosca">
                                         <i class="ri-edit-box-fill"></i>
                                     </a>
                                 @endcan
                             </td>
                             <td>
                                 @can('delete role')
-                                    <button type="button" class="btn btn-outline-danger" 
+                                    <button type="button" class="btn btn-untosca" 
                                         onclick="confirmDelete({{ $role->id }}, '{{ $role->name }}', 'role')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>

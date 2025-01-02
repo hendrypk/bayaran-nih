@@ -2,6 +2,7 @@
 @section('title', 'Options')
 @section('content')
 
+{{ Breadcrumbs::render('option') }}
 <div class="row">
 
 <!-- Position -->
@@ -35,7 +36,7 @@
                                  <td>
                                     @can('update options')
                                         <button type="button"
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-tosca" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#positionEditModal"
                                             data-id="{{ $position->id }}"
@@ -46,7 +47,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-untosca" 
                                             onclick="confirmDelete({{ $position->id }}, '{{ $position->name }}', 'position')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -93,7 +94,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button"
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-tosca" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#jobTitleEditModal"
                                             data-id="{{ $data->id }}"
@@ -105,7 +106,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-untosca" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'jobtitle')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -150,7 +151,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-tosca" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#divisionEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -161,7 +162,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-untosca" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'division')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -205,7 +206,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-tosca" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#departmentEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -216,7 +217,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-untosca" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'department')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -261,7 +262,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-tosca" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#statusEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -272,7 +273,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-untosca" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'status')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -318,7 +319,7 @@
                             <td>
                                 @can('update options')
                                     <button type="button" 
-                                        class="btn btn-outline-success" 
+                                        class="btn btn-tosca" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#holidayEditModal" 
                                         data-id="{{ $data->id }}" 
@@ -330,7 +331,7 @@
                             </td>
                             <td>
                                 @can('delete options')
-                                    <button type="button" class="btn btn-outline-danger" 
+                                    <button type="button" class="btn btn-untosca" 
                                         onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'holiday')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
@@ -378,7 +379,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-tosca" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#location" 
                                             data-id="{{ $data->id }}" 
@@ -392,7 +393,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-untosca" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'location')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>

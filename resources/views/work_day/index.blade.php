@@ -1,6 +1,8 @@
 @extends('_layout.main')
 @section('title', 'Performance - KKPI')
 @section('content')
+
+{{ Breadcrumbs::render('work_day') }}
 <div class="row">
     <div class="card">
         <div class="card-body">
@@ -14,7 +16,8 @@
                         <button type="button" 
                             class="btn btn-untosca content-align-center" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#addWorkDay">Add Work Day
+                            data-bs-target="#addWorkDay">
+                            <i class="ri-add-circle-line"></i>
                         </button>
                     </div>
                 @endcan
@@ -25,7 +28,6 @@
                     <th>#</th>
                     <th>Work Day Name</th>
                     <th>View</th>
-                    <th>Edit</th>
                     <th>Delete</th>
                 </thead>
                 <tbody>
@@ -33,14 +35,14 @@
                     <tr>
                         <td>{{ $no+1 }}</td>
                         <td>{{ $workDay->name }}</td>
-                        <td>
+                        {{-- <td>
                             <a href="{{ route('workDay.detail', ['name' => $workDay->name]) }}" class="btn btn-outline-primary">
                                 <i class="ri-eye-fill"></i>
                             </a>
-                        </td>
+                        </td> --}}
                         <td>
                             @can('update work pattern')
-                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-outline-success">
+                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-tosca">
                                     <i class="ri-edit-fill"></i>
                                 </a>
                             @endcan
@@ -56,7 +58,7 @@
                                     <i class="ri-delete-bin-fill"></i>
                                 </a> --}}
                                 
-                                <button type="button" class="btn btn-outline-danger" 
+                                <button type="button" class="btn btn-untosca" 
                                     onclick="confirmDelete('{{ $workDay->name }}', 'work-pattern')">
                                     <i class="ri-delete-bin-fill"></i>
                                 </button>

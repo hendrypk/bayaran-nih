@@ -1,8 +1,10 @@
 @extends('_layout.main')
 @section('title', 'Options')
 @section('content')
-<div class="row">
 
+{{ Breadcrumbs::render('user') }}
+
+<div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">

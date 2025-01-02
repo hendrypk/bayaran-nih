@@ -1,4 +1,4 @@
-<div class="modal fade" id="addPresence" tabindex="-1" aria-labelledby="modalPresence" aria-hidden="true">
+<div class="modal fade" id="addPresence" tabindex="-1" aria-labelledby="modalPresence" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

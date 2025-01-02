@@ -1,6 +1,6 @@
     @extends('_layout.main')
-
     @section('content')
+    {{ Breadcrumbs::render('role_detail', $role->id) }}
     <div class="container">
         <div class="card">
             <div class="card-header">

@@ -1,4 +1,4 @@
-<div class="modal fade" id="resignModal" tabindex="-1" aria-labelledby="resignModal" aria-hidden="true">
+<div class="modal fade" id="resignModal" tabindex="-1" aria-labelledby="resignModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

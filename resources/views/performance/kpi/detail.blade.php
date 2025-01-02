@@ -29,35 +29,34 @@
     </div>
 </div>
 
-
 <div class="row mb-3    ">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card mb-4">
             <div class="card-body">
                 <div class="card-title">Employee Information</div>
                 {{-- <div class="col-lg-8"> --}}
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> EID </div>
+                        <div class="col-lg-4 fw-bold"> EID </div>
                         <div class="col">: {{ $employees->eid }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Nama </div>
+                        <div class="col-lg-4 fw-bold"> Nama </div>
                         <div class="col">: {{ $employees->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Job Title </div>
+                        <div class="col-lg-4 fw-bold"> Job Title </div>
                         <div class="col">: {{ $employees->job_title->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Position </div>
+                        <div class="col-lg-4 fw-bold"> Position </div>
                         <div class="col">: {{ $employees->position->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Division </div>
+                        <div class="col-lg-4 fw-bold"> Division </div>
                         <div class="col">: {{ $employees->division->name }}</div>
                     </div>
                     <div class="row mb-2    ">
-                        <div class="col-lg-6 fw-bold"> Department </div>
+                        <div class="col-lg-4 fw-bold"> Department </div>
                         <div class="col">: {{ $employees->department->name }}</div>
                     </div>
                 {{-- </div> --}}
@@ -67,7 +66,7 @@
 
 
       <!-- Display KPI Details -->
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
@@ -77,11 +76,11 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">Aspect</th>
-                            <th scope="col">Target</th>
-                            <th scope="col">Bobot</th>
-                            <th scope="col">Achievement</th>
-                            <th scope="col">Grade</th>
+                            <th scope="col" style="width: 60%;">Aspect</th>
+                            <th scope="col" style="width: 10%;">Target</th>
+                            <th scope="col" style="width: 10%;">Bobot</th>
+                            <th scope="col" style="width: 10%;">Achievement</th>
+                            <th scope="col" style="width: 10%;">Grade</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -26,7 +26,7 @@ public function edit(Request $request, $name) {
     // Ambil semua work days dengan nama yang sama
     $workDays = WorkDay::where('name', $name)->get();
     
-    return view('work_day.edit', compact('workDays'));
+    return view('work_day.edit', compact('workDays', 'name'));
 }
 
 //Work Day Update

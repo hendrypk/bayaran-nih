@@ -1,5 +1,5 @@
 <!-- Edit Modal Overtime -->
-<div class="modal fade" id="overtimeEdit" tabindex="-1" aria-labelledby="modalEditOvertime" aria-hidden="true">
+<div class="modal fade" id="overtimeEdit" tabindex="-1" aria-labelledby="modalEditOvertime" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
