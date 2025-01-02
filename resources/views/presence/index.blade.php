@@ -11,21 +11,28 @@
                         :endDate="request()->get('end_date')" />
     </div>
     <div class="col-md-3 d-flex justify-content-end">
-        <form action="{{ route('presence.export') }}" method="POST" class="me-2" style="margin: 0;">
-            @csrf
-            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-            <button type="submit" class="btn btn-tosca btn-sm">
-                <i class="ri-download-cloud-2-fill"></i>
-            </button>
-        </form>
+        @can('presence export')
+        <div class="form-container">
+            <form action="{{ route('presence.export') }}" method="POST" class="me-2" style="margin: 0;">
+                @csrf
+                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                <button type="submit" class="btn btn-tosca">
+                    <i class="ri-download-cloud-2-fill"></i>
+                </button>
+            </form>
+        </div>
+        @endcan
         <div class="form-container">
             <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2"><i class="ri-file-upload-fill"></i></a>
         </div>
+        @can('create presence')
         <button type="button" class="btn btn-untosca btn-sm"
                 data-bs-toggle="modal" 
                 data-bs-target="#addPresence">
             <i class="ri-add-circle-line"></i>
         </button>
+        @endcan
     </div>
 </div>
 

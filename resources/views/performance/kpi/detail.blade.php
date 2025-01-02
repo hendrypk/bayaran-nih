@@ -7,9 +7,6 @@
 <div class="row align-item-center mb-3">
     <div class="col md-9">
         <h3 class="card-title mb-0 py-3">KPI Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h3>
-        {{-- <div class="card-title">
-            KPI Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}
-        </div> --}}
     </div>
     
     <div class="col-md-3 d-flex justify-content-end">
@@ -38,7 +35,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <div class="card-title">Employee Information</div>
-                <div class="col-lg-8">
+                {{-- <div class="col-lg-8"> --}}
                     <div class="row mb-2">
                         <div class="col-lg-6 fw-bold"> EID </div>
                         <div class="col">: {{ $employees->eid }}</div>
@@ -63,37 +60,20 @@
                         <div class="col-lg-6 fw-bold"> Department </div>
                         <div class="col">: {{ $employees->department->name }}</div>
                     </div>
-                </div>
+                {{-- </div> --}}
             </div>
         </div>
      </div>
 
 
       <!-- Display KPI Details -->
-<div class="col-lg-6">
-    <div class="card">
-        <div class="card-body">
-            <div class="card-title">
-                KPI Achievement
-            </div>
-            {{-- <div class="row mb-4">
-                <div class="col-lg-1">
-                    <a href="{{ route('kpi.edit', [
-                        'employee_id' => $employees->id,
-                        'month' => $month,
-                        'year' => $year
-                        ]) }}" class="btn btn-outline-success">
-                        <i class="ri-edit-line"></i>
-                    </a>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    KPI Achievement
                 </div>
-                <div class="col-lg-1">
-                    <button type="button" class="btn btn-outline-danger" 
-                        onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
-                        <i class="ri-delete-bin-fill"></i>
-                    </button>
-                </div>
-            </div> --}}
-        <div class="row">
+            <div class="row">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -125,6 +105,7 @@
                         </tr>
                     </tfoot>
                 </table>
+            </div>
         </div>
     </div>
 </div>
