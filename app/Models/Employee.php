@@ -17,11 +17,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\EmployeeResetPasswordNotification;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Authenticatable 
 {
     use HasFactory;
     use Notifiable;
+    use SoftDeletes;
 
     protected $table = 'employees';
     protected $fillable = [
@@ -34,6 +36,7 @@ class Employee extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $dates = ['deleted_at']; 
 
     //relation table position
     public function position()

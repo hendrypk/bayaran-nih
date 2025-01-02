@@ -2,6 +2,7 @@
 @section('title', 'Performance - PA')
 @section('content')
 
+{{ Breadcrumbs::render('pa') }}
 <div class="row">
 <x-month-year-picker :action="route('pa.list')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
 
@@ -12,7 +13,8 @@
                     <h5 class="card-title mb-0 py-3">Employee Appraisal</h5>
                     @can('create pa')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add Employee Appraisal</button>
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">
+                                <i class="ri-add-circle-line"></i></button>
                         </div>
                     @endcan
                 </div>

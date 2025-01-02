@@ -2,40 +2,54 @@
 @section('title', 'Overtime')
 @section('content')
 
-<div class="row">
-<x-date-filter action="{{ route('overtime.list') }}" 
-                    :startDate="request()->get('start_date')" 
-                    :endDate="request()->get('end_date')" />
 
+{{ Breadcrumbs::render('overtime') }}
+<div class="row align-items-center">
+    <div class="col-md-9">
+        <x-date-filter action="{{ route('overtime.list') }}" 
+                        :startDate="request()->get('start_date')" 
+                        :endDate="request()->get('end_date')" />
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        <form action="{{ route('overtime.export') }}" method="POST" class="me-2" style="margin: 0;">
+            @csrf
+            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+            <button type="submit" class="btn btn-tosca btn-sm">
+                <i class="ri-download-cloud-2-fill"></i>
+            </button>
+        </form>
+        <button type="button" class="btn btn-untosca btn-sm"
+                data-bs-toggle="modal" 
+                data-bs-target="#addOvertime">
+            <i class="ri-add-circle-line"></i>
+        </button>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md">
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <div class="col-md-9">
-                        <h5 class="card-title mb-0 py-3">Presences List</h5>
+                        <h5 class="card-title mb-0 py-3">Overtime List</h5>
                     </div>
-                    <div class="col-md-1">
+                    {{-- <div class="col-md-1">
                         <form action="{{ route('overtime.export') }}" method="POST">
                             @csrf
                             <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
                             <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                            <button type="submit" class="btn btn-tosca">Export</button>
+                            <button type="submit" class="btn btn-tosca"><i class="ri-download-cloud-2-fill"></i></button>
                         </form>
                     </div>
                     <div class="col-md-2">
                         <button type="button" class="btn btn-untosca"
                         data-bs-toggle="modal" 
                         data-bs-target="#addOvertime">
-                        Add Manual Overtime
+                        <i class="ri-add-circle-line"></i>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
-                {{-- <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Overtime</h5>
-                    <div class="ms-auto my-auto">
-                        <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addOvertime">Add Overtime</button>
-                    </div>
-                </div> --}}
         
                 <!-- Table with hoverable rows -->
                     <table class="table datatable table-hover">

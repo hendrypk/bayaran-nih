@@ -36,7 +36,7 @@
                         <label class="col-md-4 col-form-label fw-bold">Year</label>
                         <div class="col">
                             <select class="form-select" name="year" aria-label="Default select example">
-                                @foreach(range(date('Y') - 0, date('Y') + 5) as $year)
+                                @foreach(range(date('Y') - 1, date('Y') + 5) as $year)
                                 <option value="{{ $year }}">{{ $year }}</option>
                                 @endforeach
                             </select>

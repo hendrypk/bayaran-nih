@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Presence extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'employee_id',
@@ -28,6 +30,7 @@ class Presence extends Model
         'location_in',
         'location_out'
     ];
+    protected $dates = ['deleted_at']; 
 
     // protected $casts = [
     //     'date' => 'date',

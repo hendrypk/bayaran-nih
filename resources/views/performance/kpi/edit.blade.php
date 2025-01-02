@@ -1,8 +1,8 @@
 @extends('_layout.main')
-@section('title', 'Employees')
+@section('title', 'Edit KPI')
 @section('content')
 
-
+{{ Breadcrumbs::render('edit_kpi', $gradeKpi->first()) }}
 <div class="row">
   <div class="col-lg-8">
     <div class="card">
@@ -42,7 +42,7 @@
                         <label class="col-md-2 col-form-label fw-bold">Year</label>
                         <div class="col-md-3">
                             <select class="form-select" type="hidden" name="year" aria-label="Default select example" disabled readonly>
-                                @foreach(range(date('Y'), date('Y') + 5) as $y)
+                                @foreach(range(date('Y') -1, date('Y') + 5) as $y)
                                 <option value="{{ $y }}" {{ isset($year) && $year == $y ? 'selected' : '' }}>
                                     {{ $y }}
                                 </option>
@@ -83,11 +83,11 @@
                     </div>
                     @endforeach
                     
-                    <div class="row justify-content-center">
-                        <div class="col-2">
-                            <button type="submit" class="btn btn-untosca mt-3">Update</button>
+                    <div class="row d-flex justify-content-end">
+                        <div class="col-md-9">
                         </div>
-                        <div class="col-2">
+                        <div class="col">
+                            <button type="submit" class="btn btn-untosca mt-3">Update</button>
                             <a href="{{ url()->previous() }}" class="btn btn-tosca mt-3">Cancel</a>
                         </div>
                     </div>

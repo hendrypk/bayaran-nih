@@ -2,6 +2,8 @@
 @section('title', 'Employees')
 @section('content')
 
+{{ Breadcrumbs::render('employee_list') }}
+
 <div class="row">
   <div class="col-lg">
     <div class="card">
@@ -10,7 +12,7 @@
           <h5 class="card-title mb-0 py-3">Employee List</h5>
           @can('create employee')
             <div class="ms-auto my-auto">
-              <a class="btn btn-tosca" href="{{route('employee.add')}}"><i class="ph-plus-circle me-1">Add Employee</i></a>
+              <a class="btn btn-tosca" href="{{route('employee.add')}}"><i class="ri-add-circle-line"></i></a>
             </div>
           @endcan
         </div>

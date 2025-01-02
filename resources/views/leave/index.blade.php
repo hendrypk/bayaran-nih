@@ -2,11 +2,25 @@
 @section('title', 'Leave')
 @section('content')
 
-<div class="row">
-<x-date-filter action="{{ route('overtime.list') }}" 
-                    :startDate="request()->get('start_date')" 
-                    :endDate="request()->get('end_date')" />
+{{ Breadcrumbs::render('leave') }}
+<div class="row align-items-center">
+    <div class="col-md-9">
+        <x-date-filter action="{{ route('leave.index') }}" 
+                        :startDate="request()->get('start_date')" 
+                        :endDate="request()->get('end_date')" />
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        @can('create leave')
+        <button type="button" class="btn btn-untosca btn-sm"
+                data-bs-toggle="modal" 
+                data-bs-target="#addLeave">
+            <i class="ri-add-circle-line"></i>
+        </button>
+        @endcan
+    </div>
+</div>
 
+<div class="row">
     <div class="col-md">
         <div class="card">
             <div class="card-body">
@@ -14,15 +28,6 @@
                     <div class="col-md-10">
                         <h5 class="card-title mb-0 py-3">Leave List</h5>
                     </div>
-                    @can('create leave')
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-untosca"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#addLeave">
-                            Add Manual Leave
-                            </button>
-                        </div>
-                    @endcan
                 </div>
                     <table class="table datatable table-hover">
                         <thead>

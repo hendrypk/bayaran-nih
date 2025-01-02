@@ -2,6 +2,7 @@
 @section('title', 'Employee Resignation')
 @section('content')
 
+{{ Breadcrumbs::render('employee_resignation') }}
 <div class="row">
   <div class="col-lg">
     <div class="card">
@@ -12,7 +13,7 @@
             <div class="ms-auto my-auto">
                 <button type="button"
                 class="btn btn-tosca" onclick="openResignModal('add')">
-                Add Resignation
+                <i class="ri-add-circle-line"></i>
             </button>
             </div>
           @endcan
@@ -51,7 +52,7 @@
               <td>
                 @can('update resignation')
                 <button type="button"
-                    class="btn btn-outline-success" onclick="openResignModal('edit', {
+                    class="btn btn-untosca btn-sm" onclick="openResignModal('edit', {
                         id: '{{ $data->id }}',
                         name: '{{ $data->name }}',
                         category: '{{ $data->resignation }}',
@@ -61,12 +62,7 @@
                     <i class="ri-edit-box-fill"></i>
                 </button>
                 @endcan
-                @can('delete resignation')
-                <button type="button" class="btn btn-outline-danger" 
-                    onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'resignation')">
-                    <i class="ri-delete-bin-fill"></i>
-                </button>
-                @endcan
+
               </td>
             </tr>
             @endforeach
@@ -101,6 +97,14 @@ function openResignModal(action, data = {}) {
     }
 
     $('#resignModal').modal('show');
+
+    const deleteButton = document.getElementById('deleteButton');
+    if (action === 'edit') {
+        deleteButton.style.display = 'inline-block'; // Tampilkan tombol hapus
+        deleteButton.setAttribute('onclick', `confirmDelete(${data.id}, '${data.name}', 'resignation')`);
+    } else {
+        deleteButton.style.display = 'none'; // Sembunyikan tombol hapus untuk mode tambah
+    }
 }
 
 

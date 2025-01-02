@@ -2,10 +2,34 @@
 @section('title', 'Presence')
 @section('content')
 
+
+{{ Breadcrumbs::render('presence') }}
+<div class="row align-items-center">
+    <div class="col-md-9">
+        <x-date-filter action="{{ route('presence.list.admin') }}" 
+                        :startDate="request()->get('start_date')" 
+                        :endDate="request()->get('end_date')" />
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        <form action="{{ route('presence.export') }}" method="POST" class="me-2" style="margin: 0;">
+            @csrf
+            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+            <button type="submit" class="btn btn-tosca btn-sm">
+                <i class="ri-download-cloud-2-fill"></i>
+            </button>
+        </form>
+        <div class="form-container">
+            <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2"><i class="ri-file-upload-fill"></i></a>
+        </div>
+        <button type="button" class="btn btn-untosca btn-sm"
+                data-bs-toggle="modal" 
+                data-bs-target="#addPresence">
+            <i class="ri-add-circle-line"></i>
+        </button>
+    </div>
+</div>
+
 <div class="row">
-    <x-date-filter action="{{ route('presence.list.admin') }}" 
-                    :startDate="request()->get('start_date')" 
-                    :endDate="request()->get('end_date')" />
         <div class="col-md">
         <div class="card">
             <div class="card-body">
@@ -13,30 +37,30 @@
                     <div class="col-md-9">
                         <h5 class="card-title mb-0 py-3">Presences List</h5>
                     </div>
-                    <div class="button-container">
-                        @can('presence export')
-                        <div class="form-container">
-                            <form action="{{ route('presence.export') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                                <button type="submit" class="btn btn-tosca">Export</button>
-                            </form>
-                        </div>
-                        @endcan
+                        {{-- <div class="button-container">
+                            @can('presence export')
+                            <div class="form-container">
+                                <form action="{{ route('presence.export') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                                    <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                                    <button type="submit" class="btn btn-tosca">Export</button>
+                                </form>
+                            </div>
+                            @endcan
 
-                        <div class="form-container">
-                            <a href="{{ route('presence.import') }}" class="btn btn-tosca">Import</a>
-                        </div>
+                            <div class="form-container">
+                                <a href="{{ route('presence.import') }}" class="btn btn-tosca">Import</a>
+                            </div>
 
-                        @can('create presence')
-                            <button type="button" class="btn btn-untosca"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#addPresence">
-                            Add Presence
-                            </button>
-                        @endcan
-                    </div>
+                            @can('create presence')
+                                <button type="button" class="btn btn-untosca"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#addPresence">
+                                Add Presence
+                                </button>
+                            @endcan
+                        </div> --}}
                 </div>
                 <div class="card-table-wrapper"> 
                     <table class="table datatable table-hover">

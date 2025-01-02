@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PayrollOption extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'payroll_options';
     protected $fillable = [
@@ -33,7 +35,7 @@ class PayrollOption extends Model
         'sallary_adjustment',
         'kpi_percent',
         'pa_percent',
-
     ];
+    protected $dates = ['deleted_at']; 
 
 }
