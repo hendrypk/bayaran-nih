@@ -37,7 +37,7 @@
                         <label class="col-md-4 col-form-label fw-bold">Year</label>
                         <div class="col">
                             <select class="form-select" type="hidden" name="year" aria-label="Default select example" disabled >
-                                @foreach(range(date('Y'), date('Y') + 5) as $y)
+                                @foreach(range(date('Y') -1, date('Y') + 5) as $y)
                                 <option value="{{ $y }}" {{ isset($year) && $year == $y ? 'selected' : '' }}>
                                     {{ $y }}
                                 </option>

@@ -2,6 +2,8 @@
 @section('title', 'Presence Summary')
 @section('content')
 
+
+{{ Breadcrumbs::render('presence_summary') }}
 <div class="row">
     <x-date-filter action="{{ route('presenceSummary.list') }}" 
                     :startDate="request()->get('start_date')" 

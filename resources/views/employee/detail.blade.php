@@ -1,8 +1,27 @@
 @extends('_layout.main')
 @section('title', 'Employees')
 @section('content')
+{{ Breadcrumbs::render('employee_detail', $employee) }}
+<div class="row align-item-center">
+    <div class="col-md-9">
+        <h3 class="card-title mb-0 py-3">Employee Detail | {{ $employee->name }}</h3>
+    </div>
 
-<h3 class="card-title mb-0 py-3">Employee Detail | {{ $employee->name }}</h3>
+    <div class="col-md-3 d-flex justify-content-end">
+        @can('update employee')
+        <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-tosca btn-sm d-flex justify-content-center align-items-center me-2">
+            <i class="ri-edit-line"></i>
+        </a>
+        @endcan
+        
+        @can('delete employee')
+        <button type="button" class="btn btn-untosca btn-sm" 
+            onclick="confirmDelete({{ $employee->id }}, '{{ $employee->name }}', 'employee')">
+            <i class="ri-delete-bin-fill"></i>
+        </button>
+        @endcan
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-2 mt-3">
@@ -28,26 +47,6 @@
                             <div class="col-md-10">
                                 <div class="card-title">Employee Detail</div>
                             </div>
-                            @can('update employee')
-                                <div class="col-md ms-auto align-self-center">
-                                    <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-outline-success">
-                                        <i class="ri-edit-line"></i>
-                                    </a>
-                                </div>
-                            @endcan
-
-                            @can('delete employee')
-                            <div class="col-md ms-auto align-self-center">
-                                <button type="button" class="btn btn-outline-danger"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteModal" 
-                                    data-entity="employee" 
-                                    data-id="{{ $employee->id }}" 
-                                    data-name="{{ $employee->name }}">
-                                    <i class="ri-delete-bin-fill"></i>
-                                </button>
-                            </div>
-                            @endcan
                         </div>
 
                         <div class="row">
@@ -78,21 +77,6 @@
                         <div class="row">
                                 <div class="col-md-10">
                                     <div class="card-title">Staffing Detail</div>
-                                </div>
-                                <div class="col-md ms-auto align-self-center">
-                                    <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-outline-success">
-                                        <i class="ri-edit-line"></i>
-                                    </a>
-                                </div>
-                                <div class="col-md ms-auto align-self-center">
-                                    <button type="button" class="btn btn-outline-danger"
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#deleteModal" 
-                                        data-entity="employee" 
-                                        data-id="{{ $employee->id }}" 
-                                        data-name="{{ $employee->name }}">
-                                        <i class="ri-delete-bin-fill"></i>
-                                    </button>
                                 </div>
                             </div>
                             <div class="row">
@@ -151,21 +135,6 @@
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="card-title">Payslip Detail</div>
-                            </div>
-                            <div class="col-md ms-auto align-self-center">
-                                <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-outline-success">
-                                    <i class="ri-edit-line"></i>
-                                </a>
-                            </div>
-                            <div class="col-md ms-auto align-self-center">
-                                <button type="button" class="btn btn-outline-danger"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteModal" 
-                                    data-entity="employee" 
-                                    data-id="{{ $employee->id }}" 
-                                    data-name="{{ $employee->name }}">
-                                    <i class="ri-delete-bin-fill"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -288,6 +257,52 @@
         }
     });
 });
+
+function confirmDelete(id, name, entity) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete the " + entity + ": " + name,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '',
+            cancelButtonColor: '',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/${entity}/${id}/delete`, { 
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: data.message, // Use message from the server
+                            icon: 'success'
+                        }).then(() => {
+                            // Reload the page or redirect to another route
+                            window.location.href = data.redirect; // Redirect to the desired route
+                        });
+                    } else {
+                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            }
+        });
+    }
 </script>
 @endsection
 

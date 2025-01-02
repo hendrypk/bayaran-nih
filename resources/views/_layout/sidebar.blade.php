@@ -36,12 +36,12 @@
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{route('home')}}">
-          <i class="ri-account-pin-circle-fill"></i>
+          <i class="ri-home-smile-fill"></i>
           <span>Dashboard</span>
         </a>
       </li>
 
-      <a class="nav-link collapsed" data-bs-target="#payroll-nav" data-bs-toggle="collapse" href="#">
+      {{-- <a class="nav-link collapsed" data-bs-target="#payroll-nav" data-bs-toggle="collapse" href="#">
           <i class="ri-money-dollar-box-fill"></i>
           <span>Payroll</span>
           <i class="bi bi-chevron-down ms-auto"></i>
@@ -62,7 +62,7 @@
                   <span>Pay Report</span>
               </a>
           </li>
-      </ul>
+      </ul> --}}
 
       @can('view employee')
       <a class="nav-link collapsed" data-bs-target="#employee-nav" data-bs-toggle="collapse" href="#">
@@ -107,7 +107,7 @@
       @endcan
 
       <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse" href="#">
-        <i class="ri-dvd-fill"></i>
+        <i class="ri-time-fill"></i>
         <span>Attendance</span>
         <i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -147,7 +147,7 @@
       </ul>
 
       <a class="nav-link collapsed" data-bs-target="#performance-nav" data-bs-toggle="collapse" href="#">
-        <i class="ri-award-fill"></i>
+        <i class="ri-medal-fill"></i>
         <span>Performance</span>
         <i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -232,7 +232,7 @@
       </ul>
       <li class="nav-item {{ request()->routeIs('auth.logout') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="{{route('auth.logout')}}">
-          <i class="bi bi-box-arrow-right"></i>
+          <i class="ri-logout-box-r-fill"></i>
           <span>Log Out</span>
         </a>
       </li>

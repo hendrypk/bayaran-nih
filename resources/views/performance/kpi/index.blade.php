@@ -2,20 +2,31 @@
 @section('title', 'Performance - KKPI')
 @section('content')
 
+{{ Breadcrumbs::render('kpi') }}
 <div class="row">
-<x-month-year-picker :action="route('kpi.list')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
+    <div class="col-md-9">
+        <x-month-year-picker :action="route('kpi.list')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear"/>
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        @can('create kpi')
+        <div class="ms-auto my-auto">
+            <a class="btn btn-tosca" href="{{ route('kpi.add') }}">
+                <i class="ri-add-circle-line"></i></a>
+        </div>
+        @endcan
+    </div>
+</div>
 
+<div class="row">
     <div class="col-md">
         <div class="card">
             <div class="card-body">
-                <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Key Performance Indicator</h5>
-                    @can('create kpi')
-                        <div class="ms-auto my-auto">
-                            <a class="btn btn-tosca" href="{{ route('kpi.add') }}"><i class="ph-plus-circle me-1">Add KPI Report</i></a>
-                        </div>
-                    @endcan
+                <div class="row align-item-center">
+                    <div class="col-md-9">
+                        <h5 class="card-title mb-0 py-3">Key Performance Indicator</h5>
+                    </div>
                 </div>
+
         
                 <!-- Table with hoverable rows -->
                     <table class="table datatable table-hover">

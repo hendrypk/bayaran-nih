@@ -2,6 +2,7 @@
 @section('title', 'Performance - KPI - Add New')
 @section('content')
 
+{{ Breadcrumbs::render('create_kpi') }}
 <div class="row">
     <div class="col-lg-8">
         <div class="card">
@@ -41,7 +42,7 @@
                         <div class="col-2 mb-5">
                             <label for="inputEmail4" class="form-label">Year</label>
                             <select class="form-select" name="year" aria-label="Default select example">
-                                @foreach(range(date('Y') - 0, date('Y') + 5) as $year)
+                                @foreach(range(date('Y') - 1, date('Y') + 5) as $year)
                                 <option value="{{ $year }}">{{ $year }}</option>
                                 @endforeach
                             </select>
@@ -62,10 +63,10 @@
                    
                     <div class="row mb-2 mt-3 justify-content-end">
                         <div class="d-grid gap-2 col-2">
-                            <button type="" class="btn btn-untosca">Cancel</button>
+                            <button type="submit" class="btn btn-tosca">Submit</button>
                         </div>
                         <div class="d-grid gap-2 col-2">
-                            <button type="submit" class="btn btn-tosca">Submit</button>
+                            <button type="" class="btn btn-untosca">Cancel</button>
                         </div>
                     </div>
                 </form>

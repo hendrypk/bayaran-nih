@@ -2,6 +2,7 @@
 @section('title', 'Employee Position Change')
 @section('content')
 
+{{ Breadcrumbs::render('employee_position_change') }}
 <div class="row">
     <div class="col-lg">
       <div class="card">
@@ -12,7 +13,7 @@
               <div class="ms-auto my-auto">
                   <button type="button"
                   class="btn btn-tosca" onclick="openModal('add')">
-                  Add Position Change
+                  <i class="ri-add-circle-line"></i>
               </button>
               </div>
             @endcan
@@ -48,13 +49,14 @@
                 <td>
                     @can('update resignation')
                     <button type="button"
-                      class="btn btn-use btn-outline-success" 
+                      class="btn btn-use btn-untosca btn-sm" 
                       @if($data->effective_date != $latestPositionChanges[$data->employees->id]->effective_date)
                         onclick="showErrorAlert('Only the most recent effective date can be changed.');"
                       @else
                         onclick="openModal('edit', {
                           id: '{{ $data->id }}',
-                          name: '{{ $data->employees->id }}',
+                          employee_id: '{{ $data->employees->id }}',
+                          name: '{{ $data->employees->name }}',
                           eid: '{{ $data->employees->eid }}',
                           category: '{{ $data->category }}',
                           old_position: '{{ $data->old_position }}',
@@ -67,7 +69,7 @@
                       <i class="ri-edit-box-fill"></i>
                     </button>
                   @endcan
-                  
+{{--                   
                   @can('delete resignation')
                     <button type="button" 
                       class="btn btn-outline-danger" 
@@ -78,7 +80,7 @@
                       @endif>
                       <i class="ri-delete-bin-fill"></i>
                     </button>
-                  @endcan
+                  @endcan --}}
                   
                 </td>
               </tr>
@@ -110,7 +112,7 @@ function openModal(action, data = {}) {
         $('#positionChangeForm').attr('action', "{{ route('position.change.store') }}");
         $('#positionChangeTitle').text('Edit Position Change');
         $('#id').val(data.id); 
-        $('#name').val(data.name); 
+        $('#name').val(data.employee_id); 
         $('#category').val(data.category);
         $('#oldPosition').val(data.old_position_name);
         $('#hiddenPositionId').val(data.old_position);
@@ -122,6 +124,14 @@ function openModal(action, data = {}) {
     }
 
     $('#positionChange').modal('show');
+
+    const deleteButton = document.getElementById('deleteButton');
+    if (action === 'edit') {
+        deleteButton.style.display = 'inline-block'; // Tampilkan tombol hapus
+        deleteButton.setAttribute('onclick', `confirmDelete(${data.id}, '${data.name}', 'position-change')`);
+    } else {
+        deleteButton.style.display = 'none'; // Sembunyikan tombol hapus untuk mode tambah
+    }
 }
 
 $('#name').change(function() {

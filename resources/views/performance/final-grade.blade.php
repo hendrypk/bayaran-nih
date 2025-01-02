@@ -2,8 +2,8 @@
 @section('title', 'Employee Grade')
 @section('content')
 
+{{ Breadcrumbs::render('employee_grade') }}
 <div class="row">
-
 <x-month-year-picker :action="route('performance.grade')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
 
     <div class="col-lg">
