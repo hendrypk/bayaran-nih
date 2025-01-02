@@ -15,7 +15,7 @@
         <div class="col-md-2">
             <label for="year" class="form-label">Select Year</label>
             <select class="form-select" name="year">
-                @foreach (range(date('Y') - 0, date('Y') + 5) as $year)
+                @foreach (range(date('Y') - 1, date('Y') + 5) as $year)
                     <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>
                         {{ $year }}
                     </option>

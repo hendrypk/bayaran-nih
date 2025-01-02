@@ -1,5 +1,6 @@
 @extends('_layout.main')
 @section('content')
+{{ Breadcrumbs::render('option_pa_detail', $appraisal_id) }}
 <div class="col-lg-6">
     <div class="card">
         <div class="card-body">

@@ -1,5 +1,5 @@
 <!-- Edit Position -->
-<div class="modal fade" id="positionEditModal" tabindex="-1" aria-labelledby="positionEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="positionEditModal" tabindex="-1" aria-labelledby="positionEditModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -23,7 +23,7 @@
 
 
 <!-- Edit Job Title Modal -->
-<div class="modal fade" id="jobTitleEditModal" tabindex="-1" aria-labelledby="jobTitleEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="jobTitleEditModal" tabindex="-1" aria-labelledby="jobTitleEditModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -50,7 +50,7 @@
 </div>
 
 <!-- Edit Department Modal -->
-<div class="modal fade" id="departmentEditModal" tabindex="-1" aria-labelledby="departmentEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="departmentEditModal" tabindex="-1" aria-labelledby="departmentEditModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -73,7 +73,7 @@
 </div>
 
 <!-- Edit Division Modal -->
-<div class="modal fade" id="divisionEditModal" tabindex="-1" aria-labelledby="divisionEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="divisionEditModal" tabindex="-1" aria-labelledby="divisionEditModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -96,7 +96,7 @@
 </div>
 
 <!-- Edit Status Modal -->
-<div class="modal fade" id="holidayEditModal" tabindex="-1" aria-labelledby="holidayEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="holidayEditModal" tabindex="-1" aria-labelledby="holidayEditModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -123,7 +123,7 @@
 </div>
 
 <!-- Edit Holiday Modal -->
-<div class="modal fade" id="statusEditModal" tabindex="-1" aria-labelledby="statusEditModalLabel" aria-hidden="true">
+<div class="modal fade" id="statusEditModal" tabindex="-1" aria-labelledby="statusEditModalLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -146,7 +146,7 @@
 </div>
 
 <!-- Edit Modal Office Location -->
-<div class="modal fade" id="locationEditModal" tabindex="-1" aria-labelledby="modalLocation" aria-hidden="true">
+<div class="modal fade" id="locationEditModal" tabindex="-1" aria-labelledby="modalLocation" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">

@@ -1,5 +1,5 @@
 <!--Add KPI-->
-<div class="modal fade" id="addIndicatorModal" tabindex="-1" aria-labelledby="modalIndicator" aria-hidden="true">
+<div class="modal fade" id="addIndicatorModal" tabindex="-1" aria-labelledby="modalIndicator" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">

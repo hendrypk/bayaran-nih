@@ -1,6 +1,7 @@
 @extends('_layout.main')
 @section('title', 'Edit Work Day')
 @section('content')
+{{ Breadcrumbs::render('work_day_detail', $name) }}
 
 <div class="row">
     <div class="card">

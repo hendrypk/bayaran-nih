@@ -2,6 +2,8 @@
 @section('title', 'Employees')
 @section('content')
 
+
+{{ Breadcrumbs::render('add_employee') }}
 <div class="row">
   <div class="col-lg">
     <div class="card">

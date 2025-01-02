@@ -209,7 +209,7 @@
         <li class="nav-item {{ request()->routeIs('workDay.index') ? 'active' : '' }}">
           <a class="nav-link collapsed" href="{{route('workDay.index')}}">
             {{-- <i class="ri-settings-4-fill"></i> --}}
-            <span>Work pattern</span>
+            <span>Work Day</span>
           </a>
         </li>
         @endcan

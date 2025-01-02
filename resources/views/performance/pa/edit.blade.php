@@ -2,7 +2,7 @@
 @section('title', 'Employees')
 @section('content')
 
-
+{{ Breadcrumbs::render('edit_pa', $employees, $month, $year) }}
 <div class="row">
   <div class="col-md-6">
     <div class="card">
@@ -60,7 +60,7 @@
                     </div>
                     @endforeach
 
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-end">
                         <div class="col-2">
                             <button type="submit" class="btn btn-untosca mt-3">Update</button>
                         </div>

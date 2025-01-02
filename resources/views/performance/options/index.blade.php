@@ -1,5 +1,7 @@
 @extends('_layout.main')
 @section('content')
+
+{{ Breadcrumbs::render('setting_kpi_pa') }}
 <div class="row">
     <div class="col-lg-6">
             <div class="card">

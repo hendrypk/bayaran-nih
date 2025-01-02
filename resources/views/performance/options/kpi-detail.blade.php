@@ -2,6 +2,7 @@
 @section('title', 'Performance - PA')
 @section('content')
 
+{{ Breadcrumbs::render('option_kpi_detail', $kpi_id) }}
 <div class="col-lg-8">
     <div class="card">
         <div class="card-body">

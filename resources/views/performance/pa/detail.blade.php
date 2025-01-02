@@ -2,7 +2,6 @@
 @section('title', 'Performance - PA Detail')
 @section('content')
 
-{{-- {{ Breadcrumbs::render('pa_detail', $employee, $selectedMonth, $selectedYear) }} --}}
 {{ Breadcrumbs::render('pa_detail', $employees, $month, $year) }}
 
 <div class="row align-item-center mb-3">
@@ -63,8 +62,8 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">Aspect</th>
-                            <th scope="col">Grade</th>
+                            <th scope="col" style="width: 70%;">Aspect</th>
+                            <th scope="col" style="width: 30%;">Grade</th>
                         </tr>
                     </thead>
                     <tbody>

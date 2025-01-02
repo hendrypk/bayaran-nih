@@ -1,4 +1,4 @@
-<div class="modal fade" id="addEntityModal" tabindex="-1" aria-labelledby="modalEntityLabel" aria-hidden="true">
+<div class="modal fade" id="addEntityModal" tabindex="-1" aria-labelledby="modalEntityLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,7 +19,7 @@
 </div>
 
 <!-- Add Modal Office Location -->
-<div class="modal fade" id="location" tabindex="-1" aria-labelledby="modalLocation" aria-hidden="true">
+<div class="modal fade" id="location" tabindex="-1" aria-labelledby="modalLocation" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

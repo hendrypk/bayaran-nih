@@ -1,5 +1,5 @@
 <!-- Add Modal Position -->
-<div class="modal fade" id="addLeave" tabindex="-1" aria-labelledby="modalLeave" aria-hidden="true">
+<div class="modal fade" id="addLeave" tabindex="-1" aria-labelledby="modalLeave" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

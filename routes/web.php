@@ -305,8 +305,6 @@ Route::middleware(['auth:web'])->group(function () {
     
 });
 
-
-
 //Employee Middleware Group
 Route::middleware(['auth:employee'])->group(function () {
     //logout
