@@ -901,3 +901,7 @@ table.datatable-table:focus {
   color: #118ab2; 
 }
 
+/* Memberikan jarak yang konsisten antara tanda titik dua dan nilai */
+/* .row div > div {
+  margin-left: 10px;
+} */

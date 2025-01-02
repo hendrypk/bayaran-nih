@@ -106,3 +106,13 @@ Breadcrumbs::for('pa', function (BreadcrumbTrail $trail) {
     $trail->push('Home', route('home'));
     $trail->push('Performance Appraisal', route('pa.list'));
 });
+
+// Home > Appraisal > Detail
+Breadcrumbs::for('pa_detail', function (BreadcrumbTrail $trail, $employees, $month, $year) {
+    $trail->push('Home', route('home'));
+    $trail->push('Performance Appraisal', route('pa.list'));
+    $trail->push('PA Detail', route('pa.detail', [
+        'employee_id' => $employees->id,
+        'month' => $month,
+        'year' => $year]));
+});
