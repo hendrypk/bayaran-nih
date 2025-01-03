@@ -76,31 +76,31 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 60%;">Aspect</th>
-                            <th scope="col" style="width: 10%;">Target</th>
-                            <th scope="col" style="width: 10%;">Bobot</th>
-                            <th scope="col" style="width: 10%;">Achievement</th>
-                            <th scope="col" style="width: 10%;">Grade</th>
+                            <th class="text-center" style="width: 5%;">No</th>
+                            <th class="text-center" style="width: 40%;">Aspect</th>
+                            <th class="text-center" style="width: 15%;">Target</th>
+                            <th class="text-center" style="width: 15%;">Bobot</th>
+                            <th class="text-center" style="width: 15%;">Achievement</th>
+                            <th class="text-center" style="width: 15%;">Grade</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($gradeKpi as $gradeKpi)
+                        @foreach ($gradeKpi as $no=>$gradeKpi)
                             <tr>
+                                <td class="text-center">{{ $no+1 }}</td>
                                 <td>{{ $gradeKpi->indicator->aspect }}</td>
-                                <td>{{ $gradeKpi->indicator->target }}</td>
-                                <td>{{ $gradeKpi->indicator->bobot }}</td>
-                                <td>{{ $gradeKpi->achievement }}</td>
-                                <td>{{ $gradeKpi->grade }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->indicator->target, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->indicator->bobot, 2, '.', ',') }}</td>
+                                <td class="text-end">{{ number_format($gradeKpi->achievement, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->grade, 2, '.', ',') }}</td>
+                                
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Final Grade</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>{{$totalGrade}}</th>
+                            <th colspan="5">Final Grade</th>
+                            <th class="text-center">{{$totalGrade}}</th>
                         </tr>
                     </tfoot>
                 </table>

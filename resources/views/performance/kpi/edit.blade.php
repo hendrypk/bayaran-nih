@@ -65,30 +65,44 @@
                         <h5 class="title mb-0 py-3 fw-bold">Indicators</h5>
                     </div> -->
 
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
                         <div class="col-md-4 fw-bold"> Indicators</div>
                         <div class="col-sm-2 fw-bold">Target</div>
                         <div class="col-sm-2 fw-bold">Bobot</div>
                         <div class="col fw-bold">Achievement</div>
-                    </div>
+                    </div> --}}
 
-                    @foreach ($gradeKpi as $gradeKpi)
-                    <div class="row mb-3">
-                        <label for="grade_{{ $gradeKpi->id }}" class="col-md-4 form-label">{{ $gradeKpi->indicator->aspect }}</label>
-                        <label for="" class="col-md-2 form-label">{{ $gradeKpi->indicator->target }}</label>
-                        <label for="" class="col-md-2 form-label">{{ $gradeKpi->indicator->bobot }}</label>
-                        <div class="col-md-2">
-                            <input type="number" step="0.01" min="0" class="form-control" name="grades[{{ $gradeKpi->indicator_id }}]" id="grade_{{ $gradeKpi->indicator_id }}" min="0" max="100" required value="{{ $gradeKpi->achievement }}" step="0.01">
-                        </div>
-                    </div>
-                    @endforeach
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%;">No.</th>
+                                <th class="text-center" style="width: 40%;">Aspect</th>
+                                <th class="text-center" style="width: 20%;">Target</th>
+                                <th class="text-center" style="width: 15%;">Bobot</th>
+                                <th class="text-center" style="width: 20%;">Achievement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($gradeKpi as $no=>$gradeKpi)
+                            <tr>
+                                <td>{{ $no+1 }}</td>
+                                <td>{{ $gradeKpi->indicator->aspect }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->indicator->target, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->indicator->bobot, 2, '.', ',') }}</td>
+                                <td>
+                                    <input type="text" class="form-control numeric-input text-end" name="grades[{{ $gradeKpi->indicator_id }}]" id="grade_{{ $gradeKpi->indicator_id }}" required value="{{ number_format($gradeKpi->achievement, 2, '.', ',') }}">
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>         
                     
                     <div class="row d-flex justify-content-end">
                         <div class="col-md-9">
                         </div>
                         <div class="col">
-                            <button type="submit" class="btn btn-untosca mt-3">Update</button>
-                            <a href="{{ url()->previous() }}" class="btn btn-tosca mt-3">Cancel</a>
+                            <button type="submit" class="btn btn-tosca btn-sm mt-3">Update</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-untosca btn-sm mt-3">Cancel</a>
                         </div>
                     </div>
                 </form>
@@ -100,7 +114,7 @@
 
 @section('script')
 <script>
-    
+
 </script>
 @endsection
 

@@ -216,6 +216,8 @@ Route::middleware(['auth:web'])->group(function () {
     //FInal Grade
     Route::group(['middleware' => ['permission:view employee grade']], function() {
         Route::get('/performance/grade', [FinalGradeController::class, 'index'])->name('performance.grade');
+        Route::get('/performance/export', [FinalGradeController::class, 'export'])->name('performance.export');
+
     });
     
     //sales

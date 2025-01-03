@@ -59,9 +59,17 @@
                     </div>
                     @endforeach --}}
 
-                    <div class="row g-3 d-grid gap-2 col-6 mx-auto">
-                        <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="row justify-content-end">
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-tosca btn-sm mt-3">Submit</button>
+                        </div>
+                        <div class="col-2">
+                            <a href="{{ url()->previous() }}" class="btn btn-untosca btn-sm mt-3">Cancel</a>
+                        </div>
                     </div>
+                    {{-- <div class="row g-3 d-grid gap-2 col-6 mx-auto">
+                        <button type="submit" class="btn btn-tosca">Submit</button>
+                    </div> --}}
                 </form>
             </div>
         </div>

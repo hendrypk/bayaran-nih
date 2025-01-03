@@ -62,26 +62,30 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 70%;">Aspect</th>
-                            <th scope="col" style="width: 30%;">Grade</th>
+                            <th scope="col" class="text-center" style="width: 5%;">No.</th>
+                            <th scope="col" class="text-center" style="width: 70%;">Aspect</th>
+                            <th scope="col" class="text-center" style="width: 30%;">Grade</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($gradePas as $gradePa)
+                        @foreach ($gradePas as $no=>$gradePa)
                             <tr>
-                                <td>{{ $gradePa->appraisal->aspect }}</td>
-                                <td>{{ $gradePa->grade }}</td>
+                                <td class="text-center">{{ $no+1 }}</td>
+                                <td class="text-start">{{ $gradePa->appraisal->aspect }}</td>
+                                <td class="text-center">{{ number_format($gradePa->grade, 2, '.', ',') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Total</th>
-                            <th>{{$totalGrade}}</th>
+                            <th colspan="2">Total</th>
+                            <td class="text-center">{{ number_format($totalGrade, 2, '.', ',') }}</td>
                         </tr>
                         <tr>
-                            <th>Final Grade</th>
-                            <th>{{$avgGrade}}</th>
+                            <th colspan="2">Final Grade</th>
+                            <td>
+                                {{ number_format(floatval($avgGrade), 2, '.', ',') }}
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

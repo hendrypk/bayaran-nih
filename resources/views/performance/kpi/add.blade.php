@@ -52,12 +52,12 @@
                             <h5 class="title mb-0 py-3 fw-bold">Performance Indicator</h5>
                         </div> --}}
 
-                    <div class="row mb-3">
+                    {{-- <div class="row mb-3">
                         <div class="col-md-4 fw-bold"> Aspect</div>
                         <div class="col-sm-2 fw-bold">Target</div>
                         <div class="col-sm-2 fw-bold">Bobot</div>
                         <div class="col fw-bold">Achievement</div>
-                    </div>
+                    </div> --}}
                     
                     <div id="kpiIndicatorsContainer"></div>
                    
@@ -108,24 +108,106 @@ function updateKpiIndicators(indicators) {
     var indicatorContainer = document.getElementById('kpiIndicatorsContainer');
     indicatorContainer.innerHTML = ''; // Clear any existing content
 
+    // Create table structure
+    var table = `
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 5%;">No.</th>
+                    <th class="text-center" style="width: 40%;">Aspect</th>
+                    <th class="text-center" style="width: 20%;">Target</th>
+                    <th class="text-center" style="width: 15%;">Bobot</th>
+                    <th class="text-center" style="width: 20%;">Achievement</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    var index = 1;
+
+    // Loop through each indicator to add a row in the table
     indicators.forEach(function(indicator) {
-        var indicatorRow = `
-            <div class="row mb-3">
-                <label for="grade_${indicator.id}" class="col-md-4 form-label">${indicator.aspect}</label>
-                <div class="col-sm-2">
-                    <input type="number" class="form-control" value="${indicator.target}" disabled readonly>
-                </div>
-                <div class="col-sm-2">
-                    <input type="number" class="form-control" value="${indicator.bobot}" disabled readonly>
-                </div>
-                <div class="col">
-                    <input type="number" class="form-control" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
-                </div>
-            </div>
+        table += `
+            <tr>
+                <td class="text-center">${index}</td>
+                <td>${indicator.aspect}</td>
+                <td class="text-end">
+                    <input type="number" class="form-control text-end" value="${indicator.target}" disabled readonly>
+                </td>
+                <td class="text-end">
+                    <input type="number" class="form-control text-end" value="${indicator.bobot}" disabled readonly>
+                </td>
+                <td>
+                    <input type="text" class="form-control numeric-input text-end" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
+                </td>
+            </tr>
         `;
-        indicatorContainer.insertAdjacentHTML('beforeend', indicatorRow);
+        index++;
     });
+
+    // Close the table tags
+    table += `
+            </tbody>
+        </table>
+    `;
+
+    // Insert the table into the container
+    indicatorContainer.insertAdjacentHTML('beforeend', table);
+
+    // Re-initialize numeric input formatting
+    initializeNumericInput();
 }
+
+
+// function updateKpiIndicators(indicators) {
+//     var indicatorContainer = document.getElementById('kpiIndicatorsContainer');
+//     indicatorContainer.innerHTML = ''; // Clear any existing content
+
+//     indicators.forEach(function(indicator) {
+//         var indicatorRow = `
+//             <div class="row mb-3">
+//                 <label for="grade_${indicator.id}" class="col-md-4 form-label">${indicator.aspect}</label>
+//                 <div class="col-sm-2">
+//                     <input type="number" class="form-control" value="${indicator.target}" disabled readonly>
+//                 </div>
+//                 <div class="col-sm-2">
+//                     <input type="number" class="form-control" value="${indicator.bobot}" disabled readonly>
+//                 </div>
+//                 <div class="col">
+//                     <input type="text" class="form-control numeric-input" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
+//                 </div>
+//             </div>
+//         `;
+//         indicatorContainer.insertAdjacentHTML('beforeend', indicatorRow);
+//     });
+
+//     // Re-initialize numeric input formatting
+//     initializeNumericInput();
+// }
+
+function initializeNumericInput() {
+    const inputs = document.querySelectorAll('.numeric-input');
+    inputs.forEach(function(input) {
+        // Format on load
+        formatInputValue(input);
+
+        // Add event listener for user input
+        input.addEventListener('input', function(e) {
+            let value = e.target.value;
+            value = value.replace(/[^0-9.]/g, ''); // Remove non-numeric chars
+            let parts = value.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            e.target.value = parts.join('.');
+        });
+    });
+
+    function formatInputValue(input) {
+        input.value = input.value.replace(/[^0-9.]/g, '') // Remove invalid chars
+                                 .replace(/\B(?=(\d{3})+(?!\d))/g, ',') // Add thousands separators
+                                 .replace(/(\..*)\./g, '$1'); // Handle multiple dots
+    }
+}
+
 
 </script>
 

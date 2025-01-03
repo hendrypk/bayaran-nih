@@ -37,7 +37,7 @@ class LeaveController extends Controller
         }
     
         if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
         
         $leaves = $query->with('employees')->get();
