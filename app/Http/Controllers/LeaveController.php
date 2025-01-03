@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Leave;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -15,8 +16,8 @@ class LeaveController extends Controller
         $today = now();
         $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
         $defaultEndDate = $today->toDateString();
-        $startDate = $request->input('start_date', $defaultStartDate);
-        $endDate = $request->input('end_date', $defaultEndDate);
+        $startDate = Carbon::parse($request->input('start_date', $defaultStartDate));
+        $endDate = Carbon::parse($request->input('end_date', $defaultEndDate));
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
     
