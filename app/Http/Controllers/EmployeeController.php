@@ -326,7 +326,7 @@ class EmployeeController extends Controller
             'whatsapp' => $request->whatsapp,
             'bank' => $request->bank,
             'bank_number' => $request->bank_number,
-            'position_id' => $request->position_id,
+            // 'position_id' => $request->position_id,
             'job_title_id' => $request->job_title_id,
             'division_id' => $request->division_id,
             'department_id' => $request->department_id,
