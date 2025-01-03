@@ -53,11 +53,11 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-4 fw-bold"> Division </div>
-                        <div class="col">: {{ $employees->division->name }}</div>
+                        <div class="col">: {{ $employees->division->name ?? '-' }}</div>
                     </div>
                     <div class="row mb-2    ">
                         <div class="col-lg-4 fw-bold"> Department </div>
-                        <div class="col">: {{ $employees->department->name }}</div>
+                        <div class="col">: {{ $employees->department->name ?? '-' }}</div>
                     </div>
                 {{-- </div> --}}
             </div>
