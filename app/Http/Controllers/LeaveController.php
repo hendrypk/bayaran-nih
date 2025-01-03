@@ -17,7 +17,7 @@ class LeaveController extends Controller
         $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
         $defaultEndDate = $today->toDateString();
         $startDate = Carbon::parse($request->input('start_date', $defaultStartDate));
-        $endDate = Carbon::parse($request->input('end_date', $defaultEndDate));
+        $endDate = Carbon::parse($request->input('end_date', $defaultEndDate))->endOfDay();
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
     
