@@ -24,14 +24,14 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Month</th>
-                                <th scope="col">Year</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Detail</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th class="text-center">Month</th>
+                                <th class="text-center">Year</th>
+                                <th class="text-center">EID</th>
+                                <th class="text-center">Employee Name</th>
+                                <th class="text-center">Grade</th>
+                                <th class="text-center">Detail</th>
+                                <th class="text-center">Edit</th>
+                                <th class="text-center">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,12 +41,12 @@
                                         $employee = $employees->firstWhere('id', $grade->employee_id);
                                     @endphp
                                 <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $selectedMonth }}</td>
-                                <td>{{ $selectedYear }}</td>
-                                <td>{{ $employee->eid }}</td>
-                                <td>{{ $employee->name }}</td>  
-                                <td>{{ number_format($grade->average_grade, 2) }}</td>                               
-                                <td>
+                                <td class="text-center">{{ $selectedMonth }}</td>
+                                <td class="text-center">{{ $selectedYear }}</td>
+                                <td class="text-center">{{ $employee->eid }}</td>
+                                <td class="text-center">{{ $employee->name }}</td>  
+                                <td class="text-center">{{ number_format($grade->average_grade, 2) }}</td>                               
+                                <td class="text-center">
                                     <a href="{{ route('pa.detail', [
                                     'employee_id' => $employee->id,
                                     'month' => $selectedMonth,
@@ -55,7 +55,7 @@
                                     <i class="ri-eye-fill"></i>
                                     </a>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @can('update pa')
                                         <a href="{{ route('pa.edit', [
                                             'employee_id' => $employee->id,
@@ -66,7 +66,7 @@
                                         </a>
                                     @endcan
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <button type="button" class="btn btn-outline-danger" 
                                         onclick="confirmDelete({{ $grade->employee_id }}, '{{ $selectedMonth }}', '{{ $selectedYear }}', '{{ $grade->employees->name }}', 'KPI')">
                                         <i class="ri-delete-bin-fill"></i>
@@ -121,18 +121,42 @@ function updatePa(appraisals) {
     var appraisalContainer = document.getElementById('appraisalContainer');
     appraisalContainer.innerHTML = ''; // Clear any existing content
 
+    var table = `
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 5%;">No.</th>
+                    <th class="text-center" style="width: 60%;">Aspect</th>
+                    <th class="text-center" style="width: 35%;">Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    let index = 1; // Inisialisasi nomor urut
+    
     appraisals.forEach(function(appraisal) {
-        var appraisalRow = `
-            <div class="row mb-3">
-                <label for="grade_${appraisal.id}" class="col-md-4 form-label">${appraisal.aspect}</label>
-                <div class="col">
-                    <input type="number" class="form-control" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
-                </div>
-            </div>
+        table += `
+            <tr>
+                <td class="text-center">${index}</td> <!-- Nomor urut -->
+                <td>${appraisal.aspect}</td>
+                <td>
+                    <input type="text" class="form-control numeric-input" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
+                </td>
+            </tr>
         `;
-        appraisalContainer.insertAdjacentHTML('beforeend', appraisalRow);
+        index++; // Increment nomor urut
     });
+
+    table += `
+            </tbody>
+        </table>
+    `;
+
+    // Masukkan tabel ke dalam container
+    appraisalContainer.insertAdjacentHTML('beforeend', table);
 }
+
 
 //Script for Delete Modal
 function confirmDelete(id, month, year, name, entity) {

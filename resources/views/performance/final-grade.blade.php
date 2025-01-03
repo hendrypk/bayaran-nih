@@ -3,8 +3,23 @@
 @section('content')
 
 {{ Breadcrumbs::render('employee_grade') }}
+<div class="row align-items-center">
+    <div class="col-md-9">
+        <x-month-year-picker :action="route('performance.grade')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        <a href="{{ route('performance.export', ['month' => $selectedMonth, 'year' => $selectedYear]) }}" class="btn btn-tosca">
+            <i class="ri-download-cloud-2-fill"></i>
+        </a>
+    </div>
+</div>
+
 <div class="row">
-<x-month-year-picker :action="route('performance.grade')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
+{{-- <x-month-year-picker :action="route('performance.grade')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
+<a href="{{ route('performance.export', ['month' => $selectedMonth, 'year' => $selectedYear]) }}" class="btn btn-success">
+    Export to Excel
+</a> --}}
+
 
     <div class="col-lg">
         <div class="card">
@@ -32,8 +47,8 @@
                                 <th scope="row">1</th>
                                 <td>{{ $employee->eid }}</td>
                                 <td>{{ $employee->name }}</td>
-                                <td>{{optional($employee->GradeKpis->first())->final_kpi ?? '0.00' }}</td>
-                                <td>{{ optional($employee->GradePas->first())->final_pa ?? '0.00' }}</td>
+                                <td>{{ $employee->final_kpi }}</td>
+                                <td>{{ $employee->final_pa }}</td>
                                 <td>{{ $employee->finalGrade }}</td>
                             </tr>
                             @endforeach

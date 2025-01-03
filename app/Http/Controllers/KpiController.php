@@ -8,6 +8,7 @@ use App\Models\GradeKpi;
 use App\Models\KpiOptions;
 use Illuminate\Http\Request;
 use App\Models\PerformanceKpi;
+use Illuminate\Support\Facades\DB;
 use App\Models\PerformanceAppraisal;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,7 @@ public function indexKpi(Request $request){
 
     // Query untuk ambil data GradeKpi
     $query = GradeKpi::with('indicator', 'employees')
-        ->select('employee_id', 'month', 'year')
+        ->select('employee_id', 'month', 'year', DB::raw('sum(grade) as final_kpi'))
         ->where('month', $selectedMonth)
         ->where('year', $selectedYear);
 
@@ -47,8 +48,9 @@ public function indexKpi(Request $request){
 
     // Ambil data gradeKpi sesuai dengan filter
     $gradeKpi = $query->groupBy('employee_id', 'month', 'year')->get();
+    $final_kpi = $gradeKpi->avg('grade');
 
-    return view('performance.kpi.index', compact('gradeKpi', 'selectedMonth', 'selectedYear'));
+    return view('performance.kpi.index', compact('gradeKpi', 'selectedMonth', 'selectedYear', 'final_kpi'));
 }
 
 //Kpi Add
