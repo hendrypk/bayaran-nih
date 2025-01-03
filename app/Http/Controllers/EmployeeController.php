@@ -295,7 +295,6 @@ class EmployeeController extends Controller
             'whatsapp' => 'required',
             'bank' => 'required',
             'bank_number' => 'required',
-            'position_id' => 'required',
             'job_title_id' => 'required',
             'joining_date' => 'required',
             'employee_status' => 'required',
