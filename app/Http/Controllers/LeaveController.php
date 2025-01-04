@@ -15,9 +15,11 @@ class LeaveController extends Controller
         $query = Leave::query();
         $today = now();
         $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
-        $defaultEndDate = $today->toDateString();
+        $defaultEndDate = $today->copy()->endOfDay()->toDateString();
         $startDate = Carbon::parse($request->input('start_date', $defaultStartDate));
         $endDate = Carbon::parse($request->input('end_date', $defaultEndDate))->endOfDay();
+        $dateType = $request->input('date_type', 'created_at'); // Default to 'created_at'
+
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
     
@@ -37,10 +39,21 @@ class LeaveController extends Controller
             });
         }
     
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+        if ($dateType && $startDate && $endDate) {
+            $query->whereBetween($dateType, [$startDate, $endDate]);
         }
-        
+        // if ($dateType && $startDate && $endDate) {
+        //     if ($endDate >= $startDate) {
+        //         $query->whereBetween($dateType, [$startDate, $endDate]);
+        //     } else {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'End date cannot be earlier than start date.',
+        //             'redirect' => url()->previous()
+        //         ]);
+        //     }
+        // }
+
         $leaves = $query->with('employees')->get();
 
         $employees = Employee::whereNull('resignation')->get();
@@ -49,7 +62,7 @@ class LeaveController extends Controller
             'Sick',
             'Permit'
         ];
-        return view('leave.index', compact('leaves', 'employees', 'category'));
+        return view('leave.index', compact('leaves', 'employees', 'category', 'startDate', 'endDate'));
     }
 
     public function store (Request $request) {

@@ -27,6 +27,7 @@
   <link href="{{asset('assets/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
   <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
   <link href="{{asset('assets/vendor/simple-datatables/style.css')}}" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
   <link href="{{asset('assets/css/custom.css')}}" rel="stylesheet">
   <!-- Include SweetAlert2 CSS and JS -->
