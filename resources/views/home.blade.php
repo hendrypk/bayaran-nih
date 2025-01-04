@@ -80,145 +80,133 @@
 
 
   <script>
-    // Employee Status Summary Chart
-    var optionsStatus = {
-        series: [{{ implode(',', array_values($statusSummary)) }}],
-        chart: {
-            type: 'pie',
-            width: '400px',
-            height: '300px'
-        },
-        labels: {!! json_encode($employeeStatus) !!},
-        legend: {
-          position: 'bottom', // Positions the legend at the bottom of the chart
-          horizontalAlign: 'center', // Centers the legend horizontally
-          floating: false, // Makes sure the legend is positioned statically below the chart
-    },
-    };
-    var statusChart = new ApexCharts(document.querySelector("#statusChart"), optionsStatus);
-    statusChart.render();
+  // Employee Status Summary Chart
+  var optionsStatus = {
+      series: [{{ implode(',', array_values($statusSummary)) }}],
+      chart: {
+          type: 'pie',
+          width: '400px',
+          height: '300px'
+      },
+      labels: {!! json_encode($employeeStatus) !!},
+      legend: {
+          position: 'bottom',
+          horizontalAlign: 'center',
+          floating: false,
+      },
+      colors: ['#118ab2', '#06d6a0', '#ffd166']
 
-    // Gender Distribution Chart
-    // var optionsGender = {
-    //     series: [{{ implode(',', array_values($genderSummary)) }}],
-    //     chart: {
-    //         type: 'pie',
-    //         width: '400px',
-    //         height: '300px'
-    //     },
-    //     xaxis: {
-    //         categories: {!! json_encode(array_keys($genders)) !!}
-    //     },
-    // };
-    // var genderChart = new ApexCharts(document.querySelector("#genderChart"), optionsGender);
-    // genderChart.render();
-    var optionsGender = {
-        series: [{{ implode(',', array_values($genderSummary)) }}], // Pie chart data
-        chart: {
-            type: 'pie', // Set chart type to 'pie'
-            width: '600px',
-            height: '300px'
-        },
-        labels: {!! json_encode($genders) !!}, // Set the labels for the pie chart
-        legend: {
-            position: 'bottom', // Position legend below the pie chart
-            horizontalAlign: 'center', // Center the legend
-        },
-    };
+  };
+  var statusChart = new ApexCharts(document.querySelector("#statusChart"), optionsStatus);
+  statusChart.render();
 
+  // Gender Distribution Chart
+  var optionsGender = {
+      series: [{{ implode(',', array_values($genderSummary)) }}],
+      chart: {
+          type: 'pie',
+          width: '600px',
+          height: '300px'
+      },
+      labels: {!! json_encode($genders) !!},
+      legend: {
+          position: 'bottom',
+          horizontalAlign: 'center',
+      },
+      colors: ['#118ab2', '#06d6a0', '#ffd166']
+  };
   var genderChart = new ApexCharts(document.querySelector("#genderChart"), optionsGender);
   genderChart.render();
 
+  // Education Level Chart
+  var optionsEducation = {
+      series: [{
+          data: [{{ implode(',', array_values($educationSummary)) }}]
+      }],
+      chart: {
+          type: 'bar',
+          width: '600px',
+          height: '300px'
+      },
+      xaxis: {
+          categories: {!! json_encode(array_keys($educationSummary)) !!}
+      },
+      colors: ['#118ab2'] // Warna elemen chart
+  };
+  var educationChart = new ApexCharts(document.querySelector("#educationChart"), optionsEducation);
+  educationChart.render();
 
-    // Education Level Chart
-    var optionsEducation = {
-        series: [{
-            data: [{{ implode(',', array_values($educationSummary)) }}]
-        }],
-        chart: {
-            type: 'bar',
-            width: '600px',
-            height: '300px'
+  // Age Range Chart
+  var optionAge = {
+      series: [{
+          data: [{{ implode(',', array_values($ageSummary)) }}]
+      }],
+      chart: {
+          type: 'bar',
+          width: '600px',
+          height: '300px'
+      },
+      xaxis: {
+          categories: {!! json_encode(array_keys($ageSummary)) !!}
+      },
+      colors: ['#118ab2'] // Warna elemen chart
+  };
+  var ageRangeChart = new ApexCharts(document.querySelector("#ageRangeChart"), optionAge);
+  ageRangeChart.render();
 
-        },
-        xaxis: {
-            categories: {!! json_encode(array_keys($educationSummary)) !!}
-        },
-    };
-    var educationChart = new ApexCharts(document.querySelector("#educationChart"), optionsEducation);
-    educationChart.render();
+  // Religion Chart
+  var optionReligion = {
+      series: [{
+          data: [{{ implode(',', array_values($religionSummary)) }}]
+      }],
+      chart: {
+          type: 'bar',
+          width: '600px',
+          height: '300px'
+      },
+      xaxis: {
+          categories: {!! json_encode($religions) !!}
+      },
+      colors: ['#118ab2'] // Warna elemen chart
+  };
+  var religionChart = new ApexCharts(document.querySelector("#religionChart"), optionReligion);
+  religionChart.render();
 
-    // Age Range Chart
-    var optionAge = {
-        series: [{
-            data: [{{ implode(',', array_values($ageSummary)) }}]
-        }],
-        chart: {
-            type: 'bar',
-            width: '600px',
-            height: '300px'
+  // Marital Chart
+  var optionMarital = {
+      series: [{
+          data: [{{ implode(',', array_values($maritalSummary)) }}]
+      }],
+      chart: {
+          type: 'bar',
+          width: '600px',
+          height: '300px'
+      },
+      xaxis: {
+          categories: {!! json_encode($marriage) !!}
+      },
+      colors: ['#118ab2'] // Warna elemen chart
+  };
+  var maritalChart = new ApexCharts(document.querySelector("#maritalChart"), optionMarital);
+  maritalChart.render();
 
-        },
-        xaxis: {
-            categories: {!! json_encode(array_keys($ageSummary)) !!}
-        },
-    };
-    var ageRangeChart = new ApexCharts(document.querySelector("#ageRangeChart"), optionAge);
-    ageRangeChart.render();
-
-    // Religion Chart
-    var optionReligion = {
-        series: [{
-            data: [{{ implode(',', array_values($religionSummary)) }}]
-        }],
-        chart: {
-            type: 'bar',
-            width: '600px',
-            height: '300px'
-
-        },
-        xaxis: {
-            categories: {!! json_encode($religions) !!}
-        },
-    };
-    var religionChart = new ApexCharts(document.querySelector("#religionChart"), optionReligion);
-    religionChart.render();
-  
-    // Marrital Chart
-    var optionMarital = {
-        series: [{
-            data: [{{ implode(',', array_values($maritalSummary)) }}]
-        }],
-        chart: {
-            type: 'bar',
-            width: '600px',
-            height: '300px'
-
-        },
-        xaxis: {
-            categories: {!! json_encode($marriage) !!}
-        },
-    };
-    var maritalChart = new ApexCharts(document.querySelector("#maritalChart"), optionMarital);
-    maritalChart.render();
-
-    // WorkDuration Chart
-    var workDuration = {
-        series: [{
-            data: [{{ implode(',', array_values($workDurationSummary)) }}]
-        }],
-        chart: {
-            type: 'bar',
-            width: '600px',
-            height: '285px'
-
-        },
-        xaxis: {
-            categories: {!! json_encode(array_keys($workDurationSummary)) !!}
-        },
-    };
-    var workDurationChart = new ApexCharts(document.querySelector("#workDurationChart"), workDuration);
-    workDurationChart.render();
+  // WorkDuration Chart
+  var workDuration = {
+      series: [{
+          data: [{{ implode(',', array_values($workDurationSummary)) }}]
+      }],
+      chart: {
+          type: 'bar',
+          width: '600px',
+          height: '285px'
+      },
+      xaxis: {
+          categories: {!! json_encode(array_keys($workDurationSummary)) !!}
+      },
+      colors: ['#118ab2'] // Warna elemen chart
+  };
+  var workDurationChart = new ApexCharts(document.querySelector("#workDurationChart"), workDuration);
+  workDurationChart.render();
 
   </script>
 
