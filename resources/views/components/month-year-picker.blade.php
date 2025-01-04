@@ -1,5 +1,5 @@
 <form action="{{ $action }}" method="GET" class="mb-3">
-    <div class="row">
+    <div class="row d-flex align-items-end">
         <div class="col-md-2">
             <label for="month" class="form-label">Select Month</label>
             <select class="form-select" name="month">
@@ -24,7 +24,7 @@
         </div>
 
         <div class="col-md-3 align-self-end">
-            <button type="submit" class="btn btn-tosca">Filter</button>
+            <button type="submit" class="btn btn-tosca btn-sm">Filter</button>
         </div>
     </div>
 </form>

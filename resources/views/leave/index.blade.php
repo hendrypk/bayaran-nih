@@ -5,7 +5,7 @@
 {{ Breadcrumbs::render('leave') }}
 <div class="row align-items-center">
     <div class="col-md-9">
-        <x-date-filter action="{{ route('leave.index') }}" 
+        <x-absence-date-filter action="{{ route('leave.index') }}" 
                         :startDate="request()->get('start_date')" 
                         :endDate="request()->get('end_date')" />
     </div>

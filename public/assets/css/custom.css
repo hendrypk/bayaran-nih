@@ -906,3 +906,28 @@ table.datatable-table:focus {
   margin-left: 10px;
 } */
 
+
+/*Language Switcher */
+.language-switcher {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.language-dropdown {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.language-dropdown:hover {
+  background-color: #ddd;
+}
+
+.language-dropdown:focus {
+  outline: none;
+  border-color: #66afe9;
+  box-shadow: 0 0 8px rgba(102, 175, 233, .6);
+}

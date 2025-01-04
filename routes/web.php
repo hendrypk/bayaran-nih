@@ -6,14 +6,17 @@ use App\Http\Controllers\Test;
 use Spatie\Permission\Models\Role;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use App\Models\EmployeePositionChange;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\SalesController;
+use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\WorkDayController;
@@ -23,13 +26,12 @@ use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\AppraisalController;
 use App\Http\Controllers\FinalGradeController;
 use App\Http\Controllers\EmployeeAppController;
-use App\Http\Controllers\EmployeePositionChangeController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\KpiPaOptionsController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
-use App\Models\EmployeePositionChange;
+use App\Http\Controllers\EmployeePositionChangeController;
 
 //error page
 Route::get('/test',[Test::class, 'test'])->name('test');
@@ -54,10 +56,36 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //Get API
 Route::get('/github/releases', [ApiController::class, 'getReleases']);
 
+//Language Switcher
+// Route::middleware([LocaleMiddleware::class])->group(function () {
+//     Route::get('language/{lang}', function ($lang) {
+//         if (in_array($lang, ['en', 'id'])) {
+//             session()->put('locale', $lang); // Pastikan ini terjadi
+//         }
+    
+//         // // Debugging setelah perubahan
+//         // dd(session()->all());  // Memastikan bahwa 'locale' sudah berubah
+    
+//         return redirect()->back();
+//     })->name('locale.switch');
+    
+// });
+
+Route::middleware([LocaleMiddleware::class])->group(function () {
+    // Definisikan rute yang perlu menggunakan middleware ini
+    Route::get('language/{lang}', function ($lang) {
+        if (in_array($lang, ['en', 'id'])) {
+            session(['locale' => $lang]);
+        }
+        return redirect()->back();
+    })->name('locale.switch');
+});
+
 //Administrator Middleware Group
 Route::middleware(['auth:web'])->group(function () {
     //Dashboard
-    Route::get('/home', function () {return view('home');})->name('home');
+    // Route::get('/home', function () {return view('home');})->name('home');
+    Route::get('home', [HomeController::class, 'index'])->name('home');
 
     //Options
     Route::prefix('options')->group(function () {
