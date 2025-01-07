@@ -204,8 +204,190 @@
   </ul>
 </aside>
 
+{{-- <div class="l-navbar" id="navbar">
+  <nav class="nav">
+      <div>
+          <a href="{{route('home')}}" class="logo d-flex align-items-center nav__logo">
+            <img src="{{asset('e-presensi/assets/img/logo/logo.jpg')}}" alt="">
+          </a>
+        
+          <div class="nav__toggle" id="nav-toggle">
+              <i class='bx bx-chevron-right'></i>
+          </div>
+          <ul class="nav__list">
+            <a href="{{ route('home') }}" class="nav__link {{ request()->routeIs('home') ? 'active' : '' }}">
+                <i class="ri-dashboard-line nav__icon"></i>
+                <span class="nav__text">{{ __('sidebar.label.dashboard') }}</span>
+            </a>
+        
+            @can('view employee')
+            <a href="#" class="nav__link {{ request()->routeIs($activeEmployee) ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#employee-nav">
+                <i class="ri-user-line nav__icon"></i>
+                <span class="nav__text">{{ __('sidebar.label.employee') }}</span>
+                <i class="ri-arrow-down-s-line ms-auto"></i>
+            </a>
+            <ul id="employee-nav" class="nav__list collapse {{ request()->routeIs($activeEmployee) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                @can('create employee')
+                <a href="{{ route('employee.add') }}" class="nav__link {{ request()->routeIs('employee.add') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.add_employee') }}</span>
+                </a>
+                @endcan
+                @can('view employee')
+                <a href="{{ route('employee.list') }}" class="nav__link {{ request()->routeIs('employee.list') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.employee_list') }}</span>
+                </a>
+                @endcan
+                @can('view resignation')
+                <a href="{{ route('resignation.index') }}" class="nav__link {{ request()->routeIs('resignation.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.resignation') }}</span>
+                </a>
+                @endcan
+                @can('view position change')
+                <a href="{{ route('position.change.index') }}" class="nav__link {{ request()->routeIs('position.change.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.position_change') }}</span>
+                </a>
+                @endcan
+            </ul>
+            @endcan
+        
+            <a href="#" class="nav__link {{ request()->routeIs($activeAttendance) ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#attendance-nav">
+                <i class="ri-time-line nav__icon"></i>
+                <span class="nav__text">{{ __('sidebar.label.attendance') }}</span>
+                <i class="ri-arrow-down-s-line ms-auto"></i>
+            </a>
+            <ul id="attendance-nav" class="nav__list collapse {{ request()->routeIs($activeAttendance) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                @can('view presence summary')
+                <a href="{{ route('presenceSummary.list') }}" class="nav__link {{ request()->routeIs('presenceSummary.list') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.presence_summary') }}</span>
+                </a>
+                @endcan
+                @can('view presence')
+                <a href="{{ route('presence.list.admin') }}" class="nav__link {{ request()->routeIs('presence.list.admin') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.presences') }}</span>
+                </a>
+                @endcan
+                @can('view overtime')
+                <a href="{{ route('overtime.list') }}" class="nav__link {{ request()->routeIs('overtime.list') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.overtime') }}</span>
+                </a>
+                @endcan
+                @can('view leave')
+                <a href="{{ route('leaves.index') }}" class="nav__link {{ request()->routeIs('leaves.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.leave') }}</span>
+                </a>
+                @endcan
+            </ul>
+        
+            <a href="#" class="nav__link {{ request()->routeIs($activePerformance) ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#performance-nav">
+                <i class="ri-medal-line nav__icon"></i>
+                <span class="nav__text">{{ __('sidebar.label.performance') }}</span>
+                <i class="ri-arrow-down-s-line ms-auto"></i>
+            </a>
+            <ul id="performance-nav" class="nav__list collapse {{ request()->routeIs($activePerformance) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                @can('view employee grade')
+                <a href="{{ route('performance.grade') }}" class="nav__link {{ request()->routeIs('performance.grade') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.employee_grade') }}</span>
+                </a>
+                @endcan
+                @can('view kpi')
+                <a href="{{ route('kpi.list') }}" class="nav__link {{ request()->routeIs('kpi.list') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.kpi') }}</span>
+                </a>
+                @endcan
+                @can('view pa')
+                <a href="{{ route('pa.list') }}" class="nav__link {{ request()->routeIs('pa.list') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.performance_appraisal') }}</span>
+                </a>
+                @endcan
+                @can('view pm')
+                <a href="{{ route('kpi.pa.options.index') }}" class="nav__link {{ request()->routeIs('kpi.pa.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.setting_kpi_pa') }}</span>
+                </a>
+                @endcan
+            </ul>
+        
+            @can('view sales')
+            <a href="{{ route('sales.list') }}" class="nav__link {{ request()->routeIs('sales.list') ? 'active' : '' }}">
+                <i class="ri-shopping-bag-line nav__icon"></i>
+                <span class="nav__text">{{ __('sidebar.label.sales_summary') }}</span>
+            </a>
+            @endcan
+        
+            <a href="#" class="nav__link {{ request()->routeIs($activeDataMaster) ? 'active' : '' }}" data-bs-toggle="collapse" data-bs-target="#master-nav">
+                <i class="ri-settings-3-line nav__icon"></i>
+                <span class="nav__text">{{ __('sidebar.label.data_master') }}</span>
+                <i class="ri-arrow-down-s-line ms-auto"></i>
+            </a>
+            <ul id="master-nav" class="nav__list collapse {{ request()->routeIs($activeDataMaster) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                @can('view options')
+                <a href="{{ route('options.list') }}" class="nav__link {{ request()->routeIs('options.list') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.options') }}</span>
+                </a>
+                @endcan
+                @can('view work pattern')
+                <a href="{{ route('workDay.index') }}" class="nav__link {{ request()->routeIs('workDay.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.work_day') }}</span>
+                </a>
+                @endcan
+                @can('view role')
+                <a href="{{ route('role.index') }}" class="nav__link {{ request()->routeIs('role.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.role') }}</span>
+                </a>
+                @endcan
+                @can('view user')
+                <a href="{{ route('user.index') }}" class="nav__link {{ request()->routeIs('user.index') ? 'active' : '' }}">
+                    <span class="nav__text">{{ __('sidebar.label.user') }}</span>
+                </a>
+                @endcan
+            </ul>
+        </ul>
+        
+          
+      </div>
+      
+      <a href="{{ route('auth.logout') }}" class="nav__link {{ request()->routeIs('auth.logout') ? 'active' : '' }}">
+        <i class="ri-logout-circle-line nav__icon"></i>
+        <span class="nav__text">{{ __('sidebar.label.log_out') }}</span>
+      </a>
+  </nav>
+</div>
 
-{{-- <aside id="sidebar" class="sidebar">
+<script>
+// SHOW MENU
+const showMenu = (toggleId, navbarId, bodyId) => {
+    const toggle = document.getElementById(toggleId),
+        navbar = document.getElementById(navbarId),
+        bodypadding = document.getElementById(bodyId);
+
+    // Membaca status toggle dari localStorage
+    const isExpanded = localStorage.getItem('navbarExpanded') === 'true';
+
+    if (toggle && navbar) {
+        // Jika status adalah expanded, tambahkan kelas 'show' dan 'expander'
+        if (isExpanded) {
+            navbar.classList.add('show');
+            bodypadding.classList.add('expander');
+            toggle.classList.add('rotate');
+        }
+
+        toggle.addEventListener('click', () => {
+            // Toggle menu visibility
+            navbar.classList.toggle('show');
+            toggle.classList.toggle('rotate');
+            bodypadding.classList.toggle('expander');
+
+            // Simpan status toggle ke localStorage
+            const expanded = navbar.classList.contains('show');
+            localStorage.setItem('navbarExpanded', expanded);
+        });
+    }
+};
+
+showMenu('nav-toggle', 'navbar', 'body');
+
+</script> --}}
+{{-- 
+<aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">

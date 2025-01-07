@@ -7,7 +7,7 @@
       <div class="col-md-3">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Employee Status</h5>
+            <h5 class="card-title">{{ __('home.label.status') }}</h5>
             <div id="statusChart" class="d-flex justify-content-center align-items-center"></div>
           </div>
         </div>
@@ -15,7 +15,7 @@
       <div class="col-md-3">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Employee Gender</h5>
+            <h5 class="card-title">{{ __('home.label.gender') }}</h5>
             <div id="genderChart" class="d-flex justify-content-center align-items-center"></div>
           </div>
         </div>
@@ -23,7 +23,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Work Duration</h5>
+            <h5 class="card-title">{{ __('home.label.duration') }}</h5>
             <div id="workDurationChart" class="d-flex justify-content-center align-items-center"></div>
           </div>
         </div>
@@ -33,7 +33,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Education Level</h5>
+            <h5 class="card-title">{{ __('home.label.education') }}</h5>
             <div id="educationChart"></div>
           </div>
         </div>
@@ -41,7 +41,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Age Range</h5>
+            <h5 class="card-title">{{ __('home.label.age') }}</h5>
             <div id="ageRangeChart"></div>
           </div>
         </div>
@@ -51,7 +51,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Religion</h5>
+            <h5 class="card-title">{{ __('home.label.religion') }}</h5>
             <div id="religionChart"></div>
           </div>
         </div>
@@ -59,7 +59,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Marital</h5>
+            <h5 class="card-title">{{ __('home.label.marital') }}</h5>
             <div id="maritalChart"></div>
           </div>
         </div>
@@ -81,24 +81,26 @@
 
   <script>
   // Employee Status Summary Chart
+  document.addEventListener("DOMContentLoaded", function() {
   var optionsStatus = {
-      series: [{{ implode(',', array_values($statusSummary)) }}],
-      chart: {
-          type: 'pie',
-          width: '400px',
-          height: '300px'
-      },
-      labels: {!! json_encode($employeeStatus) !!},
-      legend: {
-          position: 'bottom',
-          horizontalAlign: 'center',
-          floating: false,
-      },
-      colors: ['#118ab2', '#06d6a0', '#ffd166']
-
+    series: [{{ implode(',', array_values($statusSummary)) }}],
+    chart: {
+      type: 'pie',
+      width: '400px',
+      height: '300px'
+    },
+    labels: {!! json_encode($employeeStatus) !!},
+    legend: {
+      position: 'bottom',
+      horizontalAlign: 'center',
+      floating: false
+    },
+    colors: ['#118ab2', '#06d6a0', '#ffd166']
   };
+
   var statusChart = new ApexCharts(document.querySelector("#statusChart"), optionsStatus);
   statusChart.render();
+
 
   // Gender Distribution Chart
   var optionsGender = {
@@ -207,7 +209,7 @@
   };
   var workDurationChart = new ApexCharts(document.querySelector("#workDurationChart"), workDuration);
   workDurationChart.render();
-
+});
   </script>
 
   {{-- <main>

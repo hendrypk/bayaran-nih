@@ -4,7 +4,7 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">{{ $role->name }} Edit</h5>
+                <h5 class="card-title">{{ __('option.label.edit_role') }} {{ $role->name }}</h5>
             </div>
             <div class="card-body">
                 <form id="form_role_edit" action="{{ route('role.update', $role->id) }}" method="POST">
@@ -13,13 +13,13 @@
 
                     <!-- Role Name Input -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Role Name</label>
+                        <label class="form-label fw-bold">{{ __('option.label.role_name') }}</label>
                         <input type="text" name="name" class="form-control" value="{{ $role->name }}" required>
                     </div>
 
                     <!-- Permissions Table -->
                     <div class="mb-3">
-                        <label class="fs-6 fw-bold form-label">Role Permissions</label>
+                        <label class="fs-6 fw-bold form-label">{{ __('option.label.role_permissions') }}</label>
                         <div class="table-responsive">
                             <table class="table table-borderless">
                                 <tbody>
@@ -27,7 +27,7 @@
                                         <td>Root Access</td>
                                         <td>
                                             <input type="checkbox" class="form-check-input" id="select_all_permissions">
-                                            <label for="select_all_permissions">Select All</label>
+                                            <label for="select_all_permissions">{{ __('general.label.select_all') }}</label>
                                         </td>
                                     </tr>
 
@@ -53,9 +53,14 @@
                             </table>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-untosca">Save Changes</button>
-                    <a href="{{ route('role.index') }}" class="btn btn-tosca">Cancel</a>
+                    <div class="row mb-2 mt-3 justify-content-end">
+                        <div class="d-grid col-1">
+                            <a href="{{ route('role.index') }}" class="btn btn-tosca">{{ __('general.label.back') }}</a>
+                        </div>
+                        <div class="d-grid col-1">
+                            <button type="submit" class="btn btn-untosca">{{ __('general.label.save') }}</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

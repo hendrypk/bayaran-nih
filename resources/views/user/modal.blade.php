@@ -9,38 +9,38 @@
                 <form id="userForm" action="" method="POST">
                     @csrf
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Name</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('general.label.name') }}</label>
+                        <div class="col-sm-8">
                             <input type="text" id="inputName" name="name" class="form-control" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">username</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('option.label.username') }}</label>
+                        <div class="col-sm-8">
                             <input type="text" id="username" name="username" class="form-control" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Email</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('option.label.email') }}</label>
+                        <div class="col-sm-8">
                             <input type="email" id="email" name="email" class="form-control" required>
                         </div>
                     </div>   
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Password</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('option.label.password') }}</label>
+                        <div class="col-sm-8">
                             <input type="text" id="password" name="password" class="form-control">
                         </div>
                     </div>   
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Role</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('option.label.role') }}</label>
+                        <div class="col-sm-8">
                             <select class="form-select" name="role_id" id="selectRole" aria-label="Default select example" required>
-                                <option selected>Select Role</option>
+                                <option selected>{{ __('option.label.select_role') }}</option>
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                 @endforeach
@@ -49,10 +49,10 @@
                     </div>   
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Division</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('employee.label.division') }}</label>
+                        <div class="col-sm-8">
                             <select class="form-select" name="division" id="division" aria-label="Default select example">
-                                <option value="">Select Division</option>
+                                <option value="" disabled selected>{{ __('employee.placeholders.select_division') }}</option>
                                 @foreach($divisions as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                 @endforeach
@@ -61,18 +61,20 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Department</label>
-                        <div class="col-sm-9">
+                        <label class="col-sm-4 col-form-label">{{ __('employee.label.department') }}</label>
+                        <div class="col-sm-8">
                             <select class="form-select" name="department" id="department" aria-label="Default select example">
-                                <option value="">Select Department</option>
+                                <option value="" disabled selected>{{ __('employee.placeholders.select_department') }}</option>
                                 @foreach($departments as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
                 </form>
             </div>
         </div>

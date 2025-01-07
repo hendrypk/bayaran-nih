@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 class LocaleMiddleware
@@ -15,17 +17,22 @@ class LocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->session()->has('locale')) {
-            app()->setLocale(session()->get('locale'));
-        }
-
-        $locale = session('locale', config('app.locale'));
-        app()->setLocale($locale);
+        $locale = Session::get('locale') ?? 'en';
+        Session::put('locale', $locale);
+        App::setLocale($locale);
 
 
-    \Log::info("Current locale is: " . app()->getLocale());
-    \Log::info("Locale set to: " . session()->get('locale'));
-    \Log::info('Locale applied: ' . app()->getLocale());
+    //     if ($request->session()->has('locale')) {
+    //         app()->setLocale(session()->get('locale'));
+    //     }
+
+    //     $locale = session('locale', config('app.locale'));
+    //     app()->setLocale($locale);
+
+
+    // \Log::info("Current locale is: " . app()->getLocale());
+    // \Log::info("Locale set to: " . session()->get('locale'));
+    // \Log::info('Locale applied: ' . app()->getLocale());
         return $next($request);
     }
 }

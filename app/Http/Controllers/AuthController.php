@@ -30,25 +30,6 @@ public function login (Request $request){
     $password = $request->password;
     $remember = $request->has('remember');
 
-    // $loginAdmin = [
-    //     'name' => $username, 
-    //     'password' => $password  // Only include email and password here
-    // ];
-    
-    // // Check if the user exists in the users table by email
-    // $admin = User::where('name', $username)->first();
-    // if ($admin) {
-    //     // Attempt login with 'web' guard using the modified credentials array
-    //     if (Auth::guard('web')->attempt($loginAdmin)) {
-    //         return redirect()->route('employee.app')->with('success', 'You have successfully logged in as administrator!');
-    //     }
-    //     return back()->with('error', 'Login failed, please check your password.');
-    // }
-    
-    // // Return an error if the user does not exist
-    // return back()->with('error', 'User not found.');
-    
-
     $infoLogin = [
         'username' => $username,
         'password' => $password,
@@ -71,43 +52,6 @@ public function login (Request $request){
     }
     return back()->with('error', 'Username not registered. Please contact the administrator or check your username.');
 }
-
-// public function login (Request $request){
-//         Session::flash('name', $request->name);
-//         $request->validate([
-//             'name'=>'required',
-//             'password'=>'required'
-//         ],[
-//             'name.required'=>'name not registered',
-//             'password.required'=>'password did not match'
-//         ]);
-
-//         $infologin = [
-//             'username' => $request->name,
-//             'password' => $request->password
-//         ];
-
-//         // if(Auth::attempt($infologin)){
-//         //     return redirect('profile')->with('success','Login');
-//         // }
-
-//         if(Auth::attempt($infologin)){
-//             $user = Auth::user(); // Mendapatkan objek user yang telah diotentikasi
-//             return redirect()->route('employee.app')->with('success', 'Login successful');
-//         }
-
-//          // Check for unregistered name
-//          $user = Employee::where('username', $request->name)->first();
-//          if (!$user) {
-//              $error = 'Username ' . $request->name . ' not registered. Please contact administrator or check your username address.';
-//              return redirect('login')->withErrors(['name' => $error]);
-//          }
-
-//         // Login failed
-//         $error = 'Password does not match. Please check your password';
-//         // Return error message
-//         return redirect('/login')->withErrors(['password' => $error]);
-//     }
 
 //log out 
 public function logout (){

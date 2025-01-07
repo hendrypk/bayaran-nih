@@ -3,7 +3,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="positionEditModalLabel">Edit Department</h5>
+        <h5 class="modal-title" id="positionEditModalLabel">{{ __('option.label.edit_position') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -11,10 +11,13 @@
           @csrf
           @method('POST')
           <div class="mb-3">
-            <label for="inputPositionName" class="form-label">Position Name</label>
+            <label for="inputPositionName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputPositionName">
           </div>
-          <button type="submit" class="btn btn-tosca">Save changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
         </form>
       </div>
     </div>
@@ -27,7 +30,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="jobTitleEditModalLabel">Edit Job Title</h5>
+        <h5 class="modal-title" id="jobTitleEditModalLabel">{{ __('option.label.edit_job_title') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -35,14 +38,17 @@
           @csrf
           @method('POST')
           <div class="mb-3">
-            <label for="inputJobTitleName" class="form-label">Job Title Name</label>
+            <label for="inputJobTitleName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputJobTitleName">
           </div>
           <div class="mb-3">
-            <label for="inputJobTitleSection" class="form-label">Section</label>
+            <label for="inputJobTitleSection" class="form-label">{{ __('option.label.section') }}</label>
             <input type="text" class="form-control" name="section" id="inputJobTitleSection">
           </div>
-          <button type="submit" class="btn btn-tosca">Save changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
         </form>
       </div>
     </div>
@@ -54,7 +60,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="departmentEditModalLabel">Edit Department</h5>
+        <h5 class="modal-title" id="departmentEditModalLabel">{{ __('option.label.edit_department') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -62,10 +68,13 @@
           @csrf
           @method('POST')
           <div class="mb-3">
-            <label for="inputDepartmentName" class="form-label">Department Name</label>
+            <label for="inputDepartmentName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputDepartmentName">
           </div>
-          <button type="submit" class="btn btn-tosca">Save changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
         </form>
       </div>
     </div>
@@ -85,10 +94,13 @@
           @csrf
           @method('POST')
           <div class="mb-3">
-            <label for="inputDivisionName" class="form-label">Division Name</label>
+            <label for="inputDivisionName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputDivisionName">
           </div>
-          <button type="submit" class="btn btn-tosca">Save changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
         </form>
       </div>
     </div>
@@ -100,7 +112,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="holidayEditModalLabel">Edit Holiday</h5>
+        <h5 class="modal-title" id="holidayEditModalLabel">{{ __('option.label.edit_holiday') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -108,14 +120,17 @@
           @csrf
           @method('POST')
           <div class="mb-3">
-            <label for="inputHolidayName" class="form-label">Name</label>
+            <label for="inputHolidayName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputHolidayName">
           </div>
           <div class="mb-3">
-            <label class="col-sm-3 col-form-label">Select Date</label>
+            <label class="col-sm-3 col-form-label">{{ __('general.label.date') }}</label>
             <input type="date" name="date" class="form-control">
           </div>
-          <button type="submit" class="btn btn-tosca">Save changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
         </form>
       </div>
     </div>
@@ -127,7 +142,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="statusEditModalLabel">Edit Status</h5>
+        <h5 class="modal-title" id="statusEditModalLabel">{{ __('option.label.edit_status') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -135,10 +150,13 @@
           @csrf
           @method('POST')
           <div class="mb-3">
-            <label for="inputStatusName" class="form-label">Status Name</label>
+            <label for="inputStatusName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputStatusName">
           </div>
-          <button type="submit" class="btn btn-tosca">Save changes</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
         </form>
       </div>
     </div>
@@ -150,14 +168,14 @@
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="">Edit Location</h5>
+              <h5 class="modal-title" id="">{{ __('option.label.edit_location') }}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
               <form action="" class="edit-form" method="POST" data-update-type="location">
                   @csrf   
                   <div class="mb-3">
-                      <label for="inputName" class="form-label">Name</label>
+                      <label for="inputName" class="form-label">{{ __('general.label.name') }}</label>
                       <input type="text" class="form-control" name="name" required>
                   </div>   
 
@@ -168,15 +186,18 @@
 
                   <!-- Map container -->
                   <div class="mb-3">
-                      <label for="map" class="form-label">Location</label>
+                      <label for="map" class="form-label">{{ __('option.label.location') }}</label>
                       <div class="mb-3" id="map" style="height: 300px;"></div> 
                   </div> 
 
                   <div class="mb-3">
-                      <label for="radius" class="form-label">Radius</label>
+                      <label for="radius" class="form-label">{{ __('general.label.radius') }}</label>
                       <input type="number" class="form-control" name="radius" requried>
                   </div>
-                  <button type="submit" class="btn btn-tosca">Submit</button>
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                    <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                  </div>
               </form>
           </div>
       </div>

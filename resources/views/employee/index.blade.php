@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-body">
         <div class="card-header d-flex align-items-center py-0">
-          <h5 class="card-title mb-0 py-3">Employee List</h5>
+          <h5 class="card-title mb-0 py-3">{{ __('sidebar.label.employee_list') }}</h5>
           @can('create employee')
             <div class="ms-auto my-auto">
               <a class="btn btn-tosca" href="{{route('employee.add')}}"><i class="ri-add-circle-line"></i></a>
@@ -23,16 +23,16 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">EID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Status</th>
-              <th scope="col">Position</th>
-              <th scope="col">Job Title</th>
-              <th scope="col">Division</th>
-              <th scope="col">Department</th>
-              <th scope="col">Sales Status</th>
+              <th scope="col">{{ __('employee.label.full_name') }}</th>
+              <th scope="col">{{ __('employee.label.employee_status') }}</th>
+              <th scope="col">{{ __('employee.label.position') }}</th>
+              <th scope="col">{{ __('employee.label.job_title') }}</th>
+              <th scope="col">{{ __('employee.label.division') }}</th>
+              <th scope="col">{{ __('employee.label.department') }}</th>
+              <th scope="col">{{ __('employee.label.sales_status') }}</th>
               <th scope="col">
                 <button type="button" id="customButton" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#columnsModal">
-                  custom
+                  {{ __('employee.label.custom') }}
                 </button>
               </th>
               

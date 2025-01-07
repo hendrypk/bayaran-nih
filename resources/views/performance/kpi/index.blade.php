@@ -23,7 +23,7 @@
             <div class="card-body">
                 <div class="row align-item-center">
                     <div class="col-md-9">
-                        <h5 class="card-title mb-0 py-3">Key Performance Indicator</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('sidebar.label.kpi') }}</h5>
                     </div>
                 </div>
 
@@ -33,14 +33,14 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-center">#</th>
-                                <th scope="col" class="text-center">Month</th>
-                                <th scope="col" class="text-center">Year</th>
-                                <th scope="col" class="text-center">EID</th>
-                                <th scope="col" class="text-center">Employee Name</th>
-                                <th scope="col" class="text-center">KPI Grade</th>
-                                <th scope="col" class="text-center">View</th>
+                                <th scope="col" class="text-center">{{ __('general.label.month') }}</th>
+                                <th scope="col" class="text-center">{{ __('general.label.year') }}</th>
+                                <th scope="col" class="text-center">{{ __('employee.label.eid') }}</th>
+                                <th scope="col" class="text-center">{{ __('general.label.name') }}</th>
+                                <th scope="col" class="text-center">{{ __('performance.label.kpi_grade') }}</th>
+                                <th scope="col" class="text-center">{{ __('general.label.view') }}</th>
                                 {{-- <th scope="col" class="text-center">Edit</th> --}}
-                                <th scope="col" class="text-center">Delete</th>
+                                <th scope="col" class="text-center">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -39,3 +39,47 @@ document.querySelector('form').addEventListener('submit', function(e) {
         input.value = input.value.replace(/,/g, '');
     });
 });
+
+document.querySelectorAll(".lang-option").forEach((langOption) => {
+  langOption.addEventListener("click", () => {
+    // Hapus status active dari semua tombol
+    document.querySelectorAll(".lang-option").forEach((btn) => {
+      btn.classList.remove("active");
+    });
+
+    // Tambahkan status active ke tombol yang diklik
+    langOption.classList.add("active");
+
+    // Ambil bahasa yang dipilih
+    const selectedLanguage = langOption.getAttribute("data-lang");
+
+    // Redirect ke route Laravel untuk mengubah bahasa
+    const switchUrl = `/switch-language/${selectedLanguage}`;
+    window.location.href = switchUrl;
+  });
+});
+
+  
+  
+
+    // const langToggler = document.querySelector(".lang-toggler");
+
+    // langToggler.addEventListener("click", (event) => {
+    //     const clickedElement = event.target;
+    //     if (clickedElement.tagName === "SPAN") {
+    //         // Hapus class 'active' dari semua span
+    //         langToggler.querySelectorAll("span").forEach((span) => {
+    //             span.classList.remove("active");
+    //         });
+
+    //         // Tambahkan class 'active' ke span yang diklik
+    //         clickedElement.classList.add("active");
+
+    //         // Redirect ke URL berdasarkan atribut value
+    //         const targetUrl = clickedElement.getAttribute("value");
+    //         if (targetUrl) {
+    //             window.location.href = targetUrl;
+    //         }
+    //     }
+    // });
+

@@ -10,7 +10,7 @@ fetch('/github/releases', {
     const releaseLink = release.html_url; 
 
     const releaseElement = document.getElementById('releaseList');
-    releaseElement.innerHTML = `<a href="${releaseLink}" target="_blank">${releaseVersion}</a>`;
+    releaseElement.innerHTML = `<label><a href="${releaseLink}" target="_blank">${releaseVersion}</a></label>`;
 
   } else {
     document.getElementById('releaseList').innerText = 'No releases available.';

@@ -3,7 +3,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="addWorkDayTitle">Add New Work Day</h5>
+                <h5 class="modal-title" id="addWorkDayTitle">{{ __('option.label.add_new_work_day') }}</h5>
                 <button type="button" class="btn close" data-bs-dismiss="modal" aria-label="true"></button>
             </div>
             <div class="modal-body">
@@ -11,7 +11,7 @@
                     @csrf
                     <div class="form-group row mb-3 container">
                         <div class="col-md-5">
-                            <label for="name" class="fw-bold">Work Day Name</label>
+                            <label for="name" class="fw-bold">{{ __('general.label.name') }}</label>
                             <span style="color: red; font-size: 15px;">*</span>
                         </div>
                         <div class="col-md">
@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group row mb-3 container">
                         <div class="col-md-5">
-                            <label for="tolerance" class="fw-bold">Tolerance in Minute</label>
+                            <label for="tolerance" class="fw-bold">{{ __('option.label.tolerance_in_minute') }}</label>
                         </div>
                         <div class="col-md">
                             <input type="number" id="tolerance" name="tolerance" class="form-control">
@@ -29,18 +29,18 @@
                     <div class="form-group row container">
                         <table class="table table-striped table-bordered ">
                             <thead class="content-align-center">
-                                <th>Day</th>
-                                <th>Day-Off</th>
-                                <th>Arrival<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>Check In<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>Check Out<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>Break In<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>Break Out<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>Exclude Break</th>
+                                <th>{{ __('general.label.day') }}</th>
+                                <th>{{ __('option.label.day_off') }}</th>
+                                <th>{{ __('option.label.arrival') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>{{ __('option.label.check_in') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>{{ __('option.label.check_out') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>{{ __('option.label.break_in') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>{{ __('option.label.break_out') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th>{{ __('option.label.exclude_break') }}</th>
                             </thead>
                             @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
                             <tbody>
-                                <th name="day" id="day">{{ ucfirst($day) }}</th>
+                                <td>{{ __('option.label.day.' . strtolower($day)) }}</td>
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="dayOff[{{ $day }}]" name="dayOff[{{ $day }}]" value="1" onchange="toggleTimeInputs('{{ $day }}')">
@@ -71,9 +71,9 @@
                         </table>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-untosca me-3">Submit</button>
-                    </div>
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                      </div>
                 </form>
             </div>
 

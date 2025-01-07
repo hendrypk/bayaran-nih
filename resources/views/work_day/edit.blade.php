@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
-                    <h5 class="card-title">Edit Work Day of {{ $workDays->first()->name }}</h5>
+                    <h5 class="card-title">{{ __('option.label.edit_work_day') }} {{ $workDays->first()->name }}</h5>
                 </div>
             </div> 
                  
@@ -17,7 +17,7 @@
                 @method('POST')
                 <div class="row mb-3">
                     <div class="col-md-2">
-                        <label for="name" class="fw-bold">Name</label>
+                        <label for="name" class="fw-bold">{{ __('general.label.name') }}</label>
                         <span>: </span>
                     </div>
                     <div class="col-md-3">
@@ -27,7 +27,7 @@
 
                 <div class="row mb-3">
                     <div class="col-md-2">
-                        <label for="tolerance" class="fw-bold">Tolerance</label>
+                        <label for="tolerance" class="fw-bold">{{ __('option.label.tolerance_in_minute') }}</label>
                         <span>: </span>
                     </div>
                     <div class="col-md-3">
@@ -36,21 +36,22 @@
                 </div>
 
                 <div class="row mb-3">
-                    <table class="table datatable table-hover">
+                    <table class="table table-hover">
                         <thead class="table-primary">
-                            <th>Day</th>
-                            <th>Day Off</th>
-                            <th>Arrival</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th>Break In</th>
-                            <th>Break Out</th>
-                            <th>Exclude Break</th>
+                            <th>{{ __('general.label.day') }}</th>
+                            <th>{{ __('option.label.day_off') }}</th>
+                            <th>{{ __('option.label.arrival') }}</th>
+                            <th>{{ __('option.label.check_in') }}</th>
+                            <th>{{ __('option.label.check_out') }}</th>
+                            <th>{{ __('option.label.break_in') }}</th>
+                            <th>{{ __('option.label.break_out') }}</th>
+                            <th>{{ __('option.label.exclude_break') }}</th>
                         </thead>
                         <tbody>
                             @foreach($workDays as $workDay)
                                 <tr>
-                                    <td>{{ ucfirst($workDay->day) }}</td>
+                                    <td>{{ __('option.label.day.' . strtolower($workDay->day)) }}</td>
+                                    {{-- <td>{{ ucfirst($workDay->day) }}</td> --}}
                                     <td>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->day_off == 1 ? 'checked' : '' }}>
@@ -84,9 +85,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal" onclick="window.history.back()">Cancel</button>
-                        <button type="submit" class="btn btn-untosca me-3">Submit</button>
+                    <div class="row mb-2 mt-3 justify-content-end">
+                        <div class="d-grid col-1">
+                            <a href="{{ route('workDay.index') }}" class="btn btn-tosca btn-sm">{{ __('general.label.back') }}</a>
+                        </div>
+                        <div class="d-grid col-1">
+                            <button type="submit" class="btn btn-untosca btn-sm">{{ __('general.label.save') }}</button>
+                        </div>
                     </div>
                 </div>
             </form>

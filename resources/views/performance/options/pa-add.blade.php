@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-body">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="addAppraisal">Add Appraisal</h5>
+                <h5 class="modal-title fw-bold" id="addAppraisal">{{ __('performance.label.add_appraisal') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -12,16 +12,16 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-7">
-                            <label for="name" class="form-label fw-bold">Name</label>
+                            <label for="name" class="form-label fw-bold">{{ __('general.label.name') }}</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-10">
-                            <label for="inputAspect" class="form-label fw-bold">Aspect</label>
+                            <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.aspect') }}</label>
                         </div>
                         <div class="col-2">
-                            <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label>
+                            <label for="removeAppraisalBtn" class="form-label fw-bold">{{ __('general.label.delete') }}</label>
                         </div>
                     </div>
                     <div id="appraisalContainer">
@@ -42,10 +42,13 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-9">
-                            <button type="button" id="addAppraisalBtn" class="btn btn-secondary">Add Appraisal</button>
+                            <button type="button" id="addAppraisalBtn" class="btn btn-secondary">{{ __('performance.label.add_appraisal') }}</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ route('kpi.pa.options.index') }}" class="btn btn-tosca me-3">{{ __('general.label.back') }}</a>
+                        <button type="submit" class="btn btn-untosca btn-sm">{{ __('general.label.save') }}</button>
+                    </div>
                 </form>
             </div>
     </div>

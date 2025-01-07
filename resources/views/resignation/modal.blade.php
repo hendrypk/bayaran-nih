@@ -9,7 +9,7 @@
                 <form id="resignForm" action="" method="POST">
                     @csrf
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Name</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.name') }}</label>
                         <div class="col-sm-9">
                             <select class="form-select" name="name" id="name" aria-label="Default select example" required>
                                 @foreach ($employees as $employee)
@@ -21,14 +21,14 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Date</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.date') }}</label>
                         <div class="col-sm-9">
                             <input type="date" id="date" name="date" class="form-control" required>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Category</label>
+                        <label class="col-sm-3 col-form-label">{{ __('employee.label.category') }}</label>
                         <div class="col-sm-9">
                             <select class="form-select" name="category" id="category" aria-label="Default select example">
                                 @foreach($category as $data)
@@ -39,19 +39,21 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Note</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.note') }}</label>
                         <div class="col-sm-9">
                             <input type="text" id="note" name="note" class="form-control" required>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-tosca"><i class="ri-save-2-line"></i> Submit</button>
-                    @can('delete resignation')
-                    <button type="button" class="btn btn-untosca"
-                        id="deleteButton" onclick="">
-                        <i class="ri-delete-bin-fill"></i> Delete
-                    </button>
-                    @endcan
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-tosca me-3"><i class="ri-save-2-line"></i> {{ __('general.label.save') }} </button>
+                        @can('delete resignation')
+                        <button type="button" class="btn btn-untosca"
+                            id="deleteButton" onclick="">
+                            <i class="ri-delete-bin-fill"></i> {{ __('general.label.delete') }}
+                        </button>
+                        @endcan
+                    </div>
                 </form>
             </div>
         </div>

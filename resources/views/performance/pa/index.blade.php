@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Employee Appraisal</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('performance.label.employee_appraisal') }}</h5>
                     @can('create pa')
                         <div class="ms-auto my-auto">
                             <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">
@@ -24,14 +24,14 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th class="text-center">Month</th>
-                                <th class="text-center">Year</th>
-                                <th class="text-center">EID</th>
-                                <th class="text-center">Employee Name</th>
-                                <th class="text-center">Grade</th>
-                                <th class="text-center">Detail</th>
-                                <th class="text-center">Edit</th>
-                                <th class="text-center">Delete</th>
+                                <th class="text-center">{{ __('general.label.month') }}</th>
+                                <th class="text-center">{{ __('general.label.year') }}</th>
+                                <th class="text-center">{{ __('general.label.eid') }}</th>
+                                <th class="text-center">{{ __('general.label.name') }}</th>
+                                <th class="text-center">{{ __('performance.label.grade') }}</th>
+                                <th class="text-center">{{ __('general.label.detail') }}</th>
+                                <th class="text-center">{{ __('general.label.edit') }}</th>
+                                <th class="text-center">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -126,8 +126,8 @@ function updatePa(appraisals) {
             <thead>
                 <tr>
                     <th class="text-center" style="width: 5%;">No.</th>
-                    <th class="text-center" style="width: 60%;">Aspect</th>
-                    <th class="text-center" style="width: 35%;">Grade</th>
+                    <th class="text-center" style="width: 60%;">{{ __('performance.label.aspect') }}</th>
+                    <th class="text-center" style="width: 35%;">{{ __('performance.label.grade') }}</th>
                 </tr>
             </thead>
             <tbody>

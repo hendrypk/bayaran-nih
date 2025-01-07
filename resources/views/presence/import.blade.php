@@ -1,9 +1,8 @@
 @extends('_layout.main')
-
 @section('title', 'Import Presence')
-
 @section('content')
 
+{{ Breadcrumbs::render('presence_import') }}
 <div class="row">
     <div class="col-lg">
         <div class="card">
@@ -29,20 +28,19 @@
 
 
 
-                <h5 class="card-title">Import Presence Data</h5>
+                <h5 class="card-title">{{ __('attendance.label.import_presence_data') }}</h5>
 
                 <!-- Import Form -->
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="file" class="form-label">Excel File</label>
                         <input type="file" class="form-control" id="file" name="file" required>
                         @error('file')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-untosca">Import</button>
-                    <a href="{{ route('template.import') }}" class="btn btn-tosca">Download Template</a>
+                    <button type="submit" class="btn btn-untosca">{{ __('attendance.label.import') }}</button>
+                    <a href="{{ route('template.import') }}" class="btn btn-tosca">{{ __('attendance.label.download_template') }}</a>
                 </form>
                 <!-- End Import Form -->
             </div>

@@ -7,13 +7,13 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Add New Employee KPI</h5>
+                <h5 class="card-title">{{ __('performance.label.add_new_employee_kpi') }}</h5>
                 <form action="{{ route('kpi.create') }}" method="POST">
                     @csrf
                     @method('POST')
                     <div class="row mb-3">
                         <div class="col-3 mb-5">
-                            <label for="employee" class="form-label">Employee Name</label>
+                            <label for="employee" class="form-label">{{ __('general.label.name') }}</label>
                             <select class="form-select" id="employee" name="employee" aria-label="Default select example">
                                 <option value="" disabled selected>Select Employee</option>
                                 @foreach ($employees as $employee)
@@ -23,16 +23,16 @@
                             </select>
                         </div>
                         <div class="col-2 mb-5">
-                            <label for="eid" class="form-label">EID</label>
+                            <label for="eid" class="form-label">{{ __('employee.label.eid') }}</label>
                             <input class="form-control" name="eid" type="text" id="eid" aria-label="Disabled input example" disabled readonly>
                         </div>
 
                         <div class="col-3 mb-5">
-                            <label for="position" class="form-label">Position</label>
+                            <label for="position" class="form-label">{{ __('employee.label.position') }}</label>
                             <input class="form-control" name="position" type="text" id="position" aria-label="Disabled input example" disabled readonly>
                         </div>
                         <div class="col-2 mb-5">
-                            <label for="inputEmail4" class="form-label">Month</label>
+                            <label for="inputEmail4" class="form-label">{{ __('general.label.month') }}</label>
                             <select class="form-select" name="month" aria-label="Default select example">
                                 @foreach(range(1, 12) as $month)
                                 <option value="{{ DateTime::createFromFormat('!m', $month)->format('F') }}">{{ DateTime::createFromFormat('!m', $month)->format('F') }}</option>
@@ -40,33 +40,22 @@
                             </select>
                         </div>
                         <div class="col-2 mb-5">
-                            <label for="inputEmail4" class="form-label">Year</label>
+                            <label for="inputEmail4" class="form-label">{{ __('general.label.year') }}</label>
                             <select class="form-select" name="year" aria-label="Default select example">
                                 @foreach(range(date('Y') - 1, date('Y') + 5) as $year)
                                 <option value="{{ $year }}">{{ $year }}</option>
                                 @endforeach
                             </select>
                         </div>
-
-                        {{-- <div class="">
-                            <h5 class="title mb-0 py-3 fw-bold">Performance Indicator</h5>
-                        </div> --}}
-
-                    {{-- <div class="row mb-3">
-                        <div class="col-md-4 fw-bold"> Aspect</div>
-                        <div class="col-sm-2 fw-bold">Target</div>
-                        <div class="col-sm-2 fw-bold">Bobot</div>
-                        <div class="col fw-bold">Achievement</div>
-                    </div> --}}
                     
                     <div id="kpiIndicatorsContainer"></div>
                    
                     <div class="row mb-2 mt-3 justify-content-end">
                         <div class="d-grid gap-2 col-2">
-                            <button type="submit" class="btn btn-tosca">Submit</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-tosca">{{ __('general.label.back') }}</a>
                         </div>
                         <div class="d-grid gap-2 col-2">
-                            <button type="" class="btn btn-untosca">Cancel</button>
+                            <button type="submit" class="btn btn-untosca">{{ __('general.label.save') }}</button>
                         </div>
                     </div>
                 </form>
@@ -114,10 +103,10 @@ function updateKpiIndicators(indicators) {
             <thead>
                 <tr>
                     <th class="text-center" style="width: 5%;">No.</th>
-                    <th class="text-center" style="width: 40%;">Aspect</th>
-                    <th class="text-center" style="width: 20%;">Target</th>
-                    <th class="text-center" style="width: 15%;">Bobot</th>
-                    <th class="text-center" style="width: 20%;">Achievement</th>
+                    <th class="text-center" style="width: 40%;">{{ __('performance.label.aspect') }}</th>
+                    <th class="text-center" style="width: 20%;">{{ __('performance.label.target') }}</th>
+                    <th class="text-center" style="width: 15%;">{{ __('performance.label.weight') }}</th>
+                    <th class="text-center" style="width: 20%;">{{ __('performance.label.achievement') }}</th>
                 </tr>
             </thead>
             <tbody>

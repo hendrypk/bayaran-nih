@@ -8,7 +8,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
-                    <h5 class="card-title">Work Day</h5>
+                    <h5 class="card-title">{{ __('option.label.work_day') }}</h5>
                 </div>
 
                 @can('create work pattern')
@@ -26,9 +26,9 @@
             <table class="table datatable table-hover">
                 <thead>
                     <th>#</th>
-                    <th>Work Day Name</th>
-                    <th>View</th>
-                    <th>Delete</th>
+                    <th>{{ __('general.label.name') }}</th>
+                    <th>{{ __('general.label.view') }}</th>
+                    <th>{{ __('general.label.delete') }}</th>
                 </thead>
                 <tbody>
                     @foreach($workDays as $no=>$workDay)

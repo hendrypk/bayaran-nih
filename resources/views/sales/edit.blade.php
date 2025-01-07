@@ -7,12 +7,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="container">
-                    <h5 class="card-title">Edit Sales fro {{ $month }} {{ $year }} </h5>
+                    <h5 class="card-title">{{ __('sales.label.edit_sales_report') }} {{ $month }} {{ $year }} </h5>
                     <form action="{{ route('sales.update', ['month' => $month, 'year' => $year]) }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="mb-3">
-                            <label for="inputName" class="form-label fw-bold">Month</label>
+                            <label for="inputName" class="form-label fw-bold">{{ __('general.label.month') }}</label>
                             <select class="form-select" name="month" aria-label="Default select example" disabled readonly>
                                 
                                 <option value="{{ $month }}">{{ $month }}</option>
@@ -20,7 +20,7 @@
                             </select>
                         </div>   
                         <div class="mb-3">
-                            <label for="inputName" class="form-label fw-bold">Year</label>
+                            <label for="inputName" class="form-label fw-bold">{{ __('general.label.year') }}</label>
                             <select class="form-select" name="year" aria-label="Default select example" disabled readonly>
                                 <option value="{{ $year }}">{{ $year }}</option>
                             </select>
@@ -28,8 +28,8 @@
 
                         
                     <div class="row mb-3">
-                        <div class="col-md-7 fw-bold">Sales Person</div>
-                        <div class="col-md-3 fw-bold">Qty</div>
+                        <div class="col-md-7 fw-bold">{{ __('sales.label.sales_person') }}</div>
+                        <div class="col-md-3 fw-bold">{{ __('general.label.qty') }}</div>
                     </div>
 <!-- 
                         <div id="salesContainer">
@@ -80,7 +80,7 @@
                 
                         <div class="row mb-3">
                             <div class="col-md-8">
-                                <button type="button" id="addSalesBtn" class="btn btn-untosca">Add Sales Person</button>
+                                <button type="button" id="addSalesBtn" class="btn btn-untosca">{{ __('sales.label.add_sales_person') }}</button>
                             </div>
                         <!-- <div class="col-md-4">
                                 <input type="text" class="form-control fw-bold" id="totalQty" value="0" readonly>
@@ -90,8 +90,9 @@
                             </div> -->
                         </div>
                         
-                        <div class="content-align-end">
-                            <button type="submit" class="btn btn-tosca">Submit</button>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                            <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
                         </div>
                     </form>
                 </div>

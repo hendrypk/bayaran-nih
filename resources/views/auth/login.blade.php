@@ -54,9 +54,9 @@
   ======================================================== -->
 </head>
 <header id="header" class="">    
-    <div class="d-flex align-items-center justify-content-beetween">
+    {{-- <div class="d-flex align-items-center justify-content-beetween">
       <div class="release-tag" id="releaseList"></div>
-    </div>
+    </div> --}}
 </header>
 <body>
     <div class="container d-flex align-items-center justify-content-center vh-100">
@@ -103,6 +103,7 @@
                             </form>
                         </div>
                     </div>
+                        <div class="release-tag d-flex align-items-center justify-content-beetween" id="releaseList">Checking version release...</div>
                 </div>
             </div>
         </div>
