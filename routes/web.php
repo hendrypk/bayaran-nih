@@ -71,9 +71,18 @@ Route::get('/github/releases', [ApiController::class, 'getReleases']);
     
 // });
 
+// Route::middleware([LocaleMiddleware::class])->group(function () {
+//     Route::get('/switch-language/{lang}', function ($lang) {
+//         if (in_array($lang, ['en', 'id'])) { // Pastikan hanya menerima 'en' atau 'id'
+//             session(['locale' => $lang]); // Simpan bahasa di session
+//             app()->setLocale($lang); // Ubah bahasa aktif di aplikasi
+//         }
+//         return redirect()->back(); // Kembali ke halaman sebelumnya
+//     })->name('switch.language');
+// });
+
 Route::middleware([LocaleMiddleware::class])->group(function () {
-    // Definisikan rute yang perlu menggunakan middleware ini
-    Route::get('language/{lang}', function ($lang) {
+    Route::get('switch-language/{lang}', function ($lang) {
         if (in_array($lang, ['en', 'id'])) {
             session(['locale' => $lang]);
         }

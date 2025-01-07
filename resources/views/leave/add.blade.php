@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addLeave">Add Leave</h5>
+                <h5 class="modal-title" id="addLeave">{{ __('attendance.label.add_leave') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -11,10 +11,10 @@
                     
                     @csrf
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Name</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.name') }}</label>
                         <div class="col-sm-9">
                             <select class="form-select" name="employee_id" aria-label="Default select example">
-                                <option selected disabled>Select Employee</option>
+                                <option selected disabled>{{ __('attendance.label.select_employee') }}</option>
                                 @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->name }} - {{  $employee->eid }}</option>
                                 @endforeach
@@ -23,7 +23,7 @@
                     </div>   
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Select Date</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.date') }}</label>
                         <div class="col-sm-9">
                             <input type="date" name="leave_dates[]" class="form-control" id="leave-dates">
                         </div>
@@ -44,10 +44,10 @@
                     </div>   --}}
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Category</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.category') }}</label>
                         <div class="col-sm-9">
                             <select class="form-select" name="category" aria-label="Default select example">
-                                <option selected disabled>Select Category</option>
+                                <option selected disabled>{{ __('general.label.select_category') }}</option>
                                 @foreach ($category as $category)
                                     <option value="{{ $category }}">{{ $category }}</option>
                                 @endforeach
@@ -56,14 +56,14 @@
                     </div>  
 
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Note</label>
+                        <label class="col-sm-3 col-form-label">{{ __('general.label.note') }}</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="note">
                         </div>
                     </div>  
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-untosca">Submit</button>
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" class="btn btn-untosca">{{ __('general.label.save') }}</button>
                     </div>
                 </form>
             </div>

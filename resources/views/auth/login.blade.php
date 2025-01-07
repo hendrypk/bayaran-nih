@@ -54,9 +54,19 @@
   ======================================================== -->
 </head>
 <header id="header" class="">    
-    <div class="d-flex align-items-center justify-content-beetween">
+    <nav class="header-nav ms-auto">
+        <ul class="d-flex align-items-center">        
+          <li class="nav-item">
+            <x-language-switcher />
+          </li>
+          <li class="nav-item">
+            <div class="release-tag" id="releaseList">fetching...</div>
+          </li>
+        </ul>
+      </nav>
+    {{-- <div class="d-flex align-items-center justify-content-beetween">
       <div class="release-tag" id="releaseList"></div>
-    </div>
+    </div> --}}
 </header>
 <body>
     <div class="container d-flex align-items-center justify-content-center vh-100">

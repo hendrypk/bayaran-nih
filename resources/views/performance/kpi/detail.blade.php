@@ -6,7 +6,7 @@
 
 <div class="row align-item-center mb-3">
     <div class="col md-9">
-        <h3 class="card-title mb-0 py-3">KPI Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h3>
+        <h3 class="card-title mb-0 py-3">{{ __('performance.label.kpi_detail') }} {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h3>
     </div>
     
     <div class="col-md-3 d-flex justify-content-end">
@@ -33,30 +33,30 @@
     <div class="col-lg-4">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title">Employee Information</div>
+                <div class="card-title">{{ __('performance.label.employee_information') }}</div>
                 {{-- <div class="col-lg-8"> --}}
                     <div class="row mb-2">
-                        <div class="col-lg-4 fw-bold"> EID </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.eid') }} </div>
                         <div class="col">: {{ $employees->eid }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-4 fw-bold"> Nama </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('general.label.name') }} </div>
                         <div class="col">: {{ $employees->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-4 fw-bold"> Job Title </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.job_title') }} </div>
                         <div class="col">: {{ $employees->job_title->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-4 fw-bold"> Position </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.position') }} </div>
                         <div class="col">: {{ $employees->position->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-4 fw-bold"> Division </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.division') }} </div>
                         <div class="col">: {{ $employees->division->name ?? '-' }}</div>
                     </div>
                     <div class="row mb-2    ">
-                        <div class="col-lg-4 fw-bold"> Department </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.department') }} </div>
                         <div class="col">: {{ $employees->department->name ?? '-' }}</div>
                     </div>
                 {{-- </div> --}}
@@ -69,19 +69,17 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-body">
-                <div class="card-title">
-                    KPI Achievement
-                </div>
+                <div class="card-title"> {{ __('performance.label.kpi_achievement') }} </div>
             <div class="row">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 5%;">No</th>
-                            <th class="text-center" style="width: 40%;">Aspect</th>
-                            <th class="text-center" style="width: 15%;">Target</th>
-                            <th class="text-center" style="width: 15%;">Bobot</th>
-                            <th class="text-center" style="width: 15%;">Achievement</th>
-                            <th class="text-center" style="width: 15%;">Grade</th>
+                            <th class="text-center" style="width: 40%;">{{ __('performance.label.aspect') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.target') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.weight') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.achievement') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.grade') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,7 +97,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="5">Final Grade</th>
+                            <th colspan="5">{{ __('performance.label.final_grade') }}</th>
                             <th class="text-center">{{$totalGrade}}</th>
                         </tr>
                     </tfoot>

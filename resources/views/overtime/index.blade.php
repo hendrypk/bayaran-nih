@@ -31,7 +31,7 @@
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <div class="col-md-9">
-                        <h5 class="card-title mb-0 py-3">Overtime List</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('attendance.label.overtime_list') }}</h5>
                     </div>
                     {{-- <div class="col-md-1">
                         <form action="{{ route('overtime.export') }}" method="POST">
@@ -55,15 +55,15 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Start at</th>
-                                <th scope="col">End at</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('employee.label.eid') }}</th>
+                                <th scope="col">{{ __('general.label.name') }}</th>
+                                <th scope="col">{{ __('general.label.date') }}</th>
+                                <th scope="col">{{ __('general.label.start_at') }}</th>
+                                <th scope="col">{{ __('general.label.end_at') }}</th>
+                                <th scope="col">{{ __('general.label.total') }}</th>
+                                <th scope="col">{{ __('general.label.status') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,7 +75,7 @@
                                 <td>{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}</td>
                                 <td>{{ $overtime->start_at }}</td>
                                 <td>{{ $overtime->end_at }}</td>
-                                <td> {{ $overtime->total }} <span>minutes</span></td>
+                                <td> {{ $overtime->total }} {{ __('general.label.minutes') }}</td>
                                 <td>
                                     @if ($overtime->status === 1)
                                         <i class="status-leave accept ri-check-double-fill"></i>

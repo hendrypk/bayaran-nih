@@ -7,10 +7,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
-                        <h5 class="card-title mb-0 py-3">Indicator for KPI</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.indicator_for_kpi') }}</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
-                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">Add Indicator</button>
+                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">{{ __('performance.label.add_indicator') }}</button>
                             </div>
                         @endcan
                     </div>
@@ -18,10 +18,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">View</th>
+                                    <th scope="col">{{ __('general.label.name') }}</th>
+                                    <th scope="col">{{ __('general.label.view') }}</th>
                                     {{-- <th scope="col">Edit</th> --}}
-                                    <th scope="col">Delete</th>
+                                    <th scope="col">{{ __('general.label.delete') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,11 +59,11 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
-                        <h5 class="card-title mb-0 py-3">Indicator for PA</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.indicator_for_pa') }}</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
                                 {{-- <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button> --}}
-                                <a href="{{ route('add.appraisal.form') }}" class=""><button type="button" class="btn btn-tosca">Add PA</button></a>
+                                <a href="{{ route('add.appraisal.form') }}" class=""><button type="button" class="btn btn-tosca">{{ __('performance.label.add_appraisal') }}</button></a>
                             </div>
                         @endcan
                     </div>
@@ -72,9 +72,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">PA</th>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">Delete</th>
+                                    <th scope="col">{{ __('general.label.name') }}</th>
+                                    <th scope="col">{{ __('general.label.view') }}</th>
+                                    {{-- <th scope="col">Edit</th> --}}
+                                    <th scope="col">{{ __('general.label.delete') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

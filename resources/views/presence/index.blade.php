@@ -42,7 +42,7 @@
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <div class="col-md-9">
-                        <h5 class="card-title mb-0 py-3">Presences List</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('attendance.label.presence_list') }}</h5>
                     </div>
                         {{-- <div class="button-container">
                             @can('presence export')
@@ -77,23 +77,23 @@
                                     <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
                                 </th>
                                 <th scope="col">#</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Work Day</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Check In</th>
-                                <th scope="col">Check Out</th>
-                                <th scope="col">Late Arrival</th>
-                                <th scope="col">Late Check in</th>
-                                <th scope="col">Check Out Early</th>
-                                <th scope="col">Note In</th>
-                                <th scope="col">Note Out</th>
-                                <th scope="col">Location In</th>
-                                <th scope="col">Location Out</th>
-                                <th scope="col">Photo In</th>
-                                <th scope="col">Photo Out</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('employee.label.eid') }}</th>
+                                <th scope="col">{{ __('general.label.name') }}</th>
+                                <th scope="col">{{ __('attendance.label.work_day') }}</th>
+                                <th scope="col">{{ __('general.label.date') }}</th>
+                                <th scope="col">{{ __('attendance.label.check_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.check_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.late_arrival') }}</th>
+                                <th scope="col">{{ __('attendance.label.late_check_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.check_out_early') }}</th>
+                                <th scope="col">{{ __('attendance.label.note_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.note_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.location_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.location_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.photo_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.photo_out') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,9 +111,9 @@
                                 <td>{{ $data['check_out'] }}</td>
                                 <td>
                                     @if($data['late_arrival'] == 1)
-                                        Late Arrival
+                                    {{ __('attendance.label.late') }}
                                         @else
-                                            On Time
+                                        {{ __('attendance.label.ontime') }}
                                     @endif
                                 </td>
                                 <td>{{ $data['late_check_in'] }}</td>

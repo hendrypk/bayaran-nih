@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editPresenceLabel">Edit Presence</h5>
+                <h5 class="modal-title" id="editPresenceLabel">{{ __('attendance.label.edit_presence') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -10,7 +10,7 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">{{ __('general.label.name') }}</label>
                         </div>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="name" name="name" disabled>
@@ -19,7 +19,7 @@
 
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <label for="date" class="form-label">Date</label>
+                            <label for="date" class="form-label">{{ __('general.label.date') }}</label>
                         </div>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="date" name="date" disabled>
@@ -28,7 +28,7 @@
 
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <label for="workDay" class="form-label">Work Day</label>
+                            <label for="workDay" class="form-label">{{ __('attendance.label.work_day') }}</label>
                         </div>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="workDay" id="workDay" disabled>
@@ -37,7 +37,7 @@
 
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <label for="checkin" class="form-label">Check In</label>
+                            <label for="checkin" class="form-label">{{ __('attendance.label.check_iin') }}</label>
                         </div>
                         <div class="col-sm-9">
                             <input type="time" step="1" class="form-control" id="checkin" name="checkin" required>
@@ -46,7 +46,7 @@
 
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <label for="checkout" class="form-label">Check Out</label>
+                            <label for="checkout" class="form-label">{{ __('attendance.label.check_out') }}</label>
                         </div>
                         <div class="col-sm-9">
                             <input type="time" step="1" class="form-control" id="checkout" name="checkout" required>
@@ -56,8 +56,8 @@
                     <!-- Hidden input for ID -->
                     <input type="hidden" id="presenceId" name="id">
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" name="action" class="btn btn-untosca">Save</button>
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca">{{ __('general.label.save') }}</button>
                     </div>
                 </form>
             </div>

@@ -6,51 +6,51 @@
   <div class="col-lg">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Edit Employee</h5>
+        <h5 class="card-title">{{ __('employee.label.edit_employee') }}</h5>
 
         <!-- General Form Elements -->
          <form action="{{route('employee.update', $employee->id)}}" method="POST" id="editEmployee">
           @csrf
           <div class="row mb-3">
-            <label for="inputEmail" class="col-sm-4 col-form-label">Full Name</label>
+            <label for="inputEmail" class="col-sm-4 col-form-label">{{ __('employee.label.full_name') }}</label>
             <div class="col-sm-8">
               <input type="name" name="name" value="{{old('name', $employee->name)}}" class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label for="city" class="col-sm-4 col-form-label">Identity Address</label>
+            <label for="city" class="col-sm-4 col-form-label">{{ __('employee.label.identity_address') }}</label>
             <div class="col-sm-8">
               <input type="text" name="city" value="{{old('city', $employee->city)}}" class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label for="domicile" class="col-sm-4 col-form-label">Current Address</label>
+            <label for="domicile" class="col-sm-4 col-form-label">{{ __('employee.label.current_address') }}</label>
             <div class="col-sm-8">
               <input type="text" name="domicile" value="{{old('domicile', $employee->domicile)}}" class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label for="place_birth" class="col-sm-4 col-form-label">Place of Birth</label>
+            <label for="place_birth" class="col-sm-4 col-form-label">{{ __('employee.label.place_of_birth') }}</label>
             <div class="col-sm-8">
               <input type="text" name="place_birth" value="{{old('place_birth', $employee->place_birth)}}" class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label for="date_birth" class="col-sm-4 col-form-label">Date of Birth</label>
+            <label for="date_birth" class="col-sm-4 col-form-label">{{ __('employee.label.date_of_birth') }}</label>
             <div class="col-sm-8">
               <input type="date" name="date_birth" value="{{old('date_birth', $employee->date_birth)}}" class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Blood Type</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.blood_type') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="blood_type" aria-label="Default select example">
-                <option selected disabled>- Select Blood Type -</option>
+                <option selected disabled>{{ __('employee.placeholders.select_blood_type') }}</option>
                 @foreach($bloods as $blood)
                 <option value="{{ $blood }}" {{ $blood == $employee->blood_type ? 'selected' : '' }}>{{ $blood }}</option>
                 @endforeach
@@ -59,10 +59,10 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Gender</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.gender') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="gender" aria-label="Default select example">
-                <option selected disabled>- Select Gender -</option>
+                <option selected disabled>{{ __('employee.placeholders.select_gender') }}</option>
                 @foreach($genders as $gender)
                 <option value="{{ $gender }}" {{ $gender == $employee->gender ? 'selected' : '' }}>{{ $gender }}</option>
                 @endforeach
@@ -71,7 +71,7 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Religion</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.religion') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="religion" aria-label="Default select example">
                 <option selected disabled>- Select Religion -</option>
@@ -83,7 +83,7 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Marrital Status</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.marital_status') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="marriage" aria-label="Default select example">
                 <option selected disabled>- Select Marrital Status -</option>
@@ -95,7 +95,7 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Education</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.education') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="education" aria-label="Default select example">
                 <option selected disabled>- Select Education -</option>
@@ -107,24 +107,24 @@
           </div>
 
           <div class="row mb-3">
-            <label for="inputEmail" class="col-sm-4 col-form-label">email</label>
+            <label for="inputEmail" class="col-sm-4 col-form-label">{{ __('employee.label.email') }}</label>
             <div class="col-sm-8">
               <input type="email" name="email" value="{{old('email', $employee->email)}}" class="form-control">
             </div>
           </div>
           
           <div class="row mb-3">
-            <label for="whatsapp" class="col-sm-4 col-form-label">WhatsApp Number</label>
+            <label for="whatsapp" class="col-sm-4 col-form-label">{{ __('employee.label.whatsapp') }}</label>
             <div class="col-sm-8">
               <input type="number" name="whatsapp" value="{{old('whatsapp', $employee->whatsapp)}}" class="form-control">
             </div>
           </div>
           
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Bank</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.bank') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="bank" aria-label="Default select example">
-                <option selected disabled>- Select Bank -</option>
+                <option selected disabled>{{ __('employee.placeholders.select_bank') }}</option>
                 @foreach($banks as $bank)
                 <option value="{{ $bank }}" {{ $bank == $employee->bank ? 'selected' : '' }}>{{ $bank }}</option>
                 @endforeach
@@ -133,17 +133,17 @@
           </div>
 
           <div class="row mb-3">
-            <label for="whatsapp" class="col-sm-4 col-form-label">Bank Number</label>
+            <label for="whatsapp" class="col-sm-4 col-form-label">{{ __('employee.label.bank_number') }}</label>
             <div class="col-sm-8">
               <input type="number" name="bank_number" value="{{old('bank_number', $employee->bank_number)}}"  class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Position</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.position') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="position_id" aria-label="Default select example" disabled>
-                <option selected>Select position</option>
+                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
                 @foreach($position as $data)
                 <option value="{{ $data->id }}" {{ $data->name == $employee->position->name ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -152,10 +152,10 @@
           </div>
           
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Job Title</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.job_title') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="job_title_id" aria-label="Default select example">
-                <option selected>Select Job Title</option>
+                <option selected disabled>{{ __('employee.placeholders.select_job_title') }}</option>
                 @foreach($job_title as $data)
                 <option value="{{ $data->id }}" {{ $data->name == $employee->job_title->name ? 'selected' : '' }}>{{ $data->name }}</option>
 
@@ -165,10 +165,10 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Division</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.divisioin') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="division_id" aria-label="Default select example">
-                <option selected value ="">Select Division</option>
+                <option selected disabled>{{ __('employee.placeholders.select_division') }}</option>
                 @foreach($division as $data)
                 <option value="{{ $data->id }}" {{ !is_null($employee->division) && $data->name == $employee->division->name ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -177,10 +177,10 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Department</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.department') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="department_id" aria-label="Default select example">
-                <option selected value="">Select Department</option>
+                <option selected disabled>{{ __('employee.placeholders.select_department') }}</option>
                 @foreach($department as $data)
                 <option value="{{ $data->id }}" {{ !is_null($employee->department) && $data->name == $employee->department->name ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -189,14 +189,14 @@
           </div>
 
           <div class="row mb-3">
-            <label for="inputDate" class="col-sm-4 col-form-label">Joining Date</label>
+            <label for="inputDate" class="col-sm-4 col-form-label">{{ __('employee.label.joining_date') }}</label>
             <div class="col-sm-8">
               <input type="date" name="joining_date" class="form-control" value="{{ old('joining_date', $employee->joining_date )}}">
             </div>
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Work Schedule</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.work_schedule') }}</label>
             <div class="col-sm-8">    
                 @foreach($workDay as $data)       
                 <div class="form-check">
@@ -215,7 +215,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="col-sm-4 col-form-label">Office Location</label>
+          <label class="col-sm-4 col-form-label">{{ __('employee.label.office_location') }}</label>
           <div class="col-sm-8">    
               @foreach($officeLocations as $data)       
               <div class="form-check">
@@ -234,10 +234,10 @@
       </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Employee Status</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.employee_status') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="employee_status" aria-label="Default select example">
-                <option value="" selected>Select Status</option>
+                <option selected disabled>{{ __('employee.placeholders.select_status') }}</option>
                 @foreach($status as $data)
                 <option value="{{ $data->id }}" {{ !is_null($employee->employee_status) && $data->id == $employee->employee_status ? 'selected' : '' }}>{{ $data->name }}</option>
                 @endforeach
@@ -246,10 +246,10 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Sales Status</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.sales_status') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="sales_status" aria-label="Default select example">
-                <option selected>Select Status</option>
+                <option selected disabled>{{ __('employee.placeholders.select_status') }}</option>
                 <option value="1" {{ $employee->sales_status == '1' ? 'selected' : '' }}>Yes</option>
                 <option value="0"{{ $employee->sales_status == '0' ? 'selected' : '' }}>No</option>
               </select>
@@ -257,7 +257,7 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">Appraisal</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.appraisal') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="pa_id" aria-label="Default select example">
                 <option value="" selected>Select Appraisal</option>
@@ -269,7 +269,7 @@
           </div>
 
           <div class="row mb-3">
-            <label class="col-sm-4 col-form-label">KPI</label>
+            <label class="col-sm-4 col-form-label">{{ __('employee.label.kpi') }}</label>
             <div class="col-sm-8">
               <select class="form-select" name="kpi_id" aria-label="Default select example">
                 <option value="" selected>Select KPI</option>
@@ -281,7 +281,7 @@
           </div>
 
           <div class="row mb-3">
-            <label for="inputCity" class="col-sm-4 col-form-label">Bobot KPI</label>
+            <label for="inputCity" class="col-sm-4 col-form-label">{{ __('employee.label.kpi_weight') }}</label>
             <div class="col-sm-8">
               <input type="number" min="0"  name="bobot_kpi" class="form-control" value="{{ old('bobot_kpi', $employee->bobot_kpi )}}" >
             </div>
@@ -290,10 +290,10 @@
           <div class="d-flex justify-content-between">
             <!-- <div class="row justify-content-end"> -->
               <div class="">
-                <a href="{{ url()->previous() }}" class="btn btn-untosca mt-3">Back</a>
+                <a href="{{ url()->previous() }}" class="btn btn-untosca mt-3">{{ __('general.label.back') }}</a>
               </div>
               <div class="">
-                <button type="submit" class="btn btn-tosca">Update Employee</button>
+                <button type="submit" class="btn btn-tosca">{{ __('general.label.update') }}</button>
               </div>
             </div>
           <!-- </div>-->

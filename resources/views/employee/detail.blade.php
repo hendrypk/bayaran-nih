@@ -28,10 +28,10 @@
         <div class="card card-body">
             <div class="align-items-start">
                 <div class="nav flex-column nav-pills me-3 mt-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#biodata" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Biodata</button>
-                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Staffing</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Paslip</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Account</button>
+                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#biodata" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">{{ __('employee.label.biodata') }}</button>
+                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">{{ __('employee.label.staffing') }}</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.payslip') }}</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.account') }}</button>
                 </div>
             </div>
         </div>
@@ -45,30 +45,30 @@
                     <div class="tab-pane fade show active" id="biodata" role="tabpanel" aria-labelledby="v-pills-home-tab">
                         <div class="row">
                             <div class="col-md-10">
-                                <div class="card-title">Employee Detail</div>
+                                <div class="card-title">{{ __('employee.label.biodata') }}</div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-4 col-md-4 label ">Employee ID</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.eid') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Full Name</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.full_name') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->name }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Place and Date Birth</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.place_and_date_of_birth') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->place_birth }}, {{ \Carbon\Carbon::parse($employee->date_birth)->format('d F Y') }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Domicile</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.current_address') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->domicile }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Blood Type</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.blood_type') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->blood_type }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Gender</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.gender') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->gender }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Religion</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.religion') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->religion }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Marrital</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.marital_status') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->marriage }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Education</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.education') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->education }}</div>
-                            <div class="col-lg-4 col-md-4 label ">Whatssapp</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.whatsapp') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->whatsapp }}</div>
                         </div>
                     </div>
@@ -76,25 +76,21 @@
                     <div class="tab-pane fade" id="staffing" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                         <div class="row">
                                 <div class="col-md-10">
-                                    <div class="card-title">Staffing Detail</div>
+                                    <div class="card-title">{{ __('employee.label.staffing') }}</div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-4 col-md-4 label ">Full Name</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->name }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Employee ID</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Position</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.position') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->name }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Job Title</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.job_title') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->job_title->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Division</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.division') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->division->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Department</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.department') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->department->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Joining Date</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.joining_date') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d F Y') }}</div>
-                                <div class="col-lg-4 col-md-4 label">Work Schedule</div>
+                                <div class="col-lg-4 col-md-4 label">{{ __('employee.label.work_schedule') }}</div>
                                 <div class="col-lg-8 col-md-8">
                                     <span>: </span>
                                     @if($employee->workDay->isEmpty())
@@ -105,7 +101,7 @@
                                         @endforeach
                                     @endif
                                 </div>  
-                                <div class="col-lg-4 col-md-4 label">Office Locatin</div>
+                                <div class="col-lg-4 col-md-4 label">{{ __('employee.label.office_location') }}</div>
                                 <div class="col-lg-8 col-md-8">
                                     <span>: </span>
                                     @if($employee->officeLocations->isEmpty())
@@ -116,25 +112,25 @@
                                         @endforeach
                                     @endif
                                 </div>  
-                                <div class="col-lg-4 col-md-4 label ">Employee Status</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.employee_status') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->employeeStatus->name }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Sales Status</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.sales_status') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->sales_status == 1 ? 'Yes' : 'No' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">KPI</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->kpis->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Bobot KPI</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi_weight') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->bobot_kpi ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">PA</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.appraisal') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->pas->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">Masa Kerja</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $years }} tahun {{ $months }} bulan {{ $days }} hari</div>
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.work_duration') }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $years }} {{ __('general.label.years') }} {{ $months }} {{ __('general.label.months') }} {{ $days }} {{ __('general.label.days') }}</div>
                             </div>
                     </div>
 
                     <div class="tab-pane fade" id="payslip" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                         <div class="row">
                             <div class="col-md-10">
-                                <div class="card-title">Payslip Detail</div>
+                                <div class="card-title">{{ __('employee.label.payslip') }}</div>
                             </div>
                         </div>
                     </div>
@@ -142,14 +138,14 @@
                     <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                         <div class="row mb-3">
                             <div class="col-md-10">
-                                <div class="card-title">Account Detail</div>
+                                <div class="card-title">{{ __('employee.label.account') }}</div>
                             </div>
                         </div>
                         <form action="{{ route('employee.account.reset', $employee->id) }}" method="POST" id="resetUsernamePassword">
                             @csrf
                             <div class="row mb-3">
                                 <div class="col-lg-2 col-md-3 col-sm-2">
-                                    <label for="username">Username</label>
+                                    <label for="username">{{ __('employee.label.username') }}</label>
                                 </div>
                                 <div class="col-lg-4 col-md-3 col-sm-2">
                                     <input type="text" name="username" class="form-control" value="{{ $employee->username }}">
@@ -157,7 +153,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-lg-2 col-md-3 col-sm-2">
-                                    <label for="password">Password</label>
+                                    <label for="password">{{ __('employee.label.password') }}</label>
                                 </div>
                                 <div class="col-lg-4 col-md-3 col-sm-2">
                                     <input id="password" class="form-control" type="password" name="password">
@@ -165,7 +161,7 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="">
-                                    <button type="submit" class="btn btn-tosca">Update Account</button>
+                                    <button type="submit" class="btn btn-tosca">{{ __('general.label.update') }}</button>
                                 </div>
                             </div>
                         </form>
@@ -176,7 +172,7 @@
     </div>
 </div>
 
-<a href="{{ route('employee.list') }}" class="btn btn-untosca mt-3">Back</a>
+<a href="{{ route('employee.list') }}" class="btn btn-untosca mt-3">{{ __('general.label.back') }}</a>
 
 @section('script')
 <script>

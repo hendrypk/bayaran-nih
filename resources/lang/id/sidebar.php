@@ -2,7 +2,7 @@
 
 return [
     'label' => [
-        'dashboard' => 'Dasbor',
+        'dashboard' => 'Beranda',
         'employee' => 'Karyawan',
         'add_employee' => 'Tambah Karyawan',
         'employee_list' => 'Daftar Karyawan',

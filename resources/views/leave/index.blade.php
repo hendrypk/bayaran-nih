@@ -26,22 +26,22 @@
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <div class="col-md-10">
-                        <h5 class="card-title mb-0 py-3">Leave List</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('attendance.label.leave_list') }}</h5>
                     </div>
                 </div>
                     <table class="table datatable table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Apply Date</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Category</th>
-                                <th scope="col">Note</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('employee.label.eid') }}</th>
+                                <th scope="col">{{ __('general.label.name') }}</th>
+                                <th scope="col">{{ __('attendance.label.apply_date') }}</th>
+                                <th scope="col">{{ __('attendance.label.absence_date') }}</th>
+                                <th scope="col">{{ __('general.label.category') }}</th>
+                                <th scope="col">{{ __('general.label.note') }}</th>
+                                <th scope="col">{{ __('general.label.status') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>

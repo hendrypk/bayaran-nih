@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-body">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="detailAppraisal">Detail Appraisal</h5>
+                <h5 class="modal-title fw-bold" id="detailAppraisal">{{ __('performance.label.appraisal_detail') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -13,7 +13,7 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-7">
-                            <label for="name" class="form-label fw-bold">Name</label>
+                            <label for="name" class="form-label fw-bold">{{ __('general.label.name') }}</label>
                             <input type="text" name="name" class="form-control" value="{{ $name }}" required>
                         </div>
                     </div>
@@ -21,10 +21,10 @@
                         <div class="appraisal-group mb-3">
                             <div class="row">
                                 <div class="col-10">
-                                    <label for="inputAspect" class="form-label fw-bold">Aspect</label>
+                                    <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.aspect') }}</label>
                                 </div>
                                 <div class="col-2">
-                                    <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label>
+                                    <label for="removeAppraisalBtn" class="form-label fw-bold">{{ __('general.label.delete') }}</label>
                                 </div>
                             </div>
                             @foreach ($appraisals as $index => $appraisal)  

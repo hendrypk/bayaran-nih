@@ -9,13 +9,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Role</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.role') }}</h5>
                     <div class="ms-auto my-auto">
                         @can('create role')
-                            <a href="{{ route('role.create') }}"
-                                class="btn btn-untosca">
-                                Add Role
-                            </a>
+                            <a href="{{ route('role.create') }}" class="btn btn-untosca"> {{ __('option.label.add_role') }}</a>
                         @endcan
                     </div>
                 </div>
@@ -24,9 +21,9 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Detail</th>
-                            <th scope="col">Delete</th>
+                            <th scope="col">{{ __('general.label.name') }}</th>
+                            <th scope="col">{{ __('general.label.detail') }}</th>
+                            <th scope="col">{{ __('general.label.delete') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -118,18 +115,3 @@
 </script>
 @endsection
 @endsection
-{{-- @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('.btn-add-role').click(function (e){
-                e.preventDefault();
-                ILZApp.loadModal(route('role.load_modal'), {type: 'create'}, 'GET', () => {ILZRoleModalForm.init()})
-            });
-            $('.btn-edit-role').on('click', function() {
-                let roleId = $(this).data('role-id');
-                ILZApp.loadModal(route('role.load_modal'), {role_id: roleId, type: 'update'}, 'GET', () => {ILZRoleModalForm.init()})
-            });
-        });
-    </script>
-    <script src="{{ asset('assets/js/role/modal-form.js') }}"></script>
-@endpush --}}

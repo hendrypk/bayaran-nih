@@ -8,7 +8,7 @@
     <div class="card">
       <div class="card-body">
         <div class="card-header d-flex align-items-center py-0">
-          <h5 class="card-title mb-0 py-3">Employee Resignation</h5>
+          <h5 class="card-title mb-0 py-3">{{ __('employee.label.employee_resignation') }}</h5>
           @can('create resignation')
             <div class="ms-auto my-auto">
                 <button type="button"
@@ -24,16 +24,16 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">EID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Category</th>
-              <th scope="col">Resign Date</th>
-              <th scope="col">Resign Note</th>
-              <th scope="col">Last Position</th>
-              <th scope="col">Last Job Title</th>
-              <th scope="col">Last Division</th>
-              <th scope="col">Last Department</th>
-              <th scope="col">Action</th>
+              <th scope="col">{{ __('employee.label.eid') }}</th>
+              <th scope="col">{{ __('employee.label.employee_name') }}</th>
+              <th scope="col">{{ __('employee.label.category') }}</th>
+              <th scope="col">{{ __('employee.label.resign_date') }}</th>
+              <th scope="col">{{ __('employee.label.resign_note') }}</th>
+              <th scope="col">{{ __('employee.label.last_position') }}</th>
+              <th scope="col">{{ __('employee.label.last_job_title') }}</th>
+              <th scope="col">{{ __('employee.label.last_division') }}</th>
+              <th scope="col">{{ __('employee.label.last_department') }}</th>
+              <th scope="col">{{ __('general.label.action') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -80,7 +80,7 @@
 function openResignModal(action, data = {}) {
     if (action === 'add') {
         $('#resignForm').attr('action', "{{ route('resignation.store') }}");
-        $('#resignModalTitle').text('Add Resignation');
+        $('#resignModalTitle').text('{{ __('employee.label.modal_title_add_resign') }}');
         $('#name').val('');
         $('#category').val('');
         $('#date').val('');
@@ -88,7 +88,7 @@ function openResignModal(action, data = {}) {
         $('#name').prop('disabled', false);
     } else if (action === 'edit') {
         $('#resignForm').attr('action', "{{ route('resignation.update') }}");
-        $('#resignModalTitle').text('Edit Resignation');
+        $('#resignModalTitle').text('{{ __('employee.label.modal_title_edit_resign') }}');
         $('#name').val(data.id);
         $('#category').val(data.category);
         $('#date').val(data.date);

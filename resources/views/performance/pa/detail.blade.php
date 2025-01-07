@@ -6,7 +6,7 @@
 
 <div class="row align-item-center mb-3">
     <div class="col-md-9">
-        <h5 class="card-title mb-0 py-3">Appraisal Detail for {{ $employees->name }} | {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h5>
+        <h5 class="card-title mb-0 py-3">{{ __('performance.label.appraisal_detail') }} {{ $employees->name }} | {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h5>
     </div>
     <div class="col-md-3 d-flex justify-content-end">
         <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-tosca btn-sm me-2">
@@ -23,29 +23,29 @@
     <div class="col-lg-6">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title">Employee Information</div>
+                <div class="card-title">{{ __('performance.label.employee_information') }}</div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold">EID</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.eid') }}</div>
                     <div class="col-8">: {{ $employees->eid }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold">Nama</div>
+                    <div class="col-4 fw-bold">{{ __('general.label.name') }}</div>
                     <div class="col-8">: {{ $employees->name }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold">Job Title</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.job_title') }}</div>
                     <div class="col-8">: {{ $employees->job_title->name }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold">Position</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.position') }}</div>
                     <div class="col-8">: {{ $employees->position->name }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold">Division</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.division') }}</div>
                     <div class="col-8">: {{ $employees->division->name }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold">Department</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.department') }}</div>
                     <div class="col-8">: {{ $employees->department->name }}</div>
                 </div>                
                 
@@ -63,8 +63,8 @@
                     <thead>
                         <tr>
                             <th scope="col" class="text-center" style="width: 5%;">No.</th>
-                            <th scope="col" class="text-center" style="width: 70%;">Aspect</th>
-                            <th scope="col" class="text-center" style="width: 30%;">Grade</th>
+                            <th scope="col" class="text-center" style="width: 70%;">{{ __('performance.label.aspect') }}</th>
+                            <th scope="col" class="text-center" style="width: 30%;">{{ __('performance.label.grade') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,12 +78,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="2">Total</th>
+                            <th colspan="2">{{ __('general.label.total') }}</th>
                             <td class="text-center">{{ number_format($totalGrade, 2, '.', ',') }}</td>
                         </tr>
                         <tr>
-                            <th colspan="2">Final Grade</th>
-                            <td>
+                            <th colspan="2">{{ __('performance.label.final_grade') }}</th>
+                            <td class="text-center">
                                 {{ number_format(floatval($avgGrade), 2, '.', ',') }}
                             </td>
                         </tr>

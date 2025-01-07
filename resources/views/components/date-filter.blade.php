@@ -8,11 +8,11 @@
 <form method="GET" action="{{ $action }}" class="mb-3">
     <div class="row">
         <div class="col-md-2">
-            <label for="start_date" class="form-label">Start Date</label>
+            <label for="start_date" class="form-label">{{ __('general.label.start_date') }}</label>
             <input type="date" id="start_date" name="start_date" class="form-control" value="{{ $defaultStartDate }}" max="{{ $today }}">
         </div>
         <div class="col-md-2">
-            <label for="end_date" class="form-label">End Date</label>
+            <label for="end_date" class="form-label">{{ __('general.label.end_date') }}</label>
             <input type="date" id="end_date" name="end_date" class="form-control" value="{{ $defaultEndDate }}" max="{{ $today }}">
         </div>
         <div class="col-md-2">

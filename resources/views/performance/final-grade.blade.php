@@ -25,7 +25,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Employee Grade for {{$selectedMonth}} {{$selectedYear}}</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('performance.label.employee_grade') }} {{$selectedMonth}} {{$selectedYear}}</h5>
                 </div>
         
                 <!-- Table with hoverable rows -->
@@ -33,18 +33,18 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">KPI</th>
-                                <th scope="col">PA</th>
-                                <th scope="col">Grade</th>
+                                <th scope="col">{{ __('employee.label.eid') }}</th>
+                                <th scope="col">{{ __('general.label.name') }}</th>
+                                <th scope="col">{{ __('performance.label.kpi') }}</th>
+                                <th scope="col">{{ __('performance.label.pa') }}</th>
+                                <th scope="col">{{ __('performance.label.grade') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             
-                            @foreach($employees as $employee)
+                            @foreach($employees as $no=>$employee)
                             <tr>
-                                <th scope="row">1</th>
+                                <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $employee->eid }}</td>
                                 <td>{{ $employee->name }}</td>
                                 <td>{{ $employee->final_kpi }}</td>
