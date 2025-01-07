@@ -4,7 +4,7 @@
 :root {
   --tosca: #118ab2;
 }
-:root {
+/* :root {
   scroll-behavior: smooth;
 }
 
@@ -17,7 +17,7 @@ body {
   padding: 1rem 0 0 5rem;
   -webkit-transition: .5s;
   transition: .5s;
-}
+} */
 
 /*--------------------------------------------------------------
 # Sidebar
@@ -1115,22 +1115,21 @@ table.datatable-table:focus {
 }
 
 .release-tag {
-  display: inline-block; /* Agar tidak tumpang tindih */
+  display: inline-block; 
   background-color: rgba(0, 0, 0, 0.0); 
   color: var(--tosca);
   font-size: 14px; 
   padding: 5px 10px; 
   border: 1px solid white;
   border-radius: 5px;
-  margin-right: 15px; /* Memberikan jarak ke elemen di sebelah kanan */
+  margin-right: 15px; 
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Animasi untuk perubahan hover */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .release-tag:hover {
-  background-color: var(--tosca); /* Warna latar belakang saat hover */
-  color: white; /* Warna teks saat hover */
-  text-decoration: underline; /* Menambahkan garis bawah saat hover */
+  background-color: var(--tosca); 
+  color: white;
 }
 
 @media (max-width: 767px) {

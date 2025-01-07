@@ -14,7 +14,7 @@
           <x-language-switcher />
         </li>
         <li class="nav-item">
-          <div class="release-tag" id="releaseList">fetching...</div>
+          <div class="release-tag" id="releaseList">Checking version release...</div>
         </li>
       </ul>
     </nav>
