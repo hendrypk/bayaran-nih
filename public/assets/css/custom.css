@@ -1162,7 +1162,7 @@ table.datatable-table:focus {
     padding: 5px;
   }
 }
-
+/* 
 #releaseList label {
   font-size: 14px;
   color: #118ab2;
@@ -1176,7 +1176,7 @@ table.datatable-table:focus {
 
 #releaseList label a:hover {
   color: white;
-}
+} */
 
 /* #releaseList {
   list-style-type: none;

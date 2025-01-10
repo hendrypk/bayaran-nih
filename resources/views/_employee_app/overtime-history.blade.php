@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-@section('header.title', 'Overtime History')
+@section('header.title', __('app.label.overtime'))
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 <div class="appHeader blue text-light">
@@ -25,10 +25,10 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Date</th>
-                        <th>Start at</th>
-                        <th>End at</th>
-                        <th>Total</th>
+                        <th>{{ __('general.label.date') }}</th>
+                        <th>{{ __('general.label.start_at') }}</th>
+                        <th>{{ __('general.label.end_at') }}</th>
+                        <th>{{ __('general.label.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>

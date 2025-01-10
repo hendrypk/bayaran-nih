@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-<!-- @section('header.title', 'Absen Masuk') -->
+<!-- @section('header.title', __('app.label.check_in')) -->
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 
@@ -21,7 +21,7 @@
                         <div class="presence-camera">
                             <p id="dateTime"></p>
                             <input type="text" name="location" id="location" hidden>  
-                            <p id="distanceMessage">Calculating distance...</p>                     
+                            <p id="distanceMessage">{{ __('app.label.calculating_distance') }}</p>                     
                         </div>
                     </div>
                     <div class="row mb-2 align-items-center">
@@ -33,7 +33,7 @@
                         <div class="row mb-2">
                             <div class="col-6">
                                 <div class="col-md-2">
-                                    <label for="">Pilih Shift :</label>
+                                    <label for="">{{ __('app.label.select_shift') }}</label>
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control" name="workDay" aria-label="Default select example">
@@ -45,7 +45,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="col-md-2">
-                                    <label for="">Pili Lokasi :</label>
+                                    <label for="">{{ __('app.label.select_location') }}</label>
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control" name="officeLocations" aria-label="Default select example">
@@ -59,7 +59,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="note">Catatan :</label>
+                            <label for="note">{{ __('app.label.note') }}</label>
                             <input type="text" class="form-control" name="note">                    
                         </div>
                     </div>
