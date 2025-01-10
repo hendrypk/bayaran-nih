@@ -9,7 +9,7 @@
         <div class="card-body">
           <div class="card-header d-flex align-items-center py-0">
             <h5 class="card-title mb-0 py-3">Employee Position Change</h5>
-            @can('create resignation')
+            @can('create position change')
               <div class="ms-auto my-auto">
                   <button type="button"
                   class="btn btn-tosca" onclick="openModal('add')">
@@ -47,7 +47,7 @@
                 <td>{{ \Carbon\Carbon::parse($data->effective_date ?? '-')->format('d F Y') }}</td>
                 <td>{{ $data->reason ?? '-' }}</td>
                 <td>
-                    @can('update resignation')
+                    @can('update position change')
                     <button type="button"
                       class="btn btn-use btn-untosca btn-sm" 
                       @if($data->effective_date != $latestPositionChanges[$data->employees->id]->effective_date)

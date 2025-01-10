@@ -30,6 +30,8 @@
                 <div class="nav flex-column nav-pills me-3 mt-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#biodata" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">{{ __('employee.label.biodata') }}</button>
                     <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">{{ __('employee.label.staffing') }}</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#career" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.career') }}</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#performance" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('sidebar.label.performance') }}</button>
                     <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.payslip') }}</button>
                     <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.account') }}</button>
                 </div>
@@ -61,13 +63,13 @@
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.blood_type') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->blood_type }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.gender') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->gender }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.gender.' . $employee->gender) }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.religion') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->religion }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.religion.' . $employee->religion) }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.marital_status') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->marriage }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.marital_status.' . $employee->marriage) }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.education') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->education }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.education.' . $employee->education) }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.whatsapp') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->whatsapp }}</div>
                         </div>
@@ -83,11 +85,11 @@
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.position') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->name }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.job_title') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->job_title->name ?? '-' }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->job_title->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.division') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->division->name ?? '-' }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->division->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.department') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->department->name ?? '-' }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->department->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.joining_date') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d F Y') }}</div>
                                 <div class="col-lg-4 col-md-4 label">{{ __('employee.label.work_schedule') }}</div>
@@ -125,6 +127,22 @@
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.work_duration') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $years }} {{ __('general.label.years') }} {{ $months }} {{ __('general.label.months') }} {{ $days }} {{ __('general.label.days') }}</div>
                             </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="career" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="card-title">{{ __('employee.label.career') }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="card-title">{{ __('sidebar.label.performance') }}</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="tab-pane fade" id="payslip" role="tabpanel" aria-labelledby="v-pills-messages-tab">
@@ -172,7 +190,7 @@
     </div>
 </div>
 
-<a href="{{ route('employee.list') }}" class="btn btn-untosca mt-3">{{ __('general.label.back') }}</a>
+{{-- <a href="{{ route('employee.list') }}" class="btn btn-untosca mt-3">{{ __('general.label.back') }}</a> --}}
 
 @section('script')
 <script>

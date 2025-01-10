@@ -13,11 +13,35 @@
           <div class="mb-3">
             <label for="inputPositionName" class="form-label">{{ __('general.label.name') }}</label>
             <input type="text" class="form-control" name="name" id="inputPositionName">
+
+          <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.job_title') }}</label>
+          <select class="form-select" name="job_title_id" aria-label="Default select example">
+              <option selected disabled>{{ __('employee.placeholders.select_job_title') }}</option>
+              @foreach($job_titles as $data)
+                  <option value="{{ $data->id }}">{{ $data->name }}</option>
+              @endforeach
+          </select>
+
+          <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.division') }}</label>
+          <select class="form-select" name="division_id" aria-label="Default select example">
+              <option selected disabled>{{ __('employee.placeholders.select_division') }}</option>
+              @foreach($divisions as $data)
+                  <option value="{{ $data->id }}">{{ $data->name }}</option>
+              @endforeach
+          </select>
+
+          <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.department') }}</label>
+          <select class="form-select" name="department_id" aria-label="Default select example">
+              <option selected disabled>{{ __('employee.placeholders.select_department') }}</option>
+              @foreach($departments as $data)
+                  <option value="{{ $data->id }}">{{ $data->name }}</option>
+              @endforeach
+          </select>
+        </div>
+          <div class="d-flex justify-content-end mt-2">
+            <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+            <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
           </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
-                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
-                    </div>
         </form>
       </div>
     </div>

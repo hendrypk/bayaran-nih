@@ -8,7 +8,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.status') }}</h5>
-            <div id="statusChart" class="d-flex justify-content-center align-items-center"></div>
+            <canvas id="statusChart"></canvas>
           </div>
         </div>
       </div>
@@ -16,7 +16,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.gender') }}</h5>
-            <div id="genderChart" class="d-flex justify-content-center align-items-center"></div>
+            <canvas id="genderChart"></canvas>
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.duration') }}</h5>
-            <div id="workDurationChart" class="d-flex justify-content-center align-items-center"></div>
+            <canvas id="workDurationChart"></canvas>
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.education') }}</h5>
-            <div id="educationChart"></div>
+            <canvas id="educationChart"></canvas>
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.age') }}</h5>
-            <div id="ageRangeChart"></div>
+            <canvas id="ageRangeChart"></canvas>
           </div>
         </div>
       </div>
@@ -52,7 +52,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.religion') }}</h5>
-            <div id="religionChart"></div>
+            <canvas id="religionChart"></canvas>
           </div>
         </div>
       </div>
@@ -60,7 +60,8 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ __('home.label.marital') }}</h5>
-            <div id="maritalChart"></div>
+            <canvas id="maritalChart"></canvas>
+            {{-- <div id="maritalChart"></div> --}}
           </div>
         </div>
       </div>
@@ -79,136 +80,266 @@
 
 
 
-  <script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
   // Employee Status Summary Chart
-  document.addEventListener("DOMContentLoaded", function() {
-  var optionsStatus = {
-    series: [{{ implode(',', array_values($statusSummary)) }}],
-    chart: {
+  var ctx = document.getElementById('statusChart').getContext('2d');
+  var statusLabels = {!! json_encode($employeeStatus) !!};
+  var statusData = [{{ implode(',', array_values($employeeStatusSummary)) }}];
+  
+  //Function for random colors
+  function generateRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+  }
+
+  //set color foreach data
+  var backgroundColors = statusData.map(function(data, index) {
+      if (data === Math.max(...statusData)) {
+          return '#118ab2';
+      } else {
+          return generateRandomColor();
+      }
+  });
+
+  var statusChart = new Chart(ctx, {
       type: 'pie',
-      width: '400px',
-      height: '300px'
-    },
-    labels: {!! json_encode($employeeStatus) !!},
-    legend: {
-      position: 'bottom',
-      horizontalAlign: 'center',
-      floating: false
-    },
-    colors: ['#118ab2', '#06d6a0', '#ffd166']
-  };
-
-  var statusChart = new ApexCharts(document.querySelector("#statusChart"), optionsStatus);
-  statusChart.render();
-
+      data: {
+          labels: {!! json_encode($employeeStatus) !!}, 
+          datasets: [{
+              data: [{{ implode(',', array_values($employeeStatusSummary)) }}], 
+              backgroundColor: backgroundColors,
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.label + ': ' + tooltipItem.raw;
+                      }
+                  }
+              }
+          },
+          legend: {
+              position: 'bottom',
+              align: 'center'
+          }
+      }
+  });
 
   // Gender Distribution Chart
-  var optionsGender = {
-      series: [{{ implode(',', array_values($genderSummary)) }}],
-      chart: {
-          type: 'pie',
-          width: '600px',
-          height: '300px'
+  var ctx = document.getElementById('genderChart').getContext('2d');
+  var genderChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels: {!! json_encode(array_map(function($label) {
+            return __('employee.options.gender.' . $label);
+          }, array_keys($genderSummary))) !!},
+          datasets: [{
+              data: [{{ implode(',', array_values($genderSummary)) }}], 
+              backgroundColor: ['#118ab2', '#06d6a0'], 
+              borderWidth: 1
+          }]
       },
-      labels: {!! json_encode($genders) !!},
-      legend: {
-          position: 'bottom',
-          horizontalAlign: 'center',
-      },
-      colors: ['#118ab2', '#06d6a0', '#ffd166']
-  };
-  var genderChart = new ApexCharts(document.querySelector("#genderChart"), optionsGender);
-  genderChart.render();
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.label + ': ' + tooltipItem.raw;
+                      }
+                  }
+              }
+          },
+          legend: {
+              position: 'bottom',
+              align: 'center'
+          }
+      }
+  });
 
   // Education Level Chart
-  var optionsEducation = {
-      series: [{
-          data: [{{ implode(',', array_values($educationSummary)) }}]
-      }],
-      chart: {
-          type: 'bar',
-          width: '600px',
-          height: '300px'
+  var ctx = document.getElementById('educationChart').getContext('2d');
+  var educationChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {!! json_encode(array_map(function($label) {
+            return __('employee.options.education.' . $label); 
+        }, array_keys($educationSummary))) !!},
+
+          datasets: [{
+              data: [{{ implode(',', array_values($educationSummary)) }}], 
+              backgroundColor: '#118ab2', 
+              borderColor: '#118ab2',
+              borderWidth: 1
+          }]
       },
-      xaxis: {
-          categories: {!! json_encode(array_keys($educationSummary)) !!}
-      },
-      colors: ['#118ab2'] // Warna elemen chart
-  };
-  var educationChart = new ApexCharts(document.querySelector("#educationChart"), optionsEducation);
-  educationChart.render();
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.raw; 
+                      }
+                  }
+              }
+          },
+          plugins: {
+            legend: {
+                display: false
+            }
+        }
+      }
+  });
 
   // Age Range Chart
-  var optionAge = {
-      series: [{
-          data: [{{ implode(',', array_values($ageSummary)) }}]
-      }],
-      chart: {
-          type: 'bar',
-          width: '600px',
-          height: '300px'
+  var ctx = document.getElementById('ageRangeChart').getContext('2d');
+  var ageRangeChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {!! json_encode(array_map(function($label) {
+            return __('employee.options.age_range.' . $label); 
+        }, array_keys($ageSummary))) !!},
+
+          datasets: [{
+              data: [{{ implode(',', array_values($ageSummary)) }}], 
+              backgroundColor: '#118ab2', 
+              borderColor: '#118ab2',
+              borderWidth: 1
+          }]
       },
-      xaxis: {
-          categories: {!! json_encode(array_keys($ageSummary)) !!}
-      },
-      colors: ['#118ab2'] // Warna elemen chart
-  };
-  var ageRangeChart = new ApexCharts(document.querySelector("#ageRangeChart"), optionAge);
-  ageRangeChart.render();
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.raw; 
+                      }
+                  }
+              }
+          },
+          plugins: {
+            legend: {
+                display: false
+            }
+        }
+      }
+  });
 
   // Religion Chart
-  var optionReligion = {
-      series: [{
-          data: [{{ implode(',', array_values($religionSummary)) }}]
-      }],
-      chart: {
-          type: 'bar',
-          width: '600px',
-          height: '300px'
+  var ctx = document.getElementById('religionChart').getContext('2d');
+  var religionChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {!! json_encode(array_map(function($label) {
+            return __('employee.options.religion.' . $label); 
+        }, array_keys($religionSummary))) !!},
+
+          datasets: [{
+              data: [{{ implode(',', array_values($religionSummary)) }}], 
+              backgroundColor: '#118ab2', 
+              borderColor: '#118ab2',
+              borderWidth: 1
+          }]
       },
-      xaxis: {
-          categories: {!! json_encode($religions) !!}
-      },
-      colors: ['#118ab2'] // Warna elemen chart
-  };
-  var religionChart = new ApexCharts(document.querySelector("#religionChart"), optionReligion);
-  religionChart.render();
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.raw; 
+                      }
+                  }
+              }
+          },
+          plugins: {
+            legend: {
+                display: false
+            }
+        }
+      }
+  });
 
   // Marital Chart
-  var optionMarital = {
-      series: [{
-          data: [{{ implode(',', array_values($maritalSummary)) }}]
-      }],
-      chart: {
-          type: 'bar',
-          width: '600px',
-          height: '300px'
+  var ctx = document.getElementById('maritalChart').getContext('2d');
+  var maritalChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {!! json_encode(array_map(function($label) {
+            return __('employee.options.marital_status.' . $label); 
+        }, array_keys($maritalSummary))) !!},
+
+          datasets: [{
+              data: [{{ implode(',', array_values($maritalSummary)) }}], 
+              backgroundColor: '#118ab2', 
+              borderColor: '#118ab2',
+              borderWidth: 1
+          }]
       },
-      xaxis: {
-          categories: {!! json_encode($marriage) !!}
-      },
-      colors: ['#118ab2'] // Warna elemen chart
-  };
-  var maritalChart = new ApexCharts(document.querySelector("#maritalChart"), optionMarital);
-  maritalChart.render();
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.raw; 
+                      }
+                  }
+              }
+          },
+          plugins: {
+            legend: {
+                display: false
+            }
+        }
+      }
+  });
 
   // WorkDuration Chart
-  var workDuration = {
-      series: [{
-          data: [{{ implode(',', array_values($workDurationSummary)) }}]
-      }],
-      chart: {
-          type: 'bar',
-          width: '600px',
-          height: '285px'
+  var ctx = document.getElementById('workDurationChart').getContext('2d');
+  var workDurationChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {!! json_encode(array_map(function($label) {
+            return __('employee.options.work_duration.' . $label); 
+        }, array_keys($workDurationSummary))) !!},
+
+          datasets: [{
+              data: [{{ implode(',', array_values($workDurationSummary)) }}], 
+              backgroundColor: '#118ab2', 
+              borderColor: '#118ab2',
+              borderWidth: 1
+          }]
       },
-      xaxis: {
-          categories: {!! json_encode(array_keys($workDurationSummary)) !!}
-      },
-      colors: ['#118ab2'] // Warna elemen chart
-  };
-  var workDurationChart = new ApexCharts(document.querySelector("#workDurationChart"), workDuration);
-  workDurationChart.render();
+      options: {
+          responsive: true,
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.raw; 
+                      }
+                  }
+              }
+          },
+          plugins: {
+            legend: {
+                display: false
+            }
+        }
+      }
+  });
 });
   </script>
 

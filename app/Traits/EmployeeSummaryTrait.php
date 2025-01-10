@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Employee;
+use App\Models\EmployeeStatus;
 use Carbon\Carbon;
 
 trait EmployeeSummaryTrait
@@ -14,10 +15,17 @@ trait EmployeeSummaryTrait
      */
     public function getEmployeeStatusSummary()
     {
-        return Employee::selectRaw('employee_status, COUNT(*) as total')
-            ->groupBy('employee_status')
-            ->pluck('total', 'employee_status')
+        $employeeStatus = EmployeeStatus::orderBy('name', 'asc')->pluck('name')->toArray();
+        $employeeStatusSummary = Employee::selectRaw('employee_status.name as status_name, COUNT(*) as total')
+            ->join('employee_status', 'employees.employee_status', '=', 'employee_status.id')
+            ->groupBy('employee_status.name')
+            ->orderBy('employee_status.name', 'asc')
+            ->pluck('total', 'status_name')
             ->toArray();
+        
+        $employeeStatusSummary = array_merge(array_fill_keys($employeeStatus, 0), $employeeStatusSummary);
+    
+        return array_intersect_key(array_replace(array_fill_keys($employeeStatus, 0), $employeeStatusSummary), array_flip($employeeStatus));
     }
 
     /**
@@ -53,10 +61,24 @@ trait EmployeeSummaryTrait
      */
     public function getEmployeeEducationSummary()
     {
-        return Employee::selectRaw("education, COUNT(*) as total")
+        $educations = [
+            'elementary_school',
+            'junior_school',
+            'high_school',
+            'diploma',
+            'bachelor',
+            'master',
+            'doctorate',
+        ];
+        
+        $educationSummary = Employee::selectRaw("education, COUNT(*) as total")
             ->groupBy('education')
             ->pluck('total', 'education')
             ->toArray();
+        
+            $educationSummary = array_merge(array_fill_keys($educations, 0), $educationSummary);
+    
+            return array_intersect_key(array_replace(array_fill_keys($educations, 0), $educationSummary), array_flip($educations));
     }
 
     /**
@@ -67,14 +89,13 @@ trait EmployeeSummaryTrait
     public function getEmployeeAgeRangeSummary()
     {
         $now = Carbon::now();
-
         return [
-            'Under 20' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) < ?', [$now, 20])->count(),
-            '21-25'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 21, 25])->count(),
-            '26-35'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 25, 35])->count(),
-            '36-45'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 36, 45])->count(),
-            '46-55'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 46, 55])->count(),
-            'Above 55' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) > ?', [$now, 55])->count(),
+            '<20_year' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) < ?', [$now, 20])->count(),
+            '21_25_year'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 21, 25])->count(),
+            '26_35_year'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 25, 35])->count(),
+            '36_45_year'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 36, 45])->count(),
+            '46_55_year'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) BETWEEN ? AND ?', [$now, 46, 55])->count(),
+            '>55_year' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, date_birth, ?) > ?', [$now, 55])->count(),
         ];
     }
 
@@ -85,25 +106,20 @@ trait EmployeeSummaryTrait
      */
     public function getEmployeeReligionSummary()
     {
-        $religions = [
-            'Unknown', 
-            'Islam', 
-            'Christian', 
-            'Catholic', 
-            'Hindu', 
-            'Buddha', 
-            'Confucianism', 
-            'Others'
-        ];
-
-        return Employee::selectRaw("religion, COUNT(*) as total")
+        // Daftar agama default
+        $religions = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
+    
+        $religionSummary = Employee::selectRaw("religion, COUNT(*) as total")
             ->groupBy('religion')
+            ->orderBy('religion', 'asc')
             ->pluck('total', 'religion')
             ->toArray();
-
+    
         $religionSummary = array_merge(array_fill_keys($religions, 0), $religionSummary);
-
+    
+        return array_intersect_key(array_replace(array_fill_keys($religions, 0), $religionSummary), array_flip($religions));
     }
+    
 
     /**
      * Get the total employees by marital status.
@@ -112,10 +128,15 @@ trait EmployeeSummaryTrait
      */
     public function getEmployeeMaritalStatusSummary()
     {
-        return Employee::selectRaw("marriage, COUNT(*) as total")
+        $marriage = ['single', 'married', 'widowed'];
+        $marriageSummary = Employee::selectRaw("marriage, COUNT(*) as total")
             ->groupBy('marriage')
+            ->orderBy('marriage', 'asc')
             ->pluck('total', 'marriage')
             ->toArray();
+
+        $marriageSummary = array_merge(array_fill_keys($marriage, 0), $marriageSummary);
+        return array_intersect_key(array_replace(array_fill_keys($marriage, 0), $marriageSummary), array_flip($marriage));
     }
 
     /**
@@ -128,11 +149,11 @@ trait EmployeeSummaryTrait
         $now = Carbon::now();
 
         return [
-            'Under 1 year' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) < ?', [$now, 1])->count(),
-            '1-3 years'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) BETWEEN ? AND ?', [$now, 1, 3])->count(),
-            '4-6 years'   => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) BETWEEN ? AND ?', [$now, 4, 6])->count(),
-            '7-9 years'  => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) BETWEEN ? AND ?', [$now, 7, 9])->count(),
-            'Above 9 years' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) > ?', [$now, 9])->count(),
+            '<1_years' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) < ?', [$now, 1])->count(),
+            '1_3_years'    => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) BETWEEN ? AND ?', [$now, 1, 3])->count(),
+            '4_6_years'   => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) BETWEEN ? AND ?', [$now, 4, 6])->count(),
+            '7_9_years'  => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) BETWEEN ? AND ?', [$now, 7, 9])->count(),
+            '>9_years' => Employee::whereRaw('TIMESTAMPDIFF(YEAR, joining_date, ?) > ?', [$now, 9])->count(),
         ];
     }
 }

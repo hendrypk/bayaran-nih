@@ -47,9 +47,9 @@
               <td>{{ $data->name }}</td>
               <td>{{ $data->employeeStatus->name ?? '-' }}</td>
               <td>{{ $data->position->name ?? '-' }}</td>
-              <td>{{ $data->job_title->name ?? '-' }}</td>
-              <td>{{ $data->division->name ?? '-' }}</td>
-              <td>{{ $data->department->name ?? '-' }}</td>
+              <td>{{ $data->position->job_title->name ?? '-' }}</td>
+              <td>{{ $data->position->division->name ?? '-' }}</td>
+              <td>{{ $data->position->department->name ?? '-' }}</td>
               <td>{!! $data->sales_status == 1 ? '<i class="ri-check-double-fill"></i>' : '-' !!}</td>
               <td>
 

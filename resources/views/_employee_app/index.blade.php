@@ -37,7 +37,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Profil</span>
+                                <span class="text-center">{{ __('app.label.profile') }}</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -47,7 +47,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Ijin</span>
+                                <span class="text-center">{{ __('app.label.permit') }}</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -57,7 +57,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Presensi</span>
+                                <span class="text-center">{{ __('app.label.attendance') }}</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
@@ -67,7 +67,7 @@
                                 </a>
                             </div>
                             <div class="menu-name">
-                                Lembur
+                                {{ __('app.label.overtime') }}
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                                                 <i class="ri-logout-box-r-line"></i>
                                             </div>
                                             <div class="presencedetail">
-                                                <h4 class="presencetitle">Absen Masuk</h4>
+                                                <h4 class="presencetitle">{{ __('app.label.check_in') }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -104,7 +104,7 @@
                                                 <i class="ri-logout-box-r-line"></i>
                                             </div>
                                             <div class="presencedetail">
-                                                <h4 class="presencetitle">Absen Keluar</h4>
+                                                <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@
                                                 <i class="ri-logout-box-line"></i>
                                             </div>
                                             <div class="presencedetail">
-                                                <h4 class="presencetitle">Absen Keluar</h4>
+                                                <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -140,7 +140,7 @@
                                                 <i class="ri-clockwise-2-line"></i>
                                             </div>
                                             <div class="presencedetail">
-                                                <h4 class="presencetitle">Lembur Masuk</h4>
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_in') }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -157,7 +157,7 @@
                                                 <i class="ri-anticlockwise-2-line"></i>
                                             </div>
                                             <div class="presencedetail">
-                                                <h4 class="presencetitle">Lembur Keluar</h4>
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_out') }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -174,7 +174,7 @@
                                                 <i class="ri-anticlockwise-2-line"></i>
                                             </div>
                                             <div class="presencedetail">
-                                                <h4 class="presencetitle">Lembur Keluar</h4>
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_out') }}</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -188,7 +188,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="presence-summary-title mb-3">
-                        Ringkasann Kehadiran
+                        {{ __('app.label.attendance_chart') }}
                     </div>
                     <div id="chart"></div>
                 </div>
@@ -207,19 +207,30 @@
 
 <script>
 function showAlert(type) {
+    const messages = @json(__('messages'));
     let message = '';
     
     // Tentukan pesan berdasarkan tipe
     if (type === 'check in') {
-        message = 'Wis absen melbu, rasah absen meneh!';
+    message = messages.already_check_in;
     } else if (type === 'check out') {
-        message = 'Wis absen metu, rasah absen meneh!';
-    }
-    if (type === 'overtime in') {
-        message = 'Wis absen melbu lembur, rasah absen neh!';
+        message = messages.already_check_out;
+    } else if (type === 'overtime in') {
+        message = messages.already_overtime_in;
     } else if (type === 'overtime out') {
-        message = 'Wis absen metu lembur, rasah absen neh!';
+        message = messages.already_overtime_out;
     }
+
+    // if (type === 'check in') {
+    //     message = 'Wis absen melbu, rasah absen meneh!';
+    // } else if (type === 'check out') {
+    //     message = 'Wis absen metu, rasah absen meneh!';
+    // }
+    // if (type === 'overtime in') {
+    //     message = 'Wis absen melbu lembur, rasah absen neh!';
+    // } else if (type === 'overtime out') {
+    //     message = 'Wis absen metu lembur, rasah absen neh!';
+    // }
 
     // Tampilkan SweetAlert dengan pesan sesuai
     Swal.fire({

@@ -299,7 +299,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
                             'location_in' => $loc
                     ]);
 
-                    $message = 'Absenmu melbu berhasil dicatet, tapi awakmu telat ' . $lateCheckIn . ' menit';
+                    $message = __('messages.late_check_in', ['minutes' => $lateCheckIn]);
                     break;
         
                 // Case when the employee has checked in but not checked out (Check-out)
@@ -350,18 +350,18 @@ function distance($lat1, $lon1, $lat2, $lon2){
                         'location_out' => $loc
                     ]);
 
-                    $message = 'Absenmu metu berhasil dicatet. Tapi awakmu muleh gasik ' . $checkOutEarly . ' menit';
+                    $message = __('messages.early_check_out', ['minutes' => $checkOutEarly]);
                     break;
         
                 // Case when both check-in and check-out are already recorded
                 case !is_null($presence->check_in) && !is_null($presence->check_out):
-                    $message = 'Wis absen melbu, rasah absen meneh!';
+                    $message = __('messages.already_check_in');
                     return redirect()->back()->with('error', $message);
                     break;
         
                 // Default case to catch any unexpected scenarios
                 default:
-                    $message = 'Sistem eror, hubungi admin!';
+                    $message = __('messages.system_error');
                     return redirect()->back()->with('error', $message);
                     break;
             }
@@ -420,7 +420,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
                     'date' => $date,
                     'start_at' => now()->toTimeString(),
                 ]);
-                $message = 'Absenmu melbu lembur berhasil dicatet!';
+                $message = __('messages.overtime_in_success');
                 break;
 
             case !is_null($overtime->start_at) && is_null($overtime->end_at):
@@ -428,7 +428,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
                     'end_at' => now()->toTimeString(),
                     'total' => $total_overtime,
                     ]);
-                $message = 'Absenmu metu lembur berhasil dicatet!';
+                $message = __('messages.overtime_out_success');
         }
 
         return redirect()->route('employee.app')->with('success', $message);

@@ -66,13 +66,17 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-tosca"><i class="ri-save-2-line"></i> Submit</button>
-                    @can('delete resignation')
-                    <button type="button" class="btn btn-untosca"
-                        id="deleteButton" onclick="">
-                        <i class="ri-delete-bin-fill"></i> Delete
-                    </button>
-                    @endcan
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-tosca me-2"><i class="ri-save-2-line"></i> Submit</button>
+                        @can('delete position change')
+                        <button type="button" class="btn btn-untosca"
+                            id="deleteButton" onclick="">
+                            <i class="ri-delete-bin-fill"></i> Delete
+                        </button>
+                        @endcan
+                    </div>
+
+
                 </form>
             </div>
         </div>

@@ -65,8 +65,10 @@
                             <textarea id="note" name="note" class="form-control" required></textarea>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                    </div>
                 </form>
             </div>
         </div>
