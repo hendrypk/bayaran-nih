@@ -4,7 +4,7 @@ return [
         'presence_summary' => 'Ringkasan Kehadiran',
         'presence_list' => 'Daftar Kehadiran',
         'presence' => 'Hadir',
-        'holiday' => 'Cuti',
+        'holiday' => 'Libur',
         'annual_leave' => 'Cuti Tahunan',
         'sick' => 'Sakit',
         'permit' => 'Izin',

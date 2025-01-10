@@ -13,22 +13,13 @@ class HomeController extends Controller
     public function index()
     {
 
-        $employeeStatus = EmployeeStatus::pluck('name')->toArray();
-        $genders = ['unkown', 'Male', 'Female'];
-        $marriage = ['unkown', 'Single', 'Married', 'Divorced', 'Widowed'];
-        $religions = [
-            'Unknown', 
-            'Islam', 
-            'Christian', 
-            'Catholic', 
-            'Hindu', 
-            'Buddha', 
-            'Confucianism', 
-            'Others'
-        ];
+        $employeeStatus = EmployeeStatus::orderBy('name', 'asc')->pluck('name')->toArray();
+        $genders = ['Male', 'Female'];
+        // $marriage = ['Single', 'Married','Widowed', 'Unknown'];
+        $religions = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
 
         // Get employee statistics
-        $statusSummary = $this->getEmployeeStatusSummary();
+        $employeeStatusSummary = $this->getEmployeeStatusSummary();
         // $getEmployeeDivisionSummary = $this->getEmployeeDivisionSummary();
         $genderSummary = $this->getEmployeeGenderSummary();
         $educationSummary = $this->getEmployeeEducationSummary();
@@ -38,7 +29,7 @@ class HomeController extends Controller
         $workDurationSummary = $this->getEmployeeWorkDurationSummary();
 
         return view('home', compact(
-            'statusSummary',
+            'employeeStatusSummary',
             // 'officeProductionSummary',
             'genderSummary',
             'educationSummary',
@@ -47,7 +38,7 @@ class HomeController extends Controller
             'maritalSummary',
             'workDurationSummary',
             'religions',
-            'marriage',
+            // 'marriage',
             'employeeStatus',
             'genders'
         ));

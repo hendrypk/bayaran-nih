@@ -39,8 +39,12 @@ class OptionsController extends Controller
         
         try {
             Position::updateOrCreate(
-                ['id' => $request->id],  // Search for the record by its 'id'
-                ['name' => $request->position]  // Set the 'name' to be updated or created
+                ['id' => $request->id],[
+                    'name' => $request->position,
+                    'job_title_id' => $request->job_title_id,
+                    'division_id' => $request->division_id,
+                    'department_id' => $request->department_id
+                    ] 
             );
     
             return redirect()->route('options.list')->with('success', 'Position added successfully.');
@@ -63,6 +67,9 @@ class OptionsController extends Controller
             'name'=> 'string',
         ]);
         $position->name = $request->name;
+        $position->job_title_id = $request->job_title_id;
+        $position->division_id = $request->division_id;
+        $position->department_id = $request->department_id;
 
         $position->save();
 

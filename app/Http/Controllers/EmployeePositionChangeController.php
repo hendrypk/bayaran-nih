@@ -36,7 +36,27 @@ class EmployeePositionChangeController extends Controller
             'date' => 'required|date',
             'note' => 'required',
         ]);
+
+        $position = Position::with('job_title')->find($request->newPosition);
+    $section = $position?->job_title?->section;
+
+    if ($section) {
+        $formattedId = str_pad($request->employee_id, 3, '0', STR_PAD_LEFT);
+        $eid = $section . $formattedId;
+    } else {
+        \Log::error('Section is null', [
+            'newPosition' => $request->newPosition,
+            'employeeId' => $request->employee_id,
+        ]);
+        abort(404, 'Section not found');
+    }
+
     
+        // $position = Position::with('job_title')->find($request->newPosition);
+        // $section = $position->job_title->section;
+        // $formattedId = str_pad($$request->employee_id, 3, '0', STR_PAD_LEFT);
+        // $eid = $section . $formattedId;
+
         $employee = Employee::find($request->employee_id);
         $oldPosition = $employee->position_id;
         $newPosition = $request->newPosition;
@@ -61,6 +81,7 @@ class EmployeePositionChangeController extends Controller
     
             // Update employee position
             $employee->update([
+                'eid' => $eid,
                 'position_id' => $newPosition,
             ]);
     

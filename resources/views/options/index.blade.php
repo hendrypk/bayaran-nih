@@ -23,6 +23,9 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">{{ __('option.label.position') }}</th>
+                                <th scope="col">{{ __('option.label.job_title') }}</th>
+                                <th scope="col">{{ __('option.label.division') }}</th>
+                                <th scope="col">{{ __('option.label.department') }}</th>
                                 <th scope="col">{{ __('general.label.edit') }}</th>
                                 <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
@@ -32,6 +35,9 @@
                             <tr>
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $position->name }}</td>
+                                <td>{{ $position->job_title->name ?? '-'}}</td>
+                                <td>{{ $position->division->name ?? '-'}}</td>
+                                <td>{{ $position->department->name ?? '-'}}</td>
                                 @csrf
                                  <td>
                                     @can('update options')
@@ -40,7 +46,10 @@
                                             data-bs-toggle="modal"
                                             data-bs-target="#positionEditModal"
                                             data-id="{{ $position->id }}"
-                                            data-name="{{ $position->name }}" >
+                                            data-name="{{ $position->name }}"
+                                            data-job_title_id="{{ $position->job_title_id }}"
+                                            data-division_id="{{ $position->division_id }}"
+                                            data-department_id="{{ $position->department_id }}" >
                                             <i class="ri-edit-box-fill"></i>
                                         </button>
                                     @endcan
@@ -429,6 +438,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const button = event.relatedTarget; // Button that triggered the modal
             const id = button.getAttribute('data-id');
             const name = button.getAttribute('data-name');
+            const job_title_id = button.getAttribute('data-job_title_id');
+            const division_id = button.getAttribute('data-division_id');
+            const department_id = button.getAttribute('data-department_id');
             const section = button.getAttribute('data-section');
             const radius = button.getAttribute('data-radius');
             const latitude = button.getAttribute('data-latitude');
@@ -470,6 +482,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Find the form and input within the current modal
             const form = modal.querySelector('.edit-form');
             const inputName = form.querySelector('input[name="name"]');
+            const selectJobTitle = form.querySelector('select[name="job_title_id"]');
+            const selectDivision = form.querySelector('select[name="division_id"]');
+            const selectDepartment = form.querySelector('select[name="department_id"]');
             const inputSection = form.querySelector('input[name="section"]');
             const inputRadius = form.querySelector('input[name="radius"]');
             const inputlatitude = form.querySelector('input[name="latitude"]');
@@ -479,6 +494,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (form && inputName) {
                 form.action = actionUrl;
                 inputName.value = name || '';
+                if (selectJobTitle) selectJobTitle.value = job_title_id || '';
+                if (selectDivision) selectDivision.value = division_id || '';
+                if (selectDepartment) selectDepartment.value = department_id || '';
                 if (inputSection) inputSection.value = section || '';
                 if (inputRadius) inputRadius.value = radius || '';
                 if (inputlatitude) inputlatitude.value = latitude || '';
@@ -647,6 +665,7 @@ function initializeMap(lat, lng) {
 </script>
 
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
     // Function to open the modal and update content
@@ -662,8 +681,35 @@ function initializeMap(lat, lng) {
         openModal(
             "Add ",
             "{{ route('position.add') }}",
-            `<label for="positionName" class="form-label">{{ __('general.label.name') }}</label>
-             <input type="text" class="form-control" id="positionName" name="position" required>`
+            `
+            <label for="positionName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="form-control" id="positionName" name="position" required>
+             
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.job_title') }}</label>
+            <select class="form-select" name="job_title_id" aria-label="Default select example">
+                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
+                @foreach($job_titles as $data)
+                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.division') }}</label>
+            <select class="form-select" name="division_id" aria-label="Default select example">
+                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
+                @foreach($divisions as $data)
+                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.department') }}</label>
+            <select class="form-select" name="department_id" aria-label="Default select example">
+                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
+                @foreach($departments as $data)
+                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+
+             `
         );
     });
 

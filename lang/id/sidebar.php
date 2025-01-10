@@ -8,7 +8,7 @@ return [
         'employee_list' => 'Daftar Karyawan',
         'resignation' => 'Pengunduran Diri',
         'position_change' => 'Perubahan Posisi',
-        'attendance' => 'Kehadiran',
+        'attendance' => 'Presensi',
         'presence_summary' => 'Ringkasan Kehadiran',
         'presences' => 'Presensi',
         'overtime' => 'Lembur',

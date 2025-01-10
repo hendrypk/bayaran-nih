@@ -98,52 +98,81 @@
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">{{ __('employee.label.gender') }}</label>
             <div class="col-sm-8">
-              <select class="form-select" name="gender" aria-label="Default select example">
+              <select name="gender" id="gender" class="form-control">
                 <option selected disabled>{{ __('employee.placeholders.select_gender') }}</option>
-                @foreach($genders as $gender)
-
-                <option value="{{ $gender }}">{{ $gender }}</option>
-                {{-- <option value="{{ $gender }}">{{ __('employee.options.gender.' . $gender) }}</option> --}}
+                @foreach (__('employee.options.gender') as $value => $label)
+                    <option value="{{ $value }}">
+                        {{ $label }}
+                    </option>
                 @endforeach
               </select>
+              {{-- <select class="form-select" name="gender" aria-label="Default select example">
+                <option selected disabled>{{ __('employee.placeholders.select_gender') }}</option>
+                @foreach($genders as $gender)
+                <option value="{{ $gender }}">{{ $gender }}</option>
+                @endforeach
+              </select> --}}
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">{{ __('employee.label.religion') }}</label>
             <div class="col-sm-8">
-              <select class="form-select" name="religion" aria-label="Default select example">
+              <select name="religion" id="religion" class="form-control">
+                <option selected disabled>{{ __('employee.placeholders.select_religion') }}</option>
+                @foreach (__('employee.options.religion') as $value => $label)
+                    <option value="{{ $value }}">
+                        {{ $label }}
+                    </option>
+                @endforeach
+              </select>
+
+              {{-- <select class="form-select" name="religion" aria-label="Default select example">
                 <option selected disabled>{{ __('employee.placeholders.select_religion') }}</option>
                 @foreach($religions as $religion)
                 <option value="{{ $religion }}">{{ $religion }}</option>
                 @endforeach
-              </select>
+              </select> --}}
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">{{ __('employee.label.marital_status') }}</label>
             <div class="col-sm-8">
-              <select class="form-select" name="marriage" aria-label="Default select example">
+              <select name="marriage" id="marriage" class="form-control">
+                <option selected disabled>{{ __('employee.placeholders.select_marital_status') }}</option>
+                @foreach (__('employee.options.marital_status') as $value => $label)
+                    <option value="{{ $value }}">
+                        {{ $label }}
+                    </option>
+                @endforeach
+              </select>
+              {{-- <select class="form-select" name="marriage" aria-label="Default select example">
                 <option selected disabled>{{ __('employee.placeholders.select_marital_status') }}</option>
                 @foreach($marriage as $marriage)
                 <option value="{{ $marriage }}">{{ $marriage }}</option>
                 @endforeach
-              </select>
+              </select> --}}
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">{{ __('employee.label.education') }}</label>
             <div class="col-sm-8">
-              <select name="education" class="form-control">
+              <select name="education" id="education" class="form-control">
+                <option selected disabled>{{ __('employee.placeholders.select_education') }}</option>
+                @foreach (__('employee.options.education') as $value => $label)
+                    <option value="{{ $value }}">
+                        {{ $label }}
+                    </option>
+                @endforeach
+              </select>
+              {{-- <select name="education" class="form-control">
                 <option selected disabled>{{ __('employee.placeholders.select_education') }}</option>
                 @foreach($educations as $education)
-
                   <option value="{{ $education }}">{{ $education }}</option>
-                    {{-- <option value="{{ $education }}">{{ __('employee.options.education.' . $education) }}</option> --}}
                 @endforeach
-            </select>
+            </select> --}}
             
               {{-- <select class="form-select" name="education" aria-label="Default select example">
                 <option selected disabled>{{ __('employee.placeholders.select_education') }}</option>
@@ -198,7 +227,7 @@
               </select>
             </div>
           </div>
-          
+{{--           
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">{{ __('employee.label.job_title') }}</label>
             <div class="col-sm-8">
@@ -233,7 +262,7 @@
                 @endforeach
               </select>
             </div>
-          </div>
+          </div> --}}
 
           <div class="row mb-3">
             <label for="inputDate" class="col-sm-2 col-form-label">{{ __('employee.label.joining_date') }}</label>

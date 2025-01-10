@@ -79,30 +79,20 @@ class EmployeeController extends Controller
         $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
         $status = EmployeeStatus::all();
-        $genders = ['unkown', 'Male', 'Female'];
-        $bloods = ['unkown', 'A', 'B', 'AB', 'O'];
-        $marriage = ['unkown', 'Single', 'Married', 'Divorced', 'Widowed'];
-        $religions = [
-            'unkown', 
-            'Islam', 
-            'Christian', 
-            'Catholic', 
-            'Hindu', 
-            'Buddha', 
-            'Confucianism', 
-            'Others'
-        ];
+        $genders = ['Male', 'Female'];
+        $bloods = ['A', 'B', 'AB', 'O'];
+        $marriage = ['single', 'married', 'widowed'];
+        $religions = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
         $educations = [
-            'unkown', 
-            'Junior School',
-            'High School', 
-            'Diploma', 
-            'Bachelor\'s Degree', 
-            'Master\'s Degree', 
-            'Doctorate'
+            'elementary_school',
+            'junior_school',
+            'high_school',
+            'diploma',
+            'bachelor',
+            'master',
+            'doctorate',
         ];
         $banks = [
-            'unkown', 
             'Bank Mandiri', 
             'Bank BNI', 
             'Bank BRI', 
@@ -137,7 +127,7 @@ class EmployeeController extends Controller
             'bank' => 'required',
             'bank_number' => 'required|numeric',
             'position_id' => 'required|integer',
-            'job_title_id' => 'required|integer',
+            // 'job_title_id' => 'required|integer',
             'joining_date' => 'required|date',
             'employee_status' => 'required',
             'sales_status' => 'required',
@@ -151,11 +141,13 @@ class EmployeeController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+    
         $section = JobTitle::find($request->job_title_id);
         $id = Employee::max('id') + 1; 
+        $position = Position::with('job_title')->find($request->position_id);
+        $section = $position->job_title->section;
         $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
-        $eid = $section->section . $formattedId;
+        $eid = $section . $formattedId;
         $password = Carbon::parse($request->date_birth)->format('dmY');
         $defaultPassword = Hash::make($password);
 
@@ -179,9 +171,9 @@ class EmployeeController extends Controller
             'bank' => $request->bank,
             'bank_number' => $request->bank_number,
             'position_id' => $request->position_id,
-            'job_title_id' => $request->job_title_id,
-            'division_id' => $request->division_id,
-            'department_id' => $request->department_id,
+            // 'job_title_id' => $request->job_title_id,
+            // 'division_id' => $request->division_id,
+            // 'department_id' => $request->department_id,
             'joining_date' => $request->joining_date,
             'employee_status' => $request->employee_status,
             'sales_status' => $request->sales_status,
@@ -230,30 +222,20 @@ class EmployeeController extends Controller
         $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
         $status = EmployeeStatus::all();
-        $genders = ['unkown', 'Male', 'Female'];
-        $bloods = ['unkown', 'A', 'B', 'AB', 'O'];
-        $marriage = ['unkown', 'Single', 'Married', 'Divorced', 'Widowed'];
-        $religions = [
-            'unkown', 
-            'Islam', 
-            'Christian', 
-            'Catholic', 
-            'Hindu', 
-            'Buddha', 
-            'Confucianism', 
-            'Others'
-        ];
+        $genders = ['Male', 'Female'];
+        $bloods = ['A', 'B', 'AB', 'O'];
+        $marriage = ['single', 'married', 'widowed'];
+        $religions = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
         $educations = [
-            'unkown', 
-            'Junior School',
-            'High School', 
-            'Diploma', 
-            'Bachelor\'s Degree', 
-            'Master\'s Degree', 
-            'Doctorate'
+            'elementary_school',
+            'junior_school',
+            'high_school',
+            'diploma',
+            'bachelor',
+            'master',
+            'doctorate',
         ];
         $banks = [
-            'unkown', 
             'Bank Mandiri', 
             'Bank BNI', 
             'Bank BRI', 
@@ -271,13 +253,14 @@ class EmployeeController extends Controller
     }
     
     public function update(Request $request, $id){
-        $section = JobTitle::find($request->job_title_id);
-        $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
-        $eid = $section->section . $formattedId;
+
+        // $position = Position::with('job_title')->find($request->position_id);
+        // $section = $position->job_title->section;
+        // $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
+        // $eid = $section . $formattedId;
 
         //find employeeId
         $employee = Employee::findOrFail($id);
-
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -295,7 +278,7 @@ class EmployeeController extends Controller
             'whatsapp' => 'required',
             'bank' => 'required',
             'bank_number' => 'required',
-            'job_title_id' => 'required',
+            // 'job_title_id' => 'required',
             'joining_date' => 'required',
             'employee_status' => 'required',
             'sales_status' => 'required',
@@ -311,7 +294,7 @@ class EmployeeController extends Controller
         }
 
         $employee->update([
-            'eid' => $eid,
+            // 'eid' => $eid,
             'email' => $request->email,
             'name' => $request->name,
             'city' => $request->city,
@@ -327,9 +310,9 @@ class EmployeeController extends Controller
             'bank' => $request->bank,
             'bank_number' => $request->bank_number,
             // 'position_id' => $request->position_id,
-            'job_title_id' => $request->job_title_id,
-            'division_id' => $request->division_id,
-            'department_id' => $request->department_id,
+            // 'job_title_id' => $request->job_title_id,
+            // 'division_id' => $request->division_id,
+            // 'department_id' => $request->department_id,
             'joining_date' => $request->joining_date,
             'employee_status' => $request->employee_status,
             'sales_status' => $request->sales_status,

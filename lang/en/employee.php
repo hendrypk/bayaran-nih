@@ -77,7 +77,7 @@ return [
         ],
         'gender' => [
             'male' => 'Male',
-            'female' => 'female'
+            'female' => 'Female'
         ],
     ],
 ];

@@ -51,6 +51,7 @@ return [
         'last_department' => 'Departemen Terakhir',
         'modal_title_add_resign' => 'Tambah Pengunduran Diri',
         'modal_title_edit_resign' => 'Edit Pengunduran Diri',
+        'career' => 'Karir',
     ],
     'placeholders' => [
         'select_blood_type' => '- Pilih Golongan Darah -',
@@ -77,7 +78,7 @@ return [
             'islam' => 'Islam',
             'christian' => 'Kristen',
             'hindu' => 'Hindu',
-            'buddhist' => 'Budha',
+            'buddha' => 'Budha',
             'catholic' => 'Katolik',
             'konghuchu' => 'Kong Hu Cu' 
         ],
@@ -87,13 +88,13 @@ return [
             'widowed' => 'Duda/Janda',
         ],
         'education' => [
-            'elementary_school' => 'Sekolah Dasar',
-            'junior_school' => 'Sekolah Menengah Pertama',
-            'high_school' => 'Sekolah Menengah Atas',
-            'diploma' => 'Diploma',
-            'bachelor' => 'Sarjana',
-            'master' => 'Magister',
-            'doctorate' => 'Doktor',
+            'elementary_school' => 'SD/sederajat',
+            'junior_school' => 'SMP/sederajat',
+            'high_school' => 'SMA/sederajat',
+            'diploma' => 'D1/D2/D3',
+            'bachelor' => 'S1/sederajat',
+            'master' => 'S2',
+            'doctorate' => 'S3',
         ],
         'sales_status' => [
             'yes' => 'Ya',
@@ -102,6 +103,21 @@ return [
         'gender' => [
             'male' => 'Laki-laki',
             'female' => 'Perempuan'
+        ],
+        'age_range' => [
+            '<20_year' => '< 20 tahun',
+            '21_25_year' => '21 - 25 tahun',
+            '26_35_year' => '26 - 35 tahun',
+            '36_45_year' => '36 - 45 tahun',
+            '46_55_year' => '46 - 55 tahun',
+            '>55_year' => '> 55 tahun'
+        ],
+        'work_duration' => [
+            '<1_years' => '< 1 tahun',
+            '1_3_years' => '1 - 3 tahun',
+            '4_6_years' => '4 - 6 tahun',
+            '7_9_years' => '7 - 9 tahun',
+            '>9_years' => '> 9 tahun',
         ],
     ],
 ];

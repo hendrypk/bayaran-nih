@@ -51,6 +51,7 @@ return [
         'last_department' => 'Last Department',
         'modal_title_add_resign' => 'Add Resignation',
         'modal_title_edit_resign' => 'Edit Resignation',
+        'career' => 'Career',
     ],
     'placeholders' => [
         'select_blood_type' => '- Select Blood Type -',
@@ -73,7 +74,7 @@ return [
             'islam' => 'Islam',
             'christian' => 'Christian',
             'hindu' => 'Hindu',
-            'buddhist' => 'Buddhist',
+            'buddha' => 'Buddhist',
             'catholic' => 'Catholic',
             'konghuchu' => 'Kong Hu Chu' 
         ],
@@ -97,7 +98,22 @@ return [
         ],
         'gender' => [
             'male' => 'Male',
-            'female' => 'female'
+            'female' => 'Female'
+        ],
+        'age_range' => [
+            '<20_year' => '< 20 years',
+            '21_25_year' => '21 - 25 years',
+            '26_35_year' => '26 - 35 years',
+            '36_45_year' => '36 - 45 years',
+            '46_55_year' => '46 - 55 years',
+            '>55_year' => '> 55 years'
+        ],
+        'work_duration' => [
+            '<1_years' => '< 1 years',
+            '1_3_years' => '1 - 3 years',
+            '4_6_years' => '4 - 6 years',
+            '7_9_years' => '7 - 9 years',
+            '>9_years' => '> 9 years',
         ],
     ],
 ];
