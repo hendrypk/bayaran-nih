@@ -57,7 +57,7 @@
                                     <a href="{{ route('kpi.detail', [
                                     'employee_id' => $gradeKpi->employee_id,
                                     'month' => $gradeKpi->month,
-                                    'year' => $gradeKpi->year]) }}" class="btn btn-outline-primary">
+                                    'year' => $gradeKpi->year]) }}" class="btn btn-blue">
                                     <i class="ri-eye-fill"></i>
                                     </a>
                                 </td>
@@ -74,7 +74,7 @@
                                 </td> --}}
                                 <td class="text-center">
                                     @can('delete kpi')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $gradeKpi->employee_id }}, '{{ $gradeKpi->month }}', '{{ $gradeKpi->year }}', '{{ $gradeKpi->employees->name }}', 'KPI')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>

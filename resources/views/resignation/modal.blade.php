@@ -48,7 +48,7 @@
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-tosca me-3"><i class="ri-save-2-line"></i> {{ __('general.label.save') }} </button>
                         @can('delete resignation')
-                        <button type="button" class="btn btn-untosca"
+                        <button type="button" class="btn btn-red"
                             id="deleteButton" onclick="">
                             <i class="ri-delete-bin-fill"></i> {{ __('general.label.delete') }}
                         </button>

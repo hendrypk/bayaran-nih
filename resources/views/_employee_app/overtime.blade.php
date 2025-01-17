@@ -2,15 +2,6 @@
 @section('header.title', __('app.label.overtime'))
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
-<div class="appHeader blue text-light">
-        <div class="left">
-            <a href="{{ route('employee.app') }}" class="headerButton goBack">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-            </a>
-        </div>
-        <div class="pageTitle"> Presensi </div>
-        <div class="right"></div>
-    </div>
 @endsection -->
 @section('content')
 <div class="presence">

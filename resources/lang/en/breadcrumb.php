@@ -3,7 +3,7 @@
 return [
     'home' => 'Home',
     'employee_list' => 'Employee List',
-    'employee_detail' => 'Employee Detail :',
+    'employee_detail' => 'Employee Detail',
     'add_employee' => 'Add Employee',
     'resignation' => 'Resignation',
     'employee_position_change' => 'Employee Position Change',

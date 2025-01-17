@@ -13,8 +13,8 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.position') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddPositionModal" class="btn btn-untosca">{{ __('option.label.add_position') }}</button>
-                            {{-- <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button> --}}
+                            <button id="openAddPositionModal" class="btn btn-tosca">{{ __('option.label.add_position') }}</button>
+                            {{-- <button type="button" class="btn btn-red" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button> --}}
                         </div>
                     @endcan
                 </div>
@@ -42,7 +42,7 @@
                                  <td>
                                     @can('update options')
                                         <button type="button"
-                                            class="btn btn-tosca" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#positionEditModal"
                                             data-id="{{ $position->id }}"
@@ -56,7 +56,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-untosca" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $position->id }}, '{{ $position->name }}', 'position')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -79,7 +79,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.job_title') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddJobTitleModal" class="btn btn-untosca">{{ __('option.label.add_job_title') }}</button>
+                            <button id="openAddJobTitleModal" class="btn btn-tosca">{{ __('option.label.add_job_title') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -103,7 +103,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button"
-                                            class="btn btn-tosca" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#jobTitleEditModal"
                                             data-id="{{ $data->id }}"
@@ -115,7 +115,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-untosca" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'jobtitle')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -138,7 +138,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.division') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddDivisionModal" class="btn btn-untosca">{{ __('option.label.add_division') }}</button>
+                            <button id="openAddDivisionModal" class="btn btn-tosca">{{ __('option.label.add_division') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -160,7 +160,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-tosca" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#divisionEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -171,7 +171,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-untosca" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'division')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -193,7 +193,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.department') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddDepartmentModal" class="btn btn-untosca">{{ __('option.label.add_department') }}</button>
+                            <button id="openAddDepartmentModal" class="btn btn-tosca">{{ __('option.label.add_department') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -215,7 +215,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-tosca" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#departmentEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -226,7 +226,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-untosca" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'department')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -249,7 +249,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.employee_status') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddStatusModal" class="btn btn-untosca">{{ __('option.label.add_status') }}</button>
+                            <button id="openAddStatusModal" class="btn btn-tosca">{{ __('option.label.add_status') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -271,7 +271,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-tosca" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#statusEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -282,7 +282,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-untosca" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'status')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -304,7 +304,7 @@
                 <h5 class="card-title mb-0 py-3">{{ __('option.label.holiday') }}</h5>
                 @can('create options')
                     <div class="ms-auto my-auto">
-                        <button id="openAddHolidayModal" class="btn btn-untosca">{{ __('option.label.add_holiday') }}</button>
+                        <button id="openAddHolidayModal" class="btn btn-tosca">{{ __('option.label.add_holiday') }}</button>
                     </div>
                 @endcan
             </div>
@@ -328,7 +328,7 @@
                             <td>
                                 @can('update options')
                                     <button type="button" 
-                                        class="btn btn-tosca" 
+                                        class="btn btn-green" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#holidayEditModal" 
                                         data-id="{{ $data->id }}" 
@@ -340,7 +340,7 @@
                             </td>
                             <td>
                                 @can('delete options')
-                                    <button type="button" class="btn btn-untosca" 
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'holiday')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
@@ -363,7 +363,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.office_location') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#location">{{ __('option.label.add_location') }}</button>
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#location">{{ __('option.label.add_location') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -388,7 +388,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-tosca" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#location" 
                                             data-id="{{ $data->id }}" 
@@ -402,7 +402,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-untosca" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'location')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -683,28 +683,28 @@ function initializeMap(lat, lng) {
             "{{ route('position.add') }}",
             `
             <label for="positionName" class="form-label">{{ __('general.label.name') }}</label>
-             <input type="text" class="form-control" id="positionName" name="position" required>
+             <input type="text" class="input-form" id="positionName" name="name" required>
              
             <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.job_title') }}</label>
-            <select class="form-select" name="job_title_id" aria-label="Default select example">
-                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
+            <select class="select-form" name="job_title_id" aria-label="Default select example">
+                <option selected disabled>{{ __('employee.placeholders.select_job_title') }}</option>
                 @foreach($job_titles as $data)
                     <option value="{{ $data->id }}">{{ $data->name }}</option>
                 @endforeach
             </select>
 
-            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.division') }}</label>
-            <select class="form-select" name="division_id" aria-label="Default select example">
-                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
-                @foreach($divisions as $data)
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.department') }}</label>
+            <select class="select-form" name="department_id" aria-label="Default select example">
+                <option selected value="">{{ __('employee.placeholders.select_department') }}</option>
+                @foreach($departments as $data)
                     <option value="{{ $data->id }}">{{ $data->name }}</option>
                 @endforeach
             </select>
 
-            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.department') }}</label>
-            <select class="form-select" name="department_id" aria-label="Default select example">
-                <option selected disabled>{{ __('employee.placeholders.select_position') }}</option>
-                @foreach($departments as $data)
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.division') }}</label>
+            <select class="select-form" name="division_id" aria-label="Default select example">
+                <option selected value="">{{ __('employee.placeholders.select_division') }}</option>
+                @foreach($divisions as $data)
                     <option value="{{ $data->id }}">{{ $data->name }}</option>
                 @endforeach
             </select>
@@ -718,9 +718,9 @@ function initializeMap(lat, lng) {
             "Add Job Title",
             "{{ route('jobTitle.add') }}",
             `<label for="jobTitleName" class="form-label">{{ __('general.label.name') }}</label>
-             <input type="text" class="form-control" id="jobTitleName" name="name" required>
+             <input type="text" class="input-form" id="jobTitleName" name="name" required>
              <label for="jobTitleSection" class="form-label">{{ __('option.label.section') }}</label>
-             <input type="text" class="form-control" id="jobTitleSection" name="section" required>`
+             <input type="text" class="input-form" id="jobTitleSection" name="section" required>`
         );
     });
 
@@ -730,7 +730,7 @@ function initializeMap(lat, lng) {
             "Add Division",
             "{{ route('division.add') }}",
             `<label for="divisionName" class="form-label">{{ __('general.label.name') }}</label>
-             <input type="text" class="form-control" id="divisionName" name="name" required>`
+             <input type="text" class="input-form" id="divisionName" name="name" required>`
         );
     });
 
@@ -739,7 +739,7 @@ function initializeMap(lat, lng) {
             "Add Department",
             "{{ route('department.add') }}",
             `<label for="departmentName" class="form-label">{{ __('general.label.name') }}</label>
-             <input type="text" class="form-control" id="departmentName" name="name" required>`
+             <input type="text" class="input-form" id="departmentName" name="name" required>`
         );
     });
 
@@ -748,7 +748,7 @@ function initializeMap(lat, lng) {
             "Add Status",
             "{{ route('status.add') }}",
             `<label for="statusName" class="form-label">{{ __('general.label.name') }}</label>
-             <input type="text" class="form-control" id="statusName" name="name" required>`
+             <input type="text" class="input-form" id="statusName" name="name" required>`
         );
     });
 
@@ -758,9 +758,9 @@ function initializeMap(lat, lng) {
         "Add Holiday",
         "{{ route('holiday.add') }}",
         `<label for="holidayName" class="form-label">{{ __('general.label.name') }}</label>
-         <input type="text" class="form-control" id="holidayName" name="name" required>
+         <input type="text" class="input-form" id="holidayName" name="name" required>
          <label class="col-sm-3 col-form-label">Select Date</label>
-         <input type="text" name="dates[]" class="form-control" id="holiday-dates">`
+         <input type="text" name="dates[]" class="input-form" id="holiday-dates">`
     );
 
         flatpickr("#holiday-dates", {

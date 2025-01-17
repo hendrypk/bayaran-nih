@@ -38,7 +38,7 @@
                                 <div class="col-md-2">
                                     <select class="form-control" name="workDay" aria-label="Default select example">
                                         @foreach($employee->workDay as $index => $workDay)
-                                            <option value="{{ $workDay->name }}">{{ $workDay->name }}</option>
+                                            <option value="{{ $workDay->id }}">{{ $workDay->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -59,8 +59,8 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="note">{{ __('app.label.note') }}</label>
-                            <input type="text" class="form-control" name="note">                    
+                            {{-- <label for="note">{{ __('app.label.note') }}</label> --}}
+                            <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
                     </div>
                     <div class="row">

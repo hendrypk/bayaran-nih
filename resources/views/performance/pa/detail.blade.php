@@ -12,7 +12,7 @@
         <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-tosca btn-sm me-2">
             <i class="ri-edit-line"></i>
         </a>
-        <button type="button" class="btn btn-untosca btn-sm" 
+        <button type="button" class="btn btn-red btn-sm" 
             onclick="confirmDelete('{{ $employees->id }}', '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'Appraisal')">
             <i class="ri-delete-bin-fill"></i>
         </button>

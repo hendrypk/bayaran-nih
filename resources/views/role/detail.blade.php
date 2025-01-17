@@ -9,7 +9,7 @@
                 <a href="{{ route('role.edit', $role->id) }}" class="btn btn-tosca">
                     <i class="ri-edit-box-fill"></i>
                 </a>
-                <button type="button" class="btn btn-untosca" 
+                <button type="button" class="btn btn-red" 
                     onclick="confirmDelete({{ $role->id }}, '{{ $role->name }}', 'role')">
                     <i class="ri-delete-bin-fill"></i>
                 </button>

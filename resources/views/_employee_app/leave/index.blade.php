@@ -34,15 +34,15 @@
                     <tr>
                         <td>{{ $no+1 }}</td>
                         <td>{{ $leave->date }}</td>
-                        <td>{{ $leave->category }}</td>
-                        <td>{{ $leave->note }}</td>
+                        <td>{{ ucfirst($leave->leave) }}</td>
+                        <td>{{ $leave->leave_note }}</td>
                         <td>
-                            @if ($leave->status === 0)
-                            <i class="status-leave wait ri-rest-time-line"></i>
-                            @elseif ($leave->status === 1)
-                                <i class="status-leave accept ri-check-double-fill"></i>
-                            @elseif ($leave->status === 2)
+                            @if ($leave->leave_status === 0)
                             <i class="status-leave reject ri-close-fill"></i>
+                            @elseif ($leave->leave_status === 1)
+                                <i class="status-leave accept ri-check-double-fill"></i>
+                            @else
+                            <i class="">{{ __('general.label.pending') }}</i>
                             @endif
                         </td>
                     </tr>    

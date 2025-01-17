@@ -35,7 +35,8 @@
                                     <label for="">{{ __('app.label.select_shift') }}</label>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="text" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
+                                    <input type="text" class="form-control" value="{{ $workDayName }}" name="" readonly>
+                                    <input type="hidden" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -54,8 +55,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="note">{{ __('app.label.note') }}</label>
-                            <input type="text" class="form-control" name="note">                    
+                            <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
                     </div>
                     <div class="row">

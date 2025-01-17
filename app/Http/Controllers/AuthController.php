@@ -43,19 +43,22 @@ public function login (Request $request){
         return back()->with('error', 'Login failed, please check your password.');
     }
 
-    $employee = Employee::where('username', $username)->first();
+    $employee = Employee::where('username', $username)->whereNull('resignation')->first();
+    // if(!$employee) {
+    //     return back()->with('error', 'You are no longer an employee active');
+    // }
     if($employee) {
         if(auth::guard('employee')->attempt($infoLogin, $remember)) {
             return redirect()->route('employee.app');
         }
-        return back()->with('error', 'Login failed, please check your password.');
+        return back()->with('error', 'Login failed, please check your username and password.');
     }
     return back()->with('error', 'Username not registered. Please contact the administrator or check your username.');
 }
 
 //log out 
 public function logout (){
-        Auth::logout();
+        Auth::logout(); 
         return redirect()->route('login');
     }
 

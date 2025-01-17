@@ -13,7 +13,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">{{ __('general.label.name') }}</label>
                         <div class="col-sm-9">
-                            <select class="form-select" name="employee_id" aria-label="Default select example">
+                            <select class="select-form" name="employee_id" aria-label="Default select example">
                                 <option selected disabled>{{ __('attendance.label.select_employee') }}</option>
                                 @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->name }} - {{  $employee->eid }}</option>
@@ -25,31 +25,31 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">{{ __('general.label.date') }}</label>
                         <div class="col-sm-9">
-                            <input type="date" name="leave_dates[]" class="form-control" id="leave-dates">
+                            <input type="date" name="leave_dates[]" class="input-form" id="leave-dates">
                         </div>
                     </div>
 
                     {{-- <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Start Date</label>
                         <div class="col-sm-9">
-                            <input type="date" name="start_date" class="form-control">
+                            <input type="date" name="start_date" class="input-form">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">End Date</label>
                         <div class="col-sm-9">
-                            <input type="date" name="end_date" class="form-control">
+                            <input type="date" name="end_date" class="input-form">
                         </div>
                     </div>   --}}
 
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">{{ __('general.label.category') }}</label>
                         <div class="col-sm-9">
-                            <select class="form-select" name="category" aria-label="Default select example">
+                            <select class="select-form" name="category" aria-label="Default select example">
                                 <option selected disabled>{{ __('general.label.select_category') }}</option>
                                 @foreach ($category as $category)
-                                    <option value="{{ $category }}">{{ $category }}</option>
+                                    <option value="{{ $category }}">{{ ucfirst($category) }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -58,7 +58,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">{{ __('general.label.note') }}</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="note">
+                            <input type="text" class="input-form" name="note">
                         </div>
                     </div>  
                     <div class="d-flex justify-content-end">

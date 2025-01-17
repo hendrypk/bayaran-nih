@@ -12,7 +12,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.user') }}</h5>
                     @can('create user')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" onclick="openUserModal('add')">{{ __('option.label.add_user') }}</button>
+                            <button type="button" class="btn btn-tosca" onclick="openUserModal('add')">{{ __('option.label.add_user') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -43,7 +43,7 @@
                                  <td>
                                     @can('update user')
                                         <button type="button"
-                                            class="btn btn-outline-success" onclick="openUserModal('edit', {
+                                            class="btn btn-green" onclick="openUserModal('edit', {
                                                 id: '{{ $user->id }}',
                                                 name: '{{ $user->name }}',
                                                 username: '{{ $user->username }}',
@@ -58,7 +58,7 @@
                                 </td>
                                 <td>
                                     @can('delete user')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}', 'user')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>

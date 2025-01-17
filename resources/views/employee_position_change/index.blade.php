@@ -49,7 +49,7 @@
                 <td>
                     @can('update position change')
                     <button type="button"
-                      class="btn btn-use btn-untosca btn-sm" 
+                      class="btn btn-use btn-tosca btn-sm" 
                       @if($data->effective_date != $latestPositionChanges[$data->employees->id]->effective_date)
                         onclick="showErrorAlert('Only the most recent effective date can be changed.');"
                       @else

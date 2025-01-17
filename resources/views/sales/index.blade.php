@@ -51,7 +51,7 @@
                                 <a href="{{ route('sales.detail', [
                                 'month' => $sale->month,
                                 'year' => $sale->year]) }}"
-                                class="btn btn-outline-primary">
+                                class="btn btn-blue">
                                 <i class="ri-eye-fill"></i>
                                 </a>
                             </td>
@@ -60,14 +60,14 @@
                                     <a href="{{ route('sales.edit', [
                                         'month' => $sale->month,
                                         'year' => $sale->year]) }}"
-                                        class="btn btn-outline-success">
+                                        class="btn btn-green">
                                         <i class="ri-edit-fill"></i>
                                     </a>
                                 @endcan
                             </td>
                             <td>
                                 @can('delete sales')
-                                    <button type="button" class="btn btn-outline-danger"
+                                    <button type="button" class="btn btn-red"
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal" 
                                         data-entity="sales" 
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newSalesGroup.innerHTML = `
                             <div class="row mb-3">
                                 <div class="col-md-7">
-                                    <select class="form-select" name="sales[${index}][employee_id]" aria-label="Default select example">
+                                    <select class="select-form" name="sales[${index}][employee_id]" aria-label="Default select example">
                                         <option selected disabled>{{ __('attendance.label.select_employee') }}</option>
                                         @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -188,10 +188,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" class="form-control" name="sales[${index}][qty]" required>
+                                    <input type="number" class="input-form" name="sales[${index}][qty]" required>
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger removeSalesBtn">
+                                    <button type="button" class="btn btn-red removeSalesBtn">
                                     <i class="ri-delete-bin-fill"></i>
                                     </button>
                                 </div>

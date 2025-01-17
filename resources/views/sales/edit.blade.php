@@ -13,7 +13,7 @@
                         @method('POST')
                         <div class="mb-3">
                             <label for="inputName" class="form-label fw-bold">{{ __('general.label.month') }}</label>
-                            <select class="form-select" name="month" aria-label="Default select example" disabled readonly>
+                            <select class="select-form" name="month" aria-label="Default select example" disabled readonly>
                                 
                                 <option value="{{ $month }}">{{ $month }}</option>
                                
@@ -21,7 +21,7 @@
                         </div>   
                         <div class="mb-3">
                             <label for="inputName" class="form-label fw-bold">{{ __('general.label.year') }}</label>
-                            <select class="form-select" name="year" aria-label="Default select example" disabled readonly>
+                            <select class="select-form" name="year" aria-label="Default select example" disabled readonly>
                                 <option value="{{ $year }}">{{ $year }}</option>
                             </select>
                         </div>
@@ -37,7 +37,7 @@
                             <div class="sales-group mb-3">
                                 <div class="row mb-3">
                                 <div class="col-md-7">
-                                    <select class="form-select" name="sales[0][employee_id]" aria-label="Default select example">
+                                    <select class="select-form" name="sales[0][employee_id]" aria-label="Default select example">
                                         @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                                         @endforeach
@@ -45,7 +45,7 @@
                                 </div>
                                     @foreach($sales as $sale)
                                     <div class="col-md-3">
-                                        <input type="number" value="{{$sale->qty}}" id="qty" class="form-control" name="sales[0][qty]" required>
+                                        <input type="number" value="{{$sale->qty}}" id="qty" class="input-form" name="sales[0][qty]" required>
                                     </div>
                                     @endforeach
                                 </div>
@@ -57,7 +57,7 @@
                                 <div class="sales-group mb-3">
                                     <div class="row mb-3">
                                         <div class="col-md-7">
-                                            <select class="form-select" name="sales[{{ $index }}][employee_id]" aria-label="Default select example">
+                                            <select class="select-form" name="sales[{{ $index }}][employee_id]" aria-label="Default select example">
                                                 @foreach($employees as $employee)
                                                     <option value="{{ $employee->id }}" {{ $employee->id == $sale->employee_id ? 'selected' : '' }}>
                                                         {{ $employee->name }}
@@ -66,10 +66,10 @@
                                             </select>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="number" class="form-control" name="sales[{{ $index }}][qty]" value="{{ $sale->qty }}" required>
+                                            <input type="number" class="input-form" name="sales[{{ $index }}][qty]" value="{{ $sale->qty }}" required>
                                         </div>
                                         <div class="col-md-2">
-                                            <button type="button" class="btn btn-danger removeSalesBtn">
+                                            <button type="button" class="btn btn-red removeSalesBtn">
                                                 <i class="ri-delete-bin-fill"></i>
                                             </button>
                                         </div>
@@ -80,19 +80,14 @@
                 
                         <div class="row mb-3">
                             <div class="col-md-8">
-                                <button type="button" id="addSalesBtn" class="btn btn-untosca">{{ __('sales.label.add_sales_person') }}</button>
+                                <button type="button" id="addSalesBtn" class="btn btn-tosca">{{ __('sales.label.add_sales_person') }}</button>
                             </div>
-                        <!-- <div class="col-md-4">
-                                <input type="text" class="form-control fw-bold" id="totalQty" value="0" readonly>
-                            </div>
-                            <div class="col-md-1">
-                                
-                            </div> -->
                         </div>
                         
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
-                            <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+
+                            <a href="{{ url()->previous() }}" class="btn btn-red me-3">{{ __('general.label.back') }}</a>
+                            <button type="submit" name="action" class="btn btn-tosca me-3">{{ __('general.label.save') }}</button>
                         </div>
                     </form>
                 </div>
@@ -113,7 +108,7 @@
         newSalesGroup.innerHTML = `
             <div class="row mb-3">
                 <div class="col-md-7">
-                    <select class="form-select" name="sales[${index}][employee_id]" aria-label="Default select example">
+                    <select class="select-form" name="sales[${index}][employee_id]" aria-label="Default select example">
                         <option selected disabled>- Select Employee -</option>
                         @foreach($employees as $employee)
                         <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -121,10 +116,10 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control" name="sales[${index}][qty]" required>
+                    <input type="number" class="input-form" name="sales[${index}][qty]" required>
                 </div>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-danger removeSalesBtn">
+                    <button type="button" class="btn btn-red removeSalesBtn">
                         <i class="ri-delete-bin-fill"></i>
                     </button>
                 </div>
@@ -149,7 +144,7 @@
 //         newSalesGroup.innerHTML = `
 //                             <div class="row mb-3">
 //                                 <div class="col-md-7">
-//                                     <select class="form-select" name="sales[${index}][employee_id]" aria-label="Default select example">
+//                                     <select class="select-form" name="sales[${index}][employee_id]" aria-label="Default select example">
 //                                         <option selected disabled>- Select Employeee- </option>
 //                                         @foreach($employees as $employee)
 //                                         <option value="{{ $employee->id }}">{{ $employee->name }}</option>
@@ -157,10 +152,10 @@
 //                                     </select>
 //                                 </div>
 //                                 <div class="col-md-3">
-//                                     <input type="number" class="form-control" name="sales[${index}][qty]" required>
+//                                     <input type="number" class="input-form" name="sales[${index}][qty]" required>
 //                                 </div>
 //                                 <div class="col-md-2">
-//                                     <button type="button" class="btn btn-danger removeSalesBtn">
+//                                     <button type="button" class="btn btn-red removeSalesBtn">
 //                                     <i class="ri-delete-bin-fill"></i>
 //                                     </button>
 //                                 </div>

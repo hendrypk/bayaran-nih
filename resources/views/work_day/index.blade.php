@@ -7,21 +7,19 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-10">
-                    <h5 class="card-title">{{ __('option.label.work_day') }}</h5>
-                </div>
-
-                @can('create work pattern')
-                    <div class="col-md align-content-center">
-                        <button type="button" 
-                            class="btn btn-untosca content-align-center" 
+                <div class="card-header d-flex align-items-center py-0">
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.work_day') }}</h5>
+                    @can('create work pattern')
+                        <div class="ms-auto my-auto">
+                            <button type="button" 
+                            class="btn btn-tosca content-align-center" 
                             data-bs-toggle="modal" 
                             data-bs-target="#addWorkDay">
                             <i class="ri-add-circle-line"></i>
                         </button>
-                    </div>
-                @endcan
-
+                        </div>
+                    @endcan
+                </div>
             </div>
             <table class="table datatable table-hover">
                 <thead>
@@ -42,23 +40,14 @@
                         </td> --}}
                         <td>
                             @can('update work pattern')
-                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-tosca">
-                                    <i class="ri-edit-fill"></i>
+                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-blue">
+                                    <i class="ri-eye-fill"></i>
                                 </a>
                             @endcan
                         </td>
                         <td>
-                            @can('delete work pattern')
-                                {{-- <a href="" class="btn btn-outline-danger"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteModal" 
-                                    data-entity="work-day"  
-                                    data-id="{{ $workDays->first()->id }}" 
-                                    data-name="{{ $workDays->first()->name }}" >
-                                    <i class="ri-delete-bin-fill"></i>
-                                </a> --}}
-                                
-                                <button type="button" class="btn btn-untosca" 
+                            @can('delete work pattern')                               
+                                <button type="button" class="btn btn-red" 
                                     onclick="confirmDelete('{{ $workDay->name }}', 'work-pattern')">
                                     <i class="ri-delete-bin-fill"></i>
                                 </button>

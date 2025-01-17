@@ -3,7 +3,7 @@
 return [
     'home' => 'Beranda',
     'employee_list' => 'Daftar Karyawan',
-    'employee_detail' => 'Detail Karyawan :',
+    'employee_detail' => 'Detail Karyawan',
     'add_employee' => 'Tambah Karyawan',
     'resignation' => 'Pengunduran Diri',
     'employee_position_change' => 'Perubahan Posisi Karyawan',

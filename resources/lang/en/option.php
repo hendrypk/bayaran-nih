@@ -26,6 +26,7 @@ return [
     'status_name' => 'Status Name',
     'location' => 'Location',
     'radius' => 'Radius',
+    'edit_position' => 'Edit Position',
     'edit_division' => 'Edit Division',
     'edit_department' => 'Edit Department',
     'edit_status' => 'Edit Status',
@@ -48,6 +49,7 @@ return [
     'exclude_break' => 'Exclude Break',
     'cancel' => 'Cancel',
     'submit' => 'Submit',
+    'count_late' => 'Count Late',
 
     'day' => [
         'monday' => 'Monday',
@@ -62,6 +64,7 @@ return [
     'role' => 'Role',
     'add_role' => 'Add Role',
     'edit_role' => 'Edit Role',
+    'detail_role' => 'Role Detail',
     'add_new_role' => 'Add New Role',
     'role_name' => 'Role Name',
     'role_permissions' => 'Role Permissions',

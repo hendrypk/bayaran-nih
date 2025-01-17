@@ -15,7 +15,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Name</label>
                         <div class="col-sm-9">
-                            <select class="form-select" name="employee_id" id="name" aria-label="Default select example">
+                            <select class="select-form" name="employee_id" id="name" aria-label="Default select example">
                                 @foreach ($employees as $employee)
                                     <option value="{{ $employee->id }}" data-old-position-id="{{ $employee->position_id ?? '-' }}" data-old-position="{{ $employee->position->name ?? '-' }}">{{ $employee->name }}</option>
                                 @endforeach
@@ -26,14 +26,14 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Old Position</label>
                         <div class="col-sm-9">
-                            <input type="" id="oldPosition" name="oldPosition" class="form-control" readonly>
+                            <input type="" id="oldPosition" name="oldPosition" class="input-form" readonly>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">New Position</label>
                         <div class="col-sm-9">
-                            <select class="form-select" name="newPosition" id="newPosition" aria-label="Default select example" required>
+                            <select class="select-form" name="newPosition" id="newPosition" aria-label="Default select example" required>
                                 @foreach ($positions as $data)
                                     <option value="{{ $data->id }}">{{ $data->name }}</option>
                                 @endforeach
@@ -44,7 +44,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Category</label>
                         <div class="col-sm-9">
-                            <select class="form-select" name="category" id="category" aria-label="Default select example">
+                            <select class="select-form" name="category" id="category" aria-label="Default select example">
                                 @foreach($category as $data)
                                     <option value="{{ $data }}">{{ ucwords($data) }}</option>
                                 @endforeach
@@ -55,18 +55,27 @@
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Effective Date</label>
                         <div class="col-sm-9">
-                            <input type="date" id="date" name="date" class="form-control" required>
+                            <input type="date" id="date" name="date" class="input-form" required>
                         </div>
                     </div>
                     
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label">Note</label>
                         <div class="col-sm-9">
-                            <textarea id="note" name="note" class="form-control" required></textarea>
+                            <textarea id="note" name="note" class="input-form" required></textarea>
                         </div>
                     </div>
-
                     <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-tosca me-3"><i class="ri-save-2-line"></i> {{ __('general.label.save') }} </button>
+                        @can('delete position change')
+                        <button type="button" class="btn btn-red"
+                            id="deleteButton" onclick="">
+                            <i class="ri-delete-bin-fill"></i>{{ __('general.label.delete') }}
+                        </button>
+                        @endcan
+                    </div>
+
+                    {{-- <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-tosca me-2"><i class="ri-save-2-line"></i> Submit</button>
                         @can('delete position change')
                         <button type="button" class="btn btn-untosca"
@@ -74,7 +83,7 @@
                             <i class="ri-delete-bin-fill"></i> Delete
                         </button>
                         @endcan
-                    </div>
+                    </div> --}}
 
 
                 </form>

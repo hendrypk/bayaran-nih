@@ -25,7 +25,8 @@
                             <th scope="col">{{ __('attendance.label.holiday') }}</th>
                             <th scope="col">{{ __('attendance.label.annual_leave') }}</th>
                             <th scope="col">{{ __('attendance.label.sick') }}</th>
-                            <th scope="col">{{ __('attendance.label.permit') }}</th>
+                            <th scope="col">{{ __('attendance.label.full_day_permit') }}</th>
+                            <th scope="col">{{ __('attendance.label.half_day_permit') }}</th>
                             <th scope="col">{{ __('attendance.label.alpha') }}</th>
                             <th scope="col">{{ __('attendance.label.total_overtime') }}</th>
                             <th scope="col">{{ __('attendance.label.total_late_arrival') }}</th>
@@ -42,8 +43,9 @@
                                 <td>{{ $employee->presence }}</td>
                                 <td>{{ $employee->holiday }}</td>
                                 <td>{{ $employee->annual_leave }}</td>
-                                <td>{{ $employee->sick_leave }}</td>
-                                <td>{{ $employee->permit_leave }}</td>
+                                <td>{{ $employee->sick_permit }}</td>
+                                <td>{{ $employee->full_day_permit }}</td>
+                                <td>{{ $employee->half_day_permit }}</td>
                                 <td>{{ $employee->alpha }}</td>
                                 <td>{{ $employee->total_overtime }}</td>
                                 <td>{{ $employee->late_arrival }}</td>

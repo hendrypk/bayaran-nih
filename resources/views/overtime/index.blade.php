@@ -61,6 +61,12 @@
                                 <th scope="col">{{ __('general.label.start_at') }}</th>
                                 <th scope="col">{{ __('general.label.end_at') }}</th>
                                 <th scope="col">{{ __('general.label.total') }}</th>
+                                <th scope="col">{{ __('attendance.label.note_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.note_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.location_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.location_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.photo_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.photo_out') }}</th>
                                 <th scope="col">{{ __('general.label.status') }}</th>
                                 <th scope="col">{{ __('general.label.edit') }}</th>
                                 <th scope="col">{{ __('general.label.delete') }}</th>
@@ -75,7 +81,31 @@
                                 <td>{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}</td>
                                 <td>{{ $overtime->start_at }}</td>
                                 <td>{{ $overtime->end_at }}</td>
-                                <td> {{ $overtime->total }} {{ __('general.label.minutes') }}</td>
+                                <td> {{ $overtime->total }}</td>
+                                <td> {{ $overtime->note_in }}</td>
+                                <td> {{ $overtime->note_out }}</td>
+                                <td>
+                                    <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $overtime['location_in'] }}')">
+                                        <i class="ri-road-map-line"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-blue" onclick="showLocationModal('location_out', '{{ $overtime['location_out'] }}')">
+                                        <i class="ri-road-map-line"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                            onclick="showPhoto('{{ Storage::url('public/overtimes/' . $overtime['photo_in']) }}')">
+                                            <i class="ri-gallery-line"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                            onclick="showPhoto('{{ Storage::url('public/overtimes/' . $overtime['photo_out']) }}')">
+                                            <i class="ri-gallery-line"></i>
+                                    </button>
+                                </td>
                                 <td>
                                     @if ($overtime->status === 1)
                                         <i class="status-leave accept ri-check-double-fill"></i>
@@ -84,7 +114,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-success"
+                                    <button type="button" class="btn btn-green"
                                         data-bs-toggle="modal" 
                                         data-bs-target="#overtimeEdit" 
                                         data-id="{{ $overtime->id }}" 
@@ -107,7 +137,7 @@
                                             <i class="ri-delete-bin-fill"></i>
                                         </button> --}}
 
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $overtime->id }}, '{{ $overtime->employees->name }}', 'overtimes')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -225,9 +255,104 @@ function confirmDelete(id, name, entity) {
         });
     }
 
+// Set the image src in the modal
+function showPhoto(photoUrl) {
+    const img = new Image();
+
+    // Cek apakah gambar tersedia
+    img.onload = function() {
+        // Jika gambar berhasil dimuat, set gambar ke dalam modal dan buka modal
+        document.getElementById('modalPhoto').src = photoUrl;
+        
+        // Buka modal setelah gambar dimuat
+        const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+        photoModal.show();
+    };
+
+    img.onerror = function() {
+        // Jika gambar gagal dimuat, tampilkan error menggunakan SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Gambar tidak ditemukan!',
+        });
+    };
+
+    // Menetapkan URL gambar untuk memulai pengecekan
+    img.src = photoUrl;
+}
+
+
+//Show map
+let mapPresence, marker;  // Variabel untuk peta dan marker
+
+// Inisialisasi peta
+function initMapPresence() {
+    const mapElement = document.getElementById('mapPresence');
+
+    if (!mapElement) {
+        console.error('Element with ID "mapPresence" not found!');
+        return;
+    }
+
+    // Membuat peta dengan lat, lng default
+    mapPresence = L.map('mapPresence');  // Set lat, lng dan zoom default
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mapPresence);
+}
+
+// Menampilkan lokasi pada modal
+function showLocationModal(locationType, location) {
+    if (!mapPresence) {
+        console.error('Map is not initialized. Please call initMapPresence first.');
+        return;
+    }
+
+    if (!location) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Lokasi presensi tidak ditemukan!',
+        });
+        return;
+    }
+
+    // Memecah lat, lng yang diterima
+    const [lat, lng] = location.split(',').map(Number);
+
+    if (isNaN(lat) || isNaN(lng)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Koordinat lokasi tidak valid!',
+        });
+        return;
+    }
+
+    // Menampilkan modal Bootstrap
+    const modal = new bootstrap.Modal(document.getElementById('locationModal'));
+    modal.show();
+
+    // Menghapus marker lama jika ada
+    if (marker) mapPresence.removeLayer(marker);
+
+    // Update peta dan tambahkan marker
+    mapPresence.setView([lat, lng], 15);  // Set peta ke lat, lng yang baru
+    marker = L.marker([lat, lng]).addTo(mapPresence).bindPopup(`${locationType}`).openPopup();
+}
+
+// Memanggil initMapPresence setelah halaman selesai dimuat
+document.addEventListener('DOMContentLoaded', function () {
+    initMapPresence();
+});
+
+
 </script>
 @endsection
 
 @include('overtime.add')
 @include('overtime.edit')
 @include('modal.delete')
+@include('presence.photo')
+@include('presence.map')

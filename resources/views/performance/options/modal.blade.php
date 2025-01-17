@@ -35,15 +35,15 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-9">
-                            <button type="button" id="addIndicatorBtn" class="btn btn-secondary">{{ __('performance.label.add_indicator') }}</button>
+                            <button type="button" id="addIndicatorBtn" class="btn btn-tosca">{{ __('performance.label.add_indicator') }}</button>
                         </div>
                         <div class="col-md-2">
                             <input type="number" class="form-control fw-bold" id="totalBobot" value="0" readonly>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca btn-sm me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
-                        <button type="submit" class="btn btn-untosca btn-sm">{{ __('general.label.save') }}</button>
+                        <button type="button" class="btn btn-red btn-sm me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" class="btn btn-tosca btn-sm">{{ __('general.label.save') }}</button>
                     </div>
                 </form>
             </div>

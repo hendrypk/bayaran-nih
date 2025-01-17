@@ -1,4 +1,4 @@
-@extends('_layout.main')
+    @extends('_layout.main')
 @section('title', 'Performance - KPI - Add New')
 @section('content')
 
@@ -14,7 +14,7 @@
                     <div class="row mb-3">
                         <div class="col-3 mb-5">
                             <label for="employee" class="form-label">{{ __('general.label.name') }}</label>
-                            <select class="form-select" id="employee" name="employee" aria-label="Default select example">
+                            <select class="select-form" id="employee" name="employee" aria-label="Default select example">
                                 <option value="" disabled selected>Select Employee</option>
                                 @foreach ($employees as $employee)
                                 {{-- <option value="{{ $employee->id }}" data-eid="{{ $employee->eid }}" data-position-id="{{ $employee->position_id }}" data-position="{{ $employee->position->name }}" >{{ $employee->name }}</option> --}}
@@ -24,16 +24,16 @@
                         </div>
                         <div class="col-2 mb-5">
                             <label for="eid" class="form-label">{{ __('employee.label.eid') }}</label>
-                            <input class="form-control" name="eid" type="text" id="eid" aria-label="Disabled input example" disabled readonly>
+                            <input class="input-form" name="eid" type="text" id="eid" aria-label="Disabled input example" disabled readonly>
                         </div>
 
                         <div class="col-3 mb-5">
                             <label for="position" class="form-label">{{ __('employee.label.position') }}</label>
-                            <input class="form-control" name="position" type="text" id="position" aria-label="Disabled input example" disabled readonly>
+                            <input class="input-form" name="position" type="text" id="position" aria-label="Disabled input example" disabled readonly>
                         </div>
                         <div class="col-2 mb-5">
                             <label for="inputEmail4" class="form-label">{{ __('general.label.month') }}</label>
-                            <select class="form-select" name="month" aria-label="Default select example">
+                            <select class="select-form" name="month" aria-label="Default select example">
                                 @foreach(range(1, 12) as $month)
                                 <option value="{{ DateTime::createFromFormat('!m', $month)->format('F') }}">{{ DateTime::createFromFormat('!m', $month)->format('F') }}</option>
                                 @endforeach
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-2 mb-5">
                             <label for="inputEmail4" class="form-label">{{ __('general.label.year') }}</label>
-                            <select class="form-select" name="year" aria-label="Default select example">
+                            <select class="select-form" name="year" aria-label="Default select example">
                                 @foreach(range(date('Y') - 1, date('Y') + 5) as $year)
                                 <option value="{{ $year }}">{{ $year }}</option>
                                 @endforeach
@@ -52,10 +52,10 @@
                    
                     <div class="row mb-2 mt-3 justify-content-end">
                         <div class="d-grid gap-2 col-2">
-                            <a href="{{ url()->previous() }}" class="btn btn-tosca">{{ __('general.label.back') }}</a>
+                            <a href="{{ url()->previous() }}" class="btn btn-red">{{ __('general.label.back') }}</a>
                         </div>
                         <div class="d-grid gap-2 col-2">
-                            <button type="submit" class="btn btn-untosca">{{ __('general.label.save') }}</button>
+                            <button type="submit" class="btn btn-tosca">{{ __('general.label.save') }}</button>
                         </div>
                     </div>
                 </form>
@@ -121,13 +121,13 @@ function updateKpiIndicators(indicators) {
                 <td class="text-center">${index}</td>
                 <td>${indicator.aspect}</td>
                 <td class="text-end">
-                    <input type="number" class="form-control text-end" value="${indicator.target}" disabled readonly>
+                    <input type="number" class="input-form text-end" value="${indicator.target}" disabled readonly>
                 </td>
                 <td class="text-end">
-                    <input type="number" class="form-control text-end" value="${indicator.bobot}" disabled readonly>
+                    <input type="number" class="input-form text-end" value="${indicator.bobot}" disabled readonly>
                 </td>
                 <td>
-                    <input type="text" class="form-control numeric-input text-end" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
+                    <input type="text" class="input-form numeric-input text-end" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
                 </td>
             </tr>
         `;
@@ -157,13 +157,13 @@ function updateKpiIndicators(indicators) {
 //             <div class="row mb-3">
 //                 <label for="grade_${indicator.id}" class="col-md-4 form-label">${indicator.aspect}</label>
 //                 <div class="col-sm-2">
-//                     <input type="number" class="form-control" value="${indicator.target}" disabled readonly>
+//                     <input type="number" class="input-form" value="${indicator.target}" disabled readonly>
 //                 </div>
 //                 <div class="col-sm-2">
-//                     <input type="number" class="form-control" value="${indicator.bobot}" disabled readonly>
+//                     <input type="number" class="input-form" value="${indicator.bobot}" disabled readonly>
 //                 </div>
 //                 <div class="col">
-//                     <input type="text" class="form-control numeric-input" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
+//                     <input type="text" class="input-form numeric-input" name="grades[${indicator.id}]" id="grade_${indicator.id}" step="0.01" min="0" required>
 //                 </div>
 //             </div>
 //         `;

@@ -15,13 +15,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TemplateExportPresence;
+use Illuminate\Cache\RedisTagSet;
 
 class PresenceController extends Controller
 {
 
 //Presences List
 public function index(Request $request){
-    $query = Presence::with('employee');
+    $query = Presence::with('employees')->whereNull('leave');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
     $defaultEndDate = $today->toDateString();
@@ -48,7 +49,7 @@ public function index(Request $request){
     if ($startDate && $endDate) {
         $query->whereBetween('date', [$startDate, $endDate]);
     }
-
+// $query->whereNull('leave');
     $presence = $query->get();
 
     // $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
@@ -132,11 +133,21 @@ public function index(Request $request){
         $date = Carbon::parse($request->date);
         $today = strtolower($date->format('l'));
         $workDayId = $request->workDay;
-        $workDay = WorkDay::where('name', $workDayId)->where('day', $today)->first();
+        $workDay = WorkDay::find($workDayId)->where('day', $today)->first();
         $checked_in = $request->checkin;
         $cheked_out = $request->checkout;
         $day_off = $workDay->day_off;
         $break = $workDay->break;
+        $isCountLate = $workDay->count_late;
+        $isEmployeeLeave = Presence::where('date', $date)
+            ->where('employee_id', $employee_id)
+            ->whereNotNull('leave')
+            ->get();
+            
+        if(!$isEmployeeLeave->isEmpty()) {
+            $message = 'The employee has leave. You can not add presence.';
+            return redirect()->back()->with('error', $message);
+        }
 
         if ($day_off == 1) {
             $message = 'Today is Off Day for You';
@@ -153,6 +164,7 @@ public function index(Request $request){
         $break_in = $workDay ? $parseTime($workDay->break_in) : null;
         $break_out = $workDay ? $parseTime($workDay->break_out) : null;
         $excldueBreak = $break == 1;
+        $noCountLate = $isCountLate == 0;
 
         //Break Duration
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
@@ -160,26 +172,39 @@ public function index(Request $request){
         //get from form
         $checked_in = $request ? $parseTime($request->checkin) : null;
         $checked_out = $request ? $parseTime($request->checkout) : null;
-        $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
-        $lateArrival = intval($lateArrival);
+        // $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+        // $lateArrival = intval($lateArrival);
         // $lateCheckIn = $checked_in && $check_in ? max(intval($check_in->diffInMinutes($checked_in, false)), 0) : '0';
 
         if($checked_in && $check_in) {
             switch(true) {
+                case $noCountLate:
+                    $lateCheckIn = 0;
+                    $lateArrival = 0;
+                    break;
+
                 case $excldueBreak:
                     $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $checked_in->between($break_in, $break_out):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $break_in->lt($checked_in):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)) - $breakDuration, 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $checked_in->lt($break_in):
-                $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
             }
         }
@@ -189,6 +214,10 @@ public function index(Request $request){
             $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
 
             switch(true) {
+                case $noCountLate:
+                    $checkOutEarly = 0;
+                    break;
+
                 case $excldueBreak:
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;
@@ -256,9 +285,10 @@ public function index(Request $request){
         $employees = Employee::get();
         $date = Carbon::parse($request->date);
         $today = strtolower($date->format('l'));
-        $workDay = WorkDay::where('name', $presence->work_day_id)->where('day', $today)->first();
+        $workDay = WorkDay::find($presence->work_day_id)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
+        $isCountLate = $workDay->count_late;
 
         if ($day_off == 1) {
             $message = 'Today is Off Day for You';
@@ -276,6 +306,7 @@ public function index(Request $request){
         $break_in = $workDay ? $parseTime($workDay->break_in) : null;
         $break_out = $workDay ? $parseTime($workDay->break_out) : null;
         $excldueBreak = $break == 1;
+        $noCountLate = $isCountLate == 0;
 
         //Break Duration
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
@@ -288,6 +319,10 @@ public function index(Request $request){
 
         if($checked_in && $check_in) {
             switch(true) {
+                case $noCountLate:
+                    $lateCheckIn = 0;
+                    break;
+
                 case $excldueBreak:
                     $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
                     break;
@@ -308,6 +343,10 @@ public function index(Request $request){
 
         if($checked_out && $check_out){
             switch(true) {
+                case $noCountLate:
+                    $checkOutEarly = 0;
+                    break;
+
                 case $excldueBreak:
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;

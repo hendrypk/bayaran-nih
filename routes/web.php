@@ -308,9 +308,9 @@ Route::middleware(['auth:web'])->group(function () {
     
     Route::group(['middleware' => ['permission:view leave']], function() {
         Route::prefix('leaves')->group(function () {
-            Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
-            Route::post('submit', [LeaveController::class, 'store'])->name('leaves.create');
-            Route::post('{id}/delete', [LeaveController::class, 'delete'])->name('leaves.delete');
+            Route::get('', [LeaveController::class, 'ind'])->name('leaves.index');
+            Route::post('submit', [LeaveController::class, 'save'])->name('leaves.create');
+            Route::post('{id}/delete', [LeaveController::class, 'destroy'])->name('leaves.delete');
         });
     });
 
@@ -364,7 +364,8 @@ Route::middleware(['auth:employee'])->group(function () {
     
     // Overtime Routes
     Route::prefix('overtime')->group(function () {
-        Route::get('/', [EmployeeAppController::class, 'overtime'])->name('overtime.create');
+        Route::get('/in', [EmployeeAppController::class, 'overtime'])->name('overtime.in');
+        Route::get('/out', [EmployeeAppController::class, 'overtimeOut'])->name('overtime.out');
         Route::post('/submit', [EmployeeAppController::class, 'overtimeStore'])->name('overtime.submit');
         Route::get('/history', [EmployeeAppController::class, 'overtimeHistory'])->name('overtime.history');
     });

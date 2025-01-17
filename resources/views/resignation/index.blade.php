@@ -52,7 +52,7 @@
               <td>
                 @can('update resignation')
                 <button type="button"
-                    class="btn btn-untosca btn-sm" onclick="openResignModal('edit', {
+                    class="btn btn-tosca btn-sm" onclick="openResignModal('edit', {
                         id: '{{ $data->id }}',
                         name: '{{ $data->name }}',
                         category: '{{ $data->resignation }}',

@@ -10,60 +10,102 @@
                 <form action="{{ route('workDay.create') }}" method="POST">
                     @csrf
                     <div class="form-group row mb-3 container">
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <label for="name" class="fw-bold">{{ __('general.label.name') }}</label>
                             <span style="color: red; font-size: 15px;">*</span>
                         </div>
-                        <div class="col-md">
-                            <input type="text" id="name" name="name" class="form-control" required>
+                        <div class="col-md-3">
+                            <label for="tolerance" class="fw-bold">{{ __('option.label.tolerance_in_minute') }}</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="tolerance" class="fw-bold">{{ __('option.label.count_late') }}</label>
                         </div>
                     </div>
                     <div class="form-group row mb-3 container">
-                        <div class="col-md-5">
-                            <label for="tolerance" class="fw-bold">{{ __('option.label.tolerance_in_minute') }}</label>
+                        <div class="col-md-3">
+                            <input type="text" id="name" name="name" class="input-form" required>
                         </div>
-                        <div class="col-md">
-                            <input type="number" id="tolerance" name="tolerance" class="form-control">
+                        <div class="col-md-3">
+                            <input type="number" id="tolerance" name="tolerance" class="input-form">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="countLate" id="countLate" class="select-form">
+                                <option value="0">{{ __('general.label.no') }}</option>
+                                <option selected value="1">{{ __('general.label.yes') }}</option>
+                            </select>
                         </div>
                     </div>
+                    
+                    {{-- <div class="form-group row mb-3 container">
+                        <div class="col-md-2">
+                            <label for="name" class="fw-bold">{{ __('general.label.name') }}</label>
+                            <span style="color: red; font-size: 15px;">*</span>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="name" name="name" class="input-form" required>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3 container">
+                        <div class="col-md-2">
+                            <label for="tolerance" class="fw-bold">{{ __('option.label.tolerance_in_minute') }}</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="tolerance" name="tolerance" class="input-form">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3 container">
+                        <div class="col-md-2">
+                            <label for="tolerance" class="fw-bold">{{ __('option.label.count_late') }}</label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isLate" name="isLate" value="1">
+                            </div>
+                        </div>
+                    </div> --}}
                     <div class="form-group row container">
                         <table class="table table-striped table-bordered ">
                             <thead class="content-align-center">
-                                <th>{{ __('general.label.day') }}</th>
-                                <th>{{ __('option.label.day_off') }}</th>
-                                <th>{{ __('option.label.arrival') }}<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>{{ __('option.label.check_in') }}<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>{{ __('option.label.check_out') }}<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>{{ __('option.label.break_in') }}<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>{{ __('option.label.break_out') }}<span style="color: red; font-size: 15px;">*</span></th>
-                                <th>{{ __('option.label.exclude_break') }}</th>
+                                <th class="text-center">{{ __('general.label.day') }}</th>
+                                <th class="text-center">{{ __('option.label.day_off') }}</th>
+                                <th class="text-center">{{ __('option.label.arrival') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th class="text-center">{{ __('option.label.check_in') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th class="text-center">{{ __('option.label.check_out') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th class="text-center">{{ __('option.label.break_in') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th class="text-center">{{ __('option.label.break_out') }}<span style="color: red; font-size: 15px;">*</span></th>
+                                <th class="text-center">{{ __('option.label.exclude_break') }}</th>
                             </thead>
                             @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
                             <tbody>
-                                <td>{{ __('option.label.day.' . strtolower($day)) }}</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="dayOff[{{ $day }}]" name="dayOff[{{ $day }}]" value="1" onchange="toggleTimeInputs('{{ $day }}')">
+                                <td class="text-center">{{ __('option.label.day.' . strtolower($day)) }}</td>
+                                <td class="text-center align-middle">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="dayOff[{{ $day }}]" name="dayOff[{{ $day }}]" value="1" onchange="toggleTimeInputs('{{ $day }}')">
+                                        </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <input type="time" class="form-control" id="arrival[{{ $day }}]" name="arrival[{{ $day }}]">
+                                <td class="text-center">
+                                    <input type="time" class="input-form text-center" id="arrival[{{ $day }}]" name="arrival[{{ $day }}]">
                                 </td>
-                                <td>
-                                    <input type="time" class="form-control" id="checkIn[{{ $day }}]" name="checkIn[{{ $day }}]">
+                                <td class="text-center">
+                                    <input type="time" class="input-form text-center" id="checkIn[{{ $day }}]" name="checkIn[{{ $day }}]">
                                 </td>
-                                <td>
-                                    <input type="time" class="form-control" id="checkOut[{{ $day }}]" name="checkOut[{{ $day }}]">
+                                <td class="text-center">
+                                    <input type="time" class="input-form text-center" id="checkOut[{{ $day }}]" name="checkOut[{{ $day }}]">
                                 </td>
-                                <td>
-                                    <input type="time" class="form-control" id="breakIn[{{ $day }}]" name="breakIn[{{ $day }}]">
+                                <td class="text-center">
+                                    <input type="time" class="input-form text-center" id="breakIn[{{ $day }}]" name="breakIn[{{ $day }}]">
                                 </td>
-                                <td>
-                                    <input type="time" class="form-control" id="breakOut[{{ $day }}]" name="breakOut[{{ $day }}]">
+                                <td class="text-center">
+                                    <input type="time" class="input-form text-center" id="breakOut[{{ $day }}]" name="breakOut[{{ $day }}]">
                                 </td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="break[{{ $day }}]" name="break[{{ $day }}]" value="1">
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="break[{{ $day }}]" name="break[{{ $day }}]" value="1">
+                                        </div>
                                     </div>
                                 </td>
                             </tbody>
@@ -71,8 +113,8 @@
                         </table>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
-                        <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.save') }}</button>
+                        <button type="button" class="btn btn-red me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" name="action" class="btn btn-tosca me-3">{{ __('general.label.save') }}</button>
                       </div>
                 </form>
             </div>
