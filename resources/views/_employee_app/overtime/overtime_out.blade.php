@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-<!-- @section('header.title', __('app.label.overtime_in')) -->
+<!-- @section('header.title', __('app.label.overtime_out')) -->
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 

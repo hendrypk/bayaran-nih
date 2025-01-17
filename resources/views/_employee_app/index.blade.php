@@ -149,7 +149,7 @@
 
                     @if(empty($overtimeToday))
                         <div class="col-6">
-                            <a href="{{ route('overtime.create') }}" class="clickable-link">
+                            <a href="{{ route('overtime.in') }}" class="clickable-link">
                                 <div class="card checkin">
                                     <div class="card-body">
                                         <div class="presencecontent">
@@ -166,7 +166,7 @@
                         </div>
                     @elseif(!empty($overtimeToday->date) && !$overtimeToday->end_at)
                         <div class="col-6">
-                            <a href="{{ route('overtime.create') }}" class="clickable-link">
+                            <a href="{{ route('overtime.out') }}" class="clickable-link">
                                 <div class="card checkout">
                                     <div class="card-body">
                                         <div class="presencecontent">

@@ -418,6 +418,18 @@ function distance($lat1, $lon1, $lat2, $lon2){
         return view('_employee_app.overtime.overtime_in', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
     }
 
+    public function overtimeOut(){
+        $employeeId = Auth::id();
+        $employee = Employee::with('workDay')->findOrFail($employeeId);
+        // $workDay = $employee->workDay;
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude; 
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
+
+        return view('_employee_app.overtime.overtime_out', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
+    }
+
 // Overtime Store
     public function overtimeStore(Request $request){
         $employeeId = Auth::id();

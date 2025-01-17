@@ -12,7 +12,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">{{ __('general.label.name') }}</label>
                         <div class="col-sm-8">
-                            <select class="select=form" name="employee_id" id="selectEmployee" aria-label="Default select example" required>
+                            <select class="select-form" name="employee_id" id="selectEmployee" aria-label="Default select example" required>
                                 <option selected>{{ __('attendance.label.select_employee') }}</option>
                                 @foreach($employees as $employee)
                                     <option value="{{ $employee->id }}">{{ $employee->name }}</option>

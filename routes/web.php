@@ -364,7 +364,8 @@ Route::middleware(['auth:employee'])->group(function () {
     
     // Overtime Routes
     Route::prefix('overtime')->group(function () {
-        Route::get('/', [EmployeeAppController::class, 'overtime'])->name('overtime.create');
+        Route::get('/in', [EmployeeAppController::class, 'overtime'])->name('overtime.in');
+        Route::get('/out', [EmployeeAppController::class, 'overtimeOut'])->name('overtime.out');
         Route::post('/submit', [EmployeeAppController::class, 'overtimeStore'])->name('overtime.submit');
         Route::get('/history', [EmployeeAppController::class, 'overtimeHistory'])->name('overtime.history');
     });
