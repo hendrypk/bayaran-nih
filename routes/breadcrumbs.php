@@ -23,14 +23,22 @@ Breadcrumbs::for('employee_list', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('employee_detail', function (BreadcrumbTrail $trail, $employee) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
-    $trail->push(__('breadcrumb.employee_detail') . $employee->name , route('employee.list'));
+    $trail->push(__('breadcrumb.employee_detail'), route('employee.list'));
+});
+
+// Home > Employee List > Employee Detail > Edit
+Breadcrumbs::for('employee_edit', function (BreadcrumbTrail $trail, $employee) {
+    $trail->push(__('breadcrumb.home'), route('home'));
+    $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
+    $trail->push(__('breadcrumb.employee_detail'), route('employee.list'));
+    $trail->push(__('general.label.edit'), route('employee.list'));
 });
 
 // Home > Add Employee
 Breadcrumbs::for('add_employee', function (BreadcrumbTrail $trail) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
-    $trail->push(__('breadcrumb.add_employee'), route('employee.add'));
+    $trail->push(__('general.label.add'), route('employee.add'));
 });
 
 // Home > Employee Resignation

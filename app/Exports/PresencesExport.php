@@ -32,7 +32,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
     public function query()
     {
         return Presence::query()
-            ->with('employee')
+            ->with('employees')
             ->whereBetween('date', [$this->start, $this->end])
             ->when($this->employee_id, function ($query) {
                 $query->where('employee_id', $this->employee_id);
@@ -44,7 +44,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
         return [
             $this->rowNumber++,
             $row->eid,
-            $row->employee ? $row->employee->name : 'Unknown', // Nama karyawan
+            $row->employees ? $row->employees->name : 'Unknown', // Nama karyawan
             \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->date)), // Pastikan date dikonversi menjadi objek DateTime
             $row->check_in ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_in)) : '', // Check-in dikonversi jadi DateTime
             $row->check_out ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_out)) : '', // Check-out dikonversi jadi DateTime
@@ -53,6 +53,9 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
             $row->late_arrival, 
             $row->late_check_in,
             $row->check_out_early,
+            $row->leave,
+            $row->leave_note,
+            $row->leave_status,
         ];
     }
     
@@ -80,6 +83,9 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
                 __('late_arrival'),
                 __('late_check_in'),
                 __('check_out_early'),
+                __('leave'),
+                __('leave_note'),
+                __('leave_status'),
             ]
         ];
     }

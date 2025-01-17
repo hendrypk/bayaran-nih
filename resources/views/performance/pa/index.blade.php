@@ -51,7 +51,7 @@
                                     'employee_id' => $employee->id,
                                     'month' => $selectedMonth,
                                     'year' => $selectedYear]) }}"
-                                    class="btn btn-outline-primary">
+                                    class="btn btn-blue">
                                     <i class="ri-eye-fill"></i>
                                     </a>
                                 </td>
@@ -61,13 +61,13 @@
                                             'employee_id' => $employee->id,
                                             'month' => $selectedMonth,
                                             'year' => $selectedYear]) }}"
-                                            class="btn btn-outline-success">
+                                            class="btn btn-green">
                                             <i class="ri-edit-line"></i>
                                         </a>
                                     @endcan
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-outline-danger" 
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $grade->employee_id }}, '{{ $selectedMonth }}', '{{ $selectedYear }}', '{{ $grade->employees->name }}', 'KPI')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
@@ -141,7 +141,7 @@ function updatePa(appraisals) {
                 <td class="text-center">${index}</td> <!-- Nomor urut -->
                 <td>${appraisal.aspect}</td>
                 <td>
-                    <input type="text" class="form-control numeric-input" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
+                    <input type="text" class="input-form numeric-input" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
                 </td>
             </tr>
         `;

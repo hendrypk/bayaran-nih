@@ -12,7 +12,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.role') }}</h5>
                     <div class="ms-auto my-auto">
                         @can('create role')
-                            <a href="{{ route('role.create') }}" class="btn btn-untosca"> {{ __('option.label.add_role') }}</a>
+                            <a href="{{ route('role.create') }}" class="btn btn-tosca"> {{ __('option.label.add_role') }}</a>
                         @endcan
                     </div>
                 </div>
@@ -41,14 +41,14 @@
                              <td>
                                 @can('update role')
                                     <a href="{{ route('role.edit', $role->id) }}"
-                                        class="btn btn-tosca">
-                                        <i class="ri-edit-box-fill"></i>
+                                        class="btn btn-blue">
+                                        <i class="ri-eye-fill"></i>
                                     </a>
                                 @endcan
                             </td>
                             <td>
                                 @can('delete role')
-                                    <button type="button" class="btn btn-untosca" 
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $role->id }}, '{{ $role->name }}', 'role')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>

@@ -28,8 +28,12 @@ class Presence extends Model
         'photo_in',
         'photo_out',
         'location_in',
-        'location_out'
+        'location_out',
+        'leave',
+        'leave_status',
+        'leave_note',
     ];
+    
     protected $dates = ['deleted_at']; 
 
     // protected $casts = [
@@ -40,8 +44,13 @@ class Presence extends Model
         'late_arrival' => 'integer',
     ];
 
+    const LEAVE_ANNUAL = 'annual leave';
+    const LEAVE_SICK = 'sick';
+    const LEAVE_FULL_DAY_PERMIT = 'full day permit';
+    const LEAVE_HALF_DAY_PERMIT = 'half day permit';
+
     
-    public function employee()
+    public function employees()
     {
         return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }

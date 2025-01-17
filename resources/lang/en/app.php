@@ -26,7 +26,7 @@ return [
         'select_location' => 'Select location :',
         'note' => 'Note :',
     ],
-    'placeholder    ' => [
+    'placeholder' => [
         'enter_current_password' => 'Enter current password.',
         'enter_new_password' => 'Enter new password',
         'confirm_new_password' => 'Confirm new password',

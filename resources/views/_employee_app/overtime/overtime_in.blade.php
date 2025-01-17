@@ -9,12 +9,12 @@
 <div class="presence">
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('presence.submit') }}" method="POST">
+            <form action="{{ route('overtime.submit') }}" method="POST">
                     @csrf   
                     <div class="row mb-2">
                         <div class="col">
                             <div class="webcam-capture" id="webcam"></div>
-                            <img id="capturedImage" alt="Captured Image" style="display: none;"/>
+                            <img id="overtimeImage" alt="Captured Image" style="display: none;"/>
                         </div>
                     </div>
                     <div class="row">
@@ -29,43 +29,48 @@
                         </div>
                     </div>
 
-                    <div class="rekappresence">
-                        <div class="row mb-2">
-                            <div class="col-6">
-                                <div class="col-md-2">
-                                    <label for="">{{ __('app.label.select_shift') }}</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <select class="form-control" name="workDay" aria-label="Default select example">
-                                        @foreach($employee->workDay as $index => $workDay)
-                                            <option value="{{ $workDay->id }}">{{ $workDay->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="col-md-2">
-                                    <label for="">{{ __('app.label.select_location') }}</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <select class="form-control" name="officeLocations" aria-label="Default select example">
-                                        @foreach($employee->officeLocations as $index => $officeLocations)
-                                            <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="">{{ __('app.label.select_location') }}</label>
+                            <select class="form-control" name="officeLocations" aria-label="Default select example">
+                                @foreach($employee->officeLocations as $index => $officeLocations)
+                                    <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col">
+                        <div class="col-md-6">
                             <label for="note">{{ __('app.label.note') }}</label>
-                            <input type="text" class="form-control" name="note">                    
+                            <input type="text" class="form-control" name="note">
                         </div>
                     </div>
+
+                    
+                        {{-- <div class="rekappresence">
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <div class="col-md-2">
+                                        <label for="">{{ __('app.label.select_location') }}</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control" name="officeLocations" aria-label="Default select example">
+                                            @foreach($employee->officeLocations as $index => $officeLocations)
+                                                <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="note">{{ __('app.label.note') }}</label>
+                                <input type="text" class="form-control" name="note">                    
+                            </div>
+                        </div> --}}
+
                     <div class="row">
                         <div class="col">
-                            <button type="button" class="btn btn-tosca btn-block" id="take-presence">
+                            <button type="button" class="btn btn-tosca btn-block" id="take-overtime">
                             <ion-icon name="camera" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
                             </button>
                         </div>
@@ -148,23 +153,24 @@ document.addEventListener("DOMContentLoaded", function() {
     Webcam.attach('.webcam-capture');
 
     //handle presence submit
-    $('#take-presence').click(function (event) {
+    $('#take-overtime').click(function (event) {
     event.preventDefault(); 
 
     Webcam.snap(function (uri) {
-        $('#capturedImage').attr('src', uri);
+        $('#overtimeImage').attr('src', uri);
+        
         $.ajax({
-            url: '{{ route('presence.submit') }}', 
+            url: '{{ route('overtime.submit') }}', 
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}', 
                 image: uri, 
-                workDay: $('[name="workDay"]').val(), 
                 officeLocations: $('[name="officeLocations"]').val(), 
                 note: $('[name="note"]').val(), 
                 location: $('#location').val() 
             },
             success: function (response) {
+                console.log('Response Success:', response);
                 if (response.status === 'success') {
                     Swal.fire({
                         icon: 'success',

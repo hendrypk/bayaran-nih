@@ -30,28 +30,36 @@ class OptionsController extends Controller
 //position add
     function positionAdd(Request $request){
         $request->validate([
-            'position' => 'required|string|unique:positions,name,',
+            'name' => 'required|string|unique:positions,name,',
         ], [
-            'position.required' => 'Position Name is required',
-            'position.string' => 'Invalid Character',
-            'position.unique' => 'Position Name Already Exist'
+            'name.required' => 'Position Name is required',
+            'name.string' => 'Invalid Character',
+            'name.unique' => 'Position Name Already Exist'
         ]);
         
-        try {
-            Position::updateOrCreate(
-                ['id' => $request->id],[
-                    'name' => $request->position,
-                    'job_title_id' => $request->job_title_id,
-                    'division_id' => $request->division_id,
-                    'department_id' => $request->department_id
-                    ] 
-            );
+        Position::create([
+            'name' => $request->name,
+            'job_title_id' => $request->job_title_id,
+            'division_id' => $request->division_id,
+            'department_id' => $request->department_id
+        ]);
+        return redirect()->route('options.list')->with('success', 'Position added successfully.');
+
+        // try {
+        //     Position::updateOrCreate(
+        //         ['id' => $request->id],[
+        //             'name' => $request->name,
+        //             'job_title_id' => $request->job_title_id,
+        //             'division_id' => $request->division_id,
+        //             'department_id' => $request->department_id
+        //             ] 
+        //     );
     
-            return redirect()->route('options.list')->with('success', 'Position added successfully.');
+        //     return redirect()->route('options.list')->with('success', 'Position added successfully.');
     
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
-        }
+        // } catch (\Exception $e) {
+        //     return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+        // }
     }
 
 //position edit

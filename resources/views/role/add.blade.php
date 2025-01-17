@@ -15,7 +15,7 @@
             <!-- Role Name Input -->
             <div class="mb-3">
                 <label class="form-label fw-bold">{{ __('option.label.role_name') }}</label>
-                <input type="text" name="name" class="form-control" value="{{ $role->name ?? '' }}" required>
+                <input type="text" name="name" class="input-form" value="{{ $role->name ?? '' }}" required>
             </div>
         
             <!-- Permissions Table -->
@@ -54,13 +54,9 @@
                     </table>
                 </div>
             </div>
-            <div class="row mb-2 mt-3 justify-content-end">
-                <div class="d-grid col-1">
-                    <a href="{{ route('role.index') }}" class="btn btn-tosca">{{ __('general.label.back') }}</a>
-                </div>
-                <div class="d-grid col-1">
-                    <button type="submit" class="btn btn-untosca">{{ __('general.label.save') }}</button>
-                </div>
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('role.index') }}" class="btn btn-red me-3">{{ __('general.label.back') }}</a>
+                <button type="submit" name="action" class="btn btn-tosca">{{ __('general.label.save') }}</button>
             </div>
         </form>
         

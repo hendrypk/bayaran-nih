@@ -9,6 +9,9 @@ return [
     'system_error' => 'System error. Please contact admin',
     'overtime_in_success' => 'Your overtime in has been recorded!',
     'overtime_out_success' => 'Your overtime out has been recorded!',
+    'has_permit' => 'Today you have permit! So, you can can not check in.',
+    'note_required' => 'Note is required!',
+    'location_required' => 'Location is not detected. Check your connection or GPS!'
 
 
 ];

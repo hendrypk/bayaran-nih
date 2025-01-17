@@ -21,7 +21,7 @@
         @endcan
         
         @can('delete employee')
-        <button type="button" class="btn btn-untosca btn-sm" 
+        <button type="button" class="btn btn-red btn-sm" 
             onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
             <i class="ri-delete-bin-fill"></i>
         </button>

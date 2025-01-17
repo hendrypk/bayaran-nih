@@ -22,7 +22,7 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">EID</th>
+              <th scope="col">{{ __('employee.label.full_name') }}</th>
               <th scope="col">{{ __('employee.label.full_name') }}</th>
               <th scope="col">{{ __('employee.label.employee_status') }}</th>
               <th scope="col">{{ __('employee.label.position') }}</th>

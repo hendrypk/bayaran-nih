@@ -4,11 +4,16 @@
 <div class="col-lg-6">
     <div class="card">
         <div class="card-body">
-            <div class="modal-header">
+            <div class="card-header d-flex align-items-center py-0">
+                <div class="col-md-8">
+                    <h5 class="card-title">{{ __('performance.label.appraisal_detail') }}</h5>
+                </div>
+            </div>
+            {{-- <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="detailAppraisal">{{ __('performance.label.appraisal_detail') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+            </div> --}}
+            <div class="container">
                 <form action="{{ route('appraisal.update', ['appraisal_id' => $appraisal_id ]) }}" method="POST">
                     @csrf
                     <div class="row mb-3">
@@ -34,7 +39,7 @@
                                     <input type="text" class="form-control" name="appraisals[{{ $index }}][aspect]" value="{{ $appraisal->aspect }}" required>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-danger" 
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $appraisal->id }}, '{{ $appraisal->aspect }}', 'appraisal')">
                                     <i class="ri-delete-bin-fill"></i>
                                 </button>
@@ -44,11 +49,15 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        
                         <div class="col-md-9">
-                            <button type="button" id="addAppraisalBtn" class="btn btn-secondary">Add Appraisal</button>
+                            <button type="button" id="addAppraisalBtn" class="btn btn-tosca">{{ __('performance.label.add_appraisal') }}</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ route('kpi.pa.options.index') }}" class="btn btn-red me-3">{{ __('general.label.back') }}</a>
+                        <button type="submit" class="btn btn-tosca btn-sm">{{ __('general.label.save') }}</button>
+                    </div>
                 </form>
             </div>
     </div>
@@ -74,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" class="form-control" name="appraisals[${index}][aspect]" required>
                 </div>
                 <div class="col-2">
-                    <button type="button" class="btn btn-danger removeAppraisalBtn">
+                    <button type="button" class="btn btn-red removeAppraisalBtn">
                         <i class="ri-delete-bin-fill"></i>
                     </button>
                 </div>

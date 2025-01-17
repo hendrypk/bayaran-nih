@@ -18,16 +18,17 @@
                 <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
                 <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
                 <button type="submit" class="btn btn-tosca">
-                    <i class="ri-download-cloud-2-fill"></i>
+                    <i class="ri-download-cloud-2-fill"> {{ __('general.label.export') }}</i>
                 </button>
             </form>
         </div>
         @endcan
         <div class="form-container">
-            <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2"><i class="ri-file-upload-fill"></i></a>
+            <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2">
+                <i class="ri-file-upload-fill">{{ __('general.label.import') }}</i></a>
         </div>
         @can('create presence')
-        <button type="button" class="btn btn-untosca btn-sm"
+        <button type="button" class="btn btn-tosca btn-sm"
                 data-bs-toggle="modal" 
                 data-bs-target="#addPresence">
             <i class="ri-add-circle-line"></i>
@@ -103,8 +104,8 @@
                                     <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
                                 </td>                                       
                                 <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $data->employee->eid }}</td>
-                                <td>{{ $data->employee->name }}</td>
+                                <td>{{ $data->employees->eid }}</td>
+                                <td>{{ $data->employees->name }}</td>
                                 <td>{{ $data['work_day_id'] }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
                                 <td>{{ $data['check_in'] }}</td>
@@ -121,34 +122,34 @@
                                 <td>{{ $data['note_in']}}</td>
                                 <td>{{ $data['note_out'] }}</td>
                                 <td>
-                                    <button class="btn btn-primary" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
+                                    <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
                                         <i class="ri-road-map-line"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline-primary" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
+                                    <button class="btn btn-blue" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
                                         <i class="ri-road-map-line"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
-                                            <i class="ri-eye-line"></i>
+                                            <i class="ri-gallery-line"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_out']) }}')">
-                                            <i class="ri-eye-line"></i>
+                                            <i class="ri-gallery-line"></i>
                                     </button>
                                 </td>
                                 <td>
                                     @can('update presence')
-                                        <button type="button" class="btn btn-outline-success"
+                                        <button type="button" class="btn btn-green"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editPresence" 
                                                 data-id="{{ $data['id'] }}" 
-                                                data-name="{{ $data->employee->name }}"
+                                                data-name="{{ $data->employees->name }}"
                                                 data-date="{{ $data['date'] }}"
                                                 data-workDay="{{ $data['work_day_id'] }}"
                                                 data-checkin="{{ $data['check_in'] }}"
@@ -159,8 +160,8 @@
                                 </td>
                                 <td>
                                     @can('delete presence')
-                                    <button type="button" class="btn btn-outline-danger" 
-                                        onclick="confirmDelete({{ $data->id }}, '{{ $data->employee->name }}', 'presences')">
+                                    <button type="button" class="btn btn-red" 
+                                        onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employees->name) }}', 'presences')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
                                     @endcan
@@ -338,7 +339,7 @@ document.getElementById('employeeSelect').addEventListener('change', function ()
         if (selectedWorkDays.length > 1) {
             selectedWorkDays.forEach(function(workDay) {
                 var option = document.createElement('option');
-                option.value = workDay.name; // Set the value to the ID
+                option.value = workDay.id; // Set the value to the ID
                 option.text = workDay.name; // Display the name
                 workDaySelect.appendChild(option);
             });
@@ -349,7 +350,7 @@ document.getElementById('employeeSelect').addEventListener('change', function ()
             workDaySelect.value = selectedWorkDays[0].id; // Set to the ID
             workDaySelect.innerHTML = ''; // Clear previous options
             var option = document.createElement('option');
-            option.value = selectedWorkDays[0].name; // Set the value
+            option.value = selectedWorkDays[0].id; // Set the value
             option.text = selectedWorkDays[0].name; // Display the name
             workDaySelect.appendChild(option);
             workDaySelect.disabled = false; // Keep it enabled

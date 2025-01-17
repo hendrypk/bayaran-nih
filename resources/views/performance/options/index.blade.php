@@ -33,13 +33,13 @@
                                     <td>
                                         <a href="{{ route('indicator.detail', [
                                             'kpi_id' => $indicator->id,
-                                            ]) }}" class="btn btn-outline-primary">
+                                            ]) }}" class="btn btn-blue">
                                             <i class="ri-eye-fill"></i>
                                         </a>
                                     </td>
                                     <td>
                                         @can('delete pm')
-                                            <button type="button" class="btn btn-outline-danger" 
+                                            <button type="button" class="btn btn-red" 
                                                 onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->name }}', 'indicator')">
                                                 <i class="ri-delete-bin-fill"></i>
                                             </button>
@@ -88,7 +88,7 @@
                                         
                                         <a href="{{ route('appraisal.detail', [
                                             'appraisal_id' => $appraisal->id,
-                                            ]) }}" class="btn btn-outline-primary">
+                                            ]) }}" class="btn btn-blue">
                                             <i class="ri-eye-fill"></i>
                                         </a>
                                             {{-- <button type="button" 
@@ -102,7 +102,7 @@
                                         @endcan
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $appraisal->id }}, '{{ $appraisal->name }}', 'appraisal')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="number" class="form-control bobot-input" name="indicators[${index}][bobot]" required>
                 </div>
                 <div class="col-1">
-                    <button type="button" class="btn btn-danger removeIndicatorBtn">
+                    <button type="button" class="btn btn-red removeIndicatorBtn">
                         <i class="ri-delete-bin-fill"></i>
                     </button>
                 </div>

@@ -26,6 +26,7 @@ return [
         'status_name' => 'Nama Status',
         'location' => 'Lokasi',
         'radius' => 'Jarak',
+        'edit_position' => 'Ubah Posisi',
         'edit_division' => 'Ubah Divisi',
         'edit_department' => 'Ubah Departemen',
         'edit_status' => 'Ubah Status',
@@ -48,6 +49,7 @@ return [
         'exclude_break' => 'Kecualikan Istirahat',
         'cancel' => 'Batal',
         'submit' => 'Simpan',
+        'count_late' => 'Hitung Keterlambatan',
 
         'day' => [
             'monday' => 'Senin',
@@ -62,6 +64,7 @@ return [
         'role' => 'Peran',
         'add_role' => 'Tambah Peran',
         'edit_role' => 'Ubah Peran',
+        'detail_role' => 'Detil Peran',
         'add_new_role' => 'Tambah Peran Baru',
         'role_name' => 'Nama Peran',
         'role_permissions' => 'Hak Akses Peran',

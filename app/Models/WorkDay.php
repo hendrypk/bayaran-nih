@@ -25,6 +25,7 @@ class WorkDay extends Model
         'late_check_in',
         'late_arrival',
         'check_out_eraly',
+        'count_late',
     ];
     protected $dates = ['deleted_at']; 
 

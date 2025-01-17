@@ -57,7 +57,7 @@
                                         <td class="text-center">{{ $no+1 }}</td>
                                         <td class="text-start">{{ $gradePa->appraisal->aspect }}</td>
                                         <td class="text-center">
-                                            <input type="text" class="form-control numeric-input" name="grades[{{ $gradePa->id }}]" id="grade_{{ $gradePa->id }}" min="0" max="100" required value="{{ $gradePa->grade }}">
+                                            <input type="text" class="input-form numeric-input" name="grades[{{ $gradePa->id }}]" id="grade_{{ $gradePa->id }}" min="0" max="100" required value="{{ $gradePa->grade }}">
                                         </td>
                                     </tr>
                                 @endforeach
@@ -73,10 +73,10 @@
                         @endforeach --}}
                         <div class="row mb-2 mt-3 justify-content-end">
                             <div class="d-grid gap-2 col-2">
-                                <a href="{{ url()->previous() }}" class="btn btn-tosca">{{ __('general.label.back') }}</a>
+                                <a href="{{ url()->previous() }}" class="btn btn-red">{{ __('general.label.back') }}</a>
                             </div>
                             <div class="d-grid gap-2 col-2">
-                                <button type="submit" class="btn btn-untosca">{{ __('general.label.save') }}</button>
+                                <button type="submit" class="btn btn-tosca">{{ __('general.label.save') }}</button>
                             </div>
                         </div>
                     </form>

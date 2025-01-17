@@ -20,6 +20,9 @@ class Overtime extends Model
         'start_at',
         'end_at',
         'total',
+        'status',
+        'note_in', 'note_out' ,
+        'location_in', 'location_out', 'photo_in', 'photo_out'
     ];
     protected $dates = ['deleted_at']; 
 

@@ -15,7 +15,7 @@
         @endcan
         
         @can('delete employee')
-        <button type="button" class="btn btn-untosca btn-sm" 
+        <button type="button" class="btn btn-red btn-sm" 
             onclick="confirmDelete({{ $employee->id }}, '{{ $employee->name }}', 'employee')">
             <i class="ri-delete-bin-fill"></i>
         </button>
@@ -27,7 +27,7 @@
     <div class="col-md-2 mt-3">
         <div class="card card-body">
             <div class="align-items-start">
-                <div class="nav flex-column nav-pills me-3 mt-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <div class="nav flex-column nav-pills mt-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#biodata" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">{{ __('employee.label.biodata') }}</button>
                     <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">{{ __('employee.label.staffing') }}</button>
                     <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#career" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.career') }}</button>
@@ -166,7 +166,7 @@
                                     <label for="username">{{ __('employee.label.username') }}</label>
                                 </div>
                                 <div class="col-lg-4 col-md-3 col-sm-2">
-                                    <input type="text" name="username" class="form-control" value="{{ $employee->username }}">
+                                    <input type="text" name="username" class="input-form" value="{{ $employee->username }}">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -174,7 +174,7 @@
                                     <label for="password">{{ __('employee.label.password') }}</label>
                                 </div>
                                 <div class="col-lg-4 col-md-3 col-sm-2">
-                                    <input id="password" class="form-control" type="password" name="password">
+                                    <input id="password" class="input-form" type="password" name="password">
                                 </div>
                             </div>
                             <div class="row mb-3">

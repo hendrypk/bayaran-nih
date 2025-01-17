@@ -308,9 +308,9 @@ Route::middleware(['auth:web'])->group(function () {
     
     Route::group(['middleware' => ['permission:view leave']], function() {
         Route::prefix('leaves')->group(function () {
-            Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
-            Route::post('submit', [LeaveController::class, 'store'])->name('leaves.create');
-            Route::post('{id}/delete', [LeaveController::class, 'delete'])->name('leaves.delete');
+            Route::get('', [LeaveController::class, 'ind'])->name('leaves.index');
+            Route::post('submit', [LeaveController::class, 'save'])->name('leaves.create');
+            Route::post('{id}/delete', [LeaveController::class, 'destroy'])->name('leaves.delete');
         });
     });
 

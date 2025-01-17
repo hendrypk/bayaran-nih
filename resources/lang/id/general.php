@@ -53,5 +53,10 @@ return [
         'total' => 'Total',
         'qty' => 'Jumlah',
         'select_all' => 'Pilih Semua',
+        'import' => 'Impor',
+        'export' => 'Ekspor',
+        'yes' => 'Ya',
+        'no' => 'Tidak',
+        'pending' => 'Tertunda',
     ]
 ];

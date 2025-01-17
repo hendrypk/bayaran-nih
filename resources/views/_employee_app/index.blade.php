@@ -77,7 +77,24 @@
         <div class="section mt-2" id="presence-section">
             <div class="todaypresence">
                 <div class="row">
-                    @if(empty($presenceToday))
+                    @if(!empty($presenceToday->leave))
+                    <div class="col-6">
+                        <a href="javascript:void(0);" onclick="showAlert('has permit')">
+                            <div class="card checkin">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">You Have Permit</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @elseif(empty($presenceToday))
                         <div class="col-6">
                             <a href="{{ route('presence.in') }}" class="clickable-link">
                                 <div class="card checkin">
@@ -190,7 +207,8 @@
                     <div class="presence-summary-title mb-3">
                         {{ __('app.label.attendance_chart') }}
                     </div>
-                    <div id="chart"></div>
+                    <canvas id="attendanceChart" width="400" height="200"></canvas>
+                    {{-- <div id="chart"></div> --}}
                 </div>
             </div>
 
@@ -211,7 +229,10 @@ function showAlert(type) {
     let message = '';
     
     // Tentukan pesan berdasarkan tipe
-    if (type === 'check in') {
+    if (type === 'has permit') {
+    message = messages.has_permit;
+    }
+    else if (type === 'check in') {
     message = messages.already_check_in;
     } else if (type === 'check out') {
         message = messages.already_check_out;
@@ -240,150 +261,44 @@ function showAlert(type) {
     });
 }
 
+
     document.addEventListener("DOMContentLoaded", () => {
         // Data dari controller
         const category = @json($chartData['labels']); // Ambil bulan dalam format string
         const presence = @json($chartData['data']); // Ambil total quantity
-        const colors = ['#118ab2', '004cda', '#f29c11', '#323335', '#8e44ad', '#d8315b'];
+        const colors = ['#118ab2'];
         const total = presence.reduce((acc, value) => acc + value, 0);
 
-        // Render chart dengan data dari database
-        new ApexCharts(document.querySelector("#chart"), {
-            chart: {
-                type: 'donut',
-                height: 160,
-                toolbar: {
-                    show: false
-                },
+        var ctx = document.getElementById('attendanceChart').getContext('2d');
+        var educationChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: category,
+
+                datasets: [{
+                    data: presence, 
+                    backgroundColor: '#118ab2', 
+                    borderColor: '#118ab2',
+                    borderWidth: 1
+                }]
             },
-            markers: {
-                size: 4
-            },
-            colors: colors,
-            fill: {
-                type: "gradient",
-                gradient: {
-                    shadeIntensity: 1,
-                    opacityFrom: 0.7,
-                    opacityTo: 0.9,
-                    stops: [0, 90, 100]
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2
-            },
-            series: presence,
-            labels: category,
-            plotOptions: {
-                pie: {
-                    donut: {
-                        labels: {
-                            show: true,
-                            name: {
-                                show: true,
-                                fontSize: '16px',
-                                color: '#333',
-                                fontFamily: 'Arial, sans-serif',
-                                offsetY: -10,
-                            },
-                            value: {
-                                show: true,
-                                fontSize: '20px',
-                                fontWeight: 600,
-                                color: '#118ab2',
-                                fontFamily: 'Arial, sans-serif',
-                                formatter: function (value, opts) {
-                                    // Menampilkan nilai spesifik dari label yang dipilih
-                                    const seriesIndex = opts.seriesIndex; // Mendapatkan index dari data
-                                    const seriesValue = opts.w.globals.series[seriesIndex]; // Nilai data tersebut
-                                    return seriesValue; // Menampilkan nilai spesifik
-                                },
-                            },
-                            total: {
-                                show: true,
-                                label: 'Total',
-                                fontSize: '14px',
-                                fontWeight: 400,
-                                color: '#118ab2',
-                                formatter: () => total, // Tetap menampilkan total di tengah grafik
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.raw; 
                             }
                         }
-                    }
-                }
+                    },
+                },
             }
-
-            // series: [{
-            //     name: '',
-            //     data: presence // Gunakan data qty
-            // }],
-            // chart: {
-            //     height: 150,
-            //     type: 'bar',
-            //     toolbar: {
-            //         show: false
-            //     },
-            // },
-            // markers: {
-            //     size: 4
-            // },
-            // colors: ['#118ab2'],
-            // fill: {
-            //     type: "gradient",
-            //     gradient: {
-            //         shadeIntensity: 1,
-            //         opacityFrom: 0.3,
-            //         opacityTo: 0.4,
-            //         stops: [0, 90, 100]
-            //     }
-            // },
-            // dataLabels: {
-            //     enabled: false
-            // },
-            // stroke: {
-            //     curve: 'smooth',
-            //     width: 2
-            // },
-            // xaxis: {
-            //     type: 'category', // Kategori x-axis adalah tipe kategori
-            //     categories: category // Data bulan dalam format string
-            // },
-            // tooltip: {
-            //     x: {
-            //         format: 'MMMM' // Format tooltip untuk menampilkan bulan penuh
-            //     },
-            // }
-        }).render();
+        });
     });
-
-
-
-//Chart
-// var ctx = document.getElementById('presenceChart').getContext('2d');
-//     var presenceChart = new Chart(ctx, {
-//         type: 'bar', // Chart type is bar
-//         data: {
-//             labels: @json($chartData['labels']), // Labels for the X-axis
-//             datasets: [{
-//                 label: 'Presence Summary',
-//                 data: @json($chartData['data']), // Data for the chart
-//                 backgroundColor: 'rgba(54, 162, 235, 0.2)', // Bar color
-//                 borderColor: 'rgba(54, 162, 235, 1)', // Bar border color
-//                 borderWidth: 1
-//             }]
-//         },
-//         options: {
-//             scales: {
-//                 y: {
-//                     beginAtZero: true
-//                 }
-//             }
-//         }
-//     });
-
 </script>
 
 

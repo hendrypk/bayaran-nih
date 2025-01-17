@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-3 d-flex justify-content-end">
         @can('create leave')
-        <button type="button" class="btn btn-untosca btn-sm"
+        <button type="button" class="btn btn-tosca btn-sm"
                 data-bs-toggle="modal" 
                 data-bs-target="#addLeave">
             <i class="ri-add-circle-line"></i>
@@ -52,20 +52,20 @@
                                 <td>{{ $leave->employees->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($leave->created_at)->format('d F Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($leave->date)->format('d F Y') }}</td>
-                                <td>{{ $leave->category }}</td>
-                                <td>{{ $leave->note }}</td>
+                                <td>{{ ucfirst($leave->leave) }}</td>
+                                <td>{{ $leave->leave_note }}</td>
                                 <td>
-                                    @if ($leave->status === 0)
-                                    <i class="status-leave wait ri-rest-time-line"></i>
-                                    @elseif ($leave->status === 1)
-                                        <i class="status-leave accept ri-check-double-fill"></i>
-                                    @elseif ($leave->status === 2)
+                                    @if ($leave->leave_status === 0)
                                     <i class="status-leave reject ri-close-fill"></i>
+                                    @elseif ($leave->leave_status === 1)
+                                        <i class="status-leave accept ri-check-double-fill"></i>
+                                    @else
+                                    <i class="status-leave wait ri-rest-time-line"></i>
                                     @endif
                                 </td>
                                 <td>
                                     @can('update leave')
-                                        <button type="button" class="btn btn-outline-success"
+                                        <button type="button" class="btn btn-green"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#overtimeEdit" 
                                             data-id="{{ $leave->id }}" 
@@ -74,15 +74,15 @@
                                             data-date="{{ $leave->date }}"
                                             data-start="{{ $leave->start_date }}"
                                             data-end="{{ $leave->end_date }}"
-                                            data-category="{{ $leave->category }}"
-                                            data-note="{{ $leave->note }}">
+                                            data-category="{{ $leave->leave }}"
+                                            data-note="{{ $leave->leave_note }}">
                                             <i class="ri-edit-line"></i>
                                         </button>
                                     @endcan                                
                                 </td>
                                 <td>
                                     @can('delete leave')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leaves')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>                                            

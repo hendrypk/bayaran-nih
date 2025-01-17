@@ -5,6 +5,15 @@
 @import url("https://fonts.googleapis.com/css?family=Inter:400,500,700&display=swap");
 :root {
   --tosca: #118ab2;
+  --tosca-hover : linear-gradient(to bottom, #00D4FF, #006699); 
+  --tosca-gradient : linear-gradient(to bottom, #00B4DB, #0083B0);
+  --red-hover : linear-gradient(to bottom, #FF7F7F, #B71C1C); 
+  --red-gradient : linear-gradient(to bottom, #FF5F5F, #D32F2F); 
+  --body-background-color : #f6f9ff;
+  --text-color: #212529;
+  --border-color: #dee2e6;
+  --border-width: 5px;
+  --border-radius: 10px;
 }
 
 body {
@@ -918,6 +927,14 @@ button:focus {
   margin-left: -8px;
   margin-right: -8px;
 }
+
+@media (max-width: 767.98px) { /* Untuk layar di bawah 768px (Mobile) */
+  .row > .col-md-6 {
+      flex: 0 0 50%; /* Atur lebar menjadi 50% */
+      max-width: 50%; /* Pastikan maksimal lebar tetap 50% */
+  }
+}
+
 
 .col-1,
 .col-2,
@@ -2004,14 +2021,14 @@ a.badge-dark {
   /* background: #ffffff; */
   /* border-radius: 6px;
   border: 8px; */
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.3 );
 }
 
 .card .card-body {
   padding: 24px 16px;
   line-height: 1.4em;
   border-radius: 5px; 
-  box-shadow: 1px 3px 6px grey;
+  /* box-shadow: 1px 3px 6px grey; */
 }
 
 .card .card-title {
@@ -8283,28 +8300,29 @@ body.dark-mode-active .cart-item .cart-item-footer {
   transition: background 0.3s; 
 } */
 
-.checkin {
+.card.checkin {
   color: white;
-  background:  linear-gradient(to right, #118ab2, #06b6d4); 
-  border-radius: 5px; 
+  background:  var(--tosca-gradient);
+  /* background:  linear-gradient(to right, #118ab2, #06b6d4);  */
+  border-radius: 10px; 
   transition: background 0.3s; 
 }
 
 .checkin:hover {
-  background: linear-gradient(to right, #06b6d4, #118ab2); 
+  background: var(--tosca-hover);
+  /* background: linear-gradient(to right, #06b6d4, #118ab2);  */
 }
 
-.checkout {
+.card.checkout {
   color: white;
-  background: linear-gradient(135deg, #EF476F, #cb1e6f);
-  border-radius: 5px; 
+  background: var(--red-gradient);
+  border-radius: 10px; 
   transition: background 0.3s; 
 }
 
 .checkout:hover {
-  background: linear-gradient(135deg, #cb1e6f, #EF476F); 
+  background: var(--red-hover);
 }
-
 
 .form-label {
   margin-bottom: 0.5rem;
