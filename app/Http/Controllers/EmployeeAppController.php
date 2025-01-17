@@ -102,8 +102,8 @@ public function presenceOut(){
     $today = Carbon::today()->toDateString();
     $existPresence = Presence::where('employee_id', $employeeId)->where('date', $today)->first();
 
-    $workDayName = WorkDay::find($existPresence->work_day_id)->first()->name;
     $workDay = $existPresence->work_day_id;
+    $workDayName = WorkDay::find($workDay)->first()->name;
 
     $lokasi = $employee->officeLocations->first();
     $officeLatitude = $lokasi->latitude; 

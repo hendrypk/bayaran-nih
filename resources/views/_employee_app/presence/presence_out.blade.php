@@ -35,7 +35,7 @@
                                     <label for="">{{ __('app.label.select_shift') }}</label>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="text" class="form-control" value="{{ $workDayName }}" name="" readonly>
+                                    <input type="text" class="form-control" value="{{ $workDayName ?? '-'}}" name="" readonly>
                                     <input type="hidden" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
                                 </div>
                             </div>
