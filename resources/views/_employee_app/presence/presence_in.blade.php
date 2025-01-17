@@ -59,8 +59,8 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="note">{{ __('app.label.note') }}</label>
-                            <input type="text" class="form-control" name="note">                    
+                            {{-- <label for="note">{{ __('app.label.note') }}</label> --}}
+                            <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
                     </div>
                     <div class="row">

@@ -372,8 +372,8 @@ function confirmDelete(id, name, entity) {
             showCancelButton: true,
             confirmButtonColor: '',
             cancelButtonColor: '',
+            cancelButtonText: 'Cancel',
             confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch(`/${entity}/${id}/delete`, { 

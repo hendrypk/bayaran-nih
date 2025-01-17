@@ -5,6 +5,7 @@
   --tosca: #118ab2;
   --tosca-hover : linear-gradient(to bottom, #00D4FF, #006699); 
   --tosca-gradient : linear-gradient(to bottom, #00B4DB, #0083B0);
+  --red : #D32F2F;
   --red-hover : linear-gradient(to bottom, #FF7F7F, #B71C1C); 
   --red-gradient : linear-gradient(to bottom, #FF5F5F, #D32F2F); 
   --body-background-color : #f6f9ff;
@@ -1306,37 +1307,69 @@ table.datatable-table:focus {
 
 /* Change the button colors */
 .swal2-cancel {
-  background: linear-gradient(to right, #118ab2, #06b6d4); 
+  background: linear-gradient(to bottom, #FF5F5F, #D32F2F); 
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px; 
+  border: none;
+  border-radius: 20px; 
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* background: linear-gradient(to right, #118ab2, #06b6d4); 
   color: #fff; 
   padding: 10px 20px; 
   border-radius: 5px; 
   border: none; 
-  transition: background 0.3s ease; 
+  transition: background 0.3s ease;  */
 }
 
 /* Optional: Add hover effect */
 .swal2-cancel:hover {
-  color: #118ab2;
+  background: linear-gradient(to bottom, #FF7F7F, #B71C1C); 
+  color: var(--red); 
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
+  transform: scale(1.05);
+  /* color: #118ab2;
   background: #fff; 
   padding: 10px 20px; 
   border-radius: 5px; 
   border: 2px solid #118ab2; 
-  transition: background 0.3s ease; 
+  transition: background 0.3s ease;  */
 }
 
-
 .swal2-confirm {
-  background-color: #fff; 
+  background: linear-gradient(to bottom, #00B4DB, #0083B0); 
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px; 
+  border: none;
+  border-radius: 20px; 
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #fff; 
   color: #118ab2; 
   padding: 8px 20px;
   border-radius: 5px;
-  border: 2px solid #118ab2;
+  border: 2px solid #118ab2; */
 }
 
 .swal2-confirm:hover {
-  
-  background-color: #0f7f9e; 
-  color: #fff;
+  background: linear-gradient(to bottom, #00D4FF, #006699); 
+  color: var(--tosca); 
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
+  transform: scale(1.05);
+  /* background-color: #0f7f9e; 
+  color: #fff; */
 }
 
 /* Change the color of the warning icon */

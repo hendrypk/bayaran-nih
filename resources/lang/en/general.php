@@ -58,5 +58,8 @@ return [
         'yes' => 'Yes',
         'no' => 'No',
         'pending' => 'Pending',
+    ],
+    'placeholder' => [
+        'note' => 'Note should be type here...',
     ]
 ];
