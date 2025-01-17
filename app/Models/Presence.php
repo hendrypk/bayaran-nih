@@ -42,6 +42,7 @@ class Presence extends Model
 
     protected $casts = [
         'late_arrival' => 'integer',
+        'date' => 'date',
     ];
 
     const LEAVE_ANNUAL = 'annual leave';

@@ -106,7 +106,7 @@
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $data->employees->eid }}</td>
                                 <td>{{ $data->employees->name }}</td>
-                                <td>{{ $data['work_day_id'] }}</td>
+                                <td>{{ $data->workDay->name ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
                                 <td>{{ $data['check_in'] }}</td>
                                 <td>{{ $data['check_out'] }}</td>

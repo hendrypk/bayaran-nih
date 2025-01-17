@@ -324,8 +324,8 @@
           </div>
           
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-tosca me-3" onclick="window.history.back();">{{ __('general.label.back') }}</button>
-            <button type="submit" name="action" class="btn btn-untosca me-3">{{ __('general.label.update') }}</button>
+            <button type="button" class="btn btn-red me-3" onclick="window.history.back();">{{ __('general.label.back') }}</button>
+            <button type="submit" name="action" class="btn btn-tosca me-3">{{ __('general.label.update') }}</button>
           </div>
 
             {{-- <div class="d-flex justify-content-end">
