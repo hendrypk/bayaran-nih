@@ -137,22 +137,24 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-    //display webcam
-    Webcam.set({
-        height: 480,
-        width: 480,
-        image_format: 'jpeg',
-        flip_horiz: true,
-        jpeg_quality: 80
-    });
-    Webcam.attach('.webcam-capture');
+//display webcam
+Webcam.set({
+    height: 480,
+    width: 480,
+    image_format: 'jpeg',
+    flip_horiz: true,
+    jpeg_quality: 80
+});
 
-    //handle presence submit
-    $('#take-presence').click(function (event) {
+Webcam.attach('.webcam-capture');
+
+//handle presence submit
+$('#take-presence').click(function (event) {
     event.preventDefault(); 
-
+    
     Webcam.snap(function (uri) {
         $('#capturedImage').attr('src', uri);
+
         $.ajax({
             url: '{{ route('presence.submit') }}', 
             type: 'POST',

@@ -133,10 +133,15 @@ public function index(Request $request){
         $date = Carbon::parse($request->date);
         $today = strtolower($date->format('l'));
         $workDayId = $request->workDay;
-        $workDay = WorkDay::find($workDayId)->where('day', $today)->first();
+
+        $workDayData = WorkDay::find($workDayId);
+        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
+
+        // $workDay = WorkDay::find($workDayId)->where('day', $today)->first();
         $checked_in = $request->checkin;
         $cheked_out = $request->checkout;
         $day_off = $workDay->day_off;
+        // dd($workDayId, $date, $today, $workDay->toArray(), $day_off);
         $break = $workDay->break;
         $isCountLate = $workDay->count_late;
         $isEmployeeLeave = Presence::where('date', $date)
@@ -178,7 +183,7 @@ public function index(Request $request){
 
         if($checked_in && $check_in) {
             switch(true) {
-                case $noCountLate:
+                case $isCountLate == 0:
                     $lateCheckIn = 0;
                     $lateArrival = 0;
                     break;
@@ -214,7 +219,7 @@ public function index(Request $request){
             $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
 
             switch(true) {
-                case $noCountLate:
+                case $isCountLate == 0:
                     $checkOutEarly = 0;
                     break;
 
@@ -285,7 +290,9 @@ public function index(Request $request){
         $employees = Employee::get();
         $date = Carbon::parse($request->date);
         $today = strtolower($date->format('l'));
-        $workDay = WorkDay::find($presence->work_day_id)->where('day', $today)->first();
+        // $workDay = WorkDay::find($presence->work_day_id)->where('day', $today)->first();
+        $workDayData = WorkDay::find($presence->work_day_id);
+        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
         $isCountLate = $workDay->count_late;
@@ -319,7 +326,7 @@ public function index(Request $request){
 
         if($checked_in && $check_in) {
             switch(true) {
-                case $noCountLate:
+                case $isCountLate == 0:
                     $lateCheckIn = 0;
                     break;
 
@@ -343,7 +350,7 @@ public function index(Request $request){
 
         if($checked_out && $check_out){
             switch(true) {
-                case $noCountLate:
+                case $isCountLate == 0:
                     $checkOutEarly = 0;
                     break;
 

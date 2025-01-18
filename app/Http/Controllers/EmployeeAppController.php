@@ -13,6 +13,7 @@ use App\Models\OfficeLocation;
 use App\Traits\PresenceSummaryTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class EmployeeAppController extends Controller
@@ -103,7 +104,7 @@ public function presenceOut(){
     $existPresence = Presence::where('employee_id', $employeeId)->where('date', $today)->first();
 
     $workDay = $existPresence->work_day_id;
-    $workDayName = WorkDay::find($workDay)->first()->name;
+    $workDayName = WorkDay::where('id', $workDay)->first()->name;
 
     $lokasi = $employee->officeLocations->first();
     $officeLatitude = $lokasi->latitude; 
@@ -169,6 +170,8 @@ function distance($lat1, $lon1, $lat2, $lon2){
             'location.required' => __('messages.location_required'),
         ]);
 
+
+
         //Get employee data
         $employeeId = Auth::id();
         $eid = Auth::user()->eid;
@@ -176,10 +179,23 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $employee = Employee::with('workDay')->findOrFail($employeeId);
         $date = Carbon::parse(now()->toDateString());
         $today = strtolower($date->format('l'));
-        $workDay = WorkDay::find($request->workDay)->where('day', $today)->first();
+
+
+        $workDayData = WorkDay::find($request->workDay);
+        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
         $isCountLate = $workDay->count_late;
+
+
+        // \Log::info('Data $isCountLate:', ['workDay' => $request->workDay, 'today' => $today, 'workDayData'=>$workDayData, 'workDay' => $workDay, ]);
+
+        // dd([
+        //     'employee' => $employee,
+        //     'workDay' => $workDay,
+        //     'today' => $today,
+        //     'date' => $date->toDateString()
+        // ]);
         
         //Get photo data
         $request->validate([
@@ -235,6 +251,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $break_out =  $workDay ? $parseTime($workDay->break_out) : null;
         $excldueBreak = $break == 1;
         $noCountLate = $isCountLate == 0;
+        
 
         //Break Duration
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
@@ -248,7 +265,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
         
         if($now && $check_in) {
             switch(true) {
-                case $noCountLate:
+                case $isCountLate == 0:
                     $lateCheckIn = 0;
                     $lateArrival = 0;
                     break;
@@ -318,18 +335,27 @@ function distance($lat1, $lon1, $lat2, $lon2){
         
                 // Case when the employee has checked in but not checked out (Check-out)
                 case !is_null($presence->check_in) && is_null($presence->check_out):
-                    $lastedWorkDay = $presence->work_day_id;
-                    $lastWorkDay = WorkDay::find($lastedWorkDay)->where('day', $today)->first();
+                    $workDayId = $presence->work_day_id;
+                    $lastWorkDayData = WorkDay::find($workDayId);
+                    $lastWorkDay = WorkDay::where('name', $lastWorkDayData->name)->where('day', $today)->first();
+                    // $lastWorkDay = WorkDay::find($lastedWorkDay)->where('day', $today)->first();
                     $forCheckIn = $lastWorkDay->check_in;
                     $forCheckOut = $lastWorkDay->check_out;
                     $break = $lastWorkDay->break;
                     
+
+        \Log::info('Data $isCountLate:', ['forCheckOut' => $forCheckOut, 'noCountLate' => $noCountLate]);
+
+
+        // $workDayData = WorkDay::find($request->workDay);
+        // $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
+// dd($lastWorkDay);
                     if($now && $check_out){
-                        $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
-                        $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
+                        // $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
+                        // $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
             
                         switch(true) {
-                            case $noCountLate:
+                            case $isCountLate == 0:
                                 $checkOutEarly = 0;
                                 break;
 
