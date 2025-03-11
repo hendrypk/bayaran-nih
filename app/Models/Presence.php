@@ -40,10 +40,10 @@ class Presence extends Model
     //     'date' => 'date',
     // ];
 
-    protected $casts = [
-        'late_arrival' => 'integer',
-        'date' => 'date',
-    ];
+    // protected $casts = [
+    //     'late_arrival' => 'integer',
+    //     'date' => 'date',
+    // ];
 
     const LEAVE_ANNUAL = 'annual leave';
     const LEAVE_SICK = 'sick';

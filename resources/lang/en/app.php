@@ -25,6 +25,7 @@ return [
         'select_shift' => 'Select shift :',
         'select_location' => 'Select location :',
         'note' => 'Note :',
+        'have_permit' => 'You have permit',
     ],
     'placeholder' => [
         'enter_current_password' => 'Enter current password.',

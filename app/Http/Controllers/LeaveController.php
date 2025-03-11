@@ -14,6 +14,8 @@ class LeaveController extends Controller
 //Index
 
 public function ind (Request $request) {
+    // $query = Presence::whereNotNull('leave');
+
     $query = Presence::whereNotNull('leave');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
@@ -112,31 +114,41 @@ public function save (Request $request) {
     $leaveDates = array_map('trim', $leaveDates);
     $category = $request->input('category');
     $note = $request->input('note');
-        $action = $request->input('action');switch ($action) {
-            case 'accept':
-                $status = 1;
-                break;
-            case 'reject':
-                $status = 0;
-                break;
-            default:
-                $status = null; 
-                break;
+    $action = $request->input('action');switch ($action) {
+        case 'accept':
+            $status = 1;
+            break;
+        case 'reject':
+            $status = null;
+            break;
+        default:
+            $status = null; 
+            break;
         }
-        
 
-        $employee_name = Employee::where('id', $employeeId)->first();
-        $name = $employee_name->name;
-        $eid = $employee_name->eid;
+    $employee_name = Employee::where('id', $employeeId)->first();
+    $name = $employee_name->name;
+    $eid = $employee_name->eid;
 
-        $existLeave = Presence::where('employee_id', $employeeId)
-                        ->whereIn('date', $leaveDates)
-                        ->whereNotNull('leave')
-                        ->pluck('date')->toArray();
-                            // dd($existLeave);
-        if(count($existLeave) > 0 && is_null($status)) {
+    $existPresence = Presence::where('employee_id', $employeeId)
+        ->whereIn('date', $leaveDates)
+        ->whereNotNull('check_in')
+        ->pluck('date')->toArray();
+
+    // dd($leaveDates, $existPresence);
+
+    if($existPresence) {
+        return redirect()->back()->withErrors('Karyawan hadir pada tanggal tersebut. Silahkan hapus presensi untuk menyetujui ijin.');
+    }
+
+    $existLeave = Presence::where('employee_id', $employeeId)
+        ->whereIn('date', $leaveDates)
+        ->whereNotNull('leave')
+        ->pluck('date')->toArray();
+        // dd($existLeave);
+    if(count($existLeave) > 1) {
         return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
-        }
+    }
 
     $request->validate([
         'employee_id' => 'required',
@@ -169,7 +181,7 @@ public function save (Request $request) {
         $category = $request->input('category');
         $note = $request->input('note');
         $action = $request->input('action');
-        $status = ($action === 'accept') ? 1 : (($action === 'reject') ? 2 : 0);
+        $status = ($action === 'accept') ? 1 : 0;
     
         $employee_name = Employee::where('id', $employeeId)->first();
         $name = $employee_name->name;
@@ -179,7 +191,7 @@ public function save (Request $request) {
                            ->pluck('date')->toArray();
                             
         if(count($existLeave) > 0 && $status === '') {
-        return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+            return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
         }
 
         $request->validate([
@@ -188,15 +200,24 @@ public function save (Request $request) {
             'note' => 'required'
         ]);
 
+        $existPresence = Presence::where('employee_id', $employeeId)
+            ->whereIn('date', $leaveDates)
+            ->whereNotNull('check_in')
+            ->pluck('date')->toArray();
+
+        if($existPresence) {
+            return redirect()->back()->withErrors('Karyawan hadir pada tanggal tersebut. Silahkan hapus presensi untuk menyetujui ijin.');
+        }
+
         foreach ($leaveDates as $date) {
             $leaves = Leave::updateOrCreate(
                 ['id' => $id 
             ], [    
-                'status' => $status,
                 'employee_id' => $employeeId,
                 'date' => $date,
                 'category' => $category,
                 'note' => $note,
+                'status' => $status,
             ]);
         }
 
@@ -206,7 +227,10 @@ public function save (Request $request) {
 //Delete
 public function destroy ($id) {
     $leave = Presence::findOrFail($id);
-    $leave->delete();
+    $leave->update([
+        'leave' => null,
+        'leave_status' => null,
+    ]);
     return response()->json([
         'success' => true,
         'message' => 'Leave has been deleted.',

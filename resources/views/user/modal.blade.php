@@ -52,7 +52,7 @@
                         <label class="col-sm-4 col-form-label">{{ __('employee.label.division') }}</label>
                         <div class="col-sm-8">
                             <select class="select-form" name="division" id="division" aria-label="Default select example">
-                                <option value="" disabled selected>{{ __('employee.placeholders.select_division') }}</option>
+                                <option value="" selected>{{ __('employee.placeholders.select_division') }}</option>
                                 @foreach($divisions as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                 @endforeach
@@ -64,7 +64,7 @@
                         <label class="col-sm-4 col-form-label">{{ __('employee.label.department') }}</label>
                         <div class="col-sm-8">
                             <select class="select-form" name="department" id="department" aria-label="Default select example">
-                                <option value="" disabled selected>{{ __('employee.placeholders.select_department') }}</option>
+                                <option value="" selected>{{ __('employee.placeholders.select_department') }}</option>
                                 @foreach($departments as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                 @endforeach

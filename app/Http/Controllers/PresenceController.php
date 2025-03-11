@@ -22,7 +22,7 @@ class PresenceController extends Controller
 
 //Presences List
 public function index(Request $request){
-    $query = Presence::with('employees')->whereNull('leave');
+    $query = Presence::with('employees')->whereNull('leave_status')->whereNotNull('work_day_id');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
     $defaultEndDate = $today->toDateString();
@@ -32,15 +32,15 @@ public function index(Request $request){
     $userDepartment = Auth::user()->department_id;
 
     if ($userDivision && !$userDepartment) {
-        $query->whereHas('employee', function ($query) use ($userDivision) {
+        $query->whereHas('employees', function ($query) use ($userDivision) {
             $query->where('division_id', $userDivision);
         });
     } elseif (!$userDivision && $userDepartment) {
-        $query->whereHas('employee', function ($query) use ($userDepartment) {
+        $query->whereHas('employees', function ($query) use ($userDepartment) {
             $query->where('department_id', $userDepartment);
         });
     } elseif ($userDivision && $userDepartment) {
-        $query->whereHas('employee', function ($query) use ($userDivision, $userDepartment) {
+        $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
             $query->where('division_id', $userDivision)
                   ->where('department_id', $userDepartment);
         });

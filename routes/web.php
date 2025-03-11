@@ -358,7 +358,7 @@ Route::middleware(['auth:employee'])->group(function () {
     Route::prefix('presence')->group(function () {
         Route::get('/in', [EmployeeAppController::class, 'presenceIn'])->name('presence.in');
         Route::get('/out', [EmployeeAppController::class, 'presenceOut'])->name('presence.out');
-        Route::post('/submit', [EmployeeAppController::class, 'store'])->name('presence.submit');
+        Route::post('/submit', [EmployeeAppController::class, 'save'])->name('presence.submit');
         Route::post('/submit/image', [EmployeeAppController::class, 'imageStore'])->name('image.submit');
     });
     
