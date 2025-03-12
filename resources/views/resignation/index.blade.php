@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Employee Resignation')
+@section('title', __('sidebar.label.resignation'))
 @section('content')
 
 {{ Breadcrumbs::render('employee_resignation') }}

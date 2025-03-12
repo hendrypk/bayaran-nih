@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Presence')
+@section('title', __('sidebar.label.presences'))
 @section('content')
 
 
@@ -104,8 +104,8 @@
                                     <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
                                 </td>                                       
                                 <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $data->employees->eid }}</td>
-                                <td>{{ $data->employees->name }}</td>
+                                <td>{{ $data->employee->eid }}</td>
+                                <td>{{ $data->employee->name }}</td>
                                 <td>{{ $data->workDay->name ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
                                 <td>{{ $data['check_in'] }}</td>
@@ -149,7 +149,7 @@
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editPresence" 
                                                 data-id="{{ $data['id'] }}" 
-                                                data-name="{{ $data->employees->name }}"
+                                                data-name="{{ $data->employee->name }}"
                                                 data-date="{{ $data['date'] }}"
                                                 data-workDay="{{ $data['work_day_id'] }}"
                                                 data-checkin="{{ $data['check_in'] }}"
@@ -161,7 +161,7 @@
                                 <td>
                                     @can('delete presence')
                                     <button type="button" class="btn btn-red" 
-                                        onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employees->name) }}', 'presences')">
+                                        onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employee->name) }}', 'presences')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
                                     @endcan

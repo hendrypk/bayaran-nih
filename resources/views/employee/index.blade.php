@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Employees')
+@section('title', __('sidebar.label.employee'))
 @section('content')
 
 {{ Breadcrumbs::render('employee_list') }}

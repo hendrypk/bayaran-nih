@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Performance - KKPI')
+@section('title', __('sidebar.label.work_day'))
 @section('content')
 
 {{ Breadcrumbs::render('work_day') }}

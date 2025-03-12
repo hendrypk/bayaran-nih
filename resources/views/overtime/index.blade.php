@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Overtime')
+@section('title', __('sidebar.label.overtime'))
 @section('content')
 
 

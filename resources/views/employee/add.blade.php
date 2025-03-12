@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Employees')
+@section('title', __('sidebar.label.add_employee'))
 @section('content')
 
 

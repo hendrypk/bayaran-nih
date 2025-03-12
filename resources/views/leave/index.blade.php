@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Leave')
+@section('title', __('sidebar.label.leave'))
 @section('content')
 
 {{ Breadcrumbs::render('leave') }}
@@ -48,8 +48,8 @@
                             @foreach($leaves as $no=>$leave)
                             <tr>
                                 <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $leave->employees->eid }}</td>
-                                <td>{{ $leave->employees->name }}</td>
+                                <td>{{ $leave->employee->eid }}</td>
+                                <td>{{ $leave->employee->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($leave->created_at)->format('d F Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($leave->date)->format('d F Y') }}</td>
                                 <td>{{ ucfirst($leave->leave) }}</td>
@@ -67,7 +67,7 @@
                                             data-bs-toggle="modal" 
                                             data-bs-target="#leaveEdit" 
                                             data-id="{{ $leave->id }}" 
-                                            data-name="{{ $leave->employees->name }}"
+                                            data-name="{{ $leave->employee->name }}"
                                             data-employee_id="{{ $leave->employee_id }}"
                                             data-date="{{ $leave->date }}"
                                             data-start="{{ $leave->start_date }}"
@@ -81,7 +81,7 @@
                                 <td>
                                     @can('delete leave')
                                         <button type="button" class="btn btn-red" 
-                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leaves')">
+                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employee->name }}', 'leaves')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>                                            
                                     @endcan

@@ -106,7 +106,7 @@ class Employee extends Authenticatable
     }
 
     public function overtimes(){
-        return $this->belongsTo(Overtime::class, 'employee_id');
+        return $this->hasMany(Overtime::class, 'employee_id');
     }
 
     public function sales(){

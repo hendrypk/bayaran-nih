@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
+
 //Index
-
 public function ind (Request $request) {
-    // $query = Presence::whereNotNull('leave');
-
-    $query = Presence::whereNotNull('leave');
+    $leave = Presence::whereNotNull('leave');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
     $defaultEndDate = $today->copy()->endOfDay()->toDateString();
@@ -24,32 +22,39 @@ public function ind (Request $request) {
     $endDate = Carbon::parse($request->input('end_date', $defaultEndDate))->endOfDay();
     $dateType = $request->input('date_type', 'created_at'); 
 
+    // Filter by division and/or department if set
     $userDivision = Auth::user()->division_id;
     $userDepartment = Auth::user()->department_id;
 
-    // Filter by division and/or department if set
     if ($userDivision && !$userDepartment) {
-        $query->whereHas('employees', function ($query) use ($userDivision) {
-            $query->where('division_id', $userDivision);
+        $leave->whereHas('employee', function ($q) use ($userDivision) {
+            $q->whereHas('position', function ($q) use ($userDivision) {
+                $q->where('division_id', $userDivision);
+            });
         });
     } elseif (!$userDivision && $userDepartment) {
-        $query->whereHas('employees', function ($query) use ($userDepartment) {
-            $query->where('department_id', $userDepartment);
-        });
-    } elseif ($userDivision && $userDepartment) {
-        $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
-            $query->where('division_id', $userDivision)
-                  ->where('department_id', $userDepartment);
+        $leave->whereHas('employee', function ($q) use ($userDepartment) {
+            $q->whereHas('position', function ($q) use ($userDepartment) {
+                $q->where('department_id', $userDepartment); // Perbaiki dari division_id ke department_id
+            });
         });
     }
 
-    if ($dateType && $startDate && $endDate) {
-        $query->whereBetween($dateType, [$startDate, $endDate]);
-    }
+    $leaves = $leave->whereBetween($dateType, [$startDate, $endDate])->get();
 
-    $leaves = $query->with('employees')->get();
+    $employee = Employee::query();
+    if ($userDivision && !$userDepartment) {
+        $employee->whereHas('position',function ($employee) use ($userDivision) {
+            $employee->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $employee->whereHas('position', function ($employee) use ($userDepartment) {
+            $employee->where('department_id', $userDepartment);
+        });
+    } 
+    $employee->whereNull('resignation');
+    $employees = $employee->get();
 
-    $employees = Employee::whereNull('resignation')->get();
     $category = [
         PRESENCE::LEAVE_ANNUAL,
         PRESENCE::LEAVE_SICK,
