@@ -22,7 +22,7 @@
                         <label class="col-sm-4 col-form-label">{{ __('general.label.name') }}</label>
                         <div class="col-sm-8">
                             <select class="select-form" name="employee_id" aria-label="Default select example" required>
-                                <option selected>{{ __('employee.label.select_employee') }}</option>
+                                <option selected>{{ __('attendance.label.select_employee') }}</option>
                                 @foreach($employees as $employee)
                                 <option selected value="{{ $employee->id }}">{{ $employee->name }} - {{ $employee->eid }}</option>
                                 @endforeach
