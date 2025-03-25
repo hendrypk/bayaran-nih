@@ -44,7 +44,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
         return [
             $this->rowNumber++,
             $row->eid,
-            $row->employees ? $row->employees->name : 'Unknown', 
+            $row->employee ? $row->employee->name : 'Unknown', 
             $row->workDay ? $row->workDay->name : 'Unknown',
             \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->date)), // Pastikan date dikonversi menjadi objek DateTime
             $row->check_in ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_in)) : '', // Check-in dikonversi jadi DateTime
