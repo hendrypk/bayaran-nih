@@ -32,7 +32,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
     public function query()
     {
         return Presence::query()
-            ->with('employees', 'workDay')
+            ->with('employee', 'workDay')
             ->whereBetween('date', [$this->start, $this->end])
             ->when($this->employee_id, function ($query) {
                 $query->where('employee_id', $this->employee_id);
