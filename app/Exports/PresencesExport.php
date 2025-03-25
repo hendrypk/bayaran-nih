@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyles, WithColumnFormatting, ShouldAutoSize
@@ -94,12 +95,14 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:K1')->getStyle('A1:K1')->getAlignment()->setHorizontal('center');
+        $sheet->mergeCells('A1:O1')->getStyle('A1:O1')->getAlignment()->setHorizontal('center');
         $sheet->mergeCells('A2:B2')->getStyle('A2:B2')->getAlignment()->setHorizontal('left');
         $sheet->mergeCells('C2:G2');
+        
 
         $sheet->getStyle('A3:I3')->getAlignment()->setHorizontal('center');
         return [
+            'A:O' => ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
             1 => [
                 'font' => [
                     'bold' => true,
@@ -130,14 +133,14 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
     public function columnFormats(): array
     {
         return [
-            'D' => 'd mmm yyyy',
-            'E' => 'hh:mm',
+            'E' => 'd mmm yyyy',
             'F' => 'hh:mm',
-            'G' => '#,##0',
+            'G' => 'hh:mm',
             'H' => '#,##0',
             'I' => '#,##0',
-            'j' => '#,##0',
+            'J' => '#,##0',
             'K' => '#,##0',
+            'L' => '#,##0',
         ];
     }
 }
