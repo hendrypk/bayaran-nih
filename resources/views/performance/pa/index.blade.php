@@ -26,7 +26,7 @@
                                 <th scope="col">#</th>
                                 <th class="text-center">{{ __('general.label.month') }}</th>
                                 <th class="text-center">{{ __('general.label.year') }}</th>
-                                <th class="text-center">{{ __('general.label.eid') }}</th>
+                                <th class="text-center">{{ __('employee.label.eid') }}</th>
                                 <th class="text-center">{{ __('general.label.name') }}</th>
                                 <th class="text-center">{{ __('performance.label.grade') }}</th>
                                 <th class="text-center">{{ __('general.label.detail') }}</th>
@@ -43,8 +43,8 @@
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td class="text-center">{{ $selectedMonth }}</td>
                                 <td class="text-center">{{ $selectedYear }}</td>
-                                <td class="text-center">{{ $employee->eid }}</td>
-                                <td class="text-center">{{ $employee->name }}</td>  
+                                <td class="text-center">{{ $grade->employees->eid }}</td>
+                                <td class="text-center">{{ $grade->employees->name }}</td>  
                                 <td class="text-center">{{ number_format($grade->average_grade, 2) }}</td>                               
                                 <td class="text-center">
                                     <a href="{{ route('pa.detail', [

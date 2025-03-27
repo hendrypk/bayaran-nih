@@ -74,9 +74,9 @@
                     <table class="table datatable table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">
+                                {{-- <th scope="col">
                                     <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
-                                </th>
+                                </th> --}}
                                 <th scope="col">#</th>
                                 <th scope="col">{{ __('employee.label.eid') }}</th>
                                 <th scope="col">{{ __('general.label.name') }}</th>
@@ -87,8 +87,8 @@
                                 <th scope="col">{{ __('attendance.label.late_arrival') }}</th>
                                 <th scope="col">{{ __('attendance.label.late_check_in') }}</th>
                                 <th scope="col">{{ __('attendance.label.check_out_early') }}</th>
-                                <th scope="col">{{ __('attendance.label.note_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.note_out') }}</th>
+                                {{-- <th scope="col">{{ __('attendance.label.note_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.note_out') }}</th> --}}
                                 <th scope="col">{{ __('attendance.label.location_in') }}</th>
                                 <th scope="col">{{ __('attendance.label.location_out') }}</th>
                                 <th scope="col">{{ __('attendance.label.photo_in') }}</th>
@@ -99,10 +99,10 @@
                         </thead>
                         <tbody>
                             @foreach($presence as $no=>$data)
-                            <tr>
-                                <td>
+                            <tr class="{{ $data->created_at != $data->updated_at ? 'row-edited' : '' }}">
+                                {{-- <td>
                                     <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
-                                </td>                                       
+                                </td>                                        --}}
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $data->employee->eid }}</td>
                                 <td>{{ $data->employee->name }}</td>
@@ -119,8 +119,8 @@
                                 </td>
                                 <td>{{ $data['late_check_in'] }}</td>
                                 <td>{{ $data['check_out_early'] }}</td>
-                                <td>{{ $data['note_in']}}</td>
-                                <td>{{ $data['note_out'] }}</td>
+                                {{-- <td>{{ $data['note_in']}}</td>
+                                <td>{{ $data['note_out'] }}</td> --}}
                                 <td>
                                     <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
                                         <i class="ri-road-map-line"></i>

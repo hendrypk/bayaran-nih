@@ -168,7 +168,7 @@ function distance($lat1, $lon1, $lat2, $lon2){
 //try save presence with new logic
 public function save(Request $request){
     $request->validate([
-        'note' => 'required',
+        // 'note' => 'required',
         'location' => 'required',
         // 'workDay' => 'interger',
         'image' => 'required|string'
@@ -284,7 +284,7 @@ public function save(Request $request){
             $pastPresence->update([
                 'check_out' => now()->toTimeString(),
                 'check_out_early' => $checkOutEarly,
-                'note_out' => $request->note,
+                // 'note_out' => $request->note,
                 'photo_out' => $photoName,
                 'location_out' => $loc
             ]);
@@ -337,7 +337,7 @@ public function save(Request $request){
                     $presence->update([
                         'check_out' => now()->toTimeString(),
                         'check_out_early' => $checkOutEarly,
-                        'note_out' => $request->note,
+                        // 'note_out' => $request->note,
                         'photo_out' => $photoName,
                         'location_out' => $loc
                     ]);
@@ -358,7 +358,7 @@ public function save(Request $request){
                 'check_in' => $timePhoto,
                 'late_check_in' => $lateCheckIn,
                 'late_arrival' => $lateArrival,
-                'note_in' => $request->note,
+                // 'note_in' => $request->note,
                 'photo_in' => $photoName,
                 'location_in' => $loc
             ]);

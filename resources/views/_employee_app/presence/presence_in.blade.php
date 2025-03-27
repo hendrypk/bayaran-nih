@@ -57,11 +57,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    {{-- <div class="row mb-2">
                         <div class="col">
                             <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col">
                             <button type="button" class="btn btn-tosca btn-block" id="take-presence">

@@ -39,7 +39,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="note">{{ __('app.label.note') }}</label>
+                            <label for="note">Mau lembur apa?</label>
                             <input type="text" class="form-control" name="note">
                         </div>
                     </div>
@@ -155,58 +155,57 @@ document.addEventListener("DOMContentLoaded", function() {
     //handle presence submit
     $('#take-overtime').click(function (event) {
     event.preventDefault(); 
-
-    Webcam.snap(function (uri) {
-        $('#overtimeImage').attr('src', uri);
-        
-        $.ajax({
-            url: '{{ route('overtime.submit') }}', 
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}', 
-                image: uri, 
-                officeLocations: $('[name="officeLocations"]').val(), 
-                note: $('[name="note"]').val(), 
-                location: $('#location').val() 
-            },
-            success: function (response) {
-                console.log('Response Success:', response);
-                if (response.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: response.message, 
-                    }).then(() => {
-                        window.location.href = response.redirectUrl; 
-                    });
-                } else if ( response.status = 'error') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Eror',
-                        text: response.message,
-                        confirmButtonText: 'Try Again'
-                    });
+        Webcam.snap(function (uri) {
+            $('#overtimeImage').attr('src', uri);
+            
+            $.ajax({
+                url: '{{ route('overtime.submit') }}', 
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', 
+                    image: uri, 
+                    officeLocations: $('[name="officeLocations"]').val(), 
+                    note: $('[name="note"]').val(), 
+                    location: $('#location').val() 
+                },
+                success: function (response) {
+                    console.log('Response Success:', response);
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message, 
+                        }).then(() => {
+                            window.location.href = response.redirectUrl; 
+                        });
+                    } else if ( response.status = 'error') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Eror',
+                            text: response.message,
+                            confirmButtonText: 'Try Again'
+                        });
+                    }
+                },
+                error: function (xhr, status, error,) {
+                    if (xhr.status === 422) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON.message, 
+                            confirmButtonText: 'Try Again'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan saat mengirim data!',
+                        });
+                    }
                 }
-            },
-            error: function (xhr, status, error,) {
-                if (xhr.status === 422) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON.message, 
-                        confirmButtonText: 'Try Again'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan saat mengirim data!',
-                    });
-                }
-            }
+            });
         });
-    });
-});   
+    });   
 </script>
 
 <script type="text/javascript">

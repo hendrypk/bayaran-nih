@@ -53,11 +53,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    {{-- <div class="row mb-2">
                         <div class="col">
                             <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col">
                             <button type="button" class="btn btn-tosca btn-block" id="take-presence">
@@ -166,7 +166,7 @@ $('#take-presence').click(function (event) {
                 let remainingTime = Math.max(1000 - elapsedTime, 0);
 
                 setTimeout(() => {
-                    $('#loader').fadeOut(); // Sembunyikan loader
+                    $('#loader').fadeOut(); 
                     Swal.fire({
                         icon: response.status === 'success' ? 'success' : 'error',
                         title: response.status === 'success' ? 'Success!' : 'Error',

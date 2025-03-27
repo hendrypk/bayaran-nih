@@ -39,7 +39,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="note">{{ __('app.label.note') }}</label>
+                            <label for="note">Hasil lemburnya apa?</label>
                             <input type="text" class="form-control" name="note">
                         </div>
                     </div>
