@@ -48,7 +48,7 @@
                                 <td class="text-center">{{ number_format($grade->average_grade, 2) }}</td>                               
                                 <td class="text-center">
                                     <a href="{{ route('pa.detail', [
-                                    'employee_id' => $employee->id,
+                                    'employee_id' => $grade->employees->id,
                                     'month' => $selectedMonth,
                                     'year' => $selectedYear]) }}"
                                     class="btn btn-blue">
@@ -58,7 +58,7 @@
                                 <td class="text-center">
                                     @can('update pa')
                                         <a href="{{ route('pa.edit', [
-                                            'employee_id' => $employee->id,
+                                            'employee_id' => $grade->employees->id,
                                             'month' => $selectedMonth,
                                             'year' => $selectedYear]) }}"
                                             class="btn btn-green">
@@ -86,8 +86,8 @@
                 $employee = $employees->firstWhere('id', $grade->employee_id);
             @endphp
             <tr>
-                <td>{{ $employee->id ?? 'N/A' }}</td>
-                <td>{{ $employee->name ?? 'N/A' }}</td>
+                <td>{{ $grade->employees->id ?? 'N/A' }}</td>
+                <td>{{ $grade->employees->name ?? 'N/A' }}</td>
                 <td>{{ $selectedMonth }}</td>
                 <td>{{ $selectedYear }}</td>
                 <td>{{ number_format($grade->average_grade, 2) }}</td>
