@@ -230,4 +230,30 @@
   </div>
 </div>
 
+<!-- Edit Department Modal -->
+<div class="modal fade" id="laporHrCategory" tabindex="-1" aria-labelledby="laporHrCategoryLabel" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="laporHrCategoryLabel">{{ __('option.label.edit_lapor_hr_category') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="edit-form" method="POST" action="" data-update-type="laporHrCategory">
+          @csrf
+          @method('POST')
+          <input type="hidden" name="id" id="inputLaporHrCategoryId">
+          <div class="mb-3">
+            <label for="inputDepartmentName" class="form-label">{{ __('general.label.name') }}</label>
+            <input type="text" class="input-form" name="name" id="inputDepartmentName">
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-red me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+            <button type="submit" name="action" class="btn btn-tosca">{{ __('general.label.save') }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 

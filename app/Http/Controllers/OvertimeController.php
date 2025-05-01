@@ -36,7 +36,7 @@ class OvertimeController extends Controller
         } elseif (!$userDivision && $userDepartment) {
             $query->whereHas('employees', function ($query) use ($userDepartment) {
                 $query->whereHas('position', function ($query) use ($userDepartment) {
-                    $query->where('division_id', $userDepartment);
+                    $query->where('department_id', $userDepartment);
                 });
             });
         }

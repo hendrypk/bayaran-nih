@@ -70,6 +70,16 @@
                                 {{ __('app.label.overtime') }}
                             </div>
                         </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <a href="{{ route('laporHrIndex') }}" class="" style="font-size: 40px;">
+                                    <i class="ri-alarm-warning-line blink-red"></i>
+                                </a>
+                            </div>
+                            <div class="menu-name blink-red">
+                                {{ __('option.label.lapor_hr') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

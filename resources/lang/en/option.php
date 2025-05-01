@@ -51,6 +51,11 @@ return [
     'submit' => 'Submit',
     'count_late' => 'Count Late',
 
+    'lapor_hr' => 'Lapor HR',
+    'add_lapor_hr_category' => 'Add Lapor HR Category',
+    'edit_lapor_hr_category' => 'Edit Lapor HR Category',
+
+
     'day' => [
         'monday' => 'Monday',
         'tuesday' => 'Tuesday',

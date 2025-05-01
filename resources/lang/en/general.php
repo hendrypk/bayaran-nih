@@ -58,6 +58,18 @@ return [
         'yes' => 'Yes',
         'no' => 'No',
         'pending' => 'Pending',
+        'preview' => 'Preview',
+        'report_category' => 'Report Category',
+        'report_description' => 'Report Description',
+        'report_attachment' => 'Report Attachment',
+        'report_date' => 'Report Date',
+        'solve_date' => 'Solve Date',
+        'solve_attachment' => 'Solve Attachment',
+        'solve_description' => 'Solve Description',
+        'attachment' => 'Attachmment',
+        'edit_lapor_hr' => 'Edit Lapor HR',
+
+
     ],
     'placeholder' => [
         'note' => 'Note should be type here...',

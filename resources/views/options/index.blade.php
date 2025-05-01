@@ -415,7 +415,63 @@
             </div>
         </div>
     </div>
+
+<!-- Lapor HR Category -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header d-flex align-items-center py-0">
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.lapor_hr') }}</h5>
+                    @can('create options')
+                        <div class="ms-auto my-auto">
+                            <button id="openAddLaporHrCategoryModal" class="btn btn-tosca">{{ __('option.label.add_lapor_hr_category') }}</button>
+                        </div>
+                    @endcan
+                </div>
+                    <table class="table datatable table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">{{ __('option.label.department') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($laporHrCategory as $no=>$data)
+                            <tr>
+                                <th scope="row">{{ $no+1 }}</th>
+                                <td>{{ $data->name }}</td>
+                                @csrf
+                                <td>
+                                    @can('update options')
+                                        <button type="button" 
+                                            class="btn btn-green" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#laporHrCategory" 
+                                            data-id="{{ $data->id }}" 
+                                            data-name="{{ $data->name }}">
+                                            <i class="ri-edit-box-fill"></i>
+                                        </button>
+                                    @endcan
+                                </td>
+                                <td>
+                                    @can('delete options')
+                                        <button type="button" class="btn btn-red" 
+                                            onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'lapor-hr')">
+                                            <i class="ri-delete-bin-fill"></i>
+                                        </button>
+                                    @endcan
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 @section('script')
 
@@ -429,6 +485,7 @@ window.routeUrls = {
     statusUpdate: "{{ route('status.update', ['id' => '__id__']) }}",
     holidayUpdate: "{{ route('holiday.update', ['id' => '__id__']) }}",
     locationUpdate: "{{ route('location.update', ['id' => '__id__']) }}",
+    laporHrCategoryUpdate: "{{ route('laporHrSubmit', ['id' => '__id__']) }}",
 };
 
 //script for edit modal
@@ -474,12 +531,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 'location':
                     actionUrl = window.routeUrls.locationUpdate;
                     break;
+                case 'laporHrCategory':
+                    actionUrl = window.routeUrls.laporHrCategoryUpdate;
+                    break;
             }
         
             // Replace __id__ with the actual ID
             actionUrl = actionUrl.replace('__id__', id);
 
             // Find the form and input within the current modal
+            
             const form = modal.querySelector('.edit-form');
             const inputName = form.querySelector('input[name="name"]');
             const selectJobTitle = form.querySelector('select[name="job_title_id"]');
@@ -490,6 +551,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const inputlatitude = form.querySelector('input[name="latitude"]');
             const inputLongitude = form.querySelector('input[name="longitude"]');
             const selectDate = form.querySelector('input[name="date"]');
+            const inputId = form.querySelector('input[name="id"]');
+            
+            if (inputId) inputId.value = id || '';
 
             if (form && inputName) {
                 form.action = actionUrl;
@@ -767,6 +831,15 @@ function initializeMap(lat, lng) {
             mode: "multiple",
             dateFormat: "Y-m-d",
         });
+    });
+
+    document.getElementById("openAddLaporHrCategoryModal").addEventListener("click", function() {
+        openModal(
+            "{{ __('option.label.add_lapor_hr_category') }}",
+            "{{ route('laporHrSubmit') }}",
+            `<label for="departmentName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="departmentName" name="name" required>`
+        );
     });
 
 });

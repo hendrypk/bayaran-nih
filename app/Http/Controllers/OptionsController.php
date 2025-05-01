@@ -9,6 +9,7 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\EmployeeStatus;
 use App\Models\Holiday;
+use App\Models\LaporHrCategory;
 use App\Models\OfficeLocation;
 
 class OptionsController extends Controller
@@ -24,7 +25,8 @@ class OptionsController extends Controller
         $statuses = EmployeeStatus::get();
         $holidays = Holiday::get();
         $officeLocation = OfficeLocation::get();
-        return view('options.index', compact('positions', 'divisions', 'job_titles', 'departments', 'statuses', 'holidays', 'officeLocation'));
+        $laporHrCategory = LaporHrCategory::get();
+        return view('options.index', compact('positions', 'divisions', 'job_titles', 'departments', 'statuses', 'holidays', 'officeLocation', 'laporHrCategory'));
     }
 
 //position add
@@ -345,6 +347,30 @@ class OptionsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Holiday has been deleted.',
+            'redirect' => route('options.list')
+        ]);
+    }
+
+//Lapor HR Category
+    public function laporHrSubmit (Request $request) {
+        $request->validate([
+            'name'=>'required|string'
+        ]);
+
+        LaporHrCategory::updateOrCreate(
+            ['id' => $request->id],
+            ['name' => $request->name]
+        );
+
+        return redirect()->route('options.list')->with('success', ' ');
+    }
+
+    public function laporHrDelete ($id) {
+        $laporHrCategory = LaporHrCategory::find($id);
+        $laporHrCategory->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Lapor HR Category has been deleted.',
             'redirect' => route('options.list')
         ]);
     }

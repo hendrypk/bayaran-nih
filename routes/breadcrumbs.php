@@ -206,3 +206,9 @@ Breadcrumbs::for('user', function (BreadcrumbTrail $trail) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.user'), route('user.index'));
 });
+
+// Home > Lapor HR
+Breadcrumbs::for('lapor_hr', function (BreadcrumbTrail $trail) {
+    $trail->push(__('breadcrumb.home'), route('home'));
+    $trail->push(__('breadcrumb.lapor_hr'), route('lapor_hr.index'));
+});
