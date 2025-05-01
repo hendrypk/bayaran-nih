@@ -41,13 +41,12 @@
             <div id="collapse{{ $no }}" class="collapse" aria-labelledby="heading{{ $no }}" data-parent="#reportAccordion">
                 <div class="card-body">
                     {{-- REPORT SECTION --}}
-                    <h5>📄 Report</h5>
-                    <p><strong>Deskripsi:</strong> {{ $data->report_description }}</p>
+                    <p><strong>{{ __('general.label.report_description') }}</strong> {{ $data->report_description }}</p>
                     <p>
-                        <strong>Lampiran:</strong>
+                        <strong>{{ __('general.label.report_attachment') }}</strong>
                         @if($data->report_attachments->isNotEmpty())
                             <button class="btn btn-sm btn-yellow" onclick='showAllPhotos(@json($data->report_attachments))'>
-                                <i class="ri-eye-line"></i> Lihat Lampiran
+                                <i class="ri-eye-line"></i> view
                             </button>
                         @else
                             <span class="text-muted">Tidak ada lampiran</span>

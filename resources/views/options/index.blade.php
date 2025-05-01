@@ -485,7 +485,7 @@ window.routeUrls = {
     statusUpdate: "{{ route('status.update', ['id' => '__id__']) }}",
     holidayUpdate: "{{ route('holiday.update', ['id' => '__id__']) }}",
     locationUpdate: "{{ route('location.update', ['id' => '__id__']) }}",
-    laporHrCategoryUpdate: "{{ route('laporHrSubmit', ['id' => '__id__']) }}",
+    laporHrCategoryUpdate: "{{ route('laporHrCategorySubmit', ['id' => '__id__']) }}",
 };
 
 //script for edit modal
@@ -836,7 +836,7 @@ function initializeMap(lat, lng) {
     document.getElementById("openAddLaporHrCategoryModal").addEventListener("click", function() {
         openModal(
             "{{ __('option.label.add_lapor_hr_category') }}",
-            "{{ route('laporHrSubmit') }}",
+            "{{ route('laporHrCategorySubmit') }}",
             `<label for="departmentName" class="form-label">{{ __('general.label.name') }}</label>
              <input type="text" class="input-form" id="departmentName" name="name" required>`
         );

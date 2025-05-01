@@ -352,7 +352,7 @@ class OptionsController extends Controller
     }
 
 //Lapor HR Category
-    public function laporHrSubmit (Request $request) {
+    public function laporHrCategorySubmit (Request $request) {
         $request->validate([
             'name'=>'required|string'
         ]);
@@ -365,7 +365,7 @@ class OptionsController extends Controller
         return redirect()->route('options.list')->with('success', ' ');
     }
 
-    public function laporHrDelete ($id) {
+    public function laporHrCategoryDelete ($id) {
         $laporHrCategory = LaporHrCategory::find($id);
         $laporHrCategory->delete();
         return response()->json([

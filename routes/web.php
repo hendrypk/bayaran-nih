@@ -155,8 +155,8 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('holiday/{id}/delete', [OptionsController::class,'holidayDelete'])->name('holiday.delete');
 
             //Lapor HR Category
-            Route::post('lapor-hr/submit', [OptionsController::class, 'laporHrSubmit'])->name('laporHrSubmit');
-            Route::post('lapor-hr/{id}/delete', [OptionsController::class,'laporHrDelete'])->name('laporHrDelete');
+            Route::post('lapor-hr/submit', [OptionsController::class, 'laporHrCategorySubmit'])->name('laporHrCategorySubmit');
+            Route::post('lapor-hr/{id}/delete', [OptionsController::class,'laporHrCategoryDelete'])->name('laporHrCategoryDelete');
         });
     });
 
