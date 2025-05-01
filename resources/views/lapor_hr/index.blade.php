@@ -93,6 +93,7 @@
                                             data-bs-toggle="modal" 
                                             data-bs-target="#modalLaporHr" 
                                             data-id="{{ $data->id }}" 
+                                            data-eid="{{ $data->employee->eid }}"
                                             data-employee_id="{{ $data->employee_id }}"
                                             data-name="{{ $data->employee->name }}"
                                             data-category="{{ $data->category_id }}"
@@ -126,6 +127,7 @@
 
         // Ambil data dari button
         const id = button.getAttribute('data-id');
+        const eid = button.getAttribute('data-eid');
         const employee_id = button.getAttribute('data-employee_id');
         const name = button.getAttribute('data-name');
         const report_date = button.getAttribute('data-date');
@@ -153,6 +155,7 @@
             document.getElementById('solve_date').value = '';
         }
 
+        document.querySelector('[name="eid"]').value = employee_id;
         document.querySelector('[name="employee_id"]').value = employee_id;
         document.querySelector('[name="report_category"]').value = report_category;
         document.getElementById('report_description').value = report_description || '';

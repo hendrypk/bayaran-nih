@@ -26,7 +26,7 @@
                                     </select>
                                 </div>
                                 <div class="col-sm">
-                                    <select class="select-form" name="employee_id" aria-label="Default select example" disabled>
+                                    <select class="select-form" name="eid" aria-label="Default select example" disabled>
                                         <option selected disabled>{{ __('attendance.label.select_employee') }}</option>
                                         @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}">{{ $employee->eid }}</option>
@@ -40,22 +40,8 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm">
-                                    <select class="select-form" name="report_category" aria-label="Default select example" disabled>
-                                        <option selected disabled>{{ __('general.label.select_category') }}</option>
-                                        @foreach($reportCategory as $data)
-                                        <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>                                
-                                <div class="col-sm">
                                     <input type="date" name="report_date" class="form-control" id="report_date" disabled>
-                                </div>
-                            </div>
-                            <div class="row mb-1">
-                                <label class="col-sm col-form-label">{{ __('general.label.report_date') }}</label>
-                                <label class="col-sm col-form-label">{{ __('general.label.report_category') }}</label>
-                            </div>
-                            <div class="row mb-3">
+                                </div>                                
                                 <div class="col-sm">
                                     <select class="select-form" name="report_category" aria-label="Default select example" disabled>
                                         <option selected disabled>{{ __('general.label.select_category') }}</option>
@@ -63,9 +49,6 @@
                                         <option value="{{ $data->id }}">{{ $data->name }}</option>
                                         @endforeach
                                     </select>
-                                </div>                                
-                                <div class="col-sm">
-                                    <input type="date" name="report_date" class="form-control" id="report_date" disabled>
                                 </div>
                             </div>
                             
