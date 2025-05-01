@@ -85,7 +85,7 @@ class LaporHrController extends Controller
             }
         }
     
-        return redirect()->route('lapor_hr.index')->with('success', 'KPI Successfully Added.');
+        return redirect()->route('lapor_hr.index')->with('success', 'Lapor HR Successfully Saved.');
 
     }
 }

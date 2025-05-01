@@ -15,16 +15,87 @@
 
 @section('content')
 <div class="presence">
-    <div class="card">
+    <div class="" id="reportAccordion">
+        @foreach($laporHr as $no => $data)
+        <div class="card mb-2">
+            <div class="card-header" id="heading{{ $no }}">
+                <h2 class="mb-0 d-flex justify-content-between align-items-center">
+                    <button class="btn btn-link text-left" type="button" data-toggle="collapse" data-target="#collapse{{ $no }}" aria-expanded="true" aria-controls="collapse{{ $no }}">
+                        {{ $no+1 }}. {{ \Carbon\Carbon::parse($data->report_date)->format('d F Y') }} - {{ $data->category->name }}
+                    </button>
+                    @php
+                        $badgeClass = match($data->status) {
+                            'open' => 'secondary',
+                            'on progress' => 'warning',
+                            'close' => 'success',
+                            default => 'danger'
+                        };
+                    @endphp
+
+                    <span class="badge badge-{{ $badgeClass }}">{{ $data->status }}</span>
+
+                    {{-- <span class="badge badge-{{ $data->status == 'open' ? 'secondary' : 'on progress' ? 'warning' : 'close' ? 'success' : 'danger' }}">{{ $data->status }}</span> --}}
+                </h2>
+            </div>
+    
+            <div id="collapse{{ $no }}" class="collapse" aria-labelledby="heading{{ $no }}" data-parent="#reportAccordion">
+                <div class="card-body">
+                    {{-- REPORT SECTION --}}
+                    <h5>📄 Report</h5>
+                    <p><strong>Deskripsi:</strong> {{ $data->report_description }}</p>
+                    <p>
+                        <strong>Lampiran:</strong>
+                        @if($data->report_attachments->isNotEmpty())
+                            <button class="btn btn-sm btn-yellow" onclick='showAllPhotos(@json($data->report_attachments))'>
+                                <i class="ri-eye-line"></i> Lihat Lampiran
+                            </button>
+                        @else
+                            <span class="text-muted">Tidak ada lampiran</span>
+                        @endif
+                    </p>
+    
+                    {{-- SOLVE SECTION --}}
+                    <div class="mt-4">
+                        <a class="btn btn-sm btn-outline-primary" data-toggle="collapse" href="#solveCollapse{{ $no }}" role="button" aria-expanded="false" aria-controls="solveCollapse{{ $no }}">
+                            ➕ Lihat Solusi
+                        </a>
+                        <div class="collapse mt-2" id="solveCollapse{{ $no }}">
+                            <h5>✅ Solve</h5>
+                            <p><strong>Tanggal:</strong>
+                                @if ($data->solve_date)
+                                    {{ \Carbon\Carbon::parse($data->solve_date)->format('d F Y') }}
+                                @else
+                                    <span class="text-muted">Belum ada</span>
+                                @endif
+                            </p>
+                            <p><strong>Deskripsi:</strong> {{ $data->solve_description ?: '-' }}</p>
+                            <p>
+                                <strong>Lampiran:</strong>
+                                @if($data->solve_attachments->isNotEmpty())
+                                    <button class="btn btn-sm btn-yellow" onclick='showAllPhotos(@json($data->solve_attachments))'>
+                                        <i class="ri-eye-line"></i> Lihat Lampiran
+                                    </button>
+                                @else
+                                    <span class="text-muted">Tidak ada lampiran</span>
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    
+    {{-- <div class="card">
         <div class="card-body">
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">{{ __('employee.label.eid') }}</th>
-                        <th scope="col">{{ __('general.label.name') }}</th>
-                        <th scope="col">{{ __('general.label.category') }}</th>
                         <th scope="col">{{ __('general.label.report_date') }}</th>
+                        <th scope="col">{{ __('general.label.category') }}</th>
                         <th scope="col">{{ __('general.label.report_description') }}</th>
                         <th scope="col">{{ __('general.label.report_attachment') }}</th>
                         <th scope="col">{{ __('general.label.solve_date') }}</th>
@@ -37,10 +108,8 @@
                     @foreach($laporHr as $no=>$data)
                     <tr>
                         <th scope="row">{{ $no+1 }}</th>
-                        <td>{{ $data->employee->eid }}</td>
-                        <td>{{ $data->employee->name }}</td>
-                        <td>{{ $data->category->name }}</td>
                         <td>{{ \Carbon\Carbon::parse($data->report_date)->format('d F Y') }}</td>
+                        <td>{{ $data->category->name }}</td>
                         <td>{{ $data->report_description }}</td>
                         <td>
                             @if($data->report_attachments->isNotEmpty())
@@ -76,12 +145,10 @@
                         <td>{{ $data->status }}</td>
                     </tr>    
                     @endforeach
-                    
-                    
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <a href="{{ route('laporHrAdd') }}" class="btn btn-primary floating-btn">+
