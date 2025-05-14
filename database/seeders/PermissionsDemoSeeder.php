@@ -21,7 +21,7 @@ class PermissionsDemoSeeder extends Seeder
 
         // create permissions
 
-        DB::table('permissions')->insert([
+        $permissions = [
             ['name' => 'view overtime', 'group_name' => 'overtime', 'guard_name' => 'web'],
             ['name' => 'create overtime', 'group_name' => 'overtime', 'guard_name' => 'web'],
             ['name' => 'update overtime', 'group_name' => 'overtime', 'guard_name' => 'web'],
@@ -77,9 +77,23 @@ class PermissionsDemoSeeder extends Seeder
             ['name' => 'view leave', 'group_name' => 'leave', 'guard_name' => 'web'],
             ['name' => 'create leave', 'group_name' => 'leave', 'guard_name' => 'web'],
             ['name' => 'update leave', 'group_name' => 'leave', 'guard_name' => 'web'],
-            ['name' => 'delete leave', 'group_name' => 'leave', 'guard_name' => 'web']
-        ]);
-        
+            ['name' => 'delete leave', 'group_name' => 'leave', 'guard_name' => 'web'],
+            ['name' => 'view lapor hr', 'group_name' => 'lapor hr', 'guard_name' => 'web',],
+            ['name' => 'edit lapor hr', 'group_name' => 'lapor hr', 'guard_name' => 'web',]
+        ];
+
+        foreach ($permissions as $permission) {
+            DB::table('permissions')->updateOrInsert(
+                [
+                    'name' => $permission['name'],
+                    'guard_name' => $permission['guard_name'],
+                ],
+                [
+                    'group_name' => $permission['group_name'],
+                ]
+            );
+        }
+                
         // Create the role
         $role = Role::firstOrCreate([
             'name' => 'administrator',

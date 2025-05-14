@@ -11,7 +11,8 @@ return [
     'overtime_out_success' => 'Your overtime out has been recorded!',
     'has_permit' => 'Today you have permit! So, you can can not check in.',
     'note_required' => 'Note is required!',
-    'location_required' => 'Location is not detected. Check your connection or GPS!'
+    'location_required' => 'Location is not detected. Check your connection or GPS!',
+    'outside_radius' => 'Your location is :meters meter outside the allowed radius.',
 
 
 ];

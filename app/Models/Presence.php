@@ -40,10 +40,10 @@ class Presence extends Model
     //     'date' => 'date',
     // ];
 
-    protected $casts = [
-        'late_arrival' => 'integer',
-        'date' => 'date',
-    ];
+    // protected $casts = [
+    //     'late_arrival' => 'integer',
+    //     'date' => 'date',
+    // ];
 
     const LEAVE_ANNUAL = 'annual leave';
     const LEAVE_SICK = 'sick';
@@ -51,7 +51,7 @@ class Presence extends Model
     const LEAVE_HALF_DAY_PERMIT = 'half day permit';
 
     
-    public function employees()
+    public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
@@ -61,5 +61,9 @@ class Presence extends Model
         return $this->belongsTo(WorkDay::class, 'work_day_id'); // Adjust 'work_day_id' based on your actual column
     }
 
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id', 'id');
+    }
 
 }

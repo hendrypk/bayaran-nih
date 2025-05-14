@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('division_id')->nullable()->constrained('divisions')->onDelete('set null');
-            $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('set null');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->foreignId('division_id')->nullable()->constrained('divisions')->onDelete('set null');
+        //     $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('set null');
+        // });
     }
 
     /**
@@ -22,12 +22,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['division_id']);
-            $table->dropColumn('division_id');
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->dropForeign(['division_id']);
+        //     $table->dropColumn('division_id');
 
-            $table->dropForeign(['department_id']);
-            $table->dropColumn('department_id');
-        });
+        //     $table->dropForeign(['department_id']);
+        //     $table->dropColumn('department_id');
+        // });
     }
 };

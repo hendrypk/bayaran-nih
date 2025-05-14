@@ -57,12 +57,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    {{-- <div class="row mb-2">
                         <div class="col">
-                            {{-- <label for="note">{{ __('app.label.note') }}</label> --}}
                             <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col">
                             <button type="button" class="btn btn-tosca btn-block" id="take-presence">
@@ -70,12 +69,15 @@
                             </button>
                         </div>
                     </div>
-
-                </form>
+            </form>
+            <div class="spinner-overlay">
+                <div class="spinner"></div>
+            </div>
         </div>
     </div>
 </div>
 </div>
+
 @section('script')
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -151,9 +153,12 @@ Webcam.attach('.webcam-capture');
 //handle presence submit
 $('#take-presence').click(function (event) {
     event.preventDefault(); 
+
+    $('#loader').fadeIn();
     
     Webcam.snap(function (uri) {
         $('#capturedImage').attr('src', uri);
+        let startTime = Date.now();
 
         $.ajax({
             url: '{{ route('presence.submit') }}', 
@@ -167,38 +172,79 @@ $('#take-presence').click(function (event) {
                 location: $('#location').val() 
             },
             success: function (response) {
-                if (response.status === 'success') {
+                let elapsedTime = Date.now() - startTime;
+                let remainingTime = Math.max(1000 - elapsedTime, 0);
+
+                setTimeout(() => {
+                    $('#loader').fadeOut(); // Sembunyikan loader
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: response.message, 
-                    }).then(() => {
-                        window.location.href = response.redirectUrl; 
-                    });
-                } else if ( response.status = 'error') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Eror',
+                        icon: response.status === 'success' ? 'success' : 'error',
+                        title: response.status === 'success' ? 'Success!' : 'Error',
                         text: response.message,
-                        confirmButtonText: 'Try Again'
+                    }).then(() => {
+                        if (response.status === 'success') {
+                            window.location.href = response.redirectUrl;
+                        }
                     });
-                }
+                }, remainingTime);
+
+                // $('#loader').fadeOut();
+                // if (response.status === 'success') {
+                //     Swal.fire({
+                //         icon: 'success',
+                //         title: 'Berhasil!',
+                //         text: response.message, 
+                //     }).then(() => {
+                //         window.location.href = response.redirectUrl; 
+                //     });
+                // } else if ( response.status = 'error') {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Eror',
+                //         text: response.message,
+                //         confirmButtonText: 'Try Again'
+                //     });
+                // }
             },
             error: function (xhr, status, error,) {
-                if (xhr.status === 422) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON.message, 
-                        confirmButtonText: 'Try Again'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan saat mengirim data!',
-                    });
-                }
+
+                let elapsedTime = Date.now() - startTime;
+                let remainingTime = Math.max(1000 - elapsedTime, 0);
+
+                setTimeout(() => {
+                    $('#loader').fadeOut(); // Sembunyikan loader
+                    if (xhr.status === 422) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON.message, 
+                            confirmButtonText: 'Try Again'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan saat mengirim data!',
+                        });
+                    }
+                }, remainingTime);
+
+                // $('#loader').fadeOut();
+
+                // if (xhr.status === 422) {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Error',
+                //         text: xhr.responseJSON.message, 
+                //         confirmButtonText: 'Try Again'
+                //     });
+                // } else {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Oops...',
+                //         text: 'Terjadi kesalahan saat mengirim data!',
+                //     });
+                // }
             }
         });
     });

@@ -27,20 +27,17 @@ class PresenceSummaryController extends Controller
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
 
-        //Get Employee
-        // $query = Employee::query()
-        //          ->with('overtimes', 'presences', 'WorkDay')
-        //          ->whereNull('resignation')
-        //          ->get();
-
         $query = Employee::with('overtimes', 'presences', 'WorkDay')->get();
         $query = Employee::query();
         if ($userDivision && !$userDepartment) {
-            $query->where('division_id', $userDivision);
+            $query->whereHas('position',function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
         } elseif (!$userDivision && $userDepartment) {
-            $query->where('department_id', $userDepartment);
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
         } 
-
         $query->whereNull('resignation');
         $employees = $query->get();
 

@@ -51,6 +51,11 @@ return [
         'submit' => 'Simpan',
         'count_late' => 'Hitung Keterlambatan',
 
+        'lapor_hr' => 'Lapor HR',
+        'add_lapor_hr_category' => 'Tambah Kategori Lapor HR',
+        'edit_lapor_hr_category' => 'Ubah Kategori Lapor HR',
+
+        
         'day' => [
             'monday' => 'Senin',
             'tuesday' => 'Selasa',

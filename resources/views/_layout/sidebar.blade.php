@@ -160,6 +160,15 @@
     </li>
     @endcan
 
+    @can('view lapor hr')
+    <li class="nav-item {{ request()->routeIs('lapor_hr.index') ? 'active' : '' }}">
+      <a class="nav-link collapsed" href="{{ route('lapor_hr.index') }}">
+        <i class="ri-alarm-warning-line"></i>
+        <span>{{ __('option.label.lapor_hr') }}</span>
+      </a>
+    </li>
+    @endcan
+
     <a class="nav-link collapsed" data-bs-target="#master-nav" data-bs-toggle="collapse" href="#">
       <i class="ri-settings-4-fill"></i>
       <span>{{ __('sidebar.label.data_master') }}</span>

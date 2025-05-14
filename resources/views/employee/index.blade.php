@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Employees')
+@section('title', __('sidebar.label.employee'))
 @section('content')
 
 {{ Breadcrumbs::render('employee_list') }}
@@ -22,7 +22,7 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">{{ __('employee.label.full_name') }}</th>
+              <th scope="col">{{ __('employee.label.eid') }}</th>
               <th scope="col">{{ __('employee.label.full_name') }}</th>
               <th scope="col">{{ __('employee.label.employee_status') }}</th>
               <th scope="col">{{ __('employee.label.position') }}</th>

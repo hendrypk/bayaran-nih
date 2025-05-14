@@ -70,6 +70,16 @@
                                 {{ __('app.label.overtime') }}
                             </div>
                         </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <a href="{{ route('laporHrIndex') }}" class="" style="font-size: 40px;">
+                                    <i class="ri-alarm-warning-line"></i>
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                {{ __('option.label.lapor_hr') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,8 +87,42 @@
         <div class="section mt-2" id="presence-section">
             <div class="todaypresence">
                 <div class="row">
-                    @if(!empty($presenceToday->leave))
+                    @if(!empty($presenceToday) && $presenceToday->check_in && $presenceToday->check_out)
                     <div class="col-6">
+                        <a href="javascript:void(0);" onclick="showAlert('check out')">
+                            <div class="card checkout">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @elseif(!empty($presenceToday->check_in) || empty($pastPresence->check_out) && !empty($pastPresence->check_in))
+                    <div class="col-6">
+                        <a href="{{ route('presence.out') }}" class="clickable-link">
+                            <div class="card checkout">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-r-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @elseif($leaveAccepted)
+                    <div class="col-6">    
                         <a href="javascript:void(0);" onclick="showAlert('has permit')">
                             <div class="card checkin">
                                 <div class="card-body">
@@ -87,47 +131,30 @@
                                             <i class="ri-logout-box-line"></i>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">You Have Permit</h4>
+                                            <h4 class="presencetitle">{{ __('app.label.have_permit') }}</h4>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    @elseif(empty($presenceToday))
-                        <div class="col-6">
-                            <a href="{{ route('presence.in') }}" class="clickable-link">
-                                <div class="card checkin">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-logout-box-r-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.check_in') }}</h4>
-                                            </div>
+                    @elseif(empty($presenceToday->check_in))
+                    <div class="col-6">
+                        <a href="{{ route('presence.in') }}" class="clickable-link">
+                            <div class="card checkin">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-r-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">{{ __('app.label.check_in') }}</h4>
                                         </div>
                                     </div>
                                 </div>
-                            </a>
-                        </div>
-                    @elseif(!empty($presenceToday->date) && !$presenceToday->check_out)
-                        <div class="col-6">
-                            <a href="{{ route('presence.out') }}" class="clickable-link">
-                                <div class="card checkout">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-logout-box-r-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
+                            </div>
+                        </a>
+                    </div>
                     @else
                         <div class="col-6">
                             <a href="javascript:void(0);" onclick="showAlert('check out')">
@@ -211,9 +238,6 @@
                     {{-- <div id="chart"></div> --}}
                 </div>
             </div>
-
-
-
         </div>
     </div>
     <!-- * App Capsule -->
@@ -230,10 +254,9 @@ function showAlert(type) {
     
     // Tentukan pesan berdasarkan tipe
     if (type === 'has permit') {
-    message = messages.has_permit;
-    }
-    else if (type === 'check in') {
-    message = messages.already_check_in;
+        message = messages.has_permit;
+    } else if (type === 'check in') {
+        message = messages.already_check_in;
     } else if (type === 'check out') {
         message = messages.already_check_out;
     } else if (type === 'overtime in') {
@@ -241,17 +264,6 @@ function showAlert(type) {
     } else if (type === 'overtime out') {
         message = messages.already_overtime_out;
     }
-
-    // if (type === 'check in') {
-    //     message = 'Wis absen melbu, rasah absen meneh!';
-    // } else if (type === 'check out') {
-    //     message = 'Wis absen metu, rasah absen meneh!';
-    // }
-    // if (type === 'overtime in') {
-    //     message = 'Wis absen melbu lembur, rasah absen neh!';
-    // } else if (type === 'overtime out') {
-    //     message = 'Wis absen metu lembur, rasah absen neh!';
-    // }
 
     // Tampilkan SweetAlert dengan pesan sesuai
     Swal.fire({

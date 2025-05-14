@@ -22,7 +22,7 @@ class PresenceController extends Controller
 
 //Presences List
 public function index(Request $request){
-    $query = Presence::with('employees')->whereNull('leave');
+    $query = Presence::with('employee')->whereNull('leave_status')->whereNotNull('work_day_id');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
     $defaultEndDate = $today->toDateString();
@@ -33,32 +33,38 @@ public function index(Request $request){
 
     if ($userDivision && !$userDepartment) {
         $query->whereHas('employee', function ($query) use ($userDivision) {
-            $query->where('division_id', $userDivision);
+            $query->whereHas('position', function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
         });
     } elseif (!$userDivision && $userDepartment) {
         $query->whereHas('employee', function ($query) use ($userDepartment) {
-            $query->where('department_id', $userDepartment);
-        });
-    } elseif ($userDivision && $userDepartment) {
-        $query->whereHas('employee', function ($query) use ($userDivision, $userDepartment) {
-            $query->where('division_id', $userDivision)
-                  ->where('department_id', $userDepartment);
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
         });
     }
 
     if ($startDate && $endDate) {
         $query->whereBetween('date', [$startDate, $endDate]);
     }
-// $query->whereNull('leave');
+    
     $presence = $query->get();
 
-    // $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-    //     ->groupBy('name')
-    //     ->get();
+    $query = Employee::query();
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('position',function ($query) use ($userDivision) {
+            $query->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('position', function ($query) use ($userDepartment) {
+            $query->where('department_id', $userDepartment);
+        });
+    } 
 
-    // $workDay = Employee::with('workDay')->get()->keyBy('id');
-
-    $employees = Employee::whereNull('resignation')->get();
+    $query->whereNull('resignation');
+    $employees = $query->get();
+    
     $workDays = [];
     foreach ($employees as $employee) {
         // Ambil semua work days untuk masing-masing employee

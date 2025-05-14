@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Leave')
+@section('title', __('sidebar.label.leave'))
 @section('content')
 
 {{ Breadcrumbs::render('leave') }}
@@ -48,28 +48,26 @@
                             @foreach($leaves as $no=>$leave)
                             <tr>
                                 <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $leave->employees->eid }}</td>
-                                <td>{{ $leave->employees->name }}</td>
+                                <td>{{ $leave->employee->eid }}</td>
+                                <td>{{ $leave->employee->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($leave->created_at)->format('d F Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($leave->date)->format('d F Y') }}</td>
                                 <td>{{ ucfirst($leave->leave) }}</td>
                                 <td>{{ $leave->leave_note }}</td>
                                 <td>
-                                    @if ($leave->leave_status === 0)
-                                    <i class="status-leave reject ri-close-fill"></i>
-                                    @elseif ($leave->leave_status === 1)
+                                    @if ($leave->leave_status === 1)
                                         <i class="status-leave accept ri-check-double-fill"></i>
-                                    @else
-                                    <i class="status-leave wait ri-rest-time-line"></i>
+                                    @else 
+                                        <i class="status-leave reject ri-close-fill"></i>
                                     @endif
                                 </td>
                                 <td>
                                     @can('update leave')
                                         <button type="button" class="btn btn-green"
                                             data-bs-toggle="modal" 
-                                            data-bs-target="#overtimeEdit" 
+                                            data-bs-target="#leaveEdit" 
                                             data-id="{{ $leave->id }}" 
-                                            data-name="{{ $leave->employees->name }}"
+                                            data-name="{{ $leave->employee->name }}"
                                             data-employee_id="{{ $leave->employee_id }}"
                                             data-date="{{ $leave->date }}"
                                             data-start="{{ $leave->start_date }}"
@@ -83,7 +81,7 @@
                                 <td>
                                     @can('delete leave')
                                         <button type="button" class="btn btn-red" 
-                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employees->name }}', 'leaves')">
+                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employee->name }}', 'leaves')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>                                            
                                     @endcan
@@ -101,7 +99,7 @@
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('overtimeEdit');
+    const editModal = document.getElementById('leaveEdit');
     editModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget; 
         const id = button.getAttribute('data-id');
@@ -111,10 +109,16 @@
         const category = button.getAttribute('data-category');
         const note = button.getAttribute('data-note');
 
+        if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        document.getElementById('leave-date').value = date;
+    } else {
+        console.warn('Invalid date format:', date);
+        document.getElementById('leave-date').value = '';
+    }
+
         // Populate the form fields
         document.getElementById('id').value = id;
         document.getElementById('selectEmployee').value = employee_id;
-        document.getElementById('leave-date').value = date;
         document.getElementById('selectCategory').value = category;
         document.getElementById('inputNote').value = note;
 

@@ -18,7 +18,7 @@ class OvertimeController extends Controller
 
 //Overtimes List
     function index(Request $request){
-        $query = Overtime::with('employees');
+        $query = Overtime::query();
         $today = now();
         $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
         $defaultEndDate = $today->toDateString();
@@ -29,16 +29,15 @@ class OvertimeController extends Controller
 
         if ($userDivision && !$userDepartment) {
             $query->whereHas('employees', function ($query) use ($userDivision) {
-                $query->where('division_id', $userDivision);
+                $query->whereHas('position', function ($query) use ($userDivision) {
+                    $query->where('division_id', $userDivision);
+                });
             });
         } elseif (!$userDivision && $userDepartment) {
             $query->whereHas('employees', function ($query) use ($userDepartment) {
-                $query->where('department_id', $userDepartment);
-            });
-        } elseif ($userDivision && $userDepartment) {
-            $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
-                $query->where('division_id', $userDivision)
-                      ->where('department_id', $userDepartment);
+                $query->whereHas('position', function ($query) use ($userDepartment) {
+                    $query->where('department_id', $userDepartment);
+                });
             });
         }
     
@@ -46,7 +45,20 @@ class OvertimeController extends Controller
             $query->whereBetween('date', [$startDate, $endDate]);
         }
         $overtimes = $query->get();
-        $employees = Employee::whereNull('resignation')->get();
+        
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('position',function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        } 
+        $query->whereNull('resignation');
+        $employees = $query->get();
+
         return view('overtime.index', compact('overtimes', 'employees'));
     }
 

@@ -25,6 +25,7 @@ return [
         'select_shift' => 'Pilih jadwal kerja :',
         'select_location' => 'Pilih location :',
         'note' => 'Catatan :',
+        'have_permit' => 'Kamu ada ijin',
     ],
     'placeholder' => [
         'enter_current_password' => 'Masukkan password saat ini',

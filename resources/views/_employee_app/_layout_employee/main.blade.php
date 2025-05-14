@@ -59,7 +59,7 @@
     <!-- loader -->
     <div id="loader">
         <div class="spinner-border text-tosca" role="status"></div>
-    </div>
+    </div>     
     <!-- * loader -->
     
     @yield('content')

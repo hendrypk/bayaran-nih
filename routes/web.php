@@ -32,6 +32,7 @@ use App\Http\Controllers\KpiPaOptionsController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
 use App\Http\Controllers\EmployeePositionChangeController;
+use App\Http\Controllers\LaporHrController;
 
 //error page
 Route::get('/test',[Test::class, 'test'])->name('test');
@@ -152,6 +153,10 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('holiday/submit', [OptionsController::class, 'holidayAdd'])->name('holiday.add');
             Route::post('holiday/{id}/update', [OptionsController::class, 'holidayUpdate'])->name('holiday.update');
             Route::post('holiday/{id}/delete', [OptionsController::class,'holidayDelete'])->name('holiday.delete');
+
+            //Lapor HR Category
+            Route::post('lapor-hr/submit', [OptionsController::class, 'laporHrCategorySubmit'])->name('laporHrCategorySubmit');
+            Route::post('lapor-hr/{id}/delete', [OptionsController::class,'laporHrCategoryDelete'])->name('laporHrCategoryDelete');
         });
     });
 
@@ -341,6 +346,12 @@ Route::middleware(['auth:web'])->group(function () {
         Route::post('{id}/delete', [EmployeePositionChangeController::class, 'delete'])->name('position.change.delete');
     });
 
+    //Lapor HR
+    Route::prefix('lapor-hr')->group(function () {
+        Route::get('', [LaporHrController::class, 'index'])->name('lapor_hr.index');
+        Route::post('/submit', [LaporHrController::class, 'submit'])->name('lapor_hr.submit');
+    });
+
     
 });
 
@@ -358,7 +369,7 @@ Route::middleware(['auth:employee'])->group(function () {
     Route::prefix('presence')->group(function () {
         Route::get('/in', [EmployeeAppController::class, 'presenceIn'])->name('presence.in');
         Route::get('/out', [EmployeeAppController::class, 'presenceOut'])->name('presence.out');
-        Route::post('/submit', [EmployeeAppController::class, 'store'])->name('presence.submit');
+        Route::post('/submit', [EmployeeAppController::class, 'save'])->name('presence.submit');
         Route::post('/submit/image', [EmployeeAppController::class, 'imageStore'])->name('image.submit');
     });
     
@@ -394,6 +405,13 @@ Route::middleware(['auth:employee'])->group(function () {
     //Payslip
     Route::prefix('payslip')->group(function () {
         Route::get('', [EmployeeAppController::class, 'payslipIndex'])->name('payslip.index');
+    });
+
+    //LaporHr
+    Route::prefix('me-lapor-hr')->group(function () {
+        Route::get('', [EmployeeAppController::class, 'laporHrIndex'])->name('laporHrIndex');
+        Route::get('/add', [EmployeeAppController::class, 'laporHrAdd'])->name('laporHrAdd');
+        Route::post('/submit', [EmployeeAppController::class, 'laporHrSubmit'])->name('laporHrSubmit');
     });
     
     // Route::get('/', [EmployeeAppController::class, 'index'])->name('employee.app');

@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Options')
+@section('title', __('sidebar.label.role'))
 @section('content')
 
 {{ Breadcrumbs::render('role') }}

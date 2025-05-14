@@ -11,5 +11,6 @@ return [
     'overtime_out_success' => 'Absen lembur keluar Anda berhasil dicatat!',
     'has_permit' => 'Hari ini Anda ada ijin! Jadi,tidak bisa absen masuk',
     'note_required' => 'Catatan wajib diisi!',
-    'location_required' => 'Lokasi tidak terdeteksi. Cek koneksi internet atau GPS Anda!'
+    'location_required' => 'Lokasi tidak terdeteksi. Cek koneksi internet atau GPS Anda!',
+    'outside_radius' => 'Lokasi kamu :meters meter di luar radius yang diijinkan',
 ];

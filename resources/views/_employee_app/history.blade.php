@@ -19,7 +19,7 @@
                         <th>{{ __('attendance.label.check_out') }}</th>
                         <th>{{ __('attendance.label.late_arrival') }}</th>
                         <th>{{ __('attendance.label.late_check_in') }}</th>
-                        <th>{{ __('attendance.label.chec_out_early') }}</th>
+                        <th>{{ __('attendance.label.check_out_early') }}</th>
                     </tr>
                 </thead>
                 <tbody>
