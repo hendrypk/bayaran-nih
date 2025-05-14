@@ -1776,8 +1776,6 @@ select {
   50% { opacity: 0.7; }
 }
 
-
-
 .carousel-inner img,
 .carousel-inner video,
 .carousel-inner iframe {
@@ -1797,4 +1795,14 @@ select {
 .carousel-control-prev,
 .carousel-control-next {
     width: 5%; 
+}
+
+.content-box {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
 }
