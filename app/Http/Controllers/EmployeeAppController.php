@@ -215,6 +215,14 @@ class EmployeeAppController extends Controller
         $radius = round($distance["meters"]);
         $radiusKM = round($distance["kilometers"]);
 
+        // Validasi jika user di luar radius
+        if ($radius > $maxRadius) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('messages.outside_radius', ['meters' => $radius]),
+            ]);
+        };
+
         //process image data
         $datePhoto = now()->toDateString();
         $timePhoto = now()->toTimeString();
