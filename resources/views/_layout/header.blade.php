@@ -14,7 +14,9 @@
           <x-language-switcher />
         </li>
         <li class="nav-item">
-          <div class="release-tag" id="releaseList">Checking version release...</div>
+          <div class="release-tag" id="latestRelease">Checking version release...</div>
+              {{-- <div id="changeLog"></div> --}}
+
         </li>
       </ul>
     </nav>
