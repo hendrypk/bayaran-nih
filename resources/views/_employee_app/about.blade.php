@@ -8,7 +8,7 @@
               
               <div id="releaseList"></div>
               <div id="latestRelease"></div>
-              <div id="body"></div>
+              <div id="changeLog"></div>
 
 
 {{--                 

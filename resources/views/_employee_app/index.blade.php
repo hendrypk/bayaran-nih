@@ -9,7 +9,7 @@
 
     <!-- App Capsule -->
     <div id="appCapsule">
-        <div class="release-tag-mobile" id="releaseList"></div>
+        <div class="release-tag-mobile" id="latestRelease"></div>
         <div class="section" id="user-section">
             <div id="user-detail">
                 {{-- <div class="avatar">
