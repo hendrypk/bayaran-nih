@@ -47,9 +47,12 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
             $row->eid,
             $row->employee ? $row->employee->name : 'Unknown', 
             $row->workDay ? $row->workDay->name : 'Unknown',
-            \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->date)), // Pastikan date dikonversi menjadi objek DateTime
-            $row->check_in ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_in)) : '', // Check-in dikonversi jadi DateTime
-            $row->check_out ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_out)) : '', // Check-out dikonversi jadi DateTime
+            // \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->date)), // Pastikan date dikonversi menjadi objek DateTime
+            // $row->check_in ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_in)) : '', // Check-in dikonversi jadi DateTime
+            // $row->check_out ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_out)) : '', // Check-out dikonversi jadi DateTime
+            $row->date->format('d F Y'),
+            $row->check_in,
+            $row->check_out,
             $row->note_in,
             $row->note_out,
             $row->late_arrival == 1 ? 'late' : 'ontime', 
