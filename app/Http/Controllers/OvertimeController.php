@@ -98,6 +98,8 @@ class OvertimeController extends Controller
         $overtime->start_at = $request->start;
         $overtime->end_at = $request->end;
         $overtime->total = $totalMinutes;
+        $overtime->note_in = $request->note;
+        $overtime->note_out = $request->note;
         $overtime->save();
         return redirect()->route('overtime.list')->with('success', 'Overtime added successfully');
     }
@@ -152,6 +154,8 @@ class OvertimeController extends Controller
         $overtime->end_at = $request->end;
         $overtime->total = $totalMinutes;
         $overtime->status = $status;
+        $overtime->note_in = $request->note;
+        $overtime->note_out = $request->note;
         $overtime->save();
         return redirect()->back()->with('success', 'Overtime updated successfully');
     }

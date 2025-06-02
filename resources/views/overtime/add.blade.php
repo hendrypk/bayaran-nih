@@ -50,6 +50,12 @@
                             <input type="time" step="1" name="end" class="input-form" required>
                         </div>
                     </div> 
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label">{{ __('general.label.note') }}</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="note" class="input-form" required>
+                        </div>
+                    </div> 
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-red me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
                         <button type="submit" name="action" class="btn btn-tosca me-3">{{ __('general.label.save') }}</button>
