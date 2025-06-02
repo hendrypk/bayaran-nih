@@ -52,6 +52,8 @@ return [
         'modal_title_add_resign' => 'Tambah Pengunduran Diri',
         'modal_title_edit_resign' => 'Edit Pengunduran Diri',
         'career' => 'Karir',
+        'contact' => 'Informasi Kontak',
+
     ],
     'placeholders' => [
         'select_blood_type' => '- Pilih Golongan Darah -',

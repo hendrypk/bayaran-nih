@@ -29,12 +29,12 @@
               <th scope="col">{{ __('employee.label.job_title') }}</th>
               <th scope="col">{{ __('employee.label.division') }}</th>
               <th scope="col">{{ __('employee.label.department') }}</th>
-              <th scope="col">{{ __('employee.label.sales_status') }}</th>
-              <th scope="col">
+              {{-- <th scope="col">{{ __('employee.label.sales_status') }}</th> --}}
+              {{-- <th scope="col">
                 <button type="button" id="customButton" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#columnsModal">
                   {{ __('employee.label.custom') }}
                 </button>
-              </th>
+              </th> --}}
               
             </tr>
           </thead>
@@ -50,10 +50,10 @@
               <td>{{ $data->position->job_title->name ?? '-' }}</td>
               <td>{{ $data->position->division->name ?? '-' }}</td>
               <td>{{ $data->position->department->name ?? '-' }}</td>
-              <td>{!! $data->sales_status == 1 ? '<i class="ri-check-double-fill"></i>' : '-' !!}</td>
-              <td>
+              {{-- <td>{!! $data->sales_status == 1 ? '<i class="ri-check-double-fill"></i>' : '-' !!}</td> --}}
+              {{-- <td>
 
-              </td>
+              </td> --}}
             </tr>
             @endforeach
           </tbody>
