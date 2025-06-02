@@ -465,11 +465,10 @@ class EmployeeAppController extends Controller
             ->first();
             
         $now = now();
-        \Log::info('OVERTIME:', ['data' => $overtime]);
 
         file_put_contents($photoPath, $imageData);
 
-        if($overtime->start_at && !$overtime->end_at) {
+        if($overtime && !$overtime->end_at) {
             $start = Carbon::parse($overtime->start_at);
             $totalMinutes = max($start->diffInMinutes($now, false), 0);
 
