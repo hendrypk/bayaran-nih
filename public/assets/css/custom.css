@@ -1798,11 +1798,11 @@ select {
 }
 
 .content-box {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 16px;
+    /* background-color: #f8f9fa; */
+    padding: 5px;
+    /* border-radius: 8px;
+    border: 1px solid #ddd; */
+    font-size: 9px;
     line-height: 1.5;
     color: #333;
 }
