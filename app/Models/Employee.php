@@ -137,6 +137,48 @@ class Employee extends Authenticatable
         return $this->belongsTo(EmployeeStatus::class, 'employee_status');
     }
       
-  
+    protected const GENDERS = ['Male', 'Female'];
+
+    protected const BLOODS = ['A', 'B', 'AB', 'O'];
+
+    protected const MARRIAGES = ['single', 'married', 'widowed'];
+
+    protected const RELIGIONS = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
+
+    protected const EDUCATIONS = [
+        'elementary_school',
+        'junior_school',
+        'high_school',
+        'diploma',
+        'bachelor',
+        'master',
+        'doctorate',
+    ];
+
+    protected const BANKS = [
+        'Bank Mandiri',
+        'Bank BNI',
+        'Bank BRI',
+        'Bank BCA',
+        'Bank BTN',
+        'Bank Syariah Indonesia',
+        'Bank Danamon',
+        'CIMB Niaga',
+        'Bank Permata',
+        'Bank Mega'
+    ];
+
+    public static function options(): array
+    {
+        return [
+            'genders' => self::GENDERS,
+            'bloods' => self::BLOODS,
+            'marriages' => self::MARRIAGES,
+            'religions' => self::RELIGIONS,
+            'educations' => self::EDUCATIONS,
+            'banks' => self::BANKS,
+        ];
+    }
+
 
 }
