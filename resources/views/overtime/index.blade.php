@@ -120,10 +120,19 @@
                                         data-id="{{ $overtime->id }}" 
                                         data-name="{{ $overtime->employees->name }}"
                                         data-employee_id="{{ $overtime->employee_id }}"
+<<<<<<< HEAD
                                         data-date="{{ $overtime->date }}"
                                         data-start="{{ $overtime->start_at->format('H:i:s')}}"
                                         data-end="{{ $overtime->end_at->format('H:i:s') }}"
                                         data-note="{{ $overtime->note_in }}">
+=======
+                                        data-start="{{ $overtime->start_at ? $overtime->start_at->format('H:i:s') : '' }}"
+                                        data-end="{{ $overtime->end_at ? $overtime->end_at->format('H:i:s') : '' }}"
+
+                                        {{-- data-date="{{ $overtime->date }}"
+                                        data-start="{{ $overtime->start_at }}" --}}
+                                        data-end="{{ $overtime->end_at }}">
+>>>>>>> ac64564 (fix overtime list)
                                         <i class="ri-edit-line"></i>
                                     </button>
                                 </td>
