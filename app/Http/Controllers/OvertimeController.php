@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\OvertimeExport;
 use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\Overtime;
 use Illuminate\Http\Request;
+use App\Exports\OvertimeExport;
 use App\Models\PresenceSummary;
+use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OvertimeController extends Controller
@@ -15,29 +18,69 @@ class OvertimeController extends Controller
 
 //Overtimes List
     function index(Request $request){
-        $query = Overtime::with('employees');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $query = Overtime::query();
+        $today = now();
+        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+        $defaultEndDate = $today->toDateString();
+        $startDate = $request->input('start_date', $defaultStartDate);
+        $endDate = $request->input('end_date', $defaultEndDate);
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDivision) {
+                $query->whereHas('position', function ($query) use ($userDivision) {
+                    $query->where('division_id', $userDivision);
+                });
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('employees', function ($query) use ($userDepartment) {
+                $query->whereHas('position', function ($query) use ($userDepartment) {
+                    $query->where('department_id', $userDepartment);
+                });
+            });
+        }
+    
         if ($startDate && $endDate) {
             $query->whereBetween('date', [$startDate, $endDate]);
         }
         $overtimes = $query->get();
-        $employees = Employee::get();
+        
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('position',function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        } 
+        $query->whereNull('resignation');
+        $employees = $query->get();
+
         return view('overtime.index', compact('overtimes', 'employees'));
     }
 
 //Overtime Add
     function submit (Request $request){
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'employee_id'=>'integer',
             'date'=>'date',
-            'start'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'end'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-        ]);  
+            'start' => ['required', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
+            'end' => ['required', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],        
+        ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors()
+        //     ], 422);
+        // }
         
         // Parse start and end times using Carbon
-        $start = Carbon::createFromFormat('H:i', $request->start);
-        $end = Carbon::createFromFormat('H:i', $request->end);
+        $start = Carbon::createFromFormat('H:i:s', $request->start);
+        $end = Carbon::createFromFormat('H:i:s', $request->end);
 
         //If end time is before start time
         if($end->lt($start)){
@@ -55,8 +98,10 @@ class OvertimeController extends Controller
         $overtime->start_at = $request->start;
         $overtime->end_at = $request->end;
         $overtime->total = $totalMinutes;
+        $overtime->note_in = $request->note;
+        $overtime->note_out = $request->note;
         $overtime->save();
-        return redirect()->route('overtime.list')->with('success', 'Overtime successfully added');
+        return redirect()->route('overtime.list')->with('success', 'Overtime added successfully');
     }
 
 //Overtime Delete
@@ -66,24 +111,29 @@ class OvertimeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Employee presence has been deleted.',
-            'redirect' => route('overtime.list') 
+            'redirect' => url()->previous()
         ]);
     }
 
 //Overtime Edit
     function update(Request $request, $id){
-        $overtime = Overtime::findOrFail($id);
-        $request->validate([
-            'name'=>'string',
+        $validator = Validator::make($request->all(), [
+            'employee_id'=>'integer',
             'date'=>'date',
-            'start' => ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
-            'end' => ['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'start' => ['required', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
+            'end' => ['required', 'regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],        
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
         
         // Parse start and end times using Carbon
-        $start = Carbon::createFromFormat('H:i', $request->start);
-        $end = Carbon::createFromFormat('H:i', $request->end);
-        
+        $start = Carbon::createFromFormat('H:i:s', $request->start);
+        $end = Carbon::createFromFormat('H:i:s', $request->end);
 
         //If end time is before start time
         if($end->lt($start)){
@@ -94,22 +144,26 @@ class OvertimeController extends Controller
         $totalMinutes = $start->diffInMinutes($end);
         $employee = Employee::where('name', $request->name)->first();
 
+        $action = $request->input('action');
+        $status = ($action === 'accept') ? 1 : 0;
+
+        $overtime = Overtime::findOrFail($id);
         $overtime->employee_id = $request->employee_id;
         $overtime->date = $request->date;
         $overtime->start_at = $request->start;
         $overtime->end_at = $request->end;
         $overtime->total = $totalMinutes;
+        $overtime->status = $status;
+        $overtime->note_in = $request->note;
+        $overtime->note_out = $request->note;
         $overtime->save();
-        return redirect()->route('overtime.list')->with('success', 'Overtime updated successfully');
+        return redirect()->back()->with('success', 'Overtime updated successfully');
     }
 
 //Overtime Export
 public function export(Request $request) {
     $startDate = $request->start_date;
     $endDate = $request->end_date;
-
-    \Log::info("Attempting to export from $startDate to $endDate");
-
     $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
     $formattedEndDate = Carbon::parse($endDate)->format('Y-m-d');
 

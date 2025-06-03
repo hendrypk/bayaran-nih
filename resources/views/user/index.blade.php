@@ -1,16 +1,18 @@
 @extends('_layout.main')
-@section('title', 'Options')
+@section('title', __('sidebar.label.user') )
 @section('content')
-<div class="row">
 
+{{ Breadcrumbs::render('user') }}
+
+<div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">User</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.user') }}</h5>
                     @can('create user')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" onclick="openUserModal('add')">Add User</button>
+                            <button type="button" class="btn btn-tosca" onclick="openUserModal('add')">{{ __('option.label.add_user') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -19,15 +21,15 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                            <th scope="col">{{ __('general.label.name') }}</th>
+                            <th scope="col">{{ __('option.label.username') }}</th>
+                            <th scope="col">{{ __('option.label.email') }}</th>
+                            <th scope="col">{{ __('option.label.role') }}</th>
+                            <th scope="col">{{ __('general.label.edit') }}</th>
+                            <th scope="col">{{ __('general.label.delete') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                             @foreach($users as $no=>$user)
                             <tr>
                                 <th scope="row">{{ $no+1 }}</th>
@@ -41,12 +43,14 @@
                                  <td>
                                     @can('update user')
                                         <button type="button"
-                                            class="btn btn-outline-success" onclick="openUserModal('edit', {
+                                            class="btn btn-green" onclick="openUserModal('edit', {
                                                 id: '{{ $user->id }}',
                                                 name: '{{ $user->name }}',
                                                 username: '{{ $user->username }}',
                                                 email: '{{ $user->email }}',
-                                                role_id: '{{ $user->roles->first()->id ?? '' }}'
+                                                role_id: '{{ $user->roles->first()->id ?? '' }}',
+                                                division: '{{ $user->division_id }}',
+                                                department: '{{ $user->department_id }}'
                                             })">
                                             <i class="ri-edit-box-fill"></i>
                                         </button>
@@ -54,7 +58,7 @@
                                 </td>
                                 <td>
                                     @can('delete user')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}', 'user')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -75,16 +79,20 @@
 function openUserModal(action, data = {}) {
     if (action === 'add') {
         $('#userForm').attr('action', "{{ route('user.store') }}");
-        $('#userModalTitle').text('Add User');
+        $('#userModalTitle').text('{{ __('option.label.add_user') }}');
         $('#inputName').val('');
         $('#selectRole').val('');
+        $('#division').val('');
+        $('#department').val('');
     } else if (action === 'edit') {
         $('#userForm').attr('action', "{{ route('user.update', ['id' => '__id__']) }}".replace('__id__', data.id));
-        $('#userModalTitle').text('Edit User');
+        $('#userModalTitle').text('{{ __('option.label.edit_user') }}');
         $('#inputName').val(data.name);
         $('#username').val(data.username);
         $('#email').val(data.email);
         $('#selectRole').val(data.role_id);
+        $('#division').val(data.division);
+        $('#department').val(data.department);
     }
 
     $('#userModal').modal('show');
@@ -135,26 +143,6 @@ function confirmDelete(id, name, entity) {
             }
         });
     }
-
-// Optional: Handle form submission with AJAX
-// $('#userForm').on('submit', function(e) {
-//     e.preventDefault();
-    
-//     const formAction = $(this).attr('action');
-//     const formData = $(this).serialize();
-
-//     $.post(formAction, formData)
-//         .done(function(response) {
-//             if (response.success) {
-//                 showSuccessAlert(response.message);
-//                 $('#userModal').modal('hide');
-//                 setTimeout(() => location.reload(), 2000); // Reload page after 2 seconds
-//             }
-//         })
-//         .fail(function() {
-//             showErrorAlert('An error occurred while saving.');
-//         });
-// });
 
 </script>
 @endsection

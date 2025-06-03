@@ -1,30 +1,30 @@
 <div class="appBottomMenu">
         <a href="{{ route('employee.app') }}" class="item {{ request()->is('app') ? 'active' : '' }}">
             <div class="col">
-                <ion-icon name="file-tray-full-outline" role="img" class="md hydrated"
+                <ion-icon role="img" class="md hydrated ri-home-4-line"
                     aria-label="file tray full outline"></ion-icon>
-                <strong>Home</strong>
+                <strong>{{ __('app.label.home') }}</strong>
             </div>
         </a>
-        <a href="#" class="item">
+        <a href="{{ route('payslip.index') }}" class="item">
             <div class="col">
-                <ion-icon name="calendar-outline" role="img" class="md hydrated"
+                <ion-icon role="img" class="md hydrated ri-money-dollar-box-line"
                     aria-label="calendar outline"></ion-icon>
-                <strong>Calendar</strong>
+                <strong>{{ __('app.label.my_slip') }}</strong>
             </div>
         </a>
 
         <a href="{{ route('profileIndex') }}" class="item">
             <div class="col">
-                <ion-icon name="people-outline" role="img" class="md hydrated" aria-label="people outline"></ion-icon>
-                <strong>Profile</strong>
+                <ion-icon role="img" class="md hydrated ri-settings-3-line" aria-label="people outline"></ion-icon>
+                <strong>{{ __('app.label.setting') }}</strong>
             </div>
         </a>
         <a href="{{ route('about.app') }}" class="item">
             <div class="col">
-                <ion-icon name="document-text-outline" role="img" class="md hydrated"
+                <ion-icon role="img" class="md hydrated ri-information-line"
                     aria-label="document text outline"></ion-icon>
-                <strong>About App</strong>
+                <strong>{{ __('app.label.about') }}</strong>
             </div>
         </a>
 

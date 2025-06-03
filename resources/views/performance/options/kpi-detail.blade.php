@@ -2,12 +2,13 @@
 @section('title', 'Performance - PA')
 @section('content')
 
+{{ Breadcrumbs::render('option_kpi_detail', $kpi_id) }}
 <div class="col-lg-8">
     <div class="card">
         <div class="card-body">
             <div class="card-header d-flex align-items-center py-0">
                 <div class="col-md-8">
-                    <h5 class="card-title">KPI Detail for {{ $name }}</h5>
+                    <h5 class="card-title">{{ __('performance.label.kpi_detail') }} {{ $name }}</h5>
                 </div>
             </div>
             @foreach ($indicators as $index => $indicator)
@@ -16,7 +17,7 @@
                 @csrf
                 <div class="row mb-3">
                     <div class="col-md-7">
-                        <label for="inputPosition" class="form-label fw-bold">Name</label>
+                        <label for="inputPosition" class="form-label fw-bold">{{ __('general.label.name') }}</label>
                         <input type="text" name="name" class="form-control" value="{{ $name }}" required>
                     </div>
                 </div>
@@ -24,13 +25,13 @@
                     <div class="indicator-group mb-3">
                         <div class="row mb-3">
                             <div class="col-7">
-                                <label for="inputAspect" class="form-label fw-bold">Indicator</label>
+                                <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.indicator') }}</label>
                             </div>
                             <div class="col-2">
-                                <label for="inputAspect" class="form-label fw-bold">Target</label>
+                                <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.target') }}</label>
                             </div>
                             <div class="col-2">
-                                <label for="inputAspect" class="form-label fw-bold">Bobot (%)</label>
+                                <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.weight') }}</label>
                             </div>
 
                         </div>
@@ -53,7 +54,7 @@
                                 <input type="text" class="form-control bobot-input" name="indicators[{{ $index }}][bobot]" value="{{ $indicator->bobot }}" step="0.01" required>
                             </div>
                             <div class="col-1">
-                                <button type="button" class="btn btn-outline-danger" 
+                                <button type="button" class="btn btn-red" 
                                 onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->aspect }}', 'aspect')">
                                 <i class="ri-delete-bin-fill"></i>
                             </button>
@@ -64,13 +65,16 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-9">
-                        <button type="button" id="addEditIndicatorBtn" class="btn btn-secondary">Add Indicator</button>
+                        <button type="button" id="addEditIndicatorBtn" class="btn btn-tosca">{{ __('performance.label.add_indicator') }}</button>
                     </div>
                     <div class="col-md-2">
                         <input type="number" class="form-control fw-bold" id="totalBobot" value="{{ $totalBobot }}" readonly>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-tosca">Save Changes</button>
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('kpi.pa.options.index') }}" class="btn btn-red me-3">{{ __('general.label.back') }}</a>
+                    <button type="submit" class="btn btn-tosca btn-sm">{{ __('general.label.save') }}</button>
+                </div>
             </form>
             <div class="row d-f"></div>
 
@@ -79,7 +83,7 @@
 </div>
 
 @include('modal.delete')
-@include('options.edit')
+{{-- @include('options.edit') --}}
 
 @section('script')
 
@@ -109,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="number" class="form-control bobot-input" name="indicators[${index}][bobot]" step="0.01" required>
                 </div>
                 <div class="col-1">
-                    <button type="button" class="btn btn-danger removeIndicatorBtn">
+                    <button type="button" class="btn btn-red removeIndicatorBtn">
                         <i class="ri-delete-bin-fill"></i>
                     </button>
                 </div>

@@ -1,115 +1,151 @@
 @extends('_layout.main')
-@section('title', 'Presence')
+@section('title', __('sidebar.label.presences'))
 @section('content')
 
+
+{{ Breadcrumbs::render('presence') }}
+<div class="row align-items-center">
+    <div class="col-md-9">
+        <x-date-filter action="{{ route('presence.list.admin') }}" 
+                        :startDate="request()->get('start_date')" 
+                        :endDate="request()->get('end_date')" />
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        @can('presence export')
+        <div class="form-container">
+            <form action="{{ route('presence.export') }}" method="POST" class="me-2" style="margin: 0;">
+                @csrf
+                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                <button type="submit" class="btn btn-tosca">
+                    <i class="ri-download-cloud-2-fill"> {{ __('general.label.export') }}</i>
+                </button>
+            </form>
+        </div>
+        @endcan
+        <div class="form-container">
+            <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2">
+                <i class="ri-file-upload-fill">{{ __('general.label.import') }}</i></a>
+        </div>
+        @can('create presence')
+        <button type="button" class="btn btn-tosca btn-sm"
+                data-bs-toggle="modal" 
+                data-bs-target="#addPresence">
+            <i class="ri-add-circle-line"></i>
+        </button>
+        @endcan
+    </div>
+</div>
+
 <div class="row">
-    <x-date-filter action="{{ route('presence.list.admin') }}" 
-                    :startDate="request()->get('start_date')" 
-                    :endDate="request()->get('end_date')" />
         <div class="col-md">
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
                     <div class="col-md-9">
-                        <h5 class="card-title mb-0 py-3">Presences List</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('attendance.label.presence_list') }}</h5>
                     </div>
-                    <div class="button-container">
-                        @can('presence export')
-                        <div class="form-container">
-                            <form action="{{ route('presence.export') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                                <button type="submit" class="btn btn-tosca">Export</button>
-                            </form>
-                        </div>
-                        @endcan
+                        {{-- <div class="button-container">
+                            @can('presence export')
+                            <div class="form-container">
+                                <form action="{{ route('presence.export') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                                    <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                                    <button type="submit" class="btn btn-tosca">Export</button>
+                                </form>
+                            </div>
+                            @endcan
 
-                        @can('create presence')
-                            <button type="button" class="btn btn-untosca"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#addPresence">
-                            Add Presence
-                            </button>
-                        @endcan
-                    </div>
+                            <div class="form-container">
+                                <a href="{{ route('presence.import') }}" class="btn btn-tosca">Import</a>
+                            </div>
+
+                            @can('create presence')
+                                <button type="button" class="btn btn-untosca"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#addPresence">
+                                Add Presence
+                                </button>
+                            @endcan
+                        </div> --}}
                 </div>
                 <div class="card-table-wrapper"> 
                     <table class="table datatable table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">
+                                {{-- <th scope="col">
                                     <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
-                                </th>
+                                </th> --}}
                                 <th scope="col">#</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Work Day</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Check In</th>
-                                <th scope="col">Check Out</th>
-                                <th scope="col">Late Arrival</th>
-                                <th scope="col">Late Check in</th>
-                                <th scope="col">Check Out Early</th>
-                                <th scope="col">Note In</th>
-                                <th scope="col">Note Out</th>
-                                <th scope="col">Location In</th>
-                                <th scope="col">Location Out</th>
-                                <th scope="col">Photo In</th>
-                                <th scope="col">Photo Out</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('employee.label.eid') }}</th>
+                                <th scope="col">{{ __('general.label.name') }}</th>
+                                <th scope="col">{{ __('attendance.label.work_day') }}</th>
+                                <th scope="col">{{ __('general.label.date') }}</th>
+                                <th scope="col">{{ __('attendance.label.check_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.check_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.late_arrival') }}</th>
+                                <th scope="col">{{ __('attendance.label.late_check_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.check_out_early') }}</th>
+                                {{-- <th scope="col">{{ __('attendance.label.note_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.note_out') }}</th> --}}
+                                <th scope="col">{{ __('attendance.label.location_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.location_out') }}</th>
+                                <th scope="col">{{ __('attendance.label.photo_in') }}</th>
+                                <th scope="col">{{ __('attendance.label.photo_out') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($presence as $no=>$data)
-                            <tr>
-                                <td>
+                            <tr class="{{ $data->created_at != $data->updated_at ? 'row-edited' : '' }}">
+                                {{-- <td>
                                     <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
-                                </td>                                       
+                                </td>                                        --}}
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $data->employee->eid }}</td>
                                 <td>{{ $data->employee->name }}</td>
-                                <td>{{ $data['work_day_id'] }}</td>
+                                <td>{{ $data->workDay->name ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
                                 <td>{{ $data['check_in'] }}</td>
                                 <td>{{ $data['check_out'] }}</td>
                                 <td>
                                     @if($data['late_arrival'] == 1)
-                                        Late Arrival
+                                    {{ __('attendance.label.late') }}
                                         @else
-                                            On Time
+                                        {{ __('attendance.label.ontime') }}
                                     @endif
                                 </td>
                                 <td>{{ $data['late_check_in'] }}</td>
                                 <td>{{ $data['check_out_early'] }}</td>
-                                <td>{{ $data['note_in']}}</td>
-                                <td>{{ $data['note_out'] }}</td>
+                                {{-- <td>{{ $data['note_in']}}</td>
+                                <td>{{ $data['note_out'] }}</td> --}}
                                 <td>
-                                    <button class="btn btn-primary" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
+                                    <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
                                         <i class="ri-road-map-line"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline-primary" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
+                                    <button class="btn btn-blue" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
                                         <i class="ri-road-map-line"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
-                                            <i class="ri-eye-line"></i>
+                                            <i class="ri-gallery-line"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoModal"
+                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_out']) }}')">
-                                            <i class="ri-eye-line"></i>
+                                            <i class="ri-gallery-line"></i>
                                     </button>
                                 </td>
                                 <td>
                                     @can('update presence')
-                                        <button type="button" class="btn btn-outline-success"
+                                        <button type="button" class="btn btn-green"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editPresence" 
                                                 data-id="{{ $data['id'] }}" 
@@ -124,8 +160,8 @@
                                 </td>
                                 <td>
                                     @can('delete presence')
-                                    <button type="button" class="btn btn-outline-danger" 
-                                        onclick="confirmDelete({{ $data->id }}, '{{ $data->employee->name }}', 'presences')">
+                                    <button type="button" class="btn btn-red" 
+                                        onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employee->name) }}', 'presences')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
                                     @endcan
@@ -286,26 +322,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-//Work Day On Add Presence Modal
-document.getElementById('employeeSelect').addEventListener('change', function() {
-    var employeeId = this.value;
+document.getElementById('employeeSelect').addEventListener('change', function () {
+    var employeeId = this.value; 
+    var workDays = @json($workDay);
     var workDaySelect = document.getElementById('workDaySelect');
     var workDayContainer = document.getElementById('workDayContainer');
 
     // Clear previous options
     workDaySelect.innerHTML = '<option selected disabled>Select Work Day</option>';
 
-    // Check if an employee is selected
-    if (employeeId) {
-        // Fetch the work days for the selected employee
-        var workDays = @json($workDay);
-        var selectedWorkDays = workDays[employeeId] || [];
-console.log(workDays);
+    // Cek jika employee_id ada di workDays
+    if (employeeId && workDays[employeeId]) {
+        var selectedWorkDays = workDays[employeeId];
+
         // Check if there is more than one work day
         if (selectedWorkDays.length > 1) {
             selectedWorkDays.forEach(function(workDay) {
                 var option = document.createElement('option');
-                option.value = workDay.name; // Set the value to the ID
+                option.value = workDay.id; // Set the value to the ID
                 option.text = workDay.name; // Display the name
                 workDaySelect.appendChild(option);
             });
@@ -316,16 +350,16 @@ console.log(workDays);
             workDaySelect.value = selectedWorkDays[0].id; // Set to the ID
             workDaySelect.innerHTML = ''; // Clear previous options
             var option = document.createElement('option');
-            option.value = selectedWorkDays[0].name; // Set the value
+            option.value = selectedWorkDays[0].id; // Set the value
             option.text = selectedWorkDays[0].name; // Display the name
             workDaySelect.appendChild(option);
             workDaySelect.disabled = false; // Keep it enabled
             workDayContainer.style.display = 'block';
         } else {
-            workDayContainer.style.display = 'none'; // No work days
+            workDayContainer.style.display = 'block'; // No work days
         }
     } else {
-        workDayContainer.style.display = 'none'; // No employee selected
+        workDayContainer.style.display = 'block'; // No employee selected
     }
 });
 
@@ -338,8 +372,8 @@ function confirmDelete(id, name, entity) {
             showCancelButton: true,
             confirmButtonColor: '',
             cancelButtonColor: '',
+            cancelButtonText: 'Cancel',
             confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch(`/${entity}/${id}/delete`, { 

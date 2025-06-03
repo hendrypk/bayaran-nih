@@ -2,6 +2,8 @@
 @section('title', 'Presence Summary')
 @section('content')
 
+
+{{ Breadcrumbs::render('presence_summary') }}
 <div class="row">
     <x-date-filter action="{{ route('presenceSummary.list') }}" 
                     :startDate="request()->get('start_date')" 
@@ -11,23 +13,25 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Presence Summary</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('attendance.label.presence_summary') }}</h5>
                 </div>
                 <table class="table datatable table-hover">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">EID</th>
-                            <th scope="col">Employee Name</th>
-                            <th scope="col">Presence</th>
-                            <th scope="col">Annual Leave</th>
-                            <th scope="col">Sick</th>
-                            <th scope="col">Permit</th>
-                            <th scope="col">Alpha</th>
-                            <th scope="col">Total Overtime</th>
-                            <th scope="col">Total Late Arrival</th>
-                            <th scope="col">Total Late Check In</th>
-                            <th scope="col">Total Check Out Early</th>
+                            <th scope="col">{{ __('employee.label.eid') }}</th>
+                            <th scope="col">{{ __('general.label.name') }}</th>
+                            <th scope="col">{{ __('attendance.label.presence') }}</th>
+                            <th scope="col">{{ __('attendance.label.holiday') }}</th>
+                            <th scope="col">{{ __('attendance.label.annual_leave') }}</th>
+                            <th scope="col">{{ __('attendance.label.sick') }}</th>
+                            <th scope="col">{{ __('attendance.label.full_day_permit') }}</th>
+                            <th scope="col">{{ __('attendance.label.half_day_permit') }}</th>
+                            <th scope="col">{{ __('attendance.label.alpha') }}</th>
+                            <th scope="col">{{ __('attendance.label.total_overtime') }}</th>
+                            <th scope="col">{{ __('attendance.label.total_late_arrival') }}</th>
+                            <th scope="col">{{ __('attendance.label.total_late_check_in') }}</th>
+                            <th scope="col">{{ __('attendance.label.total_check_out_early') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,9 +41,11 @@
                                 <td>{{ $employee->eid }}</td>
                                 <td>{{ $employee->name }}</td>
                                 <td>{{ $employee->presence }}</td>
+                                <td>{{ $employee->holiday }}</td>
                                 <td>{{ $employee->annual_leave }}</td>
-                                <td>{{ $employee->sick_leave }}</td>
-                                <td>{{ $employee->permit_leave }}</td>
+                                <td>{{ $employee->sick_permit }}</td>
+                                <td>{{ $employee->full_day_permit }}</td>
+                                <td>{{ $employee->half_day_permit }}</td>
                                 <td>{{ $employee->alpha }}</td>
                                 <td>{{ $employee->total_overtime }}</td>
                                 <td>{{ $employee->late_arrival }}</td>

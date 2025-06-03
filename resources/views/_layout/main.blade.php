@@ -6,7 +6,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>@yield('title','hendry')</title>
+  <title>@yield('title','Gajiplus')</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -27,11 +27,16 @@
   <link href="{{asset('assets/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
   <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
   <link href="{{asset('assets/vendor/simple-datatables/style.css')}}" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp" rel="stylesheet"/>
 
   <link href="{{asset('assets/css/custom.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/scss/style.scss')}}" rel="stylesheet">
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
   <!-- Include SweetAlert2 CSS and JS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> --}}
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -54,7 +59,7 @@
   ======================================================== -->
 </head>
 
-<body>
+<body id="body">
 @if(!request()->is('login') && !request()->is('register'))
   <!-- ======= Header ======= -->
    @include('_layout.header')
@@ -71,8 +76,7 @@
         @yield('content')
       </div>
     </section>
-
-  </main><!-- End #main -->
+  </main>
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
@@ -168,14 +172,8 @@
             dateFormat: "Y-m-d",
         });
     });
-});
 
-  // document.addEventListener("DOMContentLoaded", function() {
-  //     flatpickr("#leave-dates", "#holiday-dates" {
-  //         mode: "multiple",
-  //         dateFormat: "Y-m-d",
-  //     });
-  // });
+});
 
 </script>
 

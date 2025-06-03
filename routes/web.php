@@ -1,14 +1,22 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use App\Models\User;
 use App\Models\Options;
 use App\Http\Controllers\Test;
+use Spatie\Permission\Models\Role;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use App\Models\EmployeePositionChange;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use Spatie\Permission\Models\Permission;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\SalesController;
+use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\WorkDayController;
@@ -19,14 +27,12 @@ use App\Http\Controllers\AppraisalController;
 use App\Http\Controllers\FinalGradeController;
 use App\Http\Controllers\EmployeeAppController;
 use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\KpiPaOptionsController;
-use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Http\Controllers\EmployeePositionChangeController;
+use App\Http\Controllers\LaporHrController;
 
 //error page
 Route::get('/test',[Test::class, 'test'])->name('test');
@@ -51,10 +57,45 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //Get API
 Route::get('/github/releases', [ApiController::class, 'getReleases']);
 
+//Language Switcher
+// Route::middleware([LocaleMiddleware::class])->group(function () {
+//     Route::get('language/{lang}', function ($lang) {
+//         if (in_array($lang, ['en', 'id'])) {
+//             session()->put('locale', $lang); // Pastikan ini terjadi
+//         }
+    
+//         // // Debugging setelah perubahan
+//         // dd(session()->all());  // Memastikan bahwa 'locale' sudah berubah
+    
+//         return redirect()->back();
+//     })->name('locale.switch');
+    
+// });
+
+// Route::middleware([LocaleMiddleware::class])->group(function () {
+//     Route::get('/switch-language/{lang}', function ($lang) {
+//         if (in_array($lang, ['en', 'id'])) { // Pastikan hanya menerima 'en' atau 'id'
+//             session(['locale' => $lang]); // Simpan bahasa di session
+//             app()->setLocale($lang); // Ubah bahasa aktif di aplikasi
+//         }
+//         return redirect()->back(); // Kembali ke halaman sebelumnya
+//     })->name('switch.language');
+// });
+
+Route::middleware([LocaleMiddleware::class])->group(function () {
+    Route::get('switch-language/{lang}', function ($lang) {
+        if (in_array($lang, ['en', 'id'])) {
+            session(['locale' => $lang]);
+        }
+        return redirect()->back();
+    })->name('locale.switch');
+});
+
 //Administrator Middleware Group
 Route::middleware(['auth:web'])->group(function () {
     //Dashboard
-    Route::get('/home', function () {return view('home');})->name('home');
+    // Route::get('/home', function () {return view('home');})->name('home');
+    Route::get('home', [HomeController::class, 'index'])->name('home');
 
     //Options
     Route::prefix('options')->group(function () {
@@ -112,6 +153,10 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('holiday/submit', [OptionsController::class, 'holidayAdd'])->name('holiday.add');
             Route::post('holiday/{id}/update', [OptionsController::class, 'holidayUpdate'])->name('holiday.update');
             Route::post('holiday/{id}/delete', [OptionsController::class,'holidayDelete'])->name('holiday.delete');
+
+            //Lapor HR Category
+            Route::post('lapor-hr/submit', [OptionsController::class, 'laporHrCategorySubmit'])->name('laporHrCategorySubmit');
+            Route::post('lapor-hr/{id}/delete', [OptionsController::class,'laporHrCategoryDelete'])->name('laporHrCategoryDelete');
         });
     });
 
@@ -141,12 +186,14 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view employee']], function() {
         Route::prefix('employee')->group(function () {
             Route::get('', [EmployeeController::class,'employeelist'])->name('employee.list'); 
-            Route::get('add', [EmployeeController::class,'create'])->name('employee.add');
+            Route::get('add', [EmployeeController::class,'form'])->name('employee.add');
             Route::post('submit', [EmployeeController::class,'submit'])->name('employee.submit'); 
             Route::get('{id}', [EmployeeController::class, 'detail'])->name('employee.detail'); 
-            Route::get('{id}/edit', [EmployeeController::class, 'edit'])->name('employee.edit'); 
+            Route::get('{id}/edit', [EmployeeController::class, 'form'])->name('employee.edit'); 
             Route::post('{id}/update', [EmployeeController::class, 'update'])->name('employee.update'); 
             Route::post('{id}/delete', [EmployeeController::class, 'delete'])->name('employee.delete'); 
+            Route::post('{id}/account-reset', [EmployeeController::class, 'resetUsernamePassword'])->name('employee.account.reset');
+
         });
     });
 
@@ -160,6 +207,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('submit', [PresenceController::class, 'create'])->name('presence.create.admin');
             Route::post('{id}/update', [PresenceController::class, 'update'])->name('presence.update.admin');
             Route::post('export', [PresenceController::class, 'export'])->name('presence.export');
+            Route::get('import/template', [PresenceController::class, 'template'])->name('template.import');
             //presence_summary
             Route::get('summary', [PresenceSummaryController::class, 'index'])->name('presenceSummary.list');
         });
@@ -208,6 +256,8 @@ Route::middleware(['auth:web'])->group(function () {
     //FInal Grade
     Route::group(['middleware' => ['permission:view employee grade']], function() {
         Route::get('/performance/grade', [FinalGradeController::class, 'index'])->name('performance.grade');
+        Route::get('/performance/export', [FinalGradeController::class, 'export'])->name('performance.export');
+
     });
     
     //sales
@@ -246,7 +296,6 @@ Route::middleware(['auth:web'])->group(function () {
     });
 
     //Role
-    
     Route::group(['middleware' => ['permission:view role']], function() {
         Route::prefix('role')->group(function () {
             Route::get('', [RoleController::class, 'index'])->name('role.index');
@@ -262,9 +311,9 @@ Route::middleware(['auth:web'])->group(function () {
     
     Route::group(['middleware' => ['permission:view leave']], function() {
         Route::prefix('leaves')->group(function () {
-            Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
-            Route::post('submit', [LeaveController::class, 'store'])->name('leaves.create');
-            Route::post('{id}/delete', [LeaveController::class, 'delete'])->name('leaves.delete');
+            Route::get('', [LeaveController::class, 'ind'])->name('leaves.index');
+            Route::post('submit', [LeaveController::class, 'save'])->name('leaves.create');
+            Route::post('{id}/delete', [LeaveController::class, 'destroy'])->name('leaves.delete');
         });
     });
 
@@ -279,8 +328,30 @@ Route::middleware(['auth:web'])->group(function () {
     
         return view('logs', ['logs' => array_reverse($logs)]);
     })->name('logs.index');
-});
 
+    //Resignation
+    Route::prefix('resignation')->group(function () {
+        Route::get('', [ResignationController::class, 'index'])->name('resignation.index');
+        Route::post('store', [ResignationController::class, 'store'])->name('resignation.store');
+        Route::post('update', [ResignationController::class, 'update'])->name('resignation.update');
+        Route::post('{id}/delete', [ResignationController::class, 'delete'])->name('resignation.delete');
+    });
+
+    //Employee Position Change
+    Route::prefix('position-change')->group(function () {
+        Route::get('', [EmployeePositionChangeController::class, 'index'])->name('position.change.index');
+        Route::post('store', [EmployeePositionChangeController::class, 'store'])->name('position.change.store');
+        Route::post('{id}/delete', [EmployeePositionChangeController::class, 'delete'])->name('position.change.delete');
+    });
+
+    //Lapor HR
+    Route::prefix('lapor-hr')->group(function () {
+        Route::get('', [LaporHrController::class, 'index'])->name('lapor_hr.index');
+        Route::post('/submit', [LaporHrController::class, 'submit'])->name('lapor_hr.submit');
+    });
+
+    
+});
 
 //Employee Middleware Group
 Route::middleware(['auth:employee'])->group(function () {
@@ -296,13 +367,14 @@ Route::middleware(['auth:employee'])->group(function () {
     Route::prefix('presence')->group(function () {
         Route::get('/in', [EmployeeAppController::class, 'presenceIn'])->name('presence.in');
         Route::get('/out', [EmployeeAppController::class, 'presenceOut'])->name('presence.out');
-        Route::post('/submit', [EmployeeAppController::class, 'store'])->name('presence.submit');
+        Route::post('/submit', [EmployeeAppController::class, 'save'])->name('presence.submit');
         Route::post('/submit/image', [EmployeeAppController::class, 'imageStore'])->name('image.submit');
     });
     
     // Overtime Routes
     Route::prefix('overtime')->group(function () {
-        Route::get('/', [EmployeeAppController::class, 'overtime'])->name('overtime.create');
+        Route::get('/in', [EmployeeAppController::class, 'overtime'])->name('overtime.in');
+        Route::get('/out', [EmployeeAppController::class, 'overtimeOut'])->name('overtime.out');
         Route::post('/submit', [EmployeeAppController::class, 'overtimeStore'])->name('overtime.submit');
         Route::get('/history', [EmployeeAppController::class, 'overtimeHistory'])->name('overtime.history');
     });
@@ -326,6 +398,18 @@ Route::middleware(['auth:employee'])->group(function () {
         Route::get('', [EmployeeAppController::class, 'leaveIndex'])->name('leave.index');
         Route::get('add', [EmployeeAppController::class, 'leaveApply'])->name('leave.apply');
         Route::post('add/submit', [EmployeeAppController::class, 'leaveStore'])->name('leave.create');
+    });
+
+    //Payslip
+    Route::prefix('payslip')->group(function () {
+        Route::get('', [EmployeeAppController::class, 'payslipIndex'])->name('payslip.index');
+    });
+
+    //LaporHr
+    Route::prefix('me-lapor-hr')->group(function () {
+        Route::get('', [EmployeeAppController::class, 'laporHrIndex'])->name('laporHrIndex');
+        Route::get('/add', [EmployeeAppController::class, 'laporHrAdd'])->name('laporHrAdd');
+        Route::post('/submit', [EmployeeAppController::class, 'laporHrSubmit'])->name('laporHrSubmit');
     });
     
     // Route::get('/', [EmployeeAppController::class, 'index'])->name('employee.app');

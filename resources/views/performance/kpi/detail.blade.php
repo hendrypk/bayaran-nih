@@ -2,103 +2,107 @@
 @section('title', 'Performance - KPI Detail')
 @section('content')
 
-<div class="card-title">
-    Appraisal Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}
+{{ Breadcrumbs::render('kpi_detail', $gradeKpi->first()) }}
+
+<div class="row align-item-center mb-3">
+    <div class="col md-9">
+        <h3 class="card-title mb-0 py-3">{{ __('performance.label.kpi_detail') }} {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h3>
+    </div>
+    
+    <div class="col-md-3 d-flex justify-content-end">
+        @can('update employee')
+        <a href="{{ route('kpi.edit', [
+            'employee_id' => $employees->id,
+            'month' => $month,
+            'year' => $year
+            ]) }}" class="btn btn-tosca btn-sm d-flex justify-content-center align-items-center me-2">
+            <i class="ri-edit-line"></i>
+        </a>
+        @endcan
+        
+        @can('delete employee')
+        <button type="button" class="btn btn-red btn-sm" 
+            onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
+            <i class="ri-delete-bin-fill"></i>
+        </button>
+        @endcan
+    </div>
 </div>
 
-<div class="row">
-    <!-- Display Employee Information -->
-    <div class="col-lg-8">
+<div class="row mb-3    ">
+    <div class="col-lg-4">
         <div class="card mb-4">
             <div class="card-body">
-                <div class="card-title">Employee Information</div>
-                <div class="col-lg-8">
+                <div class="card-title">{{ __('performance.label.employee_information') }}</div>
+                {{-- <div class="col-lg-8"> --}}
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> EID </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.eid') }} </div>
                         <div class="col">: {{ $employees->eid }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Nama </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('general.label.name') }} </div>
                         <div class="col">: {{ $employees->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Job Title </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.job_title') }} </div>
                         <div class="col">: {{ $employees->job_title->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Position </div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.position') }} </div>
                         <div class="col">: {{ $employees->position->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-lg-6 fw-bold"> Division </div>
-                        <div class="col">: {{ $employees->division->name }}</div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.division') }} </div>
+                        <div class="col">: {{ $employees->division->name ?? '-' }}</div>
                     </div>
                     <div class="row mb-2    ">
-                        <div class="col-lg-6 fw-bold"> Department </div>
-                        <div class="col">: {{ $employees->department->name }}</div>
+                        <div class="col-lg-4 fw-bold"> {{ __('employee.label.department') }} </div>
+                        <div class="col">: {{ $employees->department->name ?? '-' }}</div>
                     </div>
-                </div>
+                {{-- </div> --}}
             </div>
         </div>
      </div>
-</div>
+
 
       <!-- Display KPI Details -->
-<div class="col-lg-8">
-    <div class="card">
-        <div class="card-body">
-            <div class="card-title">
-                KPI Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}
-            </div>
-            <div class="row mb-4">
-                <div class="col-lg-1">
-                    <a href="{{ route('kpi.edit', [
-                        'employee_id' => $employees->id,
-                        'month' => $month,
-                        'year' => $year
-                        ]) }}" class="btn btn-outline-success">
-                        <i class="ri-edit-line"></i>
-                    </a>
-                </div>
-                <div class="col-lg-1">
-                    <button type="button" class="btn btn-outline-danger" 
-                        onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
-                        <i class="ri-delete-bin-fill"></i>
-                    </button>
-                </div>
-            </div>
-        <div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title"> {{ __('performance.label.kpi_achievement') }} </div>
+            <div class="row">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">Aspect</th>
-                            <th scope="col">Target</th>
-                            <th scope="col">Bobot</th>
-                            <th scope="col">Achievement</th>
-                            <th scope="col">Grade</th>
+                            <th class="text-center" style="width: 5%;">No</th>
+                            <th class="text-center" style="width: 40%;">{{ __('performance.label.aspect') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.target') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.weight') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.achievement') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.grade') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($gradeKpi as $gradeKpi)
+                        @foreach ($gradeKpi as $no=>$gradeKpi)
                             <tr>
+                                <td class="text-center">{{ $no+1 }}</td>
                                 <td>{{ $gradeKpi->indicator->aspect }}</td>
-                                <td>{{ $gradeKpi->indicator->target }}</td>
-                                <td>{{ $gradeKpi->indicator->bobot }}</td>
-                                <td>{{ $gradeKpi->achievement }}</td>
-                                <td>{{ $gradeKpi->grade }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->indicator->target, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->indicator->bobot, 2, '.', ',') }}</td>
+                                <td class="text-end">{{ number_format($gradeKpi->achievement, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->grade, 2, '.', ',') }}</td>
+                                
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Final Grade</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>{{$totalGrade}}</th>
+                            <th colspan="5">{{ __('performance.label.final_grade') }}</th>
+                            <th class="text-center">{{$totalGrade}}</th>
                         </tr>
                     </tfoot>
                 </table>
+            </div>
         </div>
     </div>
 </div>

@@ -1,62 +1,53 @@
 @extends('_layout.main')
-@section('title', 'Performance - KKPI')
+@section('title', __('sidebar.label.work_day'))
 @section('content')
+
+{{ Breadcrumbs::render('work_day') }}
 <div class="row">
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-10">
-                    <h5 class="card-title">Work Day</h5>
-                </div>
-
-                @can('create work pattern')
-                    <div class="col-md align-content-center">
-                        <button type="button" 
-                            class="btn btn-untosca content-align-center" 
+                <div class="card-header d-flex align-items-center py-0">
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.work_day') }}</h5>
+                    @can('create work pattern')
+                        <div class="ms-auto my-auto">
+                            <button type="button" 
+                            class="btn btn-tosca content-align-center" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#addWorkDay">Add Work Day
+                            data-bs-target="#addWorkDay">
+                            <i class="ri-add-circle-line"></i>
                         </button>
-                    </div>
-                @endcan
-
+                        </div>
+                    @endcan
+                </div>
             </div>
             <table class="table datatable table-hover">
                 <thead>
                     <th>#</th>
-                    <th>Work Day Name</th>
-                    <th>View</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th>{{ __('general.label.name') }}</th>
+                    <th>{{ __('general.label.view') }}</th>
+                    <th>{{ __('general.label.delete') }}</th>
                 </thead>
                 <tbody>
                     @foreach($workDays as $no=>$workDay)
                     <tr>
                         <td>{{ $no+1 }}</td>
                         <td>{{ $workDay->name }}</td>
-                        <td>
+                        {{-- <td>
                             <a href="{{ route('workDay.detail', ['name' => $workDay->name]) }}" class="btn btn-outline-primary">
                                 <i class="ri-eye-fill"></i>
                             </a>
-                        </td>
+                        </td> --}}
                         <td>
                             @can('update work pattern')
-                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-outline-success">
-                                    <i class="ri-edit-fill"></i>
+                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-blue">
+                                    <i class="ri-eye-fill"></i>
                                 </a>
                             @endcan
                         </td>
                         <td>
-                            @can('delete work pattern')
-                                {{-- <a href="" class="btn btn-outline-danger"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#deleteModal" 
-                                    data-entity="work-day"  
-                                    data-id="{{ $workDays->first()->id }}" 
-                                    data-name="{{ $workDays->first()->name }}" >
-                                    <i class="ri-delete-bin-fill"></i>
-                                </a> --}}
-                                
-                                <button type="button" class="btn btn-outline-danger" 
+                            @can('delete work pattern')                               
+                                <button type="button" class="btn btn-red" 
                                     onclick="confirmDelete('{{ $workDay->name }}', 'work-pattern')">
                                     <i class="ri-delete-bin-fill"></i>
                                 </button>

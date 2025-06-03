@@ -1,20 +1,25 @@
 @extends('_employee_app._layout_employee.main')
-@section('header.title', 'History')
+@section('header.title', __('app.label.attendance'))
 @include('_employee_app._layout_employee.header')
 @section('content')
 <div class="presence">
+
+<x-date-filter action="{{ route('presence.history') }}" 
+    :startDate="request()->get('start_date')" 
+    :endDate="request()->get('end_date')" />
+
     <div class="card">
         <div class="card-body">
             <table class="table">
                 <thead>
                     <tr>
                         {{-- <th>No</th> --}}
-                        <th>Date</th>
-                        <th>Check In</th>
-                        <th>Check Out</th>
-                        <th>Late Arrival</th>
-                        <th>Late Check In</th>
-                        <th>Check Out Early</th>
+                        <th>{{ __('general.label.date') }}</th>
+                        <th>{{ __('attendance.label.check_in') }}</th>
+                        <th>{{ __('attendance.label.check_out') }}</th>
+                        <th>{{ __('attendance.label.late_arrival') }}</th>
+                        <th>{{ __('attendance.label.late_check_in') }}</th>
+                        <th>{{ __('attendance.label.check_out_early') }}</th>
                     </tr>
                 </thead>
                 <tbody>

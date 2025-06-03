@@ -8,12 +8,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\PerformanceAppraisal;
+use Illuminate\Support\Facades\Auth;
 
 class AppraisalController extends Controller
 {
 //Appraisal Index
 function index(Request $request){
-        $employees = Employee::get();
+    $userDivision = Auth::user()->division_id;
+    $userDepartment = Auth::user()->department_id;
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->where('division_id', $userDivision);
+        } elseif (!$userDivision && $userDepartment) {
+            $query->where('department_id', $userDepartment);
+        } 
+        $query->whereNull('resignation');
+        $employees = $query->get();
+        
         $appraisals = PerformanceAppraisal::get();
         $selectedMonth = $request->input('month', date('F'));
         $selectedYear = $request->input('year', date('Y'));

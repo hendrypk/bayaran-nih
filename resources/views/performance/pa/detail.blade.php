@@ -2,94 +2,99 @@
 @section('title', 'Performance - PA Detail')
 @section('content')
 
-<div class="card-title">
-    Appraisal Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}
+{{ Breadcrumbs::render('pa_detail', $employees, $month, $year) }}
+
+<div class="row align-item-center mb-3">
+    <div class="col-md-9">
+        <h5 class="card-title mb-0 py-3">{{ __('performance.label.appraisal_detail') }} {{ $employees->name }} | {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h5>
+    </div>
+    <div class="col-md-3 d-flex justify-content-end">
+        <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-tosca btn-sm me-2">
+            <i class="ri-edit-line"></i>
+        </a>
+        <button type="button" class="btn btn-red btn-sm" 
+            onclick="confirmDelete('{{ $employees->id }}', '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'Appraisal')">
+            <i class="ri-delete-bin-fill"></i>
+        </button>
+    </div>
 </div>
 
-    <!-- Display Employee Information -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="card-title">Employee Information</div>
-            <div class="col-lg-4">
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="card-title">{{ __('performance.label.employee_information') }}</div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold"> EID </div>
-                    <div class="col">: {{ $employees->eid }}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold"> Nama </div>
-                    <div class="col">: {{ $employees->name }}</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.eid') }}</div>
+                    <div class="col-8">: {{ $employees->eid }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold"> Job Title </div>
-                    <div class="col">: {{ $employees->job_title->name }}</div>
+                    <div class="col-4 fw-bold">{{ __('general.label.name') }}</div>
+                    <div class="col-8">: {{ $employees->name }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold"> Position </div>
-                    <div class="col">: {{ $employees->position->name }}</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.job_title') }}</div>
+                    <div class="col-8">: {{ $employees->job_title->name }}</div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-4 fw-bold"> Division </div>
-                    <div class="col">: {{ $employees->division->name }}</div>
+                    <div class="col-4 fw-bold">{{ __('employee.label.position') }}</div>
+                    <div class="col-8">: {{ $employees->position->name }}</div>
                 </div>
-                <div class="row mb-2    ">
-                    <div class="col-4 fw-bold"> Department </div>
-                    <div class="col">: {{ $employees->department->name }}</div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">{{ __('employee.label.division') }}</div>
+                    <div class="col-8">: {{ $employees->division->name }}</div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">{{ __('employee.label.department') }}</div>
+                    <div class="col-8">: {{ $employees->department->name }}</div>
+                </div>                
+                
             </div>
         </div>
     </div>
-
-      <!-- Display Appraisal Details -->
-    <div class="card">
-        <div class="card-body">
-            <div class="card-title">
-                Appraisal Details for {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}
-            </div>
-            <div class="row mb-4">
-                <div class="col-md-1">
-                    <a href="{{ route('pa.edit', ['employee_id' => $employees->id, 'month' => $month, 'year' => $year]) }}" class="btn btn-outline-success">
-                        <i class="ri-edit-line"></i></a>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    PA Achievement
                 </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-outline-danger" 
-                    onclick="confirmDelete('{{ $employees->id }}', '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'Appraisal')">
-                    <i class="ri-delete-bin-fill"></i>
-                </button>
-                </div>
-            </div>
-        <div class="row">
-            @if ($gradePas->isEmpty())
-                <p>No appraisal records found for the given criteria.</p>
-            @else
+            <div class="row">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">Aspect</th>
-                            <th scope="col">Grade</th>
+                            <th scope="col" class="text-center" style="width: 5%;">No.</th>
+                            <th scope="col" class="text-center" style="width: 70%;">{{ __('performance.label.aspect') }}</th>
+                            <th scope="col" class="text-center" style="width: 30%;">{{ __('performance.label.grade') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($gradePas as $gradePa)
+                        @foreach ($gradePas as $no=>$gradePa)
                             <tr>
-                                <td>{{ $gradePa->appraisal->aspect }}</td>
-                                <td>{{ $gradePa->grade }}</td>
+                                <td class="text-center">{{ $no+1 }}</td>
+                                <td class="text-start">{{ $gradePa->appraisal->aspect }}</td>
+                                <td class="text-center">{{ number_format($gradePa->grade, 2, '.', ',') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Total</th>
-                            <th>{{$totalGrade}}</th>
+                            <th colspan="2">{{ __('general.label.total') }}</th>
+                            <td class="text-center">{{ number_format($totalGrade, 2, '.', ',') }}</td>
                         </tr>
                         <tr>
-                            <th>Final Grade</th>
-                            <th>{{$avgGrade}}</th>
+                            <th colspan="2">{{ __('performance.label.final_grade') }}</th>
+                            <td class="text-center">
+                                {{ number_format(floatval($avgGrade), 2, '.', ',') }}
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
-            @endif
+            </div>
         </div>
     </div>
+</div>
+
+
 
 @include('modal.delete')
 @section('script')

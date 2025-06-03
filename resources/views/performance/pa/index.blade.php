@@ -2,6 +2,7 @@
 @section('title', 'Performance - PA')
 @section('content')
 
+{{ Breadcrumbs::render('pa') }}
 <div class="row">
 <x-month-year-picker :action="route('pa.list')" :selectedMonth="$selectedMonth" :selectedYear="$selectedYear" />
 
@@ -9,10 +10,11 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Employee Appraisal</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('performance.label.employee_appraisal') }}</h5>
                     @can('create pa')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add Employee Appraisal</button>
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">
+                                <i class="ri-add-circle-line"></i></button>
                         </div>
                     @endcan
                 </div>
@@ -22,14 +24,14 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Month</th>
-                                <th scope="col">Year</th>
-                                <th scope="col">EID</th>
-                                <th scope="col">Employee Name</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Detail</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th class="text-center">{{ __('general.label.month') }}</th>
+                                <th class="text-center">{{ __('general.label.year') }}</th>
+                                <th class="text-center">{{ __('employee.label.eid') }}</th>
+                                <th class="text-center">{{ __('general.label.name') }}</th>
+                                <th class="text-center">{{ __('performance.label.grade') }}</th>
+                                <th class="text-center">{{ __('general.label.detail') }}</th>
+                                <th class="text-center">{{ __('general.label.edit') }}</th>
+                                <th class="text-center">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,33 +41,33 @@
                                         $employee = $employees->firstWhere('id', $grade->employee_id);
                                     @endphp
                                 <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $selectedMonth }}</td>
-                                <td>{{ $selectedYear }}</td>
-                                <td>{{ $employee->eid }}</td>
-                                <td>{{ $employee->name }}</td>  
-                                <td>{{ number_format($grade->average_grade, 2) }}</td>                               
-                                <td>
+                                <td class="text-center">{{ $selectedMonth }}</td>
+                                <td class="text-center">{{ $selectedYear }}</td>
+                                <td class="text-center">{{ $grade->employees->eid }}</td>
+                                <td class="text-center">{{ $grade->employees->name }}</td>  
+                                <td class="text-center">{{ number_format($grade->average_grade, 2) }}</td>                               
+                                <td class="text-center">
                                     <a href="{{ route('pa.detail', [
-                                    'employee_id' => $employee->id,
+                                    'employee_id' => $grade->employees->id,
                                     'month' => $selectedMonth,
                                     'year' => $selectedYear]) }}"
-                                    class="btn btn-outline-primary">
+                                    class="btn btn-blue">
                                     <i class="ri-eye-fill"></i>
                                     </a>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     @can('update pa')
                                         <a href="{{ route('pa.edit', [
-                                            'employee_id' => $employee->id,
+                                            'employee_id' => $grade->employees->id,
                                             'month' => $selectedMonth,
                                             'year' => $selectedYear]) }}"
-                                            class="btn btn-outline-success">
+                                            class="btn btn-green">
                                             <i class="ri-edit-line"></i>
                                         </a>
                                     @endcan
                                 </td>
-                                <td>
-                                    <button type="button" class="btn btn-outline-danger" 
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $grade->employee_id }}, '{{ $selectedMonth }}', '{{ $selectedYear }}', '{{ $grade->employees->name }}', 'KPI')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
@@ -84,8 +86,8 @@
                 $employee = $employees->firstWhere('id', $grade->employee_id);
             @endphp
             <tr>
-                <td>{{ $employee->id ?? 'N/A' }}</td>
-                <td>{{ $employee->name ?? 'N/A' }}</td>
+                <td>{{ $grade->employees->id ?? 'N/A' }}</td>
+                <td>{{ $grade->employees->name ?? 'N/A' }}</td>
                 <td>{{ $selectedMonth }}</td>
                 <td>{{ $selectedYear }}</td>
                 <td>{{ number_format($grade->average_grade, 2) }}</td>
@@ -119,18 +121,42 @@ function updatePa(appraisals) {
     var appraisalContainer = document.getElementById('appraisalContainer');
     appraisalContainer.innerHTML = ''; // Clear any existing content
 
+    var table = `
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 5%;">No.</th>
+                    <th class="text-center" style="width: 60%;">{{ __('performance.label.aspect') }}</th>
+                    <th class="text-center" style="width: 35%;">{{ __('performance.label.grade') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    let index = 1; // Inisialisasi nomor urut
+    
     appraisals.forEach(function(appraisal) {
-        var appraisalRow = `
-            <div class="row mb-3">
-                <label for="grade_${appraisal.id}" class="col-md-4 form-label">${appraisal.aspect}</label>
-                <div class="col">
-                    <input type="number" class="form-control" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
-                </div>
-            </div>
+        table += `
+            <tr>
+                <td class="text-center">${index}</td> <!-- Nomor urut -->
+                <td>${appraisal.aspect}</td>
+                <td>
+                    <input type="text" class="input-form numeric-input" name="grades[${appraisal.id}]" id="grade_${appraisal.id}" step="0.01" min="0" max="100" required>
+                </td>
+            </tr>
         `;
-        appraisalContainer.insertAdjacentHTML('beforeend', appraisalRow);
+        index++; // Increment nomor urut
     });
+
+    table += `
+            </tbody>
+        </table>
+    `;
+
+    // Masukkan tabel ke dalam container
+    appraisalContainer.insertAdjacentHTML('beforeend', table);
 }
+
 
 //Script for Delete Modal
 function confirmDelete(id, month, year, name, entity) {

@@ -9,6 +9,8 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\EmployeeStatus;
 use App\Models\Holiday;
+use App\Models\LaporHr;
+use App\Models\LaporHrCategory;
 use App\Models\OfficeLocation;
 
 class OptionsController extends Controller
@@ -24,30 +26,43 @@ class OptionsController extends Controller
         $statuses = EmployeeStatus::get();
         $holidays = Holiday::get();
         $officeLocation = OfficeLocation::get();
-        return view('options.index', compact('positions', 'divisions', 'job_titles', 'departments', 'statuses', 'holidays', 'officeLocation'));
+        $laporHrCategory = LaporHrCategory::get();
+        return view('options.index', compact('positions', 'divisions', 'job_titles', 'departments', 'statuses', 'holidays', 'officeLocation', 'laporHrCategory'));
     }
 
 //position add
     function positionAdd(Request $request){
         $request->validate([
-            'position' => 'required|string|unique:positions,name,',
+            'name' => 'required|string|unique:positions,name,',
         ], [
-            'position.required' => 'Position Name is required',
-            'position.string' => 'Invalid Character',
-            'position.unique' => 'Position Name Already Exist'
+            'name.required' => 'Position Name is required',
+            'name.string' => 'Invalid Character',
+            'name.unique' => 'Position Name Already Exist'
         ]);
         
-        try {
-            Position::updateOrCreate(
-                ['id' => $request->id],  // Search for the record by its 'id'
-                ['name' => $request->position]  // Set the 'name' to be updated or created
-            );
+        Position::create([
+            'name' => $request->name,
+            'job_title_id' => $request->job_title_id,
+            'division_id' => $request->division_id,
+            'department_id' => $request->department_id
+        ]);
+        return redirect()->route('options.list')->with('success', 'Position added successfully.');
+
+        // try {
+        //     Position::updateOrCreate(
+        //         ['id' => $request->id],[
+        //             'name' => $request->name,
+        //             'job_title_id' => $request->job_title_id,
+        //             'division_id' => $request->division_id,
+        //             'department_id' => $request->department_id
+        //             ] 
+        //     );
     
-            return redirect()->route('options.list')->with('success', 'Position added successfully.');
+        //     return redirect()->route('options.list')->with('success', 'Position added successfully.');
     
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
-        }
+        // } catch (\Exception $e) {
+        //     return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+        // }
     }
 
 //position edit
@@ -63,6 +78,9 @@ class OptionsController extends Controller
             'name'=> 'string',
         ]);
         $position->name = $request->name;
+        $position->job_title_id = $request->job_title_id;
+        $position->division_id = $request->division_id;
+        $position->department_id = $request->department_id;
 
         $position->save();
 
@@ -330,6 +348,38 @@ class OptionsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Holiday has been deleted.',
+            'redirect' => route('options.list')
+        ]);
+    }
+
+//Lapor HR Category
+    public function laporHrCategorySubmit (Request $request) {
+        $request->validate([
+            'name'=>'required|string'
+        ]);
+
+        LaporHrCategory::updateOrCreate(
+            ['id' => $request->id],
+            ['name' => $request->name]
+        );
+
+        return redirect()->route('options.list')->with('success', ' ');
+    }
+
+    public function laporHrCategoryDelete ($id) {
+        $laporHrCategory = LaporHrCategory::find($id);
+        $exist = LaporHr::where('category_id', $laporHrCategory);
+        if($exist) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data yang sudah digunakan, tidak bisa dihapus!',
+                'redirect' => route('options.list')
+            ]);
+        }
+        $laporHrCategory->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Lapor HR Category has been deleted.',
             'redirect' => route('options.list')
         ]);
     }

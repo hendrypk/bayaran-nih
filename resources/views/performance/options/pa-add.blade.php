@@ -3,25 +3,30 @@
 <div class="col-lg-6">
     <div class="card">
         <div class="card-body">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="addAppraisal">Add Appraisal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="card-header d-flex align-items-center py-0">
+                <div class="col-md-8">
+                    <h5 class="card-title">{{ __('performance.label.add_appraisal') }}</h5>
+                </div>
             </div>
-            <div class="modal-body">
+            {{-- <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="addAppraisal">{{ __('performance.label.add_appraisal') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> --}}
+            <div class="">
                 <form action="{{ route('appraisal.add') }}" method="POST">
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-7">
-                            <label for="name" class="form-label fw-bold">Name</label>
+                            <label for="name" class="form-label fw-bold">{{ __('general.label.name') }}</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-10">
-                            <label for="inputAspect" class="form-label fw-bold">Aspect</label>
+                            <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.aspect') }}</label>
                         </div>
                         <div class="col-2">
-                            <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label>
+                            <label for="removeAppraisalBtn" class="form-label fw-bold">{{ __('general.label.delete') }}</label>
                         </div>
                     </div>
                     <div id="appraisalContainer">
@@ -33,7 +38,7 @@
                                 </div>
                                 <div class="col-2">
                                     {{-- <label for="removeAppraisalBtn" class="form-label fw-bold">Delete</label> --}}
-                                    <button type="button" class="btn btn-danger removeAppraisalBtn">
+                                    <button type="button" class="btn btn-red removeAppraisalBtn">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
                                 </div>
@@ -42,10 +47,13 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-9">
-                            <button type="button" id="addAppraisalBtn" class="btn btn-secondary">Add Appraisal</button>
+                            <button type="button" id="addAppraisalBtn" class="btn btn-tosca">{{ __('performance.label.add_appraisal') }}</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ route('kpi.pa.options.index') }}" class="btn btn-red me-3">{{ __('general.label.back') }}</a>
+                        <button type="submit" class="btn btn-tosca btn-sm">{{ __('general.label.save') }}</button>
+                    </div>
                 </form>
             </div>
     </div>
@@ -70,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" class="form-control" name="appraisals[${index}][aspect]" required>
                 </div>
                 <div class="col-2">
-                    <button type="button" class="btn btn-danger removeAppraisalBtn">
+                    <button type="button" class="btn btn-red removeAppraisalBtn">
                         <i class="ri-delete-bin-fill"></i>
                     </button>
                 </div>

@@ -26,34 +26,21 @@ public function edit(Request $request, $name) {
     // Ambil semua work days dengan nama yang sama
     $workDays = WorkDay::where('name', $name)->get();
     
-    return view('work_day.edit', compact('workDays'));
+    return view('work_day.edit', compact('workDays', 'name'));
 }
 
 //Work Day Update
-public function update(Request $request, $name)
-{
-    //Validasi data
-    // $request->validate([
-    //     'name' => 'required|string|max:255',
-    //     'tolerance' => 'nullable|integer',
-    //     'arrival.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //     'checkIn.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //     'checkOut.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //     'breakIn.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    //     'breakOut.*' => 'required_if:dayOff.*,0|date_format:H:i',
-    // ]);
-
-    // Ambil data workDays berdasarkan name
+public function update(Request $request, $name) {
     $id = $request->id;
     $workDays = WorkDay::where('name', $name)->get();
     $newName = $request->input('name');
 
-    // Loop untuk update setiap work day berdasarkan hari
     foreach ($workDays as $workDay) {
         $workDay->update([
             'name' => $request->input('name'),
             'day_off' => $request->has("dayOff.{$workDay->day}") ? 1 : 0,
             'tolerance' => $request->input('tolerance') ?? 0,
+            'count_late' => $request->input('countLate'),
             'arrival' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("arrival.{$workDay->day}"),
             'check_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkIn.{$workDay->day}"),
             'check_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkOut.{$workDay->day}"),
@@ -62,21 +49,7 @@ public function update(Request $request, $name)
             'break' => $request->input("break.{$workDay->day}") == '1' ? 1 : 0,
         ]);
     }
-    // foreach ($workDays as $workDay) {
-    //     $workDay->update([
-    //         'name' => $request->input('name'),
-    //         'day_off' => $request->has("dayOff.{$workDay->day}") ? 1 : 0,
-    //         'tolerance' => $request->input('tolerance') ?? 0,
-    //         'arrival' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("arrival.{$workDay->day}"),
-    //         'check_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkIn.{$workDay->day}"),
-    //         'check_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("checkOut.{$workDay->day}"),
-    //         'break_in' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("breakIn.{$workDay->day}"),
-    //         'break_out' => $request->has("dayOff.{$workDay->day}") ? null : $request->input("breakOut.{$workDay->day}"),
-    //         'break' => $request->input("break.{$workDay->day}") == '1' ? 1 : 0,
-    //     ]);
-    // }
-    // Redirect setelah update
-    return redirect()->route('workDay.detail', [$newName])->with('success', 'Work Day updated successfully.');
+    return redirect()->route('workDay.edit', [$newName])->with('success', 'Work Day updated successfully.');
 }
 
 //Add New Work Day
@@ -85,6 +58,7 @@ public function create(Request $request)
     $request->validate([
         'name' => 'required|string|max:255',
         'tolerance' => 'nullable|integer',
+        'countLate' => 'nullable|integer',
         'dayOff' => 'array',
         'arrival' => 'array',
         'checkIn' => 'array',
@@ -97,6 +71,7 @@ public function create(Request $request)
         $workDay = new WorkDay();
         $workDay->name = $request->name;
         $workDay->tolerance = $request->tolerance;
+        $workDay->count_late = $request->countLate;
         $workDay->day = $day;
         $workDay->day_off = isset($request->dayOff[$day]) ? 1 : 0;
         $workDay->break = isset($request->break[$day]) ? 1 : 0;

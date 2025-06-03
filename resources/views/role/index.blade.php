@@ -1,19 +1,18 @@
 @extends('_layout.main')
-@section('title', 'Options')
+@section('title', __('sidebar.label.role'))
 @section('content')
-<div class="row">
 
+{{ Breadcrumbs::render('role') }}
+
+<div class="row">
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Role</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.role') }}</h5>
                     <div class="ms-auto my-auto">
                         @can('create role')
-                            <a href="{{ route('role.create') }}"
-                                class="btn btn-untosca">
-                                Add Role
-                            </a>
+                            <a href="{{ route('role.create') }}" class="btn btn-tosca"> {{ __('option.label.add_role') }}</a>
                         @endcan
                     </div>
                 </div>
@@ -22,10 +21,9 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">View</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
+                            <th scope="col">{{ __('general.label.name') }}</th>
+                            <th scope="col">{{ __('general.label.detail') }}</th>
+                            <th scope="col">{{ __('general.label.delete') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,23 +32,23 @@
                             <th scope="row">{{ $no+1 }}</th>
                             <td>{{ $role->name }}</td>
                             @csrf
-                            <td>
+                            {{-- <td>
                                 <a href="{{ route('role.detail', $role->id) }}"
                                     class="btn btn-outline-primary">
                                     <i class="ri-eye-fill"></i>
                                 </a>
-                            </td>
+                            </td> --}}
                              <td>
                                 @can('update role')
                                     <a href="{{ route('role.edit', $role->id) }}"
-                                        class="btn btn-outline-success">
-                                        <i class="ri-edit-box-fill"></i>
+                                        class="btn btn-blue">
+                                        <i class="ri-eye-fill"></i>
                                     </a>
                                 @endcan
                             </td>
                             <td>
                                 @can('delete role')
-                                    <button type="button" class="btn btn-outline-danger" 
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $role->id }}, '{{ $role->name }}', 'role')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
@@ -117,18 +115,3 @@
 </script>
 @endsection
 @endsection
-{{-- @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('.btn-add-role').click(function (e){
-                e.preventDefault();
-                ILZApp.loadModal(route('role.load_modal'), {type: 'create'}, 'GET', () => {ILZRoleModalForm.init()})
-            });
-            $('.btn-edit-role').on('click', function() {
-                let roleId = $(this).data('role-id');
-                ILZApp.loadModal(route('role.load_modal'), {role_id: roleId, type: 'update'}, 'GET', () => {ILZRoleModalForm.init()})
-            });
-        });
-    </script>
-    <script src="{{ asset('assets/js/role/modal-form.js') }}"></script>
-@endpush --}}

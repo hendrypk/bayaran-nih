@@ -1,9 +1,9 @@
 <!--Add KPI-->
-<div class="modal fade" id="addIndicatorModal" tabindex="-1" aria-labelledby="modalIndicator" aria-hidden="true">
+<div class="modal fade" id="addIndicatorModal" tabindex="-1" aria-labelledby="modalIndicator" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="addIndicator">Add Indicator</h5>
+                <h5 class="modal-title fw-bold" id="addIndicator">{{ __('performance.label.add_indicator') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -11,7 +11,7 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-7">
-                            <label for="inputPosition" class="form-label fw-bold">Name</label>
+                            <label for="inputPosition" class="form-label fw-bold">{{ __('general.label.name') }}</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
                     </div>
@@ -19,15 +19,15 @@
                         <div class="indicator-group mb-3">
                             <div class="row">
                                 <div class="col-7">
-                                    <label for="inputAspect" class="form-label fw-bold">Indicator</label>
+                                    <label for="inputAspect" class="form-label fw-bold">{{ __('performance.label.indicator') }}</label>
                                     <input type="text" class="form-control" name="indicators[0][aspect]" required>
                                 </div>
                                 <div class="col-2">
-                                    <label for="inputTarget" class="form-label fw-bold">Target</label>
+                                    <label for="inputTarget" class="form-label fw-bold">{{ __('performance.label.target') }}</label>
                                     <input type="number" class="form-control" name="indicators[0][target]" step="0.01" required>
                                 </div>
                                 <div class="col-2">
-                                    <label for="inputBobot" class="form-label fw-bold">Bobot (%)</label>
+                                    <label for="inputBobot" class="form-label fw-bold">{{ __('performance.label.weight') }}</label>
                                     <input type="number" class="form-control bobot-input" name="indicators[0][bobot]" step="0.01" required>
                                 </div>
                             </div>
@@ -35,13 +35,16 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-9">
-                            <button type="button" id="addIndicatorBtn" class="btn btn-secondary">Add Indicator</button>
+                            <button type="button" id="addIndicatorBtn" class="btn btn-tosca">{{ __('performance.label.add_indicator') }}</button>
                         </div>
                         <div class="col-md-2">
                             <input type="number" class="form-control fw-bold" id="totalBobot" value="0" readonly>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-tosca">Submit</button>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-red btn-sm me-3" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
+                        <button type="submit" class="btn btn-tosca btn-sm">{{ __('general.label.save') }}</button>
+                    </div>
                 </form>
             </div>
         </div>

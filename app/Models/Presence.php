@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Presence extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'employee_id',
@@ -26,8 +28,13 @@ class Presence extends Model
         'photo_in',
         'photo_out',
         'location_in',
-        'location_out'
+        'location_out',
+        'leave',
+        'leave_status',
+        'leave_note',
     ];
+    
+    // protected $dates = ['deleted_at']; 
 
     // protected $casts = [
     //     'date' => 'date',
@@ -35,7 +42,15 @@ class Presence extends Model
 
     protected $casts = [
         'late_arrival' => 'integer',
+        'date' => 'datetime',
+        'start_at' => 'time',
+        'end_at' => 'time'
     ];
+
+    const LEAVE_ANNUAL = 'annual leave';
+    const LEAVE_SICK = 'sick';
+    const LEAVE_FULL_DAY_PERMIT = 'full day permit';
+    const LEAVE_HALF_DAY_PERMIT = 'half day permit';
 
     
     public function employee()
@@ -48,5 +63,9 @@ class Presence extends Model
         return $this->belongsTo(WorkDay::class, 'work_day_id'); // Adjust 'work_day_id' based on your actual column
     }
 
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id', 'id');
+    }
 
 }

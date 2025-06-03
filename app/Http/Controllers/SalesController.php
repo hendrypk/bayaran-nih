@@ -58,9 +58,9 @@ class SalesController extends Controller
 //Sales Detail
     function detail(Request $request, $month, $year){
         $sales = Sales::with('employees')
-        ->where('month', $month)
-        ->where('year', $year)    
-        ->get();
+            ->where('month', $month)
+            ->where('year', $year)    
+            ->get();
         $total = $sales->sum('qty');
         return view('sales.detail', compact('sales','total', 'month', 'year'));
     }
@@ -69,9 +69,9 @@ class SalesController extends Controller
 public function edit(Request $request, $month = null, $year = null){
     $employees = Employee::where('sales_status', '1')->get();
     $sales = Sales::with('employees')
-    ->where('month', $month)
-    ->where('year', $year)
-    ->get();
+        ->where('month', $month)
+        ->where('year', $year)
+        ->get();
     return view('sales.edit', compact('employees', 'sales', 'month', 'year'));
 }
 

@@ -47,7 +47,7 @@
                         <select class="form-control" name="category" aria-label="Default select example">
                             <option selected disabled>Select Category</option>
                             @foreach ($category as $category)
-                                <option value="{{ $category }}">{{ $category }}</option>
+                                <option value="{{ $category }}">{{ ucfirst($category) }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PresencesExport;
 use Carbon\Carbon;
 use App\Models\WorkDay;
 use App\Models\Employee;
@@ -11,57 +10,125 @@ use App\Models\Presence;
 use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
 use App\Imports\PresenceImport;
+use App\Exports\PresencesExport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TemplateExportPresence;
+use Illuminate\Cache\RedisTagSet;
 
 class PresenceController extends Controller
 {
 
 //Presences List
-    public function index(Request $request){
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $employees = Employee::with('workDay')->get();
-        $workDay = [];
-        foreach ($employees as $employee) {
-            $workDay[$employee->id] = $employee->workDay->toArray(); 
-        }
+public function index(Request $request){
+    $query = Presence::with('employee')->whereNull('leave_status')->whereNotNull('work_day_id');
+    $today = now();
+    $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+    $defaultEndDate = $today->toDateString();
+    $startDate = $request->input('start_date', $defaultStartDate);
+    $endDate = $request->input('end_date', $defaultEndDate);
+    $userDivision = Auth::user()->division_id;
+    $userDepartment = Auth::user()->department_id;
 
-        $query = Presence::with('employee');
-        if($startDate && $endDate){
-            $query->whereBetween('date', [$startDate, $endDate]);
-        }
-        $presence = $query->get();
-        $workDays = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-        ->groupBy('name')
-        ->get();
-
-        return view('presence.index', compact('employees', 'presence', 'workDay', 'workDays'));
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDivision) {
+            $query->whereHas('position', function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDepartment) {
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        });
     }
+
+    if ($startDate && $endDate) {
+        $query->whereBetween('date', [$startDate, $endDate]);
+    }
+    
+    $presence = $query->get();
+
+    $query = Employee::query();
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('position',function ($query) use ($userDivision) {
+            $query->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('position', function ($query) use ($userDepartment) {
+            $query->where('department_id', $userDepartment);
+        });
+    } 
+
+    $query->whereNull('resignation');
+    $employees = $query->get();
+    
+    $workDays = [];
+    foreach ($employees as $employee) {
+        // Ambil semua work days untuk masing-masing employee
+        $workDay[$employee->id] = $employee->workDay->map(function ($workDay) {
+            return [
+                'id' => $workDay->id,
+                'name' => $workDay->name,
+            ];
+        });
+    }
+    
+    return view('presence.index', compact('presence', 'workDay', 'employees'));
+}
+
 
 //Import Prresences
     public function import(){
         return view('presence.import');
     }
-    public function __construct(Excel $excel){
-        $this->excel = $excel;
+
+    //import template
+    public function template() {
+        return Excel::download(new TemplateExportPresence, 'template_import.xlsx');
     }
-
-    public function importStore(Request $request){  
-        $errors = []; // Array to store errors
-
+    
+    public function importStore(Request $request)
+    {
+        // Validasi file
         $request->validate([
-            'file' => 'required|file|mimes:xlsx',
+            'file' => 'required|mimes:xlsx,xls',
         ]);
-            
-        $file = $request->file('file');
-        Excel::import(new PresenceImport, $file);
 
+        // Proses impor
+        $import = new PresenceImport();
+        Excel::import($import, $request->file('file'));
+
+        // Dapatkan error dari import
+        $errors = $import->getErrors();
+
+        // Redirect dengan error jika ada
         if (!empty($errors)) {
-            return redirect()->route('presence.import')->withErrors($errors);
+            return redirect()->back()->withErrors(['import_errors' => $errors]);
         }
-        return redirect()->route('presence.import')->with('success', 'Data imported successfully!');
+
+        return redirect()->back()->with('success', 'Data presensi berhasil diimpor.');
     }
+
+    
+
+    // public function importStore(Request $request){  
+    //     $errors = []; // Array to store errors
+
+    //     $request->validate([
+    //         'file' => 'required|file|mimes:xlsx',
+    //     ]);
+            
+    //     $file = $request->file('file');
+    //     Excel::import(new PresenceImport, $file);
+
+    //     if (!empty($errors)) {
+    //         return redirect()->route('presence.import')->withErrors($errors);
+    //     }
+    //     return redirect()->route('presence.import')->with('success', 'Data imported successfully!');
+    // }
 
 //Presence Add Manual
     public function create(Request $request){
@@ -72,11 +139,26 @@ class PresenceController extends Controller
         $date = Carbon::parse($request->date);
         $today = strtolower($date->format('l'));
         $workDayId = $request->workDay;
-        $workDay = WorkDay::where('name', $workDayId)->where('day', $today)->first();
+
+        $workDayData = WorkDay::find($workDayId);
+        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
+
+        // $workDay = WorkDay::find($workDayId)->where('day', $today)->first();
         $checked_in = $request->checkin;
         $cheked_out = $request->checkout;
         $day_off = $workDay->day_off;
+        // dd($workDayId, $date, $today, $workDay->toArray(), $day_off);
         $break = $workDay->break;
+        $isCountLate = $workDay->count_late;
+        $isEmployeeLeave = Presence::where('date', $date)
+            ->where('employee_id', $employee_id)
+            ->whereNotNull('leave')
+            ->get();
+            
+        if(!$isEmployeeLeave->isEmpty()) {
+            $message = 'The employee has leave. You can not add presence.';
+            return redirect()->back()->with('error', $message);
+        }
 
         if ($day_off == 1) {
             $message = 'Today is Off Day for You';
@@ -93,6 +175,7 @@ class PresenceController extends Controller
         $break_in = $workDay ? $parseTime($workDay->break_in) : null;
         $break_out = $workDay ? $parseTime($workDay->break_out) : null;
         $excldueBreak = $break == 1;
+        $noCountLate = $isCountLate == 0;
 
         //Break Duration
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
@@ -100,26 +183,39 @@ class PresenceController extends Controller
         //get from form
         $checked_in = $request ? $parseTime($request->checkin) : null;
         $checked_out = $request ? $parseTime($request->checkout) : null;
-        $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
-        $lateArrival = intval($lateArrival);
+        // $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+        // $lateArrival = intval($lateArrival);
         // $lateCheckIn = $checked_in && $check_in ? max(intval($check_in->diffInMinutes($checked_in, false)), 0) : '0';
 
         if($checked_in && $check_in) {
             switch(true) {
+                case $isCountLate == 0:
+                    $lateCheckIn = 0;
+                    $lateArrival = 0;
+                    break;
+
                 case $excldueBreak:
                     $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $checked_in->between($break_in, $break_out):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $break_in->lt($checked_in):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)) - $breakDuration, 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $checked_in->lt($break_in):
-                $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
+                    $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
+                    $lateArrival = intval($lateArrival);
                     break;
             }
         }
@@ -129,6 +225,10 @@ class PresenceController extends Controller
             $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
 
             switch(true) {
+                case $isCountLate == 0:
+                    $checkOutEarly = 0;
+                    break;
+
                 case $excldueBreak:
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;
@@ -153,7 +253,7 @@ class PresenceController extends Controller
 
         $request->validate([
             'check_in'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
-            'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
             'late_arrival'=>'integer',
             'late_check_in'=>'integer',
             'check_out_early'=>'integer',
@@ -196,9 +296,12 @@ class PresenceController extends Controller
         $employees = Employee::get();
         $date = Carbon::parse($request->date);
         $today = strtolower($date->format('l'));
-        $workDay = WorkDay::where('name', $presence->work_day_id)->where('day', $today)->first();
+        // $workDay = WorkDay::find($presence->work_day_id)->where('day', $today)->first();
+        $workDayData = WorkDay::find($presence->work_day_id);
+        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
+        $isCountLate = $workDay->count_late;
 
         if ($day_off == 1) {
             $message = 'Today is Off Day for You';
@@ -216,6 +319,7 @@ class PresenceController extends Controller
         $break_in = $workDay ? $parseTime($workDay->break_in) : null;
         $break_out = $workDay ? $parseTime($workDay->break_out) : null;
         $excldueBreak = $break == 1;
+        $noCountLate = $isCountLate == 0;
 
         //Break Duration
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
@@ -228,6 +332,10 @@ class PresenceController extends Controller
 
         if($checked_in && $check_in) {
             switch(true) {
+                case $isCountLate == 0:
+                    $lateCheckIn = 0;
+                    break;
+
                 case $excldueBreak:
                     $lateCheckIn = max(intval($check_in->diffInMinutes($checked_in, false)), 0);
                     break;
@@ -248,6 +356,10 @@ class PresenceController extends Controller
 
         if($checked_out && $check_out){
             switch(true) {
+                case $isCountLate == 0:
+                    $checkOutEarly = 0;
+                    break;
+
                 case $excldueBreak:
                     $checkOutEarly = max(intval($checked_out->diffInMinutes($check_out, false)), 0);
                     break;
@@ -271,7 +383,7 @@ class PresenceController extends Controller
         
         $request->validate([
                 'check_in'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
-                'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/'],
+                'check_out'=>['regex:/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/'],
                 'late_arrival'=>'integer',
                 'late_check_in'=>'integer',
                 'check_out_early'=>'integer',
@@ -283,7 +395,8 @@ class PresenceController extends Controller
         $presence->late_check_in = $lateCheckIn;
         $presence->check_out_early = $checkOutEarly;
         $presence->save();
-        return redirect()->route('presence.list.admin', compact('employees'))->with('success', 'Update Manual Presence Successfull');
+        // return redirect()->route('presence.list.admin', compact('employees'))->with('success', 'Update Manual Presence Successfull');
+        return redirect()->back()->with('success', 'Update Manual Presence Successfull');
     }
 
 //Presence Delete
@@ -294,7 +407,7 @@ class PresenceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Employee presence has been deleted.',
-            'redirect' => route('presence.list.admin') 
+            'redirect' => url()->previous() 
         ]);
     }
 
@@ -302,9 +415,6 @@ class PresenceController extends Controller
     public function export(Request $request) {
         $startDate = $request->start_date;
         $endDate = $request->end_date;
-
-        \Log::info("Attempting to export from $startDate to $endDate");
-
         $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
         $formattedEndDate = Carbon::parse($endDate)->format('Y-m-d');
     

@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-@section('header.title', 'Change Password')
+@section('header.title', __('app.label.change_password'))
 @include('_employee_app._layout_employee.header')
 @section('content')
 <div class="presence">
@@ -43,34 +43,34 @@
                 @csrf
                 <div class="row mb-1">
                     <div class="col-md-3">
-                        <label for="currentPassword">Current Password</label>
+                        <label for="currentPassword">{{ __('app.label.current_password') }}</label>
                         <div class="position-relative password-field">
-                            <input id="currentPassword" class="form-control" type="password" name="currentPassword" placeholder="Enter current password">
+                            <input id="currentPassword" class="form-control" type="password" name="currentPassword" placeholder="{{ __('app.placeholder.enter_current_password') }}">
                             <i class="bi bi-eye-fill toggle-password" data-target="currentPassword"></i>
                         </div>
                     </div>
                 </div>
                 <div class="row mb-1">
                     <div class="col-md-3">
-                        <label for="newPassword">New Password</label>
+                        <label for="newPassword">{{ __('app.label.new_password') }}</label>
                         <div class="position-relative password-field">
-                            <input id="newPassword" class="form-control" type="password" name="newPassword" placeholder="Enter new password">
+                            <input id="newPassword" class="form-control" type="password" name="newPassword" placeholder="{{ __('app.placeholder.enter_new_password') }}">
                             <i class="bi bi-eye-fill toggle-password" data-target="newPassword"></i>
                         </div>
                     </div>
                 </div>
                 <div class="row mb-1">
                     <div class="col-md-3">
-                        <label for="confirmPassword">Confirm New Password</label>
+                        <label for="confirmPassword">{{ __('app.label.confirm_new_password') }}</label>
                         <div class="position-relative password-field">
-                            <input id="confirmPassword" class="form-control" type="password" name="confirmPassword" placeholder="Confirm new password">
+                            <input id="confirmPassword" class="form-control" type="password" name="confirmPassword" placeholder="{{ __('app.placeholder.confirm_new_password') }}">
                             <i class="bi bi-eye-fill toggle-password" data-target="confirmPassword"></i>
                         </div>
                     </div>
                 </div>
                 <div class="row mb-1 mt-2">
                     <div class="col-md-1">
-                        <button class="btn btn-tosca">Update</button>
+                        <button class="btn btn-tosca">{{ __('general.label.update') }}</button>
                     </div>
                 </div>
             </form>

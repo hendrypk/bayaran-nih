@@ -9,7 +9,7 @@
 
     <!-- App Capsule -->
     <div id="appCapsule">
-        <div class="release-tag-mobile" id="releaseList"></div>
+        <div class="release-tag-mobile" id="latestRelease"></div>
         <div class="section" id="user-section">
             <div id="user-detail">
                 {{-- <div class="avatar">
@@ -22,48 +22,62 @@
             </div>
         </div>
 
+        
         <div class="section" id="menu-section">
             <div class="card">
                 <div class="card-body text-center">
                     <div class="list-menu">
                         <div class="item-menu text-center">
                             <div class="menu-icon">
-                                <a href="{{ route('profileIndex') }}" class="green" style="font-size: 40px;">
-                                    <ion-icon name="person-sharp"></ion-icon>
+                                {{-- <button class="btn-untosca" style="font-size: 40px;">
+                                    <i class="ri-map-pin-user-fill"></i>
+                                </button> --}}
+                                <a href="{{ route('profileIndex') }}" class="tosca" style="font-size: 40px;">
+                                    <i class="ri-map-pin-user-fill"></i>
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Profil</span>
+                                <span class="text-center">{{ __('app.label.profile') }}</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
                             <div class="menu-icon">
-                                <a href="{{ route('leave.index') }}" class="danger" style="font-size: 40px;">
-                                    <ion-icon name="calendar-number"></ion-icon>
+                                <a href="{{ route('leave.index') }}" class="tosca" style="font-size: 40px;">
+                                    <i class="ri-flight-takeoff-fill"></i>
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Ijin</span>
+                                <span class="text-center">{{ __('app.label.permit') }}</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
                             <div class="menu-icon">
-                                <a href="{{ route('presence.history') }}" class="warning" style="font-size: 40px;">
-                                    <ion-icon name="document-text"></ion-icon>
+                                <a href="{{ route('presence.history') }}" class="tosca" style="font-size: 40px;">
+                                    <i class="ri-file-history-line"></i>
                                 </a>
                             </div>
                             <div class="menu-name">
-                                <span class="text-center">Presensi</span>
+                                <span class="text-center">{{ __('app.label.attendance') }}</span>
                             </div>
                         </div>
                         <div class="item-menu text-center">
                             <div class="menu-icon">
-                                <a href="{{ route('overtime.history') }}" class="orange" style="font-size: 40px;">
-                                    <ion-icon name="location"></ion-icon>
+                                <a href="{{ route('overtime.history') }}" class="tosca" style="font-size: 40px;">
+                                    <i class="ri-map-pin-time-line"></i>
                                 </a>
                             </div>
                             <div class="menu-name">
-                                Lembur
+                                {{ __('app.label.overtime') }}
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <a href="{{ route('laporHrIndex') }}" class="" style="font-size: 40px;">
+                                    <i class="ri-alarm-warning-line"></i>
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                {{ __('option.label.lapor_hr') }}
                             </div>
                         </div>
                     </div>
@@ -72,57 +86,69 @@
         </div>
         <div class="section mt-2" id="presence-section">
             <div class="todaypresence">
-                <div class="row mb-3">
-                    @if(!empty($presenceToday) && !empty($presenceToday->date))
-                    <div class="col-6">
-                        <a href="javascript:void(0);" onclick="showAlert('check in')">
-                            <div class="card checkin">
-                                <div class="card-body">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Absen Masuk</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @else
-                    <div class="col-6">
-                        <a href="{{ route('presence.in') }}" class="clickable-link">
-                            <div class="card checkin">
-                                <div class="card-body">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Absen Masuk</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @endif
-
-                    @if(!empty($presenceToday->check_out))
+                <div class="row">
+                    @if(!empty($presenceToday) && $presenceToday->check_in && $presenceToday->check_out)
                     <div class="col-6">
                         <a href="javascript:void(0);" onclick="showAlert('check out')">
                             <div class="card checkout">
                                 <div class="card-body">
                                     <div class="presencecontent">
                                         <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
+                                            <i class="ri-logout-box-line"></i>
                                         </div>
                                         <div class="presencedetail">
-                                            <h4 class="presencetitle">Absen Keluar</h4>
-                                            <!-- @foreach($employee->workDay as $index => $workDay)
-                                            <span>{{ $workDay->name }}</span>
-                                            @endforeach -->
+                                            <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @elseif(!empty($presenceToday->check_in) || empty($pastPresence->check_out) && !empty($pastPresence->check_in))
+                    <div class="col-6">
+                        <a href="{{ route('presence.out') }}" class="clickable-link">
+                            <div class="card checkout">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-r-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @elseif($leaveAccepted)
+                    <div class="col-6">    
+                        <a href="javascript:void(0);" onclick="showAlert('has permit')">
+                            <div class="card checkin">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">{{ __('app.label.have_permit') }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @elseif(empty($presenceToday->check_in))
+                    <div class="col-6">
+                        <a href="{{ route('presence.in') }}" class="clickable-link">
+                            <div class="card checkin">
+                                <div class="card-body">
+                                    <div class="presencecontent">
+                                        <div class="iconpresence">
+                                            <i class="ri-logout-box-r-line"></i>
+                                        </div>
+                                        <div class="presencedetail">
+                                            <h4 class="presencetitle">{{ __('app.label.check_in') }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -130,300 +156,113 @@
                         </a>
                     </div>
                     @else
-                    <div class="col-6">
-                        <div class="card checkout">
-                            <div class="card-body">
-                                <a href="{{ route('presence.out') }}" class="clickable-link">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Absen Keluar</h4>
-                                            <!-- @foreach($employee->workDay as $index => $workDay)
-                                            <span>{{ $workDay->name }}</span>
-                                            @endforeach -->
+                        <div class="col-6">
+                            <a href="javascript:void(0);" onclick="showAlert('check out')">
+                                <div class="card checkout">
+                                    <div class="card-body">
+                                        <div class="presencecontent">
+                                            <div class="iconpresence">
+                                                <i class="ri-logout-box-line"></i>
+                                            </div>
+                                            <div class="presencedetail">
+                                                <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
+                                            </div>
                                         </div>
                                     </div>
-                                </a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
                     @endif
-                </div>
 
-                <div class="row">
-                    @if(!@empty($overtimeToday) && !@empty($overtimeToday->date))
-                    <div class="col-6">
-                        <div class="card checkout">
-                            <div class="card-body">
-                                <a href="javascript:void(0);" onclick="showAlert('overtime in')">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Masuk Lembur</h4>
+                    @if($overtimeToday && $overtimeToday->start_at && !$overtimeToday->end_at)
+                        <div class="col-6">
+                            <a href="{{ route('overtime.out') }}" class="clickable-link">
+                                <div class="card checkout">
+                                    <div class="card-body">
+                                        <div class="presencecontent">
+                                            <div class="iconpresence">
+                                                <i class="ri-anticlockwise-2-line"></i>
+                                            </div>
+                                            <div class="presencedetail">
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_out') }}</h4>
+                                            </div>
                                         </div>
                                     </div>
-                                </a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
                     @else
-                    <div class="col-6">
-                        <div class="card checkout">
-                            <div class="card-body">
-                                <a href="{{ route('overtime.create') }}" class="clickable-link">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Keluar Lembur</h4>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-                    @if(!@empty($overtimeToday->end_at))
-                    <div class="col-6">
-                        <div class="card checkin">
-                            <div class="card-body">
-                                <a href="javascript:void(0);" onclick="showAlert('overtime out')">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Overtime Out</h4>
-                                            <!-- @foreach($employee->workDay as $index => $workDay)
-                                            <span>{{ $workDay->name }}</span>
-                                            @endforeach -->
+                        <div class="col-6">
+                            <a href="{{ route('overtime.in') }}" class="clickable-link">
+                                <div class="card checkin">
+                                    <div class="card-body">
+                                        <div class="presencecontent">
+                                            <div class="iconpresence">
+                                                <i class="ri-clockwise-2-line"></i>
+                                            </div>
+                                            <div class="presencedetail">
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_in') }}</h4>
+                                            </div>
                                         </div>
                                     </div>
-                                </a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                    @else
-                    <div class="col-6">
-                        <div class="card checkin">
-                            <div class="card-body">
-                                <a href="{{ route('overtime.create') }}" class="clickable-link">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <ion-icon name="camera"></ion-icon>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">Overtime Out</h4>
-                                            <!-- @foreach($employee->workDay as $index => $workDay)
-                                            <span>{{ $workDay->name }}</span>
-                                            @endforeach -->
+                    {{-- @else
+                        <div class="col-6">
+                            <a href="javascript:void(0);" onclick="showAlert('overtime out')">
+                                <div class="card checkout">
+                                    <div class="card-body">
+                                        <div class="presencecontent">
+                                            <div class="iconpresence">
+                                                <i class="ri-anticlockwise-2-line"></i>
+                                            </div>
+                                            <div class="presencedetail">
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_out') }}</h4>
+                                            </div>
                                         </div>
                                     </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
+                                </div>
+                            </a>
+                        </div> --}}
+                    @endif 
                 </div>
             </div>
 
-            <div class="rekappresence">
-                {{-- <div id="chartdiv"></div> --}}
-                <!-- <div class="row">
-                    <div class="col-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="presencecontent">
-                                    <div class="iconpresence primary">
-                                        <ion-icon name="log-in"></ion-icon>
-                                    </div>
-                                    <div class="presencedetail">
-                                        <h4 class="rekappresencetitle">Hadir</h4>
-                                        <span class="rekappresencedetail">0 Hari</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="presence-summary-title mb-3">
+                        {{ __('app.label.attendance_chart') }}
                     </div>
-                    <div class="col-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="presencecontent">
-                                    <div class="iconpresence green">
-                                        <ion-icon name="document-text"></ion-icon>
-                                    </div>
-                                    <div class="presencedetail">
-                                        <h4 class="rekappresencetitle">Izin</h4>
-                                        <span class="rekappresencedetail">0 Hari</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <canvas id="attendanceChart" width="400" height="200"></canvas>
+                    {{-- <div id="chart"></div> --}}
                 </div>
-                <div class="row mt-1">
-                    <div class="col-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="presencecontent">
-                                    <div class="iconpresence warning">
-                                        <ion-icon name="sad"></ion-icon>
-                                    </div>
-                                    <div class="presencedetail">
-                                        <h4 class="rekappresencetitle">Sakit</h4>
-                                        <span class="rekappresencedetail">0 Hari</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="presencecontent">
-                                    <div class="iconpresence danger">
-                                        <ion-icon name="alarm"></ion-icon>
-                                    </div>
-                                    <div class="presencedetail">
-                                        <h4 class="rekappresencetitle">Terlambat</h4>
-                                        <span class="rekappresencedetail">0 Hari</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
             </div>
-            {{-- <div class="presencetab mt-2">
-                <div class="tab-pane fade show active" id="pilled" role="tabpanel">
-                    <ul class="nav nav-tabs style1" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#home" role="tab">
-                                Bulan Ini
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#profile" role="tab">
-                                Leaderboard
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content mt-2" style="margin-bottom:100px;">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel">
-                        <ul class="listview image-listview">
-                            <li>
-                                <div class="item">
-                                    <div class="icon-box bg-primary">
-                                        <ion-icon name="image-outline" role="img" class="md hydrated"
-                                            aria-label="image outline"></ion-icon>
-                                    </div>
-                                    <div class="in">
-                                        <div>Photos</div>
-                                        <span class="badge badge-danger">10</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item">
-                                    <div class="icon-box bg-secondary">
-                                        <ion-icon name="videocam-outline" role="img" class="md hydrated"
-                                            aria-label="videocam outline"></ion-icon>
-                                    </div>
-                                    <div class="in">
-                                        <div>Videos</div>
-                                        <span class="text-muted">None</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item">
-                                    <div class="icon-box bg-danger">
-                                        <ion-icon name="musical-notes-outline" role="img" class="md hydrated"
-                                            aria-label="musical notes outline"></ion-icon>
-                                    </div>
-                                    <div class="in">
-                                        <div>Music</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel">
-                        <ul class="listview image-listview">
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>Edward Lindgren</div>
-                                        <span class="text-muted">Designer</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>Emelda Scandroot</div>
-                                        <span class="badge badge-primary">3</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>Henry Bove</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>Henry Bove</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>Henry Bove</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div> --}}
         </div>
     </div>
     <!-- * App Capsule -->
+
+    
 
 @include('_employee_app.modal.presence')
 @include('modal.message')
 
 <script>
 function showAlert(type) {
+    const messages = @json(__('messages'));
     let message = '';
     
     // Tentukan pesan berdasarkan tipe
-    if (type === 'check in') {
-        message = 'Wis absen melbu, rasah absen meneh!';
+    if (type === 'has permit') {
+        message = messages.has_permit;
+    } else if (type === 'check in') {
+        message = messages.already_check_in;
     } else if (type === 'check out') {
-        message = 'Wis absen metu, rasah absen meneh!';
-    }
-    if (type === 'overtime in') {
-        message = 'Wis absen melbu lembur, rasah absen neh!';
+        message = messages.already_check_out;
+    } else if (type === 'overtime in') {
+        message = messages.already_overtime_in;
     } else if (type === 'overtime out') {
-        message = 'Wis absen metu lembur, rasah absen neh!';
+        message = messages.already_overtime_out;
     }
 
     // Tampilkan SweetAlert dengan pesan sesuai
@@ -434,7 +273,46 @@ function showAlert(type) {
     });
 }
 
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Data dari controller
+        const category = @json($chartData['labels']); // Ambil bulan dalam format string
+        const presence = @json($chartData['data']); // Ambil total quantity
+        const colors = ['#118ab2'];
+        const total = presence.reduce((acc, value) => acc + value, 0);
+
+        var ctx = document.getElementById('attendanceChart').getContext('2d');
+        var educationChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: category,
+
+                datasets: [{
+                    data: presence, 
+                    backgroundColor: '#118ab2', 
+                    borderColor: '#118ab2',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.raw; 
+                            }
+                        }
+                    },
+                },
+            }
+        });
+    });
 </script>
+
 
 @endsection
 

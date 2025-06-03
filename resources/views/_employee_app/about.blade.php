@@ -1,20 +1,17 @@
 @extends('_employee_app._layout_employee.main')
-@section('header.title', 'About Bayaran')
+@section('header.title', 'About Gajiplus')
 @include('_employee_app._layout_employee.header')
 @section('content')
 <div class="presence">
     <div class="section full mt-2">
         <div class="wide-block pt-2 pb-2">
               
-              <div id="releaseList">
-                <!-- All release versions will be displayed here -->
-              </div>
-              
-              <div id="latestRelease">
-                <!-- Latest release version will be displayed here -->
-              </div>
+              <div id="releaseList"></div>
+              <div id="latestRelease"></div>
+              <div id="changeLog"></div>
 
-                
+
+{{--                 
             <h4>About</h4>
             <div class="row">
                 <div class="col">
@@ -50,7 +47,7 @@
             </div>
             <div class="row">
                 <div class="col">- Fix bug on employee presence (office radius validation, save photo)</div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

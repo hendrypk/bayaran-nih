@@ -1,7 +1,8 @@
 @extends('_layout.main')
-@section('title', 'Options')
+@section('title', __('sidebar.label.options'))
 @section('content')
 
+{{ Breadcrumbs::render('option') }}
 <div class="row">
 
 <!-- Position -->
@@ -9,11 +10,11 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Position</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.position') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddPositionModal" class="btn btn-untosca">Add Position</button>
-                            {{-- <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button> --}}
+                            <button id="openAddPositionModal" class="btn btn-tosca">{{ __('option.label.add_position') }}</button>
+                            {{-- <button type="button" class="btn btn-red" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button> --}}
                         </div>
                     @endcan
                 </div>
@@ -21,9 +22,12 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Position</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('option.label.position') }}</th>
+                                <th scope="col">{{ __('option.label.job_title') }}</th>
+                                <th scope="col">{{ __('option.label.division') }}</th>
+                                <th scope="col">{{ __('option.label.department') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,22 +35,28 @@
                             <tr>
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $position->name }}</td>
+                                <td>{{ $position->job_title->name ?? '-'}}</td>
+                                <td>{{ $position->division->name ?? '-'}}</td>
+                                <td>{{ $position->department->name ?? '-'}}</td>
                                 @csrf
                                  <td>
                                     @can('update options')
                                         <button type="button"
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#positionEditModal"
                                             data-id="{{ $position->id }}"
-                                            data-name="{{ $position->name }}" >
+                                            data-name="{{ $position->name }}"
+                                            data-job_title_id="{{ $position->job_title_id }}"
+                                            data-division_id="{{ $position->division_id }}"
+                                            data-department_id="{{ $position->department_id }}" >
                                             <i class="ri-edit-box-fill"></i>
                                         </button>
                                     @endcan
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $position->id }}, '{{ $position->name }}', 'position')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -66,10 +76,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Job Title</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.job_title') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddJobTitleModal" class="btn btn-untosca">Add Job Title</button>
+                            <button id="openAddJobTitleModal" class="btn btn-tosca">{{ __('option.label.add_job_title') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -77,10 +87,10 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Job Title</th>
-                                <th scope="col">Section</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('option.label.job_title') }}</th>
+                                <th scope="col">{{ __('option.label.section') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,7 +103,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button"
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#jobTitleEditModal"
                                             data-id="{{ $data->id }}"
@@ -105,7 +115,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'jobtitle')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -125,10 +135,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Division</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.division') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddDivisionModal" class="btn btn-untosca">Add Division</button>
+                            <button id="openAddDivisionModal" class="btn btn-tosca">{{ __('option.label.add_division') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -136,9 +146,9 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Division</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('option.label.division') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,7 +160,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#divisionEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -161,7 +171,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'division')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -180,10 +190,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Department</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.department') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddDepartmentModal" class="btn btn-untosca">Add Department</button>
+                            <button id="openAddDepartmentModal" class="btn btn-tosca">{{ __('option.label.add_department') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -191,9 +201,9 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Department</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('option.label.department') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -205,7 +215,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#departmentEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -216,7 +226,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'department')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -236,10 +246,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Employee Status</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.employee_status') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddStatusModal" class="btn btn-untosca">Add Status</button>
+                            <button id="openAddStatusModal" class="btn btn-tosca">{{ __('option.label.add_status') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -247,9 +257,9 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('option.label.status') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -261,7 +271,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#statusEditModal" 
                                             data-id="{{ $data->id }}" 
@@ -272,7 +282,7 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'status')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -291,10 +301,10 @@
     <div class="card">
         <div class="card-body">
             <div class="card-header d-flex align-items-center py-0">
-                <h5 class="card-title mb-0 py-3">Holiday</h5>
+                <h5 class="card-title mb-0 py-3">{{ __('option.label.holiday') }}</h5>
                 @can('create options')
                     <div class="ms-auto my-auto">
-                        <button id="openAddHolidayModal" class="btn btn-untosca">Add Holiday</button>
+                        <button id="openAddHolidayModal" class="btn btn-tosca">{{ __('option.label.add_holiday') }}</button>
                     </div>
                 @endcan
             </div>
@@ -302,10 +312,10 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
+                            <th scope="col">{{ __('general.label.name') }}</th>
+                            <th scope="col">{{ __('general.label.date') }}</th>
+                            <th scope="col">{{ __('general.label.edit') }}</th>
+                            <th scope="col">{{ __('general.label.delete') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -318,7 +328,7 @@
                             <td>
                                 @can('update options')
                                     <button type="button" 
-                                        class="btn btn-outline-success" 
+                                        class="btn btn-green" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#holidayEditModal" 
                                         data-id="{{ $data->id }}" 
@@ -330,7 +340,7 @@
                             </td>
                             <td>
                                 @can('delete options')
-                                    <button type="button" class="btn btn-outline-danger" 
+                                    <button type="button" class="btn btn-red" 
                                         onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'holiday')">
                                         <i class="ri-delete-bin-fill"></i>
                                     </button>
@@ -350,10 +360,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Office Location</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.office_location') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#location">Add Location</button>
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#location">{{ __('option.label.add_location') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -362,10 +372,10 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Radius</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">{{ __('general.label.name') }}</th>
+                                <th scope="col">{{ __('option.label.radius') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -378,7 +388,7 @@
                                 <td>
                                     @can('update options')
                                         <button type="button" 
-                                            class="btn btn-outline-success" 
+                                            class="btn btn-green" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#location" 
                                             data-id="{{ $data->id }}" 
@@ -392,8 +402,63 @@
                                 </td>
                                 <td>
                                     @can('delete options')
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'location')">
+                                            <i class="ri-delete-bin-fill"></i>
+                                        </button>
+                                    @endcan
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
+
+<!-- Lapor HR Category -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header d-flex align-items-center py-0">
+                    <h5 class="card-title mb-0 py-3">{{ __('option.label.lapor_hr') }}</h5>
+                    @can('create options')
+                        <div class="ms-auto my-auto">
+                            <button id="openAddLaporHrCategoryModal" class="btn btn-tosca">{{ __('option.label.add_lapor_hr_category') }}</button>
+                        </div>
+                    @endcan
+                </div>
+                    <table class="table datatable table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">{{ __('option.label.department') }}</th>
+                                <th scope="col">{{ __('general.label.edit') }}</th>
+                                <th scope="col">{{ __('general.label.delete') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($laporHrCategory as $no=>$data)
+                            <tr>
+                                <th scope="row">{{ $no+1 }}</th>
+                                <td>{{ $data->name }}</td>
+                                @csrf
+                                <td>
+                                    @can('update options')
+                                        <button type="button" 
+                                            class="btn btn-green" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#laporHrCategory" 
+                                            data-id="{{ $data->id }}" 
+                                            data-name="{{ $data->name }}">
+                                            <i class="ri-edit-box-fill"></i>
+                                        </button>
+                                    @endcan
+                                </td>
+                                <td>
+                                    @can('delete options')
+                                        <button type="button" class="btn btn-red" 
+                                            onclick="confirmDelete({{ $data->id }}, '{{ $data->name }}', 'lapor-hr')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
                                     @endcan
@@ -407,6 +472,7 @@
     </div>
 </div>
 
+
 @section('script')
 
 <script>
@@ -419,6 +485,7 @@ window.routeUrls = {
     statusUpdate: "{{ route('status.update', ['id' => '__id__']) }}",
     holidayUpdate: "{{ route('holiday.update', ['id' => '__id__']) }}",
     locationUpdate: "{{ route('location.update', ['id' => '__id__']) }}",
+    laporHrCategoryUpdate: "{{ route('laporHrCategorySubmit', ['id' => '__id__']) }}",
 };
 
 //script for edit modal
@@ -428,6 +495,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const button = event.relatedTarget; // Button that triggered the modal
             const id = button.getAttribute('data-id');
             const name = button.getAttribute('data-name');
+            const job_title_id = button.getAttribute('data-job_title_id');
+            const division_id = button.getAttribute('data-division_id');
+            const department_id = button.getAttribute('data-department_id');
             const section = button.getAttribute('data-section');
             const radius = button.getAttribute('data-radius');
             const latitude = button.getAttribute('data-latitude');
@@ -461,23 +531,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 'location':
                     actionUrl = window.routeUrls.locationUpdate;
                     break;
+                case 'laporHrCategory':
+                    actionUrl = window.routeUrls.laporHrCategoryUpdate;
+                    break;
             }
         
             // Replace __id__ with the actual ID
             actionUrl = actionUrl.replace('__id__', id);
 
             // Find the form and input within the current modal
+            
             const form = modal.querySelector('.edit-form');
             const inputName = form.querySelector('input[name="name"]');
+            const selectJobTitle = form.querySelector('select[name="job_title_id"]');
+            const selectDivision = form.querySelector('select[name="division_id"]');
+            const selectDepartment = form.querySelector('select[name="department_id"]');
             const inputSection = form.querySelector('input[name="section"]');
             const inputRadius = form.querySelector('input[name="radius"]');
             const inputlatitude = form.querySelector('input[name="latitude"]');
             const inputLongitude = form.querySelector('input[name="longitude"]');
             const selectDate = form.querySelector('input[name="date"]');
+            const inputId = form.querySelector('input[name="id"]');
+            
+            if (inputId) inputId.value = id || '';
 
             if (form && inputName) {
                 form.action = actionUrl;
                 inputName.value = name || '';
+                if (selectJobTitle) selectJobTitle.value = job_title_id || '';
+                if (selectDivision) selectDivision.value = division_id || '';
+                if (selectDepartment) selectDepartment.value = department_id || '';
                 if (inputSection) inputSection.value = section || '';
                 if (inputRadius) inputRadius.value = radius || '';
                 if (inputlatitude) inputlatitude.value = latitude || '';
@@ -646,6 +729,7 @@ function initializeMap(lat, lng) {
 </script>
 
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
     // Function to open the modal and update content
@@ -661,8 +745,35 @@ function initializeMap(lat, lng) {
         openModal(
             "Add ",
             "{{ route('position.add') }}",
-            `<label for="positionName" class="form-label">Name</label>
-             <input type="text" class="form-control" id="positionName" name="position" required>`
+            `
+            <label for="positionName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="positionName" name="name" required>
+             
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.job_title') }}</label>
+            <select class="select-form" name="job_title_id" aria-label="Default select example">
+                <option selected disabled>{{ __('employee.placeholders.select_job_title') }}</option>
+                @foreach($job_titles as $data)
+                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.department') }}</label>
+            <select class="select-form" name="department_id" aria-label="Default select example">
+                <option selected value="">{{ __('employee.placeholders.select_department') }}</option>
+                @foreach($departments as $data)
+                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+
+            <label for="jobTitleSection" class="form-label mt-2">{{ __('option.label.division') }}</label>
+            <select class="select-form" name="division_id" aria-label="Default select example">
+                <option selected value="">{{ __('employee.placeholders.select_division') }}</option>
+                @foreach($divisions as $data)
+                    <option value="{{ $data->id }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+
+             `
         );
     });
 
@@ -670,10 +781,10 @@ function initializeMap(lat, lng) {
         openModal(
             "Add Job Title",
             "{{ route('jobTitle.add') }}",
-            `<label for="jobTitleName" class="form-label">Name</label>
-             <input type="text" class="form-control" id="jobTitleName" name="name" required>
-             <label for="jobTitleSection" class="form-label">Section</label>
-             <input type="text" class="form-control" id="jobTitleSection" name="section" required>`
+            `<label for="jobTitleName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="jobTitleName" name="name" required>
+             <label for="jobTitleSection" class="form-label">{{ __('option.label.section') }}</label>
+             <input type="text" class="input-form" id="jobTitleSection" name="section" required>`
         );
     });
 
@@ -682,8 +793,8 @@ function initializeMap(lat, lng) {
         openModal(
             "Add Division",
             "{{ route('division.add') }}",
-            `<label for="divisionName" class="form-label">Name</label>
-             <input type="text" class="form-control" id="divisionName" name="name" required>`
+            `<label for="divisionName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="divisionName" name="name" required>`
         );
     });
 
@@ -691,8 +802,8 @@ function initializeMap(lat, lng) {
         openModal(
             "Add Department",
             "{{ route('department.add') }}",
-            `<label for="departmentName" class="form-label">Name</label>
-             <input type="text" class="form-control" id="departmentName" name="name" required>`
+            `<label for="departmentName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="departmentName" name="name" required>`
         );
     });
 
@@ -700,8 +811,8 @@ function initializeMap(lat, lng) {
         openModal(
             "Add Status",
             "{{ route('status.add') }}",
-            `<label for="statusName" class="form-label">Name</label>
-             <input type="text" class="form-control" id="statusName" name="name" required>`
+            `<label for="statusName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="statusName" name="name" required>`
         );
     });
 
@@ -710,16 +821,25 @@ function initializeMap(lat, lng) {
     openModal(
         "Add Holiday",
         "{{ route('holiday.add') }}",
-        `<label for="holidayName" class="form-label">Name</label>
-         <input type="text" class="form-control" id="holidayName" name="name" required>
+        `<label for="holidayName" class="form-label">{{ __('general.label.name') }}</label>
+         <input type="text" class="input-form" id="holidayName" name="name" required>
          <label class="col-sm-3 col-form-label">Select Date</label>
-         <input type="text" name="dates[]" class="form-control" id="holiday-dates">`
+         <input type="text" name="dates[]" class="input-form" id="holiday-dates">`
     );
 
         flatpickr("#holiday-dates", {
             mode: "multiple",
             dateFormat: "Y-m-d",
         });
+    });
+
+    document.getElementById("openAddLaporHrCategoryModal").addEventListener("click", function() {
+        openModal(
+            "{{ __('option.label.add_lapor_hr_category') }}",
+            "{{ route('laporHrCategorySubmit') }}",
+            `<label for="departmentName" class="form-label">{{ __('general.label.name') }}</label>
+             <input type="text" class="input-form" id="departmentName" name="name" required>`
+        );
     });
 
 });

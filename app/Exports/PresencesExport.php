@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyles, WithColumnFormatting, ShouldAutoSize
@@ -32,7 +33,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
     public function query()
     {
         return Presence::query()
-            ->with('employee')
+            ->with('employee', 'workDay')
             ->whereBetween('date', [$this->start, $this->end])
             ->when($this->employee_id, function ($query) {
                 $query->where('employee_id', $this->employee_id);
@@ -44,15 +45,22 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
         return [
             $this->rowNumber++,
             $row->eid,
-            $row->employee ? $row->employee->name : 'Unknown', // Nama karyawan
-            \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->date)), // Pastikan date dikonversi menjadi objek DateTime
-            $row->check_in ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_in)) : '', // Check-in dikonversi jadi DateTime
-            $row->check_out ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_out)) : '', // Check-out dikonversi jadi DateTime
+            $row->employee ? $row->employee->name : 'Unknown', 
+            $row->workDay ? $row->workDay->name : 'Unknown',
+            // \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->date)), // Pastikan date dikonversi menjadi objek DateTime
+            // $row->check_in ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_in)) : '', // Check-in dikonversi jadi DateTime
+            // $row->check_out ? \PhpOffice\PhpSpreadsheet\Shared\Date::dateTimeToExcel(new \DateTime($row->check_out)) : '', // Check-out dikonversi jadi DateTime
+            $row->date->format('d F Y'),
+            $row->check_in,
+            $row->check_out,
             $row->note_in,
             $row->note_out,
-            $row->late_arrival, 
+            $row->late_arrival == 1 ? 'late' : 'ontime', 
             $row->late_check_in,
             $row->check_out_early,
+            $row->leave,
+            $row->leave_note,
+            $row->leave_status == 1 ? 'accept' : 'reject',
         ];
     }
     
@@ -72,6 +80,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
                 __('number'),
                 __('eid'),
                 __('employee_name'),
+                __('work_day'),
                 __('date'),
                 __('check_in'),
                 __('check_out'),
@@ -80,18 +89,23 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
                 __('late_arrival'),
                 __('late_check_in'),
                 __('check_out_early'),
+                __('leave'),
+                __('leave_note'),
+                __('leave_status'),
             ]
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:K1')->getStyle('A1:K1')->getAlignment()->setHorizontal('center');
+        $sheet->mergeCells('A1:O1')->getStyle('A1:O1')->getAlignment()->setHorizontal('center');
         $sheet->mergeCells('A2:B2')->getStyle('A2:B2')->getAlignment()->setHorizontal('left');
         $sheet->mergeCells('C2:G2');
+        
 
         $sheet->getStyle('A3:I3')->getAlignment()->setHorizontal('center');
         return [
+            'A:O' => ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
             1 => [
                 'font' => [
                     'bold' => true,
@@ -122,14 +136,14 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
     public function columnFormats(): array
     {
         return [
-            'D' => 'd mmm yyyy',
-            'E' => 'hh:mm',
+            'E' => 'd mmm yyyy',
             'F' => 'hh:mm',
-            'G' => '#,##0',
+            'G' => 'hh:mm',
             'H' => '#,##0',
             'I' => '#,##0',
-            'j' => '#,##0',
+            'J' => '#,##0',
             'K' => '#,##0',
+            'L' => '#,##0',
         ];
     }
 }

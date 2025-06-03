@@ -1,14 +1,16 @@
 @extends('_layout.main')
 @section('content')
+
+{{ Breadcrumbs::render('setting_kpi_pa') }}
 <div class="row">
     <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
-                        <h5 class="card-title mb-0 py-3">Indicator for KPI</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.indicator_for_kpi') }}</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
-                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">Add Indicator</button>
+                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">{{ __('performance.label.add_indicator') }}</button>
                             </div>
                         @endcan
                     </div>
@@ -16,10 +18,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">View</th>
+                                    <th scope="col">{{ __('general.label.name') }}</th>
+                                    <th scope="col">{{ __('general.label.view') }}</th>
                                     {{-- <th scope="col">Edit</th> --}}
-                                    <th scope="col">Delete</th>
+                                    <th scope="col">{{ __('general.label.delete') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -31,13 +33,13 @@
                                     <td>
                                         <a href="{{ route('indicator.detail', [
                                             'kpi_id' => $indicator->id,
-                                            ]) }}" class="btn btn-outline-primary">
+                                            ]) }}" class="btn btn-blue">
                                             <i class="ri-eye-fill"></i>
                                         </a>
                                     </td>
                                     <td>
                                         @can('delete pm')
-                                            <button type="button" class="btn btn-outline-danger" 
+                                            <button type="button" class="btn btn-red" 
                                                 onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->name }}', 'indicator')">
                                                 <i class="ri-delete-bin-fill"></i>
                                             </button>
@@ -57,11 +59,11 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
-                        <h5 class="card-title mb-0 py-3">Indicator for PA</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.indicator_for_pa') }}</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
                                 {{-- <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button> --}}
-                                <a href="{{ route('add.appraisal.form') }}" class=""><button type="button" class="btn btn-tosca">Add PA</button></a>
+                                <a href="{{ route('add.appraisal.form') }}" class=""><button type="button" class="btn btn-tosca">{{ __('performance.label.add_appraisal') }}</button></a>
                             </div>
                         @endcan
                     </div>
@@ -70,9 +72,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">PA</th>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">Delete</th>
+                                    <th scope="col">{{ __('general.label.name') }}</th>
+                                    <th scope="col">{{ __('general.label.view') }}</th>
+                                    {{-- <th scope="col">Edit</th> --}}
+                                    <th scope="col">{{ __('general.label.delete') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,7 +88,7 @@
                                         
                                         <a href="{{ route('appraisal.detail', [
                                             'appraisal_id' => $appraisal->id,
-                                            ]) }}" class="btn btn-outline-primary">
+                                            ]) }}" class="btn btn-blue">
                                             <i class="ri-eye-fill"></i>
                                         </a>
                                             {{-- <button type="button" 
@@ -99,7 +102,7 @@
                                         @endcan
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-danger" 
+                                        <button type="button" class="btn btn-red" 
                                             onclick="confirmDelete({{ $appraisal->id }}, '{{ $appraisal->name }}', 'appraisal')">
                                             <i class="ri-delete-bin-fill"></i>
                                         </button>
@@ -221,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="number" class="form-control bobot-input" name="indicators[${index}][bobot]" required>
                 </div>
                 <div class="col-1">
-                    <button type="button" class="btn btn-danger removeIndicatorBtn">
+                    <button type="button" class="btn btn-red removeIndicatorBtn">
                         <i class="ri-delete-bin-fill"></i>
                     </button>
                 </div>

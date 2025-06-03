@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Sales Chart</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('sales.label.sales_chart') }}</h5>
                 </div>
                 <!-- <x-month-year-picker :action="route('sales.list')" :selectedYear="$selectedYear" /> -->
                 <div id="salesChart"></div>
@@ -20,10 +20,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">Sales List</h5>
+                    <h5 class="card-title mb-0 py-3">{{ __('sales.label.sales_list') }}</h5>
                     @can('create sales')
                         <div class="ms-auto my-auto">
-                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addSales">Add Sales Report</button>
+                            <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addSales">{{ __('sales.label.add_sales_report') }}</button>
                         </div>
                     @endcan
                 </div>
@@ -32,12 +32,12 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Year</th>
-                            <th scope="col">Qty</th>
-                            <th scope="col">View</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
+                            <th scope="col">{{ __('general.label.month') }}</th>
+                            <th scope="col">{{ __('general.label.year') }}</th>
+                            <th scope="col">{{ __('general.label.qty') }}</th>
+                            <th scope="col">{{ __('general.label.view') }}</th>
+                            <th scope="col">{{ __('general.label.edit') }}</th>
+                            <th scope="col">{{ __('general.label.delete') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,7 @@
                                 <a href="{{ route('sales.detail', [
                                 'month' => $sale->month,
                                 'year' => $sale->year]) }}"
-                                class="btn btn-outline-primary">
+                                class="btn btn-blue">
                                 <i class="ri-eye-fill"></i>
                                 </a>
                             </td>
@@ -60,14 +60,14 @@
                                     <a href="{{ route('sales.edit', [
                                         'month' => $sale->month,
                                         'year' => $sale->year]) }}"
-                                        class="btn btn-outline-success">
+                                        class="btn btn-green">
                                         <i class="ri-edit-fill"></i>
                                     </a>
                                 @endcan
                             </td>
                             <td>
                                 @can('delete sales')
-                                    <button type="button" class="btn btn-outline-danger"
+                                    <button type="button" class="btn btn-red"
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal" 
                                         data-entity="sales" 
@@ -180,18 +180,18 @@ document.addEventListener('DOMContentLoaded', function() {
         newSalesGroup.innerHTML = `
                             <div class="row mb-3">
                                 <div class="col-md-7">
-                                    <select class="form-select" name="sales[${index}][employee_id]" aria-label="Default select example">
-                                        <option selected>Select Employeee</option>
+                                    <select class="select-form" name="sales[${index}][employee_id]" aria-label="Default select example">
+                                        <option selected disabled>{{ __('attendance.label.select_employee') }}</option>
                                         @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" class="form-control" name="sales[${index}][qty]" required>
+                                    <input type="number" class="input-form" name="sales[${index}][qty]" required>
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger removeSalesBtn">
+                                    <button type="button" class="btn btn-red removeSalesBtn">
                                     <i class="ri-delete-bin-fill"></i>
                                     </button>
                                 </div>

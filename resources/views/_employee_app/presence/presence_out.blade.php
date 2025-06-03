@@ -1,5 +1,5 @@
 @extends('_employee_app._layout_employee.main')
-<!-- @section('header.title', 'Absen Keluar') -->
+<!-- @section('header.title', __('app.label.check_out')) -->
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
 
@@ -17,47 +17,47 @@
                         </div>
                     </div>
                     <div class="row">
-                            <div class="presence-camera">
-                                <p id="dateTime"></p>
-                                <input type="text" name="location" id="location">                        
-                            </div>
+                        <div class="presence-camera">
+                            <p id="dateTime"></p>
+                            <input type="text" name="location" id="location" hidden>  
+                            <p id="distanceMessage">{{ __('app.label.calculating_distance') }}</p>                     
+                        </div>
                     </div>
                     <div class="row mb-2 align-items-center">
                         <div class="col">
                         </div>
                     </div>
 
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <label for="">Select Shift :</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-control" name="workDay" aria-label="Default select example">
-                                @foreach($employee->workDay as $index => $workDay)
-                                    <option value="{{ $workDay->name }}">{{ $workDay->name }}</option>
-                                @endforeach
-                            </select>
+                    <div class="rekappresence">
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <div class="col-md-2">
+                                    <label for="">{{ __('app.label.select_shift') }}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" value="{{ $workDayName ?? '-'}}" name="" readonly>
+                                    <input type="hidden" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="col-md-2">
+                                    <label for="">{{ __('app.label.select_location') }}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" name="officeLocations" aria-label="Default select example">
+                                        @foreach($employee->officeLocations as $index => $officeLocations)
+                                            <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-md-2">
-                            <label for="">Select Location :</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-control" name="officeLocations" aria-label="Default select example">
-                                @foreach($employee->officeLocations as $index => $officeLocations)
-                                    <option value="{{ $officeLocations->name }}">{{ $officeLocations->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
+                    {{-- <div class="row mb-2">
                         <div class="col">
-                            <label for="note">Note :</label>
-                            <input type="text" class="form-control" name="note">                    
+                            <input type="text" class="form-control" name="note" placeholder="{{ __('general.placeholder.note') }}">                    
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col">
                             <button type="button" class="btn btn-tosca btn-block" id="take-presence">
@@ -65,64 +65,91 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
         </div>
     </div>
 </div>
 @section('script')
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Office location coordinates from the backend (passed via Blade)
+    const officeLatitude = @json($officeLatitude);
+    const officeLongitude = @json($officeLongitude);
+    const officeRadius = @json($radius); // The radius within which the employee must be
 
-    document.addEventListener("DOMContentLoaded", function() {
-        var getLocation = document.getElementById('location');
+    // Function to calculate the distance using the Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of Earth in kilometers
+        const dLat = (lat2 - lat1) * (Math.PI / 180); // Convert degrees to radians
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
 
-        // Attempt to get the user's location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c * 1000; // Distance in meters
+        return distance;
+    }
+
+    // Attempt to get the user's location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+
+    // Success callback: location data successfully retrieved
+    function successCallBack(position) {
+        const userLatitude = position.coords.latitude;
+        const userLongitude = position.coords.longitude;
+
+        // Calculate the distance from the user's location to the office location
+        const distance = calculateDistance(userLatitude, userLongitude, officeLatitude, officeLongitude);
+
+        // Display the distance in the view
+        const distanceMessage = document.getElementById('distanceMessage');
+        distanceMessage.innerHTML = `Posisimu ${distance.toFixed(2)} meter seko pabrik.`;
+
+        // Display latitude and longitude in the location input field
+        const locationInput = document.getElementById('location');
+        locationInput.value = `${userLatitude.toFixed(4)}, ${userLongitude.toFixed(4)}`;
+
+        // Check if the user is within the allowed radius
+        if (distance <= officeRadius) {
+            console.log("You are within the allowed radius.");
+            // Additional actions (e.g., allow check-in)
         } else {
-            console.log("Geolocation is not supported by this browser.");
+            console.log("You are outside the allowed radius.");
+            // Show a message or prevent check-in
         }
+    }
 
-        function successCallBack(position) {
-            // Display latitude and longitude in the input field
-            getLocation.value = position.coords.latitude + ", " + position.coords.longitude;
-
-            // Optional: Initialize your map or any other logic here
-            var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-            var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-            var circle = L.circle([-7.761940915549656, 110.31390577561152], {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 30
-            }).addTo(map).addTo(map);;
-        }
-        
-        function errorCallBack(error) {
-            console.error("Error retrieving location:", error);
-            // You can also provide a fallback or user-friendly message here
-        }
-    });
+    // Error callback: handle errors in retrieving the user's location
+    function errorCallBack(error) {
+        console.error(`Error occurred: ${error.message}`);
+    }
+});
 
     //display web cam
     Webcam.set({
         height: 480,
-        width: 320,
+        width: 480,
         image_format: 'jpeg',
+        flip_horiz: true,
         jpeg_quality: 80
     });
     Webcam.attach('.webcam-capture');
 
 //handle presence submit
-    $('#take-presence').click(function (event) {
+$('#take-presence').click(function (event) {
     event.preventDefault(); 
 
+    $('#loader').fadeIn();
+    
     Webcam.snap(function (uri) {
         $('#capturedImage').attr('src', uri);
+        let startTime = Date.now();
+
         $.ajax({
             url: '{{ route('presence.submit') }}', 
             type: 'POST',
@@ -135,43 +162,83 @@
                 location: $('#location').val() 
             },
             success: function (response) {
-                if (response.status === 'success') {
+                let elapsedTime = Date.now() - startTime;
+                let remainingTime = Math.max(1000 - elapsedTime, 0);
+
+                setTimeout(() => {
+                    $('#loader').fadeOut(); 
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: response.message, 
-                    }).then(() => {
-                        window.location.href = response.redirectUrl; 
-                    });
-                } else if ( response.status = 'error') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Eror',
+                        icon: response.status === 'success' ? 'success' : 'error',
+                        title: response.status === 'success' ? 'Success!' : 'Error',
                         text: response.message,
-                        confirmButtonText: 'Try Again'
+                    }).then(() => {
+                        if (response.status === 'success') {
+                            window.location.href = response.redirectUrl;
+                        }
                     });
-                }
+                }, remainingTime);
+
+                // $('#loader').fadeOut();
+                // if (response.status === 'success') {
+                //     Swal.fire({
+                //         icon: 'success',
+                //         title: 'Berhasil!',
+                //         text: response.message, 
+                //     }).then(() => {
+                //         window.location.href = response.redirectUrl; 
+                //     });
+                // } else if ( response.status = 'error') {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Eror',
+                //         text: response.message,
+                //         confirmButtonText: 'Try Again'
+                //     });
+                // }
             },
             error: function (xhr, status, error,) {
-                if (xhr.status === 422) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON.message, 
-                        confirmButtonText: 'Try Again'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan saat mengirim data!',
-                    });
-                }
+
+                let elapsedTime = Date.now() - startTime;
+                let remainingTime = Math.max(1000 - elapsedTime, 0);
+
+                setTimeout(() => {
+                    $('#loader').fadeOut(); // Sembunyikan loader
+                    if (xhr.status === 422) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON.message, 
+                            confirmButtonText: 'Try Again'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan saat mengirim data!',
+                        });
+                    }
+                }, remainingTime);
+
+                // $('#loader').fadeOut();
+
+                // if (xhr.status === 422) {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Error',
+                //         text: xhr.responseJSON.message, 
+                //         confirmButtonText: 'Try Again'
+                //     });
+                // } else {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Oops...',
+                //         text: 'Terjadi kesalahan saat mengirim data!',
+                //     });
+                // }
             }
         });
     });
-});
-
+});   
     
 </script>
 <script type="text/javascript">

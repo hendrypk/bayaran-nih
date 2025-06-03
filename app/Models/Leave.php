@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Leave extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'leaves';
     protected $fillable = [
         'employee_id',
@@ -16,7 +19,8 @@ class Leave extends Model
         'status',
         'note'
     ];
-
+    protected $dates = ['deleted_at']; 
+    
     public function employees() {
         return $this->belongsTo(Employee::class, 'employee_id');
     }

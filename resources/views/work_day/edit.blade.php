@@ -1,78 +1,94 @@
 @extends('_layout.main')
 @section('title', 'Edit Work Day')
 @section('content')
+{{ Breadcrumbs::render('work_day_detail', $name) }}
 
 <div class="row">
     <div class="card">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
-                    <h5 class="card-title">Edit Work Day of {{ $workDays->first()->name }}</h5>
+                    <h5 class="card-title">{{ __('option.label.edit_work_day') }} {{ $workDays->first()->name }}</h5>
                 </div>
             </div> 
                  
             <form action="{{ route('workDay.update', $workDays->first()->name) }}" method="POST">
                 @csrf
                 @method('POST')
-                <div class="row mb-3">
-                    <div class="col-md-2">
-                        <label for="name" class="fw-bold">Name</label>
-                        <span>: </span>
+
+                <div class="form-group row mb-3 container">
+                    <div class="col-md-3">
+                        <label for="name" class="fw-bold">{{ __('general.label.name') }}</label>
+                        <span style="color: red; font-size: 15px;">*</span>
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" name="name" value="{{ $workDays->first()->name }}">
+                        <label for="tolerance" class="fw-bold">{{ __('option.label.tolerance_in_minute') }}</label>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="tolerance" class="fw-bold">{{ __('option.label.count_late') }}</label>
                     </div>
                 </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-2">
-                        <label for="tolerance" class="fw-bold">Tolerance</label>
-                        <span>: </span>
+                <div class="form-group row mb-3 container">
+                    <div class="col-md-3">
+                        <input type="text" class="input-form" name="name" value="{{ $workDays->first()->name }}">
                     </div>
                     <div class="col-md-3">
-                        <input type="number" class="form-control" name="tolerance" value="{{ $workDays->first()->tolerance }}">
+                        <input type="number" class="input-form" name="tolerance" value="{{ $workDays->first()->tolerance }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="select-form" name="countLate" aria-label="Default select example">
+                            <option selected disabled>{{ __('employee.placeholders.select_status') }}</option>
+                            <option value="1" {{ $workDays->first()->count_late == '1' ? 'selected' : '' }}>Yes</option>
+                            <option value="0"{{ $workDays->first()->count_late == '0' ? 'selected' : '' }}>No</option>
+                          </select>
                     </div>
                 </div>
-
+                
                 <div class="row mb-3">
-                    <table class="table datatable table-hover">
+                    <table class="table table-hover">
                         <thead class="table-primary">
-                            <th>Day</th>
-                            <th>Day Off</th>
-                            <th>Arrival</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th>Break In</th>
-                            <th>Break Out</th>
-                            <th>Exclude Break</th>
+                            <th>{{ __('general.label.day') }}</th>
+                            <th>{{ __('option.label.day_off') }}</th>
+                            <th>{{ __('option.label.arrival') }}</th>
+                            <th>{{ __('option.label.check_in') }}</th>
+                            <th>{{ __('option.label.check_out') }}</th>
+                            <th>{{ __('option.label.break_in') }}</th>
+                            <th>{{ __('option.label.break_out') }}</th>
+                            <th>{{ __('option.label.exclude_break') }}</th>
                         </thead>
                         <tbody>
                             @foreach($workDays as $workDay)
                                 <tr>
-                                    <td>{{ ucfirst($workDay->day) }}</td>
-                                    <td>
+                                    <td class="text-center">{{ __('option.label.day.' . strtolower($workDay->day)) }}</td>
+                                    {{-- <td class="text-center"> ucfirst($workDay->day) }}</td> --}}
+                                    <td class="text-center">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->day_off == 1 ? 'checked' : '' }}>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <input class="form-check-input" type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->day_off == 1 ? 'checked' : '' }}>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td>
-                                        <input type="time" id="{{ $workDay->day }}-arrival" class="form-control" name="arrival[{{ $workDay->day }}]" value="{{ $workDay->arrival }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                    <td class="text-center">
+                                        <input type="time" id="{{ $workDay->day }}-arrival" class="input-form text-center" name="arrival[{{ $workDay->day }}]" value="{{ $workDay->arrival }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
-                                        <input type="time" id="{{ $workDay->day }}-checkIn" class="form-control" name="checkIn[{{ $workDay->day }}]" value="{{ $workDay->check_in }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                    <td class="text-center">
+                                        <input type="time" id="{{ $workDay->day }}-checkIn" class="input-form text-center" name="checkIn[{{ $workDay->day }}]" value="{{ $workDay->check_in }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
-                                        <input type="time" id="{{ $workDay->day }}-checkOut" class="form-control" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->check_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                    <td class="text-center">
+                                        <input type="time" id="{{ $workDay->day }}-checkOut" class="input-form text-center" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->check_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
-                                        <input type="time" id="{{ $workDay->day }}-breakIn" class="form-control" name="breakIn[{{ $workDay->day }}]" value="{{ $workDay->break_in }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                    <td class="text-center">
+                                        <input type="time" id="{{ $workDay->day }}-breakIn" class="input-form text-center" name="breakIn[{{ $workDay->day }}]" value="{{ $workDay->break_in }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
-                                        <input type="time" id="{{ $workDay->day }}-breakOut" class="form-control" name="breakOut[{{ $workDay->day }}]" value="{{ $workDay->break_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                    <td class="text-center">
+                                        <input type="time" id="{{ $workDay->day }}-breakOut" class="input-form text-center" name="breakOut[{{ $workDay->day }}]" value="{{ $workDay->break_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" name="break[{{ $workDay->day }}]" value="1" {{ $workDay->break == 1 ? 'checked' : '' }} {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <input class="form-check-input" type="checkbox" name="break[{{ $workDay->day }}]" value="1" {{ $workDay->break == 1 ? 'checked' : '' }} {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -83,9 +99,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-tosca me-3" data-bs-dismiss="modal" onclick="window.history.back()">Cancel</button>
-                        <button type="submit" class="btn btn-untosca me-3">Submit</button>
+                    <div class="row mb-2 mt-3 justify-content-end">
+                        <div class="d-grid col-1">
+                            <a href="{{ route('workDay.index') }}" class="btn btn-red btn-sm">{{ __('general.label.back') }}</a>
+                        </div>
+                        <div class="d-grid col-1">
+                            <button type="submit" class="btn btn-tosca btn-sm">{{ __('general.label.save') }}</button>
+                        </div>
                     </div>
                 </div>
             </form>

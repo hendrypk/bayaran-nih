@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'label' => [
+        'dashboard' => 'Beranda',
+        'employee' => 'Karyawan',
+        'add_employee' => 'Tambah Karyawan',
+        'employee_list' => 'Daftar Karyawan',
+        'resignation' => 'Pengunduran Diri',
+        'position_change' => 'Perubahan Posisi',
+        'attendance' => 'Kehadiran',
+        'presence_summary' => 'Ringkasan Kehadiran',
+        'presences' => 'Presensi',
+        'overtime' => 'Lembur',
+        'leave' => 'Cuti',
+        'performance' => 'Kinerja',
+        'employee_grade' => 'Penilaian Karyawan',
+        'kpi' => 'Indikator Kinerja Utama',
+        'performance_appraisal' => 'Penilaian Kinerja',
+        'setting_kpi_pa' => 'Pengaturan KPI & PA',
+        'sales_summary' => 'Ringkasan Penjualan',
+        'data_master' => 'Data Master',
+        'options' => 'Opsi',
+        'work_day' => 'Hari Kerja',
+        'role' => 'Peran',
+        'user' => 'Pengguna',
+        'log_out' => 'Keluar',
+    ],
+    'placeholder' => [
+        'search' => 'Cari...',
+        'name' => 'Masukkan nama',
+        'email' => 'Masukkan alamat email',
+        'position' => 'Pilih posisi',
+        'password' => 'Masukkan kata sandi',
+    ],
+];

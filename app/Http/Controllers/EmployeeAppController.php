@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Leave;
+use App\Models\LaporHr;
 use App\Models\WorkDay;
 use App\Models\Employee;
-use App\Models\Leave;
-use App\Models\OfficeLocation;
 use App\Models\Overtime;
 use App\Models\Presence;
 use Illuminate\Http\Request;
+use App\Models\OfficeLocation;
+use App\Models\LaporHrCategory;
+use App\Models\LaporHrAttachment;
+use Illuminate\Support\Facades\Log;
+use App\Traits\PresenceSummaryTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -17,12 +22,17 @@ use Illuminate\Support\Facades\Storage;
 class EmployeeAppController extends Controller
 {
 
-//About
-    public function about(){
+    use PresenceSummaryTrait;
+
+    //About
+    public function about()
+    {
         return view('_employee_app.about');
     }
-//Dashboard
-    public function index(){
+
+    //Dashboard
+    public function index()
+    {
         $employeeId = Auth::id();
         $employee = Employee::with('workDay')->findOrFail($employeeId);
         $workDay = $employee->workDay;
@@ -30,31 +40,82 @@ class EmployeeAppController extends Controller
         $today = Carbon::today()->toDateString();
         $presenceToday = Presence::where('employee_id', $employeeId)
             ->whereDate('date', $today)
+            ->whereNull('leave_status')
             ->first();
+
+        $leaveAccepted = Presence::where('employee_id', $employeeId)
+            ->where('date', $today)
+            ->where('leave_status', 1)
+            ->first();
+
+        $pastPresence = Presence::where('employee_id', $employeeId)
+            ->orderBy('date', 'desc')
+            ->whereNull('leave_status')
+            ->first();
+
         $overtimeToday = Overtime::where('employee_id', $employeeId)
             ->whereDate('date', $today)
+            ->orderBy('created_at', 'desc')
             ->first();
 
-        return view('_employee_app.index', compact('employee', 'workDay', 'presenceToday', 'overtimeToday'));
+        $employees = collect([$employee]); // Gunakan koleksi untuk 1 karyawan
+        $employees = $this->calculatePresenceSummary($employees, Carbon::now()->startOfMonth(), Carbon::now());
+
+        $chartData = [
+            'labels' => ['Hadir', 'Libur', 'Sakit', 'Izin', 'Izin Setengah Hari', 'Cuti', 'Alpha'], // Use the actual labels
+            'data' => [
+                $employee->presence,
+                $employee->holiday,
+                $employee->sick_permit,
+                $employee->full_day_permit,
+                $employee->half_day_permit,
+                $employee->annual_leave,
+                $employee->alpha,
+            ]
+        ];
+
+        return view('_employee_app.index', compact('employee', 'workDay', 'presenceToday', 'leaveAccepted', 'pastPresence', 'chartData', 'overtimeToday'));
     }
 
-//Create Presence In
-    public function presenceIn(){
+    //Create Presence In
+    public function presenceIn()
+    {
         $employeeId = Auth::id();
         $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
         $workDay = $employee->workDay;
-        return view('_employee_app.presence.presence_in', compact('employee'));
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude;
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
+        return view('_employee_app.presence.presence_in', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
     }
 
-//Create Presence Out
-public function presenceOut(){
-    $employeeId = Auth::id();
-    $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
-    $workDay = $employee->workDay;
-    return view('_employee_app.presence.presence_out', compact('employee'));
-}
+    //Create Presence Out
+    public function presenceOut()
+    {
+        $employeeId = Auth::id();
+        $employee = Employee::with('workDay', 'officeLocations')->findOrFail($employeeId);
+        $today = Carbon::today()->toDateString();
+        $existPresence = Presence::where('employee_id', $employeeId)->orderBy('date', 'desc')->first();
+        $pastPresence = Presence::where('employee_id', $employeeId)
+            ->orderBy('date', 'desc')
+            ->whereNull('deleted_at')
+            ->whereNull('leave')
+            ->first();
 
-//Store Image
+        $workDay = $pastPresence->work_day_id;
+        $workDayName = WorkDay::where('id', $workDay)->first()->name;
+
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude;
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
+
+        // $workDay = $employee->workDay;
+        return view('_employee_app.presence.presence_out', compact('employee', 'workDay', 'workDayName', 'officeLatitude', 'officeLongitude', 'radius'));
+    }
+
+    //Store Image
     public function imageStore(Request $request)
     {
         $request->validate([
@@ -83,55 +144,46 @@ public function presenceOut(){
         return response()->json(['success' => 'Image saved successfully!']);
     }
 
-//Calculate Presence Radius
-function distance($lat1, $lon1, $lat2, $lon2){
-    $theta = $lon1 - $lon2;
-    $miles = (sin(deg2rad($lat1)) * sin(deg2rad($lat2))) +
-             (cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta)));
-    $miles = acos($miles);
-    $miles = rad2deg($miles);
-    $miles = $miles * 60 * 1.1515;
-    $feet = $miles * 5280;
-    $yards = $feet / 3;
-    $kilometers = $miles * 1.609344;
-    $meters = $kilometers * 1000;
-    return compact('meters', 'kilometers', 'miles');
-}
+    //Calculate Presence Radius
+    function distance($lat1, $lon1, $lat2, $lon2)
+    {
+        $theta = $lon1 - $lon2;
+        $miles = (sin(deg2rad($lat1)) * sin(deg2rad($lat2))) +
+            (cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta)));
+        $miles = acos($miles);
+        $miles = rad2deg($miles);
+        $miles = $miles * 60 * 1.1515;
+        $feet = $miles * 5280;
+        $yards = $feet / 3;
+        $kilometers = $miles * 1.609344;
+        $meters = $kilometers * 1000;
+        return compact('meters', 'kilometers', 'miles');
+    }
 
-//Store Presence
-    public function store(Request $request){
+    //try save presence with new logic
+    public function save(Request $request)
+    {
         $request->validate([
-            'note' => 'required'
-        ],[
-            'note.required' => 'Note is required!'
+            // 'note' => 'required',
+            'location' => 'required',
+            // 'workDay' => 'interger',
+            'image' => 'required|string'
+        ], [
+            'note.required' => __('messages.note_required'),
+            'location.required' => __('messages.location_required'),
         ]);
 
+        //Get employee and work day data
         $employeeId = Auth::id();
-        $eid = Auth::user()->eid;
-        $employeeName = Auth::user()->name;
         $employee = Employee::with('workDay')->findOrFail($employeeId);
+
         $date = Carbon::parse(now()->toDateString());
         $today = strtolower($date->format('l'));
-        $workDay = WorkDay::where('name', $request->workDay)->where('day', $today)->first();
+        $workDayData = WorkDay::find($request->workDay);
+        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
         $day_off = $workDay->day_off;
         $break = $workDay->break;
-        
-        //Get photo data
-        $request->validate([
-            'image' => 'required|string'
-        ]);
-        $datePhoto = now()->toDateString();
-        $timePhoto = now()->toTimeString();
-        $photoName = $employeeId . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
-        $imageData = $request->input('image');
-        $imageData = str_replace('data:image/jpeg;base64,', '', $imageData);
-        $imageData = base64_decode($imageData);
-
-        // Create unique file name
-        // $eid = Auth::id();
-        // $datePhoto = now()->toDateString();
-        // $timePhoto = now()->toTimeString();
-        // $fileName = $eid . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
+        $isCountLate = $workDay->count_late;
 
         //Get Office Location From Table
         $ol = $request->officeLocations;
@@ -145,26 +197,27 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $location = explode(',', $loc);
         $latUser = $location[0];
         $lonUser = $location[1];
-
         $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
         $radius = round($distance["meters"]);
         $radiusKM = round($distance["kilometers"]);
 
-        if($maxRadius < $radius) {
-            $message = 'Posisimu kadoan ' . $radiusKM . ' km seko pabrik, nek ora coba cek GPSmu!';
-            // return redirect()->back()->with('error', $message);
+        // Validasi jika user di luar radius
+        if ($radius > $maxRadius) {
             return response()->json([
                 'status' => 'error',
-                'message' => $message,
+                'message' => __('messages.outside_radius', ['meters' => $radius]),
             ]);
-        } else {        
-        
-        if($day_off == 1){
-            $message = 'Dino iki jatahmu prei. Nek awakmu tetep kerjo, absen lembur.';
-            return redirect()->back()->with('error', $message);
-        }
+        };
 
-        $parseTime = function($time) {
+        //process image data
+        $datePhoto = now()->toDateString();
+        $timePhoto = now()->toTimeString();
+        $photoName = $employeeId . '-' . $datePhoto . '-' . $timePhoto . '.jpg';
+        $imageData = $request->input('image');
+        $imageData = str_replace('data:image/jpeg;base64,', '', $imageData);
+        $imageData = base64_decode($imageData);
+
+        $parseTime = function ($time) {
             return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
         };
 
@@ -180,399 +233,554 @@ function distance($lat1, $lon1, $lat2, $lon2){
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
 
         //Get From Form
-        $now = $parseTime (now()->toTimeString());
-        $lateArrival = $now && $arrival ? ($arrival->diffInMinutes($now, false)> 1 ? 1 : 0) :0;
-        $lateArrival = intval($lateArrival);
-        // $lateCheckIn = $now && $check_in ? max(intval($check_in->diffInMinutes($now, false)), 0) : '0';
+        $now = $parseTime(now()->toTimeString());
+        $presence = Presence::where('employee_id', $employeeId)
+            ->where('date', now()->toDateString())
+            ->first();
 
-        
-        if($now && $check_in) {
-            switch(true) {
+        $pastPresence = Presence::where('employee_id', $employeeId)
+            ->orderBy('date', 'desc')
+            ->whereNull('leave_status')
+            ->whereNull('leave')
+            ->first();
+        // dd($pastPresence);
+        if ($now && $check_in) {
+            switch (true) {
+                case $isCountLate == 0:
+                    $lateCheckIn = 0;
+                    $lateArrival = 0;
+                    break;
+
                 case $excldueBreak:
                     $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
-                    // $lateCheckIn = 'exclude break';
+                    $lateArrival = $now && $arrival ? ($arrival->diffInMinutes($now, false) > 1 ? 1 : 0) : 0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $now->between($break_in, $break_out):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
-                    // $lateCheckIn = 'when break';
+                    $lateArrival = $now && $arrival ? ($arrival->diffInMinutes($now, false) > 1 ? 1 : 0) : 0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $break_in->lt($now):
                     $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)) - $breakDuration, 0);
-                    // $lateCheckIn = 'after break out';
+                    $lateArrival = $now && $arrival ? ($arrival->diffInMinutes($now, false) > 1 ? 1 : 0) : 0;
+                    $lateArrival = intval($lateArrival);
                     break;
 
                 case $now->lt($break_in):
-                $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
-                // $lateCheckIn = 'normal';
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
+                    $lateArrival = $now && $arrival ? ($arrival->diffInMinutes($now, false) > 1 ? 1 : 0) : 0;
+                    $lateArrival = intval($lateArrival);
                     break;
             }
         }
 
-            // Find existing presence for today
-            $presence = Presence::where('employee_id', $employeeId)
-            ->where('date', now()->toDateString())
-            ->first();
-            
-            $message = '';
+        $message = '';
 
-            // Switch case to handle presence states
-            switch (true) {
-                // Case when there is no presence record for today (Check-in)
-                case is_null($presence):
-            
-                    // Save the image to storage/app/public folder
-                    $path = storage_path('app/public/presences/' . $photoName);
-                    file_put_contents($path, $imageData);
+        switch (true) {
+            case !is_null($pastPresence) && is_null($pastPresence->check_out):
+                $checkOutEarly = 0;
+                $path = storage_path('app/public/presences/' . $photoName);
+                file_put_contents($path, $imageData);
 
-                    $presence =Presence::create([
-                            'employee_id' => $employeeId,
-                            'eid' => $eid,
-                            'employee_name' => $employeeName,
-                            'work_day_id' => $request->workDay,
-                            'date' => $datePhoto,
-                            'check_in' => $timePhoto,
-                            'late_check_in' => $lateCheckIn,
-                            'late_arrival' => $lateArrival,
-                            'note_in' => $request->note,
-                            'photo_in' => $photoName,
-                            'location_in' => $loc
-                    ]);
+                $pastPresence->update([
+                    'check_out' => now()->toTimeString(),
+                    'check_out_early' => $checkOutEarly,
+                    // 'note_out' => $request->note,
+                    'photo_out' => $photoName,
+                    'location_out' => $loc
+                ]);
 
-                    $message = 'Absenmu melbu berhasil dicatet, tapi awakmu telat ' . $lateCheckIn . ' menit';
-                    break;
-        
-                // Case when the employee has checked in but not checked out (Check-out)
-                case !is_null($presence->check_in) && is_null($presence->check_out):
-                    $lastedWorkDay = $presence->work_day_id;
-                    $lastWorkDay = WorkDay::where('name', $lastedWorkDay)->where('day', $today)->first();
+                $message = __('messages.early_check_out', ['minutes' => $checkOutEarly]);
+                break;
+
+            case (!empty($presence) && !is_null($presence->check_in) && is_null($presence->check_out)) || (!empty($pastPresence) && is_null($pastPresence->check_out)):
+
+                // case !is_null($presence->check_in) && is_null($presence->check_out) || !is_null($pastPresence) && is_null($pastPresence->check_out):
+
+                if ($now && $check_out) {
+                    $workDayId = $presence->work_day_id;
+                    $lastWorkDayData = WorkDay::find($workDayId);
+                    $lastWorkDay = WorkDay::where('name', $lastWorkDayData->name)->where('day', $today)->first();
                     $forCheckIn = $lastWorkDay->check_in;
                     $forCheckOut = $lastWorkDay->check_out;
                     $break = $lastWorkDay->break;
-                    
-                    if($now && $check_out){
-                        $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
-                        $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
-            
-                        switch(true) {
-                            case $excldueBreak:
-                                $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
-                                break;
 
-                            case $now->lt($forCheckIn):
-                                $checkOutEarly = 0;
-                                break;
-            
-                            case $now->lt($break_in):
-                                $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false))-60, 0);
-                                break;
-                            
-                            case $now->between($break_in, $break_out):
-                                $checkOutEarly = max(intval($break_out->diffInMinutes($forCheckOut, false)), 4);
-                                break;
+                    switch (true) {
+                        case $isCountLate == 0:
+                            $checkOutEarly = 0;
+                            break;
 
-                        
-                            default:
-                                $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
-                                break;
-                        }
+                        case $excldueBreak:
+                            $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
+                            break;
+
+                        case $now->lt($forCheckIn):
+                            $checkOutEarly = 0;
+                            break;
+
+                        case $now->lt($break_in):
+                            $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)) - 60, 0);
+                            break;
+
+                        case $now->between($break_in, $break_out):
+                            $checkOutEarly = max(intval($break_out->diffInMinutes($forCheckOut, false)), 4);
+                            break;
+
+                        default:
+                            $checkOutEarly = max(intval($now->diffInMinutes($forCheckOut, false)), 0);
+                            break;
                     }
-                    
-                    // Save the image to storage/app/public folder
-                    $path = storage_path('app/public/presences/' . $photoName);
-                    file_put_contents($path, $imageData);
+                }
 
-                    $presence->update([
-                        'check_out' => now()->toTimeString(),
-                        'check_out_early' => $checkOutEarly,
-                        'note_out' => $request->note,
-                        'photo_out' => $photoName,
-                        'location_out' => $loc
-                    ]);
+                $path = storage_path('app/public/presences/' . $photoName);
+                file_put_contents($path, $imageData);
 
-                    $message = 'Absenmu metu berhasil dicatet. Tapi awakmu muleh gasik ' . $checkOutEarly . ' menit';
-                    break;
-        
-                // Case when both check-in and check-out are already recorded
-                case !is_null($presence->check_in) && !is_null($presence->check_out):
-                    $message = 'Wis absen melbu, rasah absen meneh!';
-                    return redirect()->back()->with('error', $message);
-                    break;
-        
-                // Default case to catch any unexpected scenarios
-                default:
-                    $message = 'Sistem eror, hubungi admin!';
-                    return redirect()->back()->with('error', $message);
-                    break;
-            }
+                $presence->update([
+                    'check_out' => now()->toTimeString(),
+                    'check_out_early' => $checkOutEarly,
+                    // 'note_out' => $request->note,
+                    'photo_out' => $photoName,
+                    'location_out' => $loc
+                ]);
+
+                $message = __('messages.early_check_out', ['minutes' => $checkOutEarly]);
+                break;
+
+            case is_null($presence) || !is_null($presence) && is_null($presence->leave_status):
+                $path = storage_path('app/public/presences/' . $photoName);
+                file_put_contents($path, $imageData);
+
+                $presence = Presence::updateOrcreate([
+                    'id' => optional($presence)->id
+                ], [
+                    'employee_id' => $employeeId,
+                    'work_day_id' => $request->workDay,
+                    'date' => $datePhoto,
+                    'check_in' => $timePhoto,
+                    'late_check_in' => $lateCheckIn,
+                    'late_arrival' => $lateArrival,
+                    // 'note_in' => $request->note,
+                    'photo_in' => $photoName,
+                    'location_in' => $loc
+                ]);
+
+                $message = __('messages.late_check_in', ['minutes' => $lateCheckIn]);
+                break;
+
+            case !is_null($presence->check_in) && !is_null($presence->check_out):
+                $message = __('messages.already_check_in');
+                return redirect()->back()->with('error', $message);
+                break;
+
+            default:
+                $message = __('messages.system_error');
+                return redirect()->back()->with('error', $message);
+                break;
         }
+
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'redirectUrl' => route('employee.app') 
+            'redirectUrl' => route('employee.app')
         ]);
     }
 
-//Presences History
-    public function history(){
+    //Presences History
+    public function history(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $employeeId = Auth::id();
         $employee = Employee::findOrFail($employeeId);
-        $presences = Presence::where('employee_id', $employeeId)->get();
-        // dd($employeeId, $employee, $presences);
+        $query = Presence::where('employee_id', $employeeId)->whereNull('leave_status')->whereNotNull('work_day_id');
+        if ($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+        $presences = $query->get();
         return view('_employee_app.history', compact('presences'));
     }
 
-//Overtime
-    public function overtime(){
+    //Overtime Form
+    public function overtime()
+    {
         $employeeId = Auth::id();
         $employee = Employee::with('workDay')->findOrFail($employeeId);
-        $workDay = $employee->workDay;
-        return view('_employee_app.overtime', compact('employee'));
+
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude;
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
+
+        return view('_employee_app.overtime.overtime_in', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
     }
 
-    public function overtimeStore(){
+    public function overtimeOut()
+    {
         $employeeId = Auth::id();
-        $date = Carbon::parse(now()->toDateString());
-        $today = strtolower($date->format('l'));
+        $employee = Employee::with('workDay')->findOrFail($employeeId);
+        $lokasi = $employee->officeLocations->first();
+        $officeLatitude = $lokasi->latitude;
+        $officeLongitude = $lokasi->longitude;
+        $radius = $lokasi->radius;
 
-        //find existing overtime today
-        $overtime = overtime::where('employee_id', $employeeId)
-        ->where('date', $date)
-        ->first();
+        return view('_employee_app.overtime.overtime_out', compact('employee', 'officeLatitude', 'officeLongitude', 'radius'));
+    }
 
-        $parseTime = function($time) {
-            return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
-        };
+    public function overtimeStore(Request $request)
+    {
+        $employeeId = Auth::id();
+        $date = Carbon::now()->toDateString();
 
-        $start_at = $overtime ? $parseTime ($overtime->start_at) : null ;
-        $now = $parseTime (now()->toTimeString());
-        $total_overtime = $now && $start_at ? max(intval($start_at->diffInMinutes($now, false)), 0) : '0';
+        $request->validate(['image' => 'required|string']);
+        
+        // Simpan foto
+        $photoName = "$employeeId-$date-" . now()->format('His') . '.jpg';
+        $imageData = base64_decode(str_replace('data:image/jpeg;base64,', '', $request->input('image')));
+        $photoPath = storage_path("app/public/overtimes/$photoName");
 
-        switch (true) {
-            case is_null($overtime):
-                $overtime = Overtime::create([
-                    'employee_id' => $employeeId,
-                    'date' => $date,
-                    'start_at' => now()->toTimeString(),
-                ]);
-                $message = 'Absenmu melbu lembur berhasil dicatet!';
-                break;
+        // Ambil lokasi kantor
+        $office = OfficeLocation::where('name', $request->officeLocations)->firstOrFail();
+        $latOffice = $office->latitude;
+        $lonOffice = $office->longitude;
+        $maxRadius = $office->radius;
 
-            case !is_null($overtime->start_at) && is_null($overtime->end_at):
-                $overtime->update([
-                    'end_at' => now()->toTimeString(),
-                    'total' => $total_overtime,
-                    ]);
-                $message = 'Absenmu metu lembur berhasil dicatet!';
+        // Lokasi user
+        [$latUser, $lonUser] = explode(',', $request->input('location'));
+        $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
+        $radiusMeters = round($distance['meters']);
+
+        if ($radiusMeters > $maxRadius) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Posisimu kadoan ' . round($distance['kilometers']) . ' km seko pabrik, nek ora coba cek GPSmu!',
+            ]);
         }
 
-        return redirect()->route('employee.app')->with('success', $message);
+        $overtime = Overtime::where('employee_id', $employeeId)
+            ->where('date', $date)
+            ->orderBy('created_at', 'desc')
+            ->first();
+            
+        $now = now();
+
+        file_put_contents($photoPath, $imageData);
+
+        if($overtime && !$overtime->end_at) {
+            $start = Carbon::parse($overtime->start_at);
+            $totalMinutes = max($start->diffInMinutes($now, false), 0);
+
+            $overtime->update([
+                'end_at' => $now->toTimeString(),
+                'photo_out' => $photoName,
+                'note_out' => $request->note,
+                'location_out' => $request->input('location'),
+                'total' => $totalMinutes,
+            ]);
+
+            $message = __('messages.overtime_out_success');
+        } else {
+
+            Overtime::create([
+                'employee_id' => $employeeId,
+                'date' => $date,
+                'start_at' => $now->toTimeString(),
+                'photo_in' => $photoName,
+                'note_in' => $request->note,
+                'location_in' => $request->input('location'),
+            ]);
+
+            $message = __('messages.overtime_in_success');
+        }
+
+
+        // if (!$overtime || $overtime->end_at) {
+        //     file_put_contents($photoPath, $imageData);
+
+        //     Overtime::create([
+        //         'employee_id' => $employeeId,
+        //         'date' => $date,
+        //         'start_at' => $now->toTimeString(),
+        //         'photo_in' => $photoName,
+        //         'note_in' => $request->note,
+        //         'location_in' => $request->input('location'),
+        //     ]);
+
+        //     $message = __('messages.overtime_in_success');
+        // } elseif ($overtime->start_at && !$overtime->end_at) {
+        //     file_put_contents($photoPath, $imageData);
+
+        //     $start = Carbon::parse($overtime->start_at);
+        //     $totalMinutes = max($start->diffInMinutes($now, false), 0);
+
+        //     $overtime->update([
+        //         'end_at' => $now->toTimeString(),
+        //         'photo_out' => $photoName,
+        //         'note_out' => $request->note,
+        //         'location_out' => $request->input('location'),
+        //         'total' => $totalMinutes,
+        //     ]);
+
+        //     $message = __('messages.overtime_out_success');
+        // }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'redirectUrl' => route('employee.app'),
+        ]);
     }
-//Overtime History
-    public function overtimeHistory(){
+
+    //Overtime History
+    public function overtimeHistory(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $employeeId = Auth::id();
-        $overtime = Overtime::where('employee_id', $employeeId)->get();
+        $query = Overtime::where('employee_id', $employeeId);
+        if ($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+        $overtime = $query->get();
 
         return view('_employee_app.overtime-history', compact('overtime'));
     }
 
-//Overtime
-    public function profileIndex(){
+    //Overtime
+    public function profileIndex()
+    {
         return view('_employee_app.profile.index');
     }
 
-    
-//Reset username
-    public function resetUsername(){
+
+    //Reset username
+    public function resetUsername()
+    {
         return view('_employee_app.profile.username');
     }
 
-    public function resetUsernameStore(Request $request){
-        // Validasi input
+    public function resetUsernameStore(Request $request)
+    {
         $request->validate([
             'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
             'currentPassword' => 'required|string',
-        ],[
+        ], [
             'username.required' => 'Please fill the username',
             'username.regex' => 'Username contains invalid character',
             'username.unique' => 'Username already exists',
             'currentPassword.required' => 'Please enter your current password',
         ]);
-    
+
         $username = $request->username;
         $currentPassword = $request->currentPassword;
-    
-        // Ambil pengguna yang sedang login
         $employee = Auth::user();
-    
-        // Cek apakah password yang dimasukkan cocok dengan password yang tersimpan
         if (Hash::check($currentPassword, $employee->password)) {
-            // Update username
             $employee->update([
                 'username' => $username,
             ]);
-    
-            // Flash pesan sukses
             session()->flash('success', 'Username updated successfully!');
         } else {
-            // Flash pesan error jika password salah
             session()->flash('error', 'Password is incorrect. Please reenter the current password!');
         }
-    
-        // Redirect ke halaman yang sesuai
+
         return redirect()->route('change.username')->withInput();
     }
 
-    
-    // public function resetUsernameStore(Request $request){
-    //     $request->validate([
-    //         'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
-    //         'currentPassword' => 'required|string',
-    //     ],[
-    //         'username.required' => 'please fill the username',
-    //         'username.regex:/^\S*$/' => 'username contains invalid character',
-    //         'username.unique' => 'username already exist',
-    //     ]);
-
-    //     $username = $request->username;
-    //     $password = Hash::make($request->currentPassword);
-    //     $passwordCheck = Hash::make(Auth::user()->password);
-    //     $pass = Auth::user()->password;
-    //     dd($pass, $passwordCheck);
-    //     if (Hash::check($password, $passwordCheck)){
-    //         $employee = Auth::user();
-    //         $employee->update([
-    //             'username' => $username,
-    //         ]);
-    //         session()->flash('success', 'Username updated successfully!');
-    //     } else {
-    //         session()->flash('error', 'Password is incorrect. Please reenter the current password!');
-    //     }
-
-    //     return redirect()->route('change.username')->withInput();
-    // }
-
-//Reset Password
-    public function resetPassword(){
+    //Reset Password
+    public function resetPassword()
+    {
         return view('_employee_app.profile.password');
     }
 
-    public function resetPasswordStore(Request $request){
+    public function resetPasswordStore(Request $request)
+    {
         // Validasi input
         $request->validate([
             'currentPassword' => 'required|string',
             'newPassword' => 'required|string|min:6',
             'confirmPassword' => 'required|string|same:newPassword',
-        ],[
+        ], [
             'currentPassword.required' => 'Current password is required!',
             'newPassword.required' => 'New password is required!',
             'newPassword.min' => 'Minimum password is 6 characters!',
             'confirmPassword.required' => 'Confirm password is required!',
             'confirmPassword.same' => 'Confirmation password must match the new password!',
         ]);
-    
+
         $currentPassword = $request->currentPassword;
         $newPassword = $request->newPassword;
-    
+
         // Ambil password saat ini dari user
         $employee = Auth::user();
         $storedPassword = $employee->password;
-    
+
         // Cek apakah current password benar
         if (Hash::check($currentPassword, $storedPassword)) {
             // Update password baru setelah dienkripsi
             $employee->update([
                 'password' => Hash::make($newPassword),
             ]);
-    
+
             session()->flash('success', 'Password updated successfully!');
         } else {
             session()->flash('error', 'Current password is incorrect. Please try again!');
         }
-    
+
         return redirect()->route('change.password')->withInput();
     }
 
-    
-    // public function resetPasswordStore(Request $request){
-    //     $request->validate([
-    //         'newPassword' => 'required|string|min:6',
-    //         'confirmPassword' => 'required|string|min:6'
-    //     ],[
-    //         'newPassword.required' => 'New password is required!',
-    //         'newPassword.min' => 'Minimum password 6 characters!',
-    //         'confirmPassword' => 'Confirm new password is required!'
-    //     ]);
-
-    //     $password = $request->currentPassword;
-    //     $passwordCheck = Auth::user()->password;
-    //     $newPassword = $request->newPassword;
-    //     $confirmPassword = $request->confirmPassword;
-
-    //     if (Hash::check($password, $passwordCheck)){
-    //         session()->flash('success', 'Username updated successfully!');
-    //         if(Hash::make($newPassword === $confirmPassword)){
-    //             $employee = Auth::user();
-    //             $employee->update([
-    //                 'password' => $confirmPassword
-    //             ]);
-    //         } else {
-    //             session()->flash('error', 'Password does not match. Please reenter the current password!');
-    //         }
-    //     } else {
-    //         session()->flash('error', 'Current password is incorrect. Please reenter the current password!');
-    //     }
-    //     return redirect()->route('change.password')->withInput();
-    // }
-
-//Leave
-    public function leaveIndex() {
+    //Leave
+    public function leaveIndex()
+    {
         $employeeId = Auth::id();
-        $leaves = Leave::where('employee_id', $employeeId)->get();
+        $leaves = Presence::where('employee_id', $employeeId)->whereNotNull('leave')->get();
         return view('_employee_app.leave.index', compact('leaves'));
     }
 
-    public function leaveApply() {
+    public function leaveApply()
+    {
         $category = [
-            'Annual leave', 
-            'Sick',
-            'Permit'
+            PRESENCE::LEAVE_ANNUAL,
+            PRESENCE::LEAVE_SICK,
+            PRESENCE::LEAVE_FULL_DAY_PERMIT,
+            PRESENCE::LEAVE_HALF_DAY_PERMIT,
         ];
         return view('_employee_app.leave.modal', compact('category'));
     }
 
-    public function leaveStore(Request $request) {
+    public function leaveStore(Request $request)
+    {
         $request->validate([
             'leave_dates' => 'required|array',
             'category' => 'required|string',
             'note' => 'required|string',
         ]);
-        
+
         $employeeId = Auth::id();
+        $employee = Auth::user();  // Jika ada relasi 'employee' pada model User
+        $eid = $employee->eid;
+
         $leaveDates = $request->input('leave_dates');
         $leaveDates = explode(',', $leaveDates[0]);
         $leaveDates = array_map('trim', $leaveDates);
         $category = $request->input('category');
         $note = $request->input('note');
 
-        $existLeave = Leave::where('employee_id', $employeeId)
-                           ->whereIn('date', $leaveDates)
-                           ->pluck('date')->toArray();
-        if(count($existLeave) > 0) {
-            return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
-        }
-        foreach ($leaveDates as $date) {
-            $leave = Leave::create([
-                'employee_id' => $employeeId,
-                'date' => $date,
-                // 'start_date' => $request->start_date,
-                // 'end_date' => $request->end_date,
-                'category' => $request->category,
-                'note' => $request->note
-            ]);
+        $existLeave = Presence::where('employee_id', $employeeId)
+            ->whereIn('date', $leaveDates)
+            ->whereNotNull('leave')
+            ->pluck('date')->toArray();
+        $existPresence = Presence::where('employee_id', $employeeId)
+            ->whereIn('date', $leaveDates)
+            ->whereNotNull('check_in')
+            ->pluck('date')->toArray();
+
+        switch (true) {
+            case $existLeave;
+                return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+                break;
+            case !empty($existPresence);
+                return redirect()->back()->withErrors('Kamu hadir pada tanggal tersebut');
+                break;
+            default;
+                foreach ($leaveDates as $date) {
+                    $leave = Presence::create([
+                        'eid' => $eid,
+                        'employee_id' => $employeeId,
+                        'date' => $date,
+                        'leave' => $category,
+                        'leave_note' => $note,
+                        // 'leave_status' => 0,
+                    ]);
+                }
         }
 
+        // if($existLeave) {
+        //     return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+        // } elseif(empty($pastPresence->check_out)) {
+        //     return redirect()->back()->withErrors('Silahkan absen keluar terlebih dahulu');
+        // }
+        // foreach ($leaveDates as $date) {
+        //     $leave = Presence::create([
+        //         'eid' => $eid,
+        //         'employee_id' => $employeeId,
+        //         'date' => $date,
+        //         'leave' => $category,
+        //         'leave_note' => $note,
+        //         'leave_status' => 0,
+        //     ]);
+        // }
+
         return redirect()->route('leave.index')->with('success', 'Cuti berhasil dibuat!');
+    }
+    //Gaji
+    public function payslipIndex()
+    {
+        return view('_employee_app.payslip.index');
+    }
+
+    //Lapor HR
+    public function laporHrIndex()
+    {
+        $laporHr = LaporHr::with('attachments')
+            ->where('employee_id', Auth::id())
+            ->get();
+        $reportCategory = LaporHrCategory::get();
+        $laporHr->map(function ($report) {
+            // Pastikan berupa koleksi, walaupun kosong
+            $report->report_attachments = $report->attachments
+                ? $report->attachments->where('type', LaporHrAttachment::TYPE_REPORT)->values()
+                : collect();
+
+            $report->solve_attachments = $report->attachments
+                ? $report->attachments->where('type', LaporHrAttachment::TYPE_SOLVE)->values()
+                : collect();
+
+            return $report;
+        });
+        return view('_employee_app.lapor_hr.index', compact('laporHr', 'reportCategory'));
+    }
+
+    public function laporHrAdd() {
+        $reportCategory = LaporHrCategory::get();
+        $status = ['open' => 'open', 'on progress' => 'on progress', 'close' => 'close'];
+        return view('_employee_app.lapor_hr.modal', compact('reportCategory', 'status'));
+    }
+
+    public function laporHrSubmit (Request $request) {
+        $request->validate([
+            'report_attachment' => 'required|array',
+            'report_attachment.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,mov,avi,mkv|max:5120',
+        ], [
+            'report_attachment.*.file' => 'Setiap file harus berupa file yang valid.',
+            'report_attachment.*.mimes' => 'File harus berformat: jpg, jpeg, png, pdf, mp4, mov, avi, atau mkv.',
+            'report_attachment.*.max' => 'Ukuran maksimal file adalah 5MB.',
+        ]);       
+
+        $laporHr = LaporHr::updateOrCreate(
+            ['id' => $request->id],
+            [
+            'employee_id' => Auth::id(),
+            'category_id' => $request->report_category,
+            'report_date' => $request->report_date,
+            'report_description' => $request->report_description,
+        ]);
+        if ($request->hasFile('report_attachment')) {
+            foreach ($request->file('report_attachment') as $file) {
+                $ext = $file->getClientOriginalExtension() ?: 'jpg';
+                $filename = time() . '_' . uniqid() . '.' . $ext;
+                $path = $file->storeAs('lapor-hr', $filename, 'public');
+        
+                LaporHrAttachment::create([
+                    'lapor_hr_id' => $laporHr->id,
+                    'file_path' => $path,
+                    'type' => LaporHrAttachment::TYPE_REPORT
+                ]);
+            }
+        }   
+        return redirect()->route('laporHrIndex')->with('success', 'Lapor HR berhasil dibuat.');
+
     }
 }

@@ -1,16 +1,7 @@
 @extends('_employee_app._layout_employee.main')
-@section('header.title', 'Lembur')
+@section('header.title', __('app.label.overtime'))
 @include('_employee_app._layout_employee.header')
 <!-- @section('header')
-<div class="appHeader blue text-light">
-        <div class="left">
-            <a href="{{ route('employee.app') }}" class="headerButton goBack">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-            </a>
-        </div>
-        <div class="pageTitle"> Presensi </div>
-        <div class="right"></div>
-    </div>
 @endsection -->
 @section('content')
 <div class="presence">
@@ -46,10 +37,12 @@
 </div>
 @section('script')
 <script>
+    //display webcam
     Webcam.set({
         height: 480,
-        width: 320,
+        width: 480,
         image_format: 'jpeg',
+        flip_horiz: true,
         jpeg_quality: 80
     });
 

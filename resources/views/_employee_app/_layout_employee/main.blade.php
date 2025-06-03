@@ -6,13 +6,12 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="viewport"content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Bayaran by HANS</title>
+    <title>Gajiplus</title>
     <meta name="description" content="Mobilekit HTML Mobile UI Kit">
     <meta name="keywords" content="bootstrap 4, mobile template, cordova, phonegap, mobile, html" />
     <link rel="icon" type="image/png" href="{{asset('e-presensi/assets/img/bayaran-icon.png')}}" sizes="32x32">
@@ -22,6 +21,8 @@
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
     <link href="{{asset('assets/css/custom.css')}}" rel="stylesheet">
@@ -56,15 +57,15 @@
 <body style="background-color:#e9ecef;">
 
     <!-- loader -->
-    <!-- <div id="loader">
-        <div class="spinner-border text-primary" role="status"></div>
-    </div> -->
+    <div id="loader">
+        <div class="spinner-border text-tosca" role="status"></div>
+    </div>     
     <!-- * loader -->
     
     @yield('content')
 
     <!-- App Bottom Menu -->
-    @if(!request()->is('presence'))
+    @if(!request()->is('presence.in'))
         @include('_employee_app._layout_employee.bottom-nav')
     @endif
     <!-- * App Bottom Menu -->
@@ -88,6 +89,9 @@
     <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <!-- Base Js File -->
     <script src="{{asset('e-presensi/assets/js/base.js')}}"></script>
     <script src="{{ asset('assets/js/release.js') }}"></script>
@@ -97,55 +101,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- web cam -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js" integrity="sha512-dQIiHSl2hr3NWKKLycPndtpbh5iaHLo6MwrXm7F0FM5e+kL2U16oE9uIwPHUl6fQBeCthiEuV/rzP3MiAB8Vfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-    <script>
-        am4core.ready(function () {
-
-            // Themes begin
-            am4core.useTheme(am4themes_animated);
-            // Themes end
-
-            var chart = am4core.create("chartdiv", am4charts.PieChart3D);
-            chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
-            chart.legend = new am4charts.Legend();
-
-            chart.data = [
-                {
-                    country: "Hadir",
-                    litres: 501.9
-                },
-                {
-                    country: "Sakit",
-                    litres: 301.9
-                },
-                {
-                    country: "Izin",
-                    litres: 201.1
-                },
-                {
-                    country: "Terlambat",
-                    litres: 165.8
-                },
-            ];
-
-
-
-            var series = chart.series.push(new am4charts.PieSeries3D());
-            series.dataFields.value = "litres";
-            series.dataFields.category = "country";
-            series.alignLabels = false;
-            series.labels.template.text = "{value.percent.formatNumber('#.0')}%";
-            series.labels.template.radius = am4core.percent(-40);
-            series.labels.template.fill = am4core.color("white");
-            series.colors.list = [
-                am4core.color("#1171ba"),
-                am4core.color("#fca903"),
-                am4core.color("#37db63"),
-                am4core.color("#ba113b"),
-            ];
-        }); // end am4core.ready()
-    </script>
 
     <script>
         @if (session('message'))
@@ -209,28 +164,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleIcons = document.querySelectorAll('.toggle-password');
-
-        toggleIcons.forEach(icon => {
-            icon.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.classList.remove('bi-eye-fill');
-                    this.classList.add('bi-eye-slash-fill');
-                } else {
-                    input.type = 'password';
-                    this.classList.remove('bi-eye-slash-fill');
-                    this.classList.add('bi-eye-fill');
-                }
-            });
-        });
-    });
-</script>
 
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

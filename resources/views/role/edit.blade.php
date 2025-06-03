@@ -1,10 +1,10 @@
     @extends('_layout.main')
-
     @section('content')
+    {{ Breadcrumbs::render('role_detail', $role->id) }}
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">{{ $role->name }} Edit</h5>
+                <h5 class="card-title">{{ __('option.label.detail_role') }} {{ $role->name }}</h5>
             </div>
             <div class="card-body">
                 <form id="form_role_edit" action="{{ route('role.update', $role->id) }}" method="POST">
@@ -13,13 +13,13 @@
 
                     <!-- Role Name Input -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Role Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ $role->name }}" required>
+                        <label class="form-label fw-bold">{{ __('option.label.role_name') }}</label>
+                        <input type="text" name="name" class="input-form" value="{{ $role->name }}" required>
                     </div>
 
                     <!-- Permissions Table -->
                     <div class="mb-3">
-                        <label class="fs-6 fw-bold form-label">Role Permissions</label>
+                        <label class="fs-6 fw-bold form-label">{{ __('option.label.role_permissions') }}</label>
                         <div class="table-responsive">
                             <table class="table table-borderless">
                                 <tbody>
@@ -27,7 +27,7 @@
                                         <td>Root Access</td>
                                         <td>
                                             <input type="checkbox" class="form-check-input" id="select_all_permissions">
-                                            <label for="select_all_permissions">Select All</label>
+                                            <label for="select_all_permissions">{{ __('general.label.select_all') }}</label>
                                         </td>
                                     </tr>
 
@@ -53,9 +53,11 @@
                             </table>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn btn-untosca">Save Changes</button>
-                    <a href="{{ route('role.index') }}" class="btn btn-tosca">Cancel</a>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ route('role.index') }}" class="btn btn-red me-3">{{ __('general.label.back') }}</a>
+                        <button type="submit" name="action" class="btn btn-tosca">{{ __('general.label.save') }}</button>
+                    </div>
+                    
                 </form>
             </div>
         </div>
@@ -86,7 +88,7 @@
                 <!-- Role Name Input -->
                 <div class="mb-3">
                     <label class="form-label fw-bold">Role Name</label>
-                    <input type="text" name="name" class="form-control" value="{{ $role->name ?? '' }}" required>
+                    <input type="text" name="name" class="input-form" value="{{ $role->name ?? '' }}" required>
                 </div>
 
                 <!-- Permissions Table -->

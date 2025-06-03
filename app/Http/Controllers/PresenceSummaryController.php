@@ -6,20 +6,40 @@ use Carbon\Carbon;
 use App\Models\Leave;
 use App\Models\WorkDay;
 use App\Models\Employee;
+use App\Models\Holiday;
 use App\Models\Overtime;
 use App\Models\Presence;
 use Illuminate\Http\Request;
 use App\Models\PresenceSummary;
+use App\Traits\PresenceSummaryTrait;
+use Illuminate\Support\Facades\Auth;
 
 class PresenceSummaryController extends Controller
 {
-    function index(Request $request){
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+    use PresenceSummaryTrait;
 
-        //Get Employee
-        $employees = Employee::with('overtimes', 'presences', 'WorkDay')->get();
-        // $workDays = WorkDay::all();
+    function index(Request $request){
+        $today = now();
+        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+        $defaultEndDate = $today->toDateString();
+        $startDate = $request->input('start_date', $defaultStartDate);
+        $endDate = $request->input('end_date', $defaultEndDate);
+        $userDivision = Auth::user()->division_id;
+        $userDepartment = Auth::user()->department_id;
+
+        $query = Employee::with('overtimes', 'presences', 'WorkDay')->get();
+        $query = Employee::query();
+        if ($userDivision && !$userDepartment) {
+            $query->whereHas('position',function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        } elseif (!$userDivision && $userDepartment) {
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        } 
+        $query->whereNull('resignation');
+        $employees = $query->get();
 
         $employees->each(function ($employee) use ($startDate, $endDate){
 
@@ -52,7 +72,7 @@ class PresenceSummaryController extends Controller
         $employee->absence = intval($effectiveDays - $employee->presence); //Total Absence
 
         //Overtime Total
-            $overtime = Overtime::where('employee_id', $employee->id);
+            $overtime = Overtime::where('employee_id', $employee->id)->where('status', 1);
             if($startDate && $endDate){
                 $overtime->whereBetween('date', [$startDate, $endDate]);
             }
@@ -78,39 +98,48 @@ class PresenceSummaryController extends Controller
             if ($startDate && $endDate) {
                 $late_arrival->whereBetween('date', [$startDate, $endDate]);
             }
-            $employee->late_arrival = $late_arrival->where('late_arrival', 1)->count();
+            $employee->late_arrival = $late_arrival->where('late_arrival', 1)->whereNull('leave')->count();
 
-        //Count Annnual Leave
-            $annualLeave = 'Annual leave';
-            $annual_leave = Leave::where('employee_id', $employee->id);
+        // //Count Annnual Leave
+        //     $annualLeave = 'Annual leave';
+        //     $annual_leave = Leave::where('employee_id', $employee->id);
 
-            if($startDate && $endDate) {
-                $annual_leave->whereBetween('date', [$startDate, $endDate]);
-            }
-            $employee->annual_leave = $annual_leave->where('category', $annualLeave)->count();
+        //     if($startDate && $endDate) {
+        //         $annual_leave->whereBetween('date', [$startDate, $endDate]);
+        //     }
+        //     $employee->annual_leave = $annual_leave->where('category', $annualLeave)->where('status', 1)->count();
 
-        //Count Sick Leave
-            $sickLeave = 'Sick';
-            $sick_leave = Leave::where('employee_id', $employee->id)->where('status', '1');
+        // //Count Sick Leave
+        //     $sickLeave = 'Sick';
+        //     $sick_leave = Leave::where('employee_id', $employee->id)->where('status', '1');
 
-            if($startDate && $endDate) {
-                $sick_leave->whereBetween('date', [$startDate, $endDate]);
-            }
-            $employee->sick_leave = $sick_leave->where('category', $sickLeave)->count();
+        //     if($startDate && $endDate) {
+        //         $sick_leave->whereBetween('date', [$startDate, $endDate]);
+        //     }
+        //     $employee->sick_leave = $sick_leave->where('category', $sickLeave)->where('status', 1)->count();
 
         
-        //Count Permit Leave
-            $permitLeave = 'Permit';
-            $permit_leave = Leave::where('employee_id', $employee->id);
+        // //Count Permit Leave
+        //     $permitLeave = 'Permit';
+        //     $permit_leave = Leave::where('employee_id', $employee->id);
 
-            if($startDate && $endDate) {
-                $permit_leave->whereBetween('date', [$startDate, $endDate]);
-            }
-            $employee->permit_leave = $permit_leave->where('category', $permitLeave)->count();
+        //     if($startDate && $endDate) {
+        //         $permit_leave->whereBetween('date', [$startDate, $endDate]);
+        //     }
+        //     $employee->permit_leave = $permit_leave->where('category', $permitLeave)->where('status', 1)->count();
 
-        //Count Alpha
-            $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence;
+        // //Holiday
+        //     if($startDate && $endDate) {
+        //         $holidays = Holiday::whereBetween('date', [$startDate, $endDate])->get();
+        //     }
+        //     $employee->holiday = $holidays->count();
+
+        // //Count Alpha
+        //     $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence - $employee->holiday;
         });
+
+                // Calculate presence summary using the trait
+        $employees = $this->calculatePresenceSummary($employees, $startDate, $endDate);
 
 
         return view('presence_summary.index', [

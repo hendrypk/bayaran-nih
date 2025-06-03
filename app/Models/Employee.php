@@ -17,19 +17,26 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\EmployeeResetPasswordNotification;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Authenticatable 
 {
     use HasFactory;
     use Notifiable;
+    use SoftDeletes;
 
     protected $table = 'employees';
     protected $fillable = [
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
         'blood_type', 'gender', 'religion', 'marriage', 'education', 'whatsapp', 'bank', 'bank_number',
         'position_id', 'job_title_id', 'division_id', 'department_id', 'joining_date', 'employee_status',
-        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role'];
-    protected $hidden = ['password']; 
+        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date', 'resignation_note'];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    protected $dates = ['deleted_at']; 
 
     //relation table position
     public function position()
@@ -60,10 +67,10 @@ class Employee extends Authenticatable
         return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
     }      
 
-    public function positionKpi()
-    {
-        return $this->belongsTo(KpiOptions::class);
-    }
+    // public function positionKpi()
+    // {
+    //     return $this->belongsTo(KpiOptions::class);
+    // }
 
     //relation table grade_pa
     public function gradePas()
@@ -88,13 +95,18 @@ class Employee extends Authenticatable
         return $this->belongsTo(KpiAspect::class, 'kpi_id');
     }
 
+    public function pas()
+    {
+        return $this->belongsTo(AppraisalName::class, 'pa_id');
+    }
+
     public function performanceKpis()
     {
         return $this->belongsTo(PerformanceKpi::class, 'kpi_id');
     }
 
     public function overtimes(){
-        return $this->belongsTo(Overtime::class, 'employee_id');
+        return $this->hasMany(Overtime::class, 'employee_id');
     }
 
     public function sales(){
@@ -119,7 +131,54 @@ class Employee extends Authenticatable
     {
         return $this->belongsToMany(OfficeLocation::class, 'employee_office_location');
     }
+
+    public function employeeStatus()
+    {
+        return $this->belongsTo(EmployeeStatus::class, 'employee_status');
+    }
       
-  
+    protected const GENDERS = ['Male', 'Female'];
+
+    protected const BLOODS = ['A', 'B', 'AB', 'O'];
+
+    protected const MARRIAGES = ['single', 'married', 'widowed'];
+
+    protected const RELIGIONS = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
+
+    protected const EDUCATIONS = [
+        'elementary_school',
+        'junior_school',
+        'high_school',
+        'diploma',
+        'bachelor',
+        'master',
+        'doctorate',
+    ];
+
+    protected const BANKS = [
+        'Bank Mandiri',
+        'Bank BNI',
+        'Bank BRI',
+        'Bank BCA',
+        'Bank BTN',
+        'Bank Syariah Indonesia',
+        'Bank Danamon',
+        'CIMB Niaga',
+        'Bank Permata',
+        'Bank Mega'
+    ];
+
+    public static function options(): array
+    {
+        return [
+            'genders' => self::GENDERS,
+            'bloods' => self::BLOODS,
+            'marriages' => self::MARRIAGES,
+            'religions' => self::RELIGIONS,
+            'educations' => self::EDUCATIONS,
+            'banks' => self::BANKS,
+        ];
+    }
+
 
 }
