@@ -1250,6 +1250,10 @@ table.datatable-table:focus {
     border-radius: 15px;
     box-shadow: 0px 0 30px rgba(1, 41, 112, 0.3 );
   }
+
+  .card-employee {
+    height: 500px;
+  }
   
   .card-table-wrapper {
     max-width: 100%;
@@ -1817,4 +1821,36 @@ select {
 
 .employee-name {
   font-weight: 900;
+}
+
+.form-step {
+    transition: all 0.3s ease-in-out;
+    padding: 20px;
+}
+
+.step {
+    display: none; /* default tidak tampil */
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.step.active {
+    display: block; /* tampilkan hanya step yang aktif */
+}
+
+.profile-photo {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.profile-photo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
