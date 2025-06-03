@@ -19,7 +19,7 @@
                 <div class="container">
                     <form action="{{route('employee.submit')}}" method="POST" id="addEmployee">
                     @csrf
-                        <div class="form-step">
+                        <div class="form-step card-employee">
                             @php
                                 $biodata = [
                                     ['name' => 'name', 'required' => true, 'type' => 'text', 'label' => __('employee.label.full_name')],
