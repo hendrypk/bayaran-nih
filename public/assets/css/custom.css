@@ -1287,11 +1287,15 @@ table.datatable-table:focus {
   }
   
   .card-body {
-    padding: 0 20px 20px 20px;
+    padding: 10px 30px 20px 30px;
   }
   
   .card-img-overlay {
     background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .card-employee {
+    height: 500px;
   }
 
   /* NAV */
@@ -1805,4 +1809,12 @@ select {
     font-size: 9px;
     line-height: 1.5;
     color: #333;
+}
+
+.text-tosca {
+  color: var(--tosca);
+}
+
+.employee-name {
+  font-weight: 900;
 }
