@@ -11,64 +11,34 @@
     <div id="appCapsule">
         <div class="release-tag-mobile" id="latestRelease"></div>
         <div class="section" id="user-section">
-                        <div id="user-detail" class="d-flex align-items-center">
+            <div id="user-detail" class="d-flex align-items-center">
                 {{-- Avatar --}}
-                {{-- {{ Auth::user()->getFirstMediaUrl('profile_photos') }} --}}
-                <div class="me-3">
-                    <img src="{{ Auth::user()->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg') }}" 
+                <div class="">
+                    <img src="{{ Auth::user()->getFirstMediaUrl('profile_photos') ?: asset('e-presensi/assets/img/avatar.jpg') }}" 
                         alt="Avatar" 
-                        class="rounded-circle" 
-                        style="width: 50px; height: 50px; object-fit: cover;">
+                        class="avatar">
+                    {{-- <img src="{{ asset('e-presensi/assets/img/avatar.jpg') }}" alt=""
+                        class="avatar"> --}}
                 </div>
-
                 {{-- User Info --}}
                 <div id="user-info">
                     <h3 id="user-name" class="mb-0">{{ Auth::user()->name }}</h3>
                     <span id="user-role">{{ Auth::user()->position->name }} ({{ Auth::user()->eid }})</span>
                 </div>
             </div>
-            {{-- <div id="user-detail">
-                <div id="user-info">
-                    <h2 id="user-name">{{ Auth::user()->name }}</h2>
-                    <span id="user-role">{{ Auth::user()->position->name }} ({{ Auth::user()->eid }})</span>
-                </div>
-            </div>
-        </div> --}}
             </div>
         </div>
 
         
         <div class="section" id="menu-section">
-            <div class="card">
-                <div class="card-body text-center">
+            <div class="card-menu">
+                <div class="text-center">
                     <div class="list-menu">
                         <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                {{-- <button class="btn-untosca" style="font-size: 40px;">
-                                    <i class="ri-map-pin-user-fill"></i>
-                                </button> --}}
-                                <a href="{{ route('profileIndex') }}" class="tosca" style="font-size: 40px;">
-                                    <i class="ri-map-pin-user-fill"></i>
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">{{ __('app.label.profile') }}</span>
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                <a href="{{ route('leave.index') }}" class="tosca" style="font-size: 40px;">
-                                    <i class="ri-flight-takeoff-fill"></i>
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">{{ __('app.label.permit') }}</span>
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-icon">
+                            <div class="menu-card">
                                 <a href="{{ route('presence.history') }}" class="tosca" style="font-size: 40px;">
-                                    <i class="ri-file-history-line"></i>
+                                    <img src="{{ asset('e-presensi/assets/img/attendance.png') }}" alt=""
+                                       class="menu-icon">
                                 </a>
                             </div>
                             <div class="menu-name">
@@ -76,9 +46,10 @@
                             </div>
                         </div>
                         <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                <a href="{{ route('overtime.history') }}" class="tosca" style="font-size: 40px;">
-                                    <i class="ri-map-pin-time-line"></i>
+                            <div class="menu-card">
+                                <a href="{{ route('overtime.history') }}">
+                                    <img src="{{ asset('e-presensi/assets/img/app-overtime.png') }}" alt=""
+                                       class="menu-icon">
                                 </a>
                             </div>
                             <div class="menu-name">
@@ -86,171 +57,121 @@
                             </div>
                         </div>
                         <div class="item-menu text-center">
-                            <div class="menu-icon">
+                            <div class="menu-card">
                                 <a href="{{ route('laporHrIndex') }}" class="" style="font-size: 40px;">
-                                    <i class="ri-alarm-warning-line"></i>
+                                    <img src="{{ asset('e-presensi/assets/img/lapor-hr.png') }}" alt=""
+                                       class="menu-icon">
                                 </a>
                             </div>
                             <div class="menu-name">
                                 {{ __('option.label.lapor_hr') }}
                             </div>
                         </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-card">
+                                <a href="{{ route('leave.index') }}" class="tosca" style="font-size: 40px;">
+                                    <img src="{{ asset('e-presensi/assets/img/on-leave.png') }}" alt=""
+                                       class="menu-icon">
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">{{ __('app.label.permit') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-menu">
+                        <div class="item-menu text-center">
+                            @if(!empty($presenceToday) && $presenceToday->check_in && $presenceToday->check_out)
+                                <div class="menu-card danger">
+                                    <a href="javascript:void(0);" onclick="showAlert('check out')">
+                                        <img src="{{ asset('e-presensi/assets/img/checkin.png') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name danger">
+                                    <span class="text-center">{{ __('app.label.check_out') }}</span>
+                                </div>
+                            @elseif(!empty($presenceToday->check_in) || empty($pastPresence->check_out) && !empty($pastPresence->check_in))
+                                <div class="menu-card danger">
+                                    <a href="{{ route('presence.out') }}" class="clickable-link">
+                                        <img src="{{ asset('e-presensi/assets/img/checkin.png') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name danger">
+                                    <span class="text-center">{{ __('app.label.check_out') }}</span>
+                                </div>
+                            @elseif($leaveAccepted)
+                                <div class="menu-card danger">
+                                    <a href="javascript:void(0);" onclick="showAlert('has permit')">
+                                        <img src="{{ asset('e-presensi/assets/img/checkin.png') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name danger">
+                                    <span class="text-center">{{ __('app.label.have_permit') }}</span>
+                                </div>
+                            @elseif(empty($presenceToday->check_in))
+                                <div class="menu-card">
+                                    <a href="{{ route('presence.in') }}" class="clickable-link">
+                                        <img src="{{ asset('e-presensi/assets/img/checkin.png') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name">
+                                    <span class="text-center">{{ __('app.label.check_in') }}</span>
+                                </div>
+                            @else
+                                <div class="menu-card danger">
+                                    <a href="javascript:void(0);" onclick="showAlert('check out')">
+                                        <img src="{{ asset('e-presensi/assets/img/checkin.png') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name danger">
+                                    <span class="text-center">{{ __('app.label.check_out') }}</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="item-menu text-center">
+                            @if($overtimeToday && $overtimeToday->start_at && !$overtimeToday->end_at)
+                                <div class="menu-card danger">
+                                    <a href="{{ route('overtime.out') }}" class="clickable-link">
+                                        <img src="{{ asset('e-presensi/assets/img/overtime-in.jpg') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name danger">
+                                    <span class="text-center">{{ __('app.label.overtime_out') }}</span>
+                                </div>
+                            @else
+                                <div class="menu-card">
+                                    <a href="{{ route('overtime.in') }}" class="clickable-link">
+                                        <img src="{{ asset('e-presensi/assets/img/overtime-in.jpg') }}" alt="" class="menu-icon">
+                                    </a>
+                                </div>
+                                <div class="menu-name">
+                                    <span class="text-center">{{ __('app.label.overtime_in') }}</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-card">
+                                <a href="javascript:void(0);" onclick="showAlert('coming soon')">
+                                    <img src="{{ asset('e-presensi/assets/img/performance.png') }}" alt=""
+                                       class="menu-icon">
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">{{ __('sidebar.label.performance') }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="section mt-2" id="presence-section">
-            <div class="todaypresence">
-                <div class="row">
-                    @if(!empty($presenceToday) && $presenceToday->check_in && $presenceToday->check_out)
-                    <div class="col-6">
-                        <a href="javascript:void(0);" onclick="showAlert('check out')">
-                            <div class="card checkout">
-                                <div class="card-body">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <i class="ri-logout-box-line"></i>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @elseif(!empty($presenceToday->check_in) || empty($pastPresence->check_out) && !empty($pastPresence->check_in))
-                    <div class="col-6">
-                        <a href="{{ route('presence.out') }}" class="clickable-link">
-                            <div class="card checkout">
-                                <div class="card-body">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <i class="ri-logout-box-r-line"></i>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @elseif($leaveAccepted)
-                    <div class="col-6">    
-                        <a href="javascript:void(0);" onclick="showAlert('has permit')">
-                            <div class="card checkin">
-                                <div class="card-body">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <i class="ri-logout-box-line"></i>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">{{ __('app.label.have_permit') }}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @elseif(empty($presenceToday->check_in))
-                    <div class="col-6">
-                        <a href="{{ route('presence.in') }}" class="clickable-link">
-                            <div class="card checkin">
-                                <div class="card-body">
-                                    <div class="presencecontent">
-                                        <div class="iconpresence">
-                                            <i class="ri-logout-box-r-line"></i>
-                                        </div>
-                                        <div class="presencedetail">
-                                            <h4 class="presencetitle">{{ __('app.label.check_in') }}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    @else
-                        <div class="col-6">
-                            <a href="javascript:void(0);" onclick="showAlert('check out')">
-                                <div class="card checkout">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-logout-box-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.check_out') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @endif
 
-                    @if($overtimeToday && $overtimeToday->start_at && !$overtimeToday->end_at)
-                        <div class="col-6">
-                            <a href="{{ route('overtime.out') }}" class="clickable-link">
-                                <div class="card checkout">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-anticlockwise-2-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.overtime_out') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @else
-                        <div class="col-6">
-                            <a href="{{ route('overtime.in') }}" class="clickable-link">
-                                <div class="card checkin">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-clockwise-2-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.overtime_in') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    {{-- @else
-                        <div class="col-6">
-                            <a href="javascript:void(0);" onclick="showAlert('overtime out')">
-                                <div class="card checkout">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-anticlockwise-2-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.overtime_out') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div> --}}
-                    @endif 
-                </div>
-            </div>
-
+        <div class="section mt-2" id="graph-section">
             <div class="card">
-                <div class="card-body">
-                    <div class="presence-summary-title mb-3">
+                <div class="card-chart">
+                    <div class="chart-title mb-3">
                         {{ __('app.label.attendance_chart') }}
                     </div>
                     <canvas id="attendanceChart" width="400" height="200"></canvas>
-                    {{-- <div id="chart"></div> --}}
                 </div>
             </div>
         </div>
@@ -263,31 +184,28 @@
 @include('modal.message')
 
 <script>
-function showAlert(type) {
-    const messages = @json(__('messages'));
-    let message = '';
-    
-    // Tentukan pesan berdasarkan tipe
-    if (type === 'has permit') {
-        message = messages.has_permit;
-    } else if (type === 'check in') {
-        message = messages.already_check_in;
-    } else if (type === 'check out') {
-        message = messages.already_check_out;
-    } else if (type === 'overtime in') {
-        message = messages.already_overtime_in;
-    } else if (type === 'overtime out') {
-        message = messages.already_overtime_out;
+    function showAlert(type) {
+        const messages = @json(__('messages'));
+
+        // Mapping tipe ke pesan dan ikon yang sesuai
+        const alertTypes = {
+            'has permit': { icon: 'error', message: messages.has_permit },
+            'check in': { icon: 'error', message: messages.already_check_in },
+            'check out': { icon: 'error', message: messages.already_check_out },
+            'overtime in': { icon: 'error', message: messages.already_overtime_in },
+            'overtime out': { icon: 'error', message: messages.already_overtime_out },
+            'coming soon': { icon: 'warning', message: messages.coming_soon }
+        };
+
+        // Jika tipe valid, tampilkan SweetAlert
+        if (alertTypes[type]) {
+            Swal.fire({
+                icon: alertTypes[type].icon,
+                title: 'Oops...',
+                text: alertTypes[type].message,
+            });
+        }
     }
-
-    // Tampilkan SweetAlert dengan pesan sesuai
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: message,
-    });
-}
-
 
     document.addEventListener("DOMContentLoaded", () => {
         // Data dari controller
@@ -313,7 +231,7 @@ function showAlert(type) {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: false
+                        display: false,
                     },
                     tooltip: {
                         callbacks: {
