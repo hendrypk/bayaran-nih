@@ -78,8 +78,8 @@
                                 <span class="text-center">{{ __('app.label.permit') }}</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="list-menu">
+                    {{-- </div>
+                    <div class="list-menu"> --}}
                         <div class="item-menu text-center">
                             @if(!empty($presenceToday) && $presenceToday->check_in && $presenceToday->check_out)
                                 <div class="menu-card danger">
@@ -165,7 +165,7 @@
             </div>
         </div>
 
-        <div class="section mt-2" id="graph-section">
+        {{-- <div class="section mt-2" id="graph-section">
             <div class="card">
                 <div class="card-chart">
                     <div class="chart-title mb-3">
@@ -174,7 +174,7 @@
                     <canvas id="attendanceChart" width="400" height="200"></canvas>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
     <!-- * App Capsule -->
 

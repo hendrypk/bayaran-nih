@@ -8091,9 +8091,19 @@ body.dark-mode-active .cart-item .cart-item-footer {
 
 .list-menu {
   display: flex;
-  justify-content: flex-start;
+  flex-wrap: wrap; /* agar bisa turun ke bawah jika sempit */
+  justify-content: center;
+  gap: 10px; /* spasi antar item */
   margin-bottom: 5px;
 }
+
+/* Responsive untuk layar kecil (mobile) */
+@media (max-width: 768px) {
+  .list-menu {
+    justify-content: center; /* tengah untuk tampilan kecil */
+  }
+}
+
 
 .item-menu {
   margin: 2px 5px;
@@ -8140,10 +8150,20 @@ body.dark-mode-active .cart-item .cart-item-footer {
 
 #graph-section {
   position: absolute;
-  top: 350px;
+  /* top: 350px; */
   width: 100%;
   background-color: #e9ecef;
   border-radius: 10px 10px 0px 0px;
+}
+
+@media (max-width: 768px) {
+  #graph-section {
+    position: absolute;
+    top: 350px;
+    width: 100%;
+    background-color: #e9ecef;
+    border-radius: 10px 10px 0px 0px;
+}
 }
 
 #presence-section {
