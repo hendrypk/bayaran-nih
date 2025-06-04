@@ -184,5 +184,4 @@ class EmployeeController extends Controller
                 
         return back()->with('success', 'Foto berhasil diunggah!');
     }
-
 }
