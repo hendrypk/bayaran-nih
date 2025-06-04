@@ -207,37 +207,25 @@
     </div>
     <div class="col-md-3 mt-3">
         <div class="card card-employee card-body">
-            <div class="row d-flex justify-content-center">
-                <form action="{{ route('upload.profile',  ['id' => $employee->id]) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" id="fileInput" name="profile_photo" style="display: none;" accept="image/*">
-                    
-                    <img id="previewImage" src="{{ $employee->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg') }}" alt="profile photo" class="profile-photo" style="cursor: pointer;">
-                    
-                    <button type="submit">Upload</button>
-                </form>
-
-                {{-- <img src="{{ asset('storage/photos/profile.jpg') }}" alt="profile photo" class="profile-photo"> --}}
+            <div class="row justify-content-center">
+                <div class="col-auto text-center">
+                    <form id="profileForm" action="{{ route('upload.profile', ['id' => $employee->id]) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" id="fileInput" name="profile_photo" style="display: none;" accept="image/*">
+                        
+                        <img id="previewImage" 
+                            src="{{ $employee->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg') }}" 
+                            alt="profile photo" 
+                            class="profile-photo" 
+                            style="cursor: pointer; max-width: 200px;">
+                    </form>
+                </div>
             </div>
             <h5 class="text-tosca employee-name mb-3 text-center">{{ $employee->name }}</h5>
-            <ul class="employee-summary text-left">
-                <li>
-                    <i class="ri-home-smile-fill me-2 text-primary"></i>
-                    {{ str_replace('.', '', $employee->domicile) }}
-                </li>
-                <li>
-                    <i class="ri-whatsapp-fill me-2 text-success"></i>
-                    {{ str_replace('.', '', $employee->whatsapp) }}
-                </li>
-                <li>
-                    <i class="ri-mail-line me-2 text-danger"></i>
-                    {{ str_replace('.', '', $employee->email) }}
-                </li>
-                <li>
-                    <i class="ri-briefcase-4-fill me-2 text-secondary"></i>
-                    {{ str_replace('.', '', $employee->position->name ?? '-') }}
-                </li>
-            </ul>
+            <span class="mb-3 text-left"><i class="ri-home-smile-fill me-2 text-primary"></i>{{ $employee->domicile }}</span>
+            <span class="mb-3 text-left"><i class="ri-whatsapp-fill me-2 text-success"></i>{{ $employee->whatsapp }}</span>
+            <span class="mb-3 text-left"><i class="ri-mail-line me-2 text-danger"></i>{{ $employee->email }}</span>
+            <span class="mb-3 text-left"><i class="ri-briefcase-4-fill me-2 text-secondary"></i>{{ $employee->position->name ?? '-' }}</span>
         </div>
     </div>
         <div class="col-md-1 mt-3">
@@ -265,41 +253,48 @@
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-      const button = event.relatedTarget;
-      const entity = button.getAttribute('data-entity'); // e.g., 'position', 'department', etc.
-      const id = button.getAttribute('data-id'); // Entity ID
-      const name = button.getAttribute('data-name'); // Entity name (optional)
-      
-      // Update modal title and body text
-      const entityNameElement = document.getElementById('entityName');
-      entityNameElement.textContent = entity;
-      
-      // Update form action URL
-      const form = document.getElementById('deleteForm');
-      form.action = `/${entity}/${id}/delete`;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const entity = button.getAttribute('data-entity'); // e.g., 'position', 'department', etc.
+        const id = button.getAttribute('data-id'); // Entity ID
+        const name = button.getAttribute('data-name'); // Entity name (optional)
+        
+        // Update modal title and body text
+        const entityNameElement = document.getElementById('entityName');
+        entityNameElement.textContent = entity;
+        
+        // Update form action URL
+        const form = document.getElementById('deleteForm');
+        form.action = `/${entity}/${id}/delete`;
 
-      // Optionally update the modal title to include the entity's name
-      const modalTitle = document.getElementById('deleteModalLabel');
-      modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
+        // Optionally update the modal title to include the entity's name
+        const modalTitle = document.getElementById('deleteModalLabel');
+        modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
+        });
     });
-  });
 
-document.getElementById('previewImage').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
-});
+    //Handle Profile Photo
+    document.getElementById('previewImage').addEventListener('click', function() {
+        document.getElementById('fileInput').click();
+    });
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    let file = event.target.files[0];
-    if (file) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('previewImage').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-});
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('fileInput').addEventListener('change', function () {
+        if (this.files.length > 0) {
+            document.getElementById('profileForm').submit();
+        }
+    });
 
 
   $('#resetUsernamePassword').submit(function(e) {
