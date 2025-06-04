@@ -41,7 +41,12 @@
                             <input type="time" step="1" name="end" class="input-form" id="inputEnd" required>
                         </div>
                     </div> 
-
+                    <div class="row mb-3">
+                        <label class="col-sm-4 col-form-label">{{ __('general.label.note') }}</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="note" class="input-form" id="inputNote" required>
+                        </div>
+                    </div> 
                     <div class="d-flex justify-content-end">
                         <button type="submit" name="action" value="reject" class="btn btn-red me-3">{{ __('general.label.reject') }}</button>
                         <button type="submit" name="action" value="accept" class="btn btn-tosca">{{ __('general.label.accept') }}</button>

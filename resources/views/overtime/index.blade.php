@@ -121,8 +121,9 @@
                                         data-name="{{ $overtime->employees->name }}"
                                         data-employee_id="{{ $overtime->employee_id }}"
                                         data-date="{{ $overtime->date }}"
-                                        data-start="{{ $overtime->start_at }}"
-                                        data-end="{{ $overtime->end_at }}">
+                                        data-start="{{ $overtime->start_at ? $overtime->start_at->format('H:i:s') : '' }}"
+                                        data-end="{{ $overtime->end_at ? $overtime->end_at->format('H:i:s') : '' }}"
+                                        data-note="{{ $overtime->note_in }}">
                                         <i class="ri-edit-line"></i>
                                     </button>
                                 </td>
@@ -189,8 +190,11 @@
         const date = button.getAttribute('data-date');
         const start = button.getAttribute('data-start');
         const end = button.getAttribute('data-end');
+        const note = button.getAttribute('data-note');
 
-        console.log('id', id);
+        console.log('start', start);
+        console.log('end', end);
+        console.log('note', note);
         // Set the form action URL
         const form = document.getElementById('editOvertimeForm');
         let actionUrl = form.getAttribute('action');
@@ -202,6 +206,7 @@
         document.getElementById('inputDate').value = date;
         document.getElementById('inputStart').value = start;
         document.getElementById('inputEnd').value = end;
+        document.getElementById('inputNote').value = note;
 
         // Update modal title
         const modalTitle = document.getElementById('modalEditOvertimeTitle');

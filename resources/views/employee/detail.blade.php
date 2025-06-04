@@ -1,5 +1,5 @@
 @extends('_layout.main')
-@section('title', 'Employees')
+@section('title', 'Employees  Detail')
 @section('content')
 {{ Breadcrumbs::render('employee_detail', $employee) }}
 <div class="row align-item-center">
@@ -7,7 +7,7 @@
         <h3 class="card-title mb-0 py-3">Employee Detail | {{ $employee->name }}</h3>
     </div>
 
-    <div class="col-md-3 d-flex justify-content-end">
+    {{-- <div class="col-md-3 d-flex justify-content-end">
         @can('update employee')
         <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-tosca btn-sm d-flex justify-content-center align-items-center me-2">
             <i class="ri-edit-line"></i>
@@ -20,27 +20,28 @@
             <i class="ri-delete-bin-fill"></i>
         </button>
         @endcan
-    </div>
+    </div> --}}
 </div>
 
 <div class="row">
     <div class="col-md-2 mt-3">
-        <div class="card card-body">
+        <div class="card card-employee card-body">
             <div class="align-items-start">
                 <div class="nav flex-column nav-pills mt-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#biodata" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">{{ __('employee.label.biodata') }}</button>
-                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">{{ __('employee.label.staffing') }}</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#career" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.career') }}</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#performance" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('sidebar.label.performance') }}</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.payslip') }}</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ __('employee.label.account') }}</button>
+                    {{-- <button class="nav-link" id="v-pills-contact-tab" data-bs-toggle="pill" data-bs-target="#contact" type="button" role="tab" aria-controls="v-pills-contact" aria-selected="false">{{ __('employee.label.contact') }}</button> --}}
+                    <button class="nav-link" id="v-pills-staffing-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-staffing" aria-selected="false">{{ __('employee.label.staffing') }}</button>
+                    <button class="nav-link" id="v-pills-career-tab" data-bs-toggle="pill" data-bs-target="#career" type="button" role="tab" aria-controls="v-pills-career" aria-selected="false">{{ __('employee.label.career') }}</button>
+                    <button class="nav-link" id="v-pills-performance-tab" data-bs-toggle="pill" data-bs-target="#performance" type="button" role="tab" aria-controls="v-pills-performance" aria-selected="false">{{ __('sidebar.label.performance') }}</button>
+                    <button class="nav-link" id="v-pills-payslip-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-payslip" aria-selected="false">{{ __('employee.label.payslip') }}</button>
+                    <button class="nav-link" id="v-pills-account-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-account" aria-selected="false">{{ __('employee.label.account') }}</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-10 mt-3">
-        <div class="card card-body">
+    <div class="col-md-6 mt-3">
+        <div class="card card-employee card-body">
             <div class="align-items-start">
                 <div class="tab-content" id="v-pills-tabContent">
 
@@ -52,14 +53,8 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.eid') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
-                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.full_name') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->name }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.place_and_date_of_birth') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->place_birth }}, {{ \Carbon\Carbon::parse($employee->date_birth)->format('d F Y') }}</div>
-                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.current_address') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->domicile }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.blood_type') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->blood_type }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.gender') }}</div>
@@ -70,18 +65,18 @@
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.marital_status.' . $employee->marriage) }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.education') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.education.' . $employee->education) }}</div>
-                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.whatsapp') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->whatsapp }}</div>
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="staffing" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div class="tab-pane fade" id="staffing" role="tabpanel" aria-labelledby="v-pills-staffing-tab">
                         <div class="row">
                                 <div class="col-md-10">
                                     <div class="card-title">{{ __('employee.label.staffing') }}</div>
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.eid') }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.position') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->name }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.job_title') }}</div>
@@ -129,23 +124,45 @@
                             </div>
                     </div>
 
-                    <div class="tab-pane fade" id="career" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="v-pills-contact-tab">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="card-title">{{ __('employee.label.contact') }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="career" role="tabpanel" aria-labelledby="v-pills-career-tab">
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="card-title">{{ __('employee.label.career') }}</div>
                             </div>
                         </div>
+                        <div class="row">
+
+                        </div>
                     </div>
 
-                    <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                    <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="v-pills-performance-tab">
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="card-title">{{ __('sidebar.label.performance') }}</div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->kpis->name ?? '-' }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi_weight') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->bobot_kpi ?? '-' }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.appraisal') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->pas->name ?? '-' }}</div>
+                        </div>
                     </div>
 
-                    <div class="tab-pane fade" id="payslip" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                    <div class="tab-pane fade" id="payslip" role="tabpanel" aria-labelledby="v-pills-payslip-tab">
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="card-title">{{ __('employee.label.payslip') }}</div>
@@ -153,7 +170,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                    <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="v-pills-account-tab">
                         <div class="row mb-3">
                             <div class="col-md-10">
                                 <div class="card-title">{{ __('employee.label.account') }}</div>
@@ -188,6 +205,47 @@
             </div>
         </div>
     </div>
+    <div class="col-md-3 mt-3">
+        <div class="card card-employee card-body">
+            <div class="row justify-content-center">
+                <div class="col-auto text-center">
+                    <form id="profileForm" action="{{ route('upload.profile', ['id' => $employee->id]) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" id="fileInput" name="profile_photo" style="display: none;" accept="image/*">
+                        
+                        <img id="previewImage" 
+                            src="{{ $employee->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg') }}" 
+                            alt="profile photo" 
+                            class="profile-photo" 
+                            style="cursor: pointer; max-width: 200px;">
+                    </form>
+                </div>
+            </div>
+            <h5 class="text-tosca employee-name mb-3 text-center">{{ $employee->name }}</h5>
+            <span class="mb-3 text-left"><i class="ri-home-smile-fill me-2 text-primary"></i>{{ $employee->domicile }}</span>
+            <span class="mb-3 text-left"><i class="ri-whatsapp-fill me-2 text-success"></i>{{ $employee->whatsapp }}</span>
+            <span class="mb-3 text-left"><i class="ri-mail-line me-2 text-danger"></i>{{ $employee->email }}</span>
+            <span class="mb-3 text-left"><i class="ri-briefcase-4-fill me-2 text-secondary"></i>{{ $employee->position->name ?? '-' }}</span>
+        </div>
+    </div>
+        <div class="col-md-1 mt-3">
+            <div class="row">
+                @can('update employee')
+                <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-tosca btn-sm d-flex justify-content-center align-items-center me-2">
+                    <i class="ri-edit-line"></i>
+                </a>
+                @endcan
+            </div>
+        <div class="row mt-3">
+        @can('delete employee')
+        <button type="button" class="btn btn-red btn-sm" 
+            onclick="confirmDelete({{ $employee->id }}, '{{ $employee->name }}', 'employee')">
+            <i class="ri-delete-bin-fill"></i>
+        </button>
+        @endcan
+        </div>
+
+        </div>
 </div>
 
 {{-- <a href="{{ route('employee.list') }}" class="btn btn-untosca mt-3">{{ __('general.label.back') }}</a> --}}
@@ -195,26 +253,49 @@
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-      const button = event.relatedTarget;
-      const entity = button.getAttribute('data-entity'); // e.g., 'position', 'department', etc.
-      const id = button.getAttribute('data-id'); // Entity ID
-      const name = button.getAttribute('data-name'); // Entity name (optional)
-      
-      // Update modal title and body text
-      const entityNameElement = document.getElementById('entityName');
-      entityNameElement.textContent = entity;
-      
-      // Update form action URL
-      const form = document.getElementById('deleteForm');
-      form.action = `/${entity}/${id}/delete`;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const entity = button.getAttribute('data-entity'); // e.g., 'position', 'department', etc.
+        const id = button.getAttribute('data-id'); // Entity ID
+        const name = button.getAttribute('data-name'); // Entity name (optional)
+        
+        // Update modal title and body text
+        const entityNameElement = document.getElementById('entityName');
+        entityNameElement.textContent = entity;
+        
+        // Update form action URL
+        const form = document.getElementById('deleteForm');
+        form.action = `/${entity}/${id}/delete`;
 
-      // Optionally update the modal title to include the entity's name
-      const modalTitle = document.getElementById('deleteModalLabel');
-      modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
+        // Optionally update the modal title to include the entity's name
+        const modalTitle = document.getElementById('deleteModalLabel');
+        modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
+        });
     });
-  });
+
+    //Handle Profile Photo
+    document.getElementById('previewImage').addEventListener('click', function() {
+        document.getElementById('fileInput').click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('fileInput').addEventListener('change', function () {
+        if (this.files.length > 0) {
+            document.getElementById('profileForm').submit();
+        }
+    });
+
 
   $('#resetUsernamePassword').submit(function(e) {
     e.preventDefault(); 

@@ -163,4 +163,25 @@ class EmployeeController extends Controller
         }
         return redirect()->route('employee.list');
     }
+
+    //direct upload profile
+    public function upload(Request $request, $id)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $employee = Employee::find($id);
+        // dd($id);
+        if (!$employee->exists) {
+        return back()->with('error', 'Employee not found.');
+            }
+
+        if ($request->hasFile('profile_photo') && $request->file('profile_photo')->isValid()) {
+            $employee->clearMediaCollection('profile_photos');
+            $employee->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photos', 'public');
+        }
+                
+        return back()->with('success', 'Foto berhasil diunggah!');
+    }
 }

@@ -174,24 +174,7 @@
                         </div>
                     @endif
 
-                    @if(empty($overtimeToday))
-                        <div class="col-6">
-                            <a href="{{ route('overtime.in') }}" class="clickable-link">
-                                <div class="card checkin">
-                                    <div class="card-body">
-                                        <div class="presencecontent">
-                                            <div class="iconpresence">
-                                                <i class="ri-clockwise-2-line"></i>
-                                            </div>
-                                            <div class="presencedetail">
-                                                <h4 class="presencetitle">{{ __('app.label.overtime_in') }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @elseif(!empty($overtimeToday->date) && !$overtimeToday->end_at)
+                    @if($overtimeToday && $overtimeToday->start_at && !$overtimeToday->end_at)
                         <div class="col-6">
                             <a href="{{ route('overtime.out') }}" class="clickable-link">
                                 <div class="card checkout">
@@ -210,6 +193,23 @@
                         </div>
                     @else
                         <div class="col-6">
+                            <a href="{{ route('overtime.in') }}" class="clickable-link">
+                                <div class="card checkin">
+                                    <div class="card-body">
+                                        <div class="presencecontent">
+                                            <div class="iconpresence">
+                                                <i class="ri-clockwise-2-line"></i>
+                                            </div>
+                                            <div class="presencedetail">
+                                                <h4 class="presencetitle">{{ __('app.label.overtime_in') }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {{-- @else
+                        <div class="col-6">
                             <a href="javascript:void(0);" onclick="showAlert('overtime out')">
                                 <div class="card checkout">
                                     <div class="card-body">
@@ -224,7 +224,7 @@
                                     </div>
                                 </div>
                             </a>
-                        </div>
+                        </div> --}}
                     @endif 
                 </div>
             </div>

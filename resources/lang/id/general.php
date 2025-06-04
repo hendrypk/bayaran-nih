@@ -58,6 +58,8 @@ return [
         'yes' => 'Ya',
         'no' => 'Tidak',
         'pending' => 'Tertunda',
+        'age' => 'Umur',
+
     ],
     'placeholder' => [
         'note' => 'Wajib ketik catatan di sini...',

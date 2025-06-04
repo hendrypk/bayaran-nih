@@ -34,16 +34,18 @@ class Presence extends Model
         'leave_note',
     ];
     
-    protected $dates = ['deleted_at']; 
+    // protected $dates = ['deleted_at']; 
 
     // protected $casts = [
     //     'date' => 'date',
     // ];
 
-    // protected $casts = [
-    //     'late_arrival' => 'integer',
-    //     'date' => 'date',
-    // ];
+    protected $casts = [
+        'late_arrival' => 'integer',
+        'date' => 'datetime',
+        'start_at' => 'time',
+        'end_at' => 'time'
+    ];
 
     const LEAVE_ANNUAL = 'annual leave';
     const LEAVE_SICK = 'sick';
