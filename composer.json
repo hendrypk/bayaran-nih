@@ -12,6 +12,7 @@
         "maatwebsite/excel": "*",
         "nesbot/carbon": "^3.8",
         "phpoffice/phpspreadsheet": "*",
+        "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-permission": "^6.9"
     },
     "require-dev": {

@@ -193,6 +193,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('{id}/update', [EmployeeController::class, 'update'])->name('employee.update'); 
             Route::post('{id}/delete', [EmployeeController::class, 'delete'])->name('employee.delete'); 
             Route::post('{id}/account-reset', [EmployeeController::class, 'resetUsernamePassword'])->name('employee.account.reset');
+            Route::post('/upload-profile/{id}', [EmployeeController::class, 'upload'])->name('upload.profile');
 
         });
     });

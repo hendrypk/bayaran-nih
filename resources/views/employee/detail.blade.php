@@ -53,8 +53,6 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.eid') }}</div>
-                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.place_and_date_of_birth') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->place_birth }}, {{ \Carbon\Carbon::parse($employee->date_birth)->format('d F Y') }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.blood_type') }}</div>
@@ -77,6 +75,8 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.eid') }}</div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->eid }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.position') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->name }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.job_title') }}</div>
@@ -152,6 +152,14 @@
                                 <div class="card-title">{{ __('sidebar.label.performance') }}</div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->kpis->name ?? '-' }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi_weight') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->bobot_kpi ?? '-' }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.appraisal') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->pas->name ?? '-' }}</div>
+                        </div>
                     </div>
 
                     <div class="tab-pane fade" id="payslip" role="tabpanel" aria-labelledby="v-pills-payslip-tab">
@@ -198,27 +206,36 @@
         </div>
     </div>
     <div class="col-md-3 mt-3">
-        <div class="card card-employee card-body text-center">
+        <div class="card card-employee card-body">
             <div class="row d-flex justify-content-center">
-                <img src="{{ asset('storage/photos/profile.jpg') }}" alt="profile photo" class="profile-photo">
+                <form action="{{ route('upload.profile',  ['id' => $employee->id]) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" id="fileInput" name="profile_photo" style="display: none;" accept="image/*">
+                    
+                    <img id="previewImage" src="{{ $employee->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg') }}" alt="profile photo" class="profile-photo" style="cursor: pointer;">
+                    
+                    <button type="submit">Upload</button>
+                </form>
+
+                {{-- <img src="{{ asset('storage/photos/profile.jpg') }}" alt="profile photo" class="profile-photo"> --}}
             </div>
-            <h5 class="text-tosca employee-name mb-3">{{ $employee->name }}</h5>
-            <ul class="employee-summary">
+            <h5 class="text-tosca employee-name mb-3 text-center">{{ $employee->name }}</h5>
+            <ul class="employee-summary text-left">
                 <li>
                     <i class="ri-home-smile-fill me-2 text-primary"></i>
-                    {{ $employee->domicile }}
+                    {{ str_replace('.', '', $employee->domicile) }}
                 </li>
                 <li>
                     <i class="ri-whatsapp-fill me-2 text-success"></i>
-                    {{ $employee->whatsapp }}
+                    {{ str_replace('.', '', $employee->whatsapp) }}
                 </li>
                 <li>
                     <i class="ri-mail-line me-2 text-danger"></i>
-                    {{ $employee->email }}
+                    {{ str_replace('.', '', $employee->email) }}
                 </li>
                 <li>
                     <i class="ri-briefcase-4-fill me-2 text-secondary"></i>
-                    {{ $employee->position->name ?? '-' }}
+                    {{ str_replace('.', '', $employee->position->name ?? '-') }}
                 </li>
             </ul>
         </div>
@@ -268,6 +285,22 @@
       modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
     });
   });
+
+document.getElementById('previewImage').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    let file = event.target.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImage').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
 
   $('#resetUsernamePassword').submit(function(e) {
     e.preventDefault(); 
