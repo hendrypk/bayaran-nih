@@ -38,12 +38,12 @@
                         </form>
 
                         <!-- Loader -->
-                        <div id="uploadLoader" style="display: none; margin-top: 10px;">
+                        {{-- <div id="uploadLoader" style="display: none; margin-top: 10px;">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Uploading...</span>
                             </div>
                             <div>Uploading...</div>
-                        </div>
+                        </div> --}}
                     </div>
 
 
@@ -255,7 +255,7 @@
             }
             reader.readAsDataURL(this.files[0]);
 
-            document.getElementById('uploadLoader').style.display = 'block';
+            document.getElementById('loader').style.display = 'block';
 
             // Auto submit form
             document.getElementById('profileForm').submit();

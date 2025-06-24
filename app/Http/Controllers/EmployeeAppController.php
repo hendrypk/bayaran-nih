@@ -789,11 +789,11 @@ class EmployeeAppController extends Controller
     {
         $request->validate(
             [
-                'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:5120',
             ],
             [
                 'profile_photo.mimes' => 'Format invalid',
-                'profile_photo.max' => 'Ukuran gambar terlalu besar, maksimal 2 MB',
+                'profile_photo.max' => 'Ukuran gambar terlalu besar, maksimal 5 MB',
 
             ]
         );
