@@ -787,9 +787,16 @@ class EmployeeAppController extends Controller
     //direct upload profile
     public function upload(Request $request)
     {
-        $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $request->validate(
+            [
+                'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ],
+            [
+                'profile_photo.mimes' => 'Format invalid',
+                'profile_photo.max' => 'Ukuran gambar terlalu besar, maksimal 2 MB',
+
+            ]
+        );
 
         $employee = Employee::find(Auth::id());
         // dd($id);
