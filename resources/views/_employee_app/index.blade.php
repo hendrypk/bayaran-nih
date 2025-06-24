@@ -12,17 +12,13 @@
         <div class="release-tag-mobile" id="latestRelease"></div>
         <div class="section" id="user-section">
             <div id="user-detail" class="d-flex align-items-center">
-                {{-- Avatar --}}
                 <div class="">
                     <img src="{{ Auth::user()->getFirstMediaUrl('profile_photos') ?: asset('e-presensi/assets/img/avatar.jpg') }}" 
                         alt="Avatar" 
                         class="avatar">
-                    {{-- <img src="{{ asset('e-presensi/assets/img/avatar.jpg') }}" alt=""
-                        class="avatar"> --}}
                 </div>
-                {{-- User Info --}}
                 <div id="user-info">
-                    <h3 id="user-name" class="mb-0">{{ Auth::user()->name }}</h3>
+                    <h3 id="user-name" class="mb-2">{{ Auth::user()->name }}</h3>
                     <span id="user-role">{{ Auth::user()->position->name }} ({{ Auth::user()->eid }})</span>
                 </div>
             </div>
@@ -34,50 +30,6 @@
             <div class="card-menu">
                 <div class="text-center">
                     <div class="list-menu">
-                        <div class="item-menu text-center">
-                            <div class="menu-card">
-                                <a href="{{ route('presence.history') }}" class="tosca" style="font-size: 40px;">
-                                    <img src="{{ asset('e-presensi/assets/img/attendance.png') }}" alt=""
-                                       class="menu-icon">
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">{{ __('app.label.attendance') }}</span>
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-card">
-                                <a href="{{ route('overtime.history') }}">
-                                    <img src="{{ asset('e-presensi/assets/img/app-overtime.png') }}" alt=""
-                                       class="menu-icon">
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                {{ __('app.label.overtime') }}
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-card">
-                                <a href="{{ route('laporHrIndex') }}" class="" style="font-size: 40px;">
-                                    <img src="{{ asset('e-presensi/assets/img/lapor-hr.png') }}" alt=""
-                                       class="menu-icon">
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                {{ __('option.label.lapor_hr') }}
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-card">
-                                <a href="{{ route('leave.index') }}" class="tosca" style="font-size: 40px;">
-                                    <img src="{{ asset('e-presensi/assets/img/on-leave.png') }}" alt=""
-                                       class="menu-icon">
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">{{ __('app.label.permit') }}</span>
-                            </div>
-                        </div>
                     {{-- </div>
                     <div class="list-menu"> --}}
                         <div class="item-menu text-center">
@@ -151,6 +103,17 @@
                         </div>
                         <div class="item-menu text-center">
                             <div class="menu-card">
+                                <a href="{{ route('leave.index') }}" class="tosca" style="font-size: 40px;">
+                                    <img src="{{ asset('e-presensi/assets/img/on-leave.png') }}" alt=""
+                                       class="menu-icon">
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">{{ __('app.label.permit') }}</span>
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-card">
                                 <a href="javascript:void(0);" onclick="showAlert('coming soon')">
                                     <img src="{{ asset('e-presensi/assets/img/performance.png') }}" alt=""
                                        class="menu-icon">
@@ -158,6 +121,39 @@
                             </div>
                             <div class="menu-name">
                                 <span class="text-center">{{ __('sidebar.label.performance') }}</span>
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-card">
+                                <a href="{{ route('presence.history') }}" class="tosca" style="font-size: 40px;">
+                                    <img src="{{ asset('e-presensi/assets/img/attendance.png') }}" alt=""
+                                       class="menu-icon">
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">{{ __('app.label.attendance') }}</span>
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-card">
+                                <a href="{{ route('overtime.history') }}">
+                                    <img src="{{ asset('e-presensi/assets/img/app-overtime.png') }}" alt=""
+                                       class="menu-icon">
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                {{ __('app.label.overtime') }}
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-card">
+                                <a href="{{ route('laporHrIndex') }}" class="" style="font-size: 40px;">
+                                    <img src="{{ asset('e-presensi/assets/img/lapor-hr.png') }}" alt=""
+                                       class="menu-icon">
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                {{ __('option.label.lapor_hr') }}
                             </div>
                         </div>
                     </div>
@@ -186,6 +182,10 @@
 <script>
     function showAlert(type) {
         const messages = @json(__('messages'));
+        const coming_soon = {
+            coming_soon: "Fitur ini akan segera hadir. Mohon ditunggu.",
+        };
+
 
         // Mapping tipe ke pesan dan ikon yang sesuai
         const alertTypes = {
@@ -194,7 +194,7 @@
             'check out': { icon: 'error', message: messages.already_check_out },
             'overtime in': { icon: 'error', message: messages.already_overtime_in },
             'overtime out': { icon: 'error', message: messages.already_overtime_out },
-            'coming soon': { icon: 'warning', message: messages.coming_soon }
+            'coming soon': { icon: 'warning', message: coming_soon.coming_soon }
         };
 
         // Jika tipe valid, tampilkan SweetAlert
