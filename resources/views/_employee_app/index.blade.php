@@ -195,7 +195,7 @@
             </div>
         </div>
 
-        {{-- <div class="section mt-2" id="graph-section">
+        <div class="section mt-2" id="graph-section">
             <div class="card">
                 <div class="card-chart">
                     <div class="chart-title mb-3">
@@ -204,7 +204,7 @@
                     <canvas id="attendanceChart" width="400" height="200"></canvas>
                 </div>
             </div>
-        </div> --}}
+        </div>
     </div>
     <!-- * App Capsule -->
 
