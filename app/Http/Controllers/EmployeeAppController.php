@@ -783,4 +783,25 @@ class EmployeeAppController extends Controller
         return redirect()->route('laporHrIndex')->with('success', 'Lapor HR berhasil dibuat.');
 
     }
+
+    //direct upload profile
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $employee = Employee::find(Auth::id());
+        // dd($id);
+        if (!$employee->exists) {
+        return back()->with('error', 'Employee not found.');
+            }
+
+        if ($request->hasFile('profile_photo') && $request->file('profile_photo')->isValid()) {
+            $employee->clearMediaCollection('profile_photos');
+            $employee->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photos', 'public');
+        }
+                
+        return back()->with('success', 'Foto berhasil diunggah!');
+    }
 }
