@@ -32,6 +32,7 @@
                     {{-- <button class="nav-link" id="v-pills-contact-tab" data-bs-toggle="pill" data-bs-target="#contact" type="button" role="tab" aria-controls="v-pills-contact" aria-selected="false">{{ __('employee.label.contact') }}</button> --}}
                     <button class="nav-link" id="v-pills-staffing-tab" data-bs-toggle="pill" data-bs-target="#staffing" type="button" role="tab" aria-controls="v-pills-staffing" aria-selected="false">{{ __('employee.label.staffing') }}</button>
                     <button class="nav-link" id="v-pills-career-tab" data-bs-toggle="pill" data-bs-target="#career" type="button" role="tab" aria-controls="v-pills-career" aria-selected="false">{{ __('employee.label.career') }}</button>
+                    <button class="nav-link" id="v-pills-leave-tab" data-bs-toggle="pill" data-bs-target="#leave" type="button" role="tab" aria-controls="v-pills-leave" aria-selected="false">{{ __('sidebar.label.leave') }}</button>
                     <button class="nav-link" id="v-pills-performance-tab" data-bs-toggle="pill" data-bs-target="#performance" type="button" role="tab" aria-controls="v-pills-performance" aria-selected="false">{{ __('sidebar.label.performance') }}</button>
                     <button class="nav-link" id="v-pills-payslip-tab" data-bs-toggle="pill" data-bs-target="#payslip" type="button" role="tab" aria-controls="v-pills-payslip" aria-selected="false">{{ __('employee.label.payslip') }}</button>
                     <button class="nav-link" id="v-pills-account-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="v-pills-account" aria-selected="false">{{ __('employee.label.account') }}</button>
@@ -143,6 +144,41 @@
                         </div>
                         <div class="row">
 
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="v-pills-leave-tab">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="card-title">{{ __('sidebar.label.leave') }}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table class="table datatable table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>{{ __('general.label.date') }}</th>
+                                        <th>{{ __('general.label.status') }}</th>
+                                        <th>{{  __('general.label.note') }}</th>
+                                        <th>{{  __('general.label.edit') }}</th>
+                                        <th>{{  __('general.label.delete') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($presences as $no=>$data)
+                                    <tr>
+                                        <td>{{ $no+1 }}</td>
+                                        <td>{{ $data->date }}</td>
+                                        <td>{{ $data->leave_status }}</td>
+                                        <td>{{ $data->leave_note }}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 

@@ -65,6 +65,9 @@ class EmployeeController extends Controller
     public function detail($id)
     {
         $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
+        $presences = Presence::where('employee_id', $id)
+            ->whereNotNull('leave')
+            ->get();
 
         $startDate = new DateTime($employee->joining_date);
         $dateBirth = new DateTime($employee->date_birth);
@@ -78,7 +81,7 @@ class EmployeeController extends Controller
 
         $totalOvertime = Overtime::where('employee_id', $employee->eid)
             ->sum('total');
-        return view('employee.detail', compact('employee', 'yo', 'years', 'months', 'days', 'totalOvertime'));
+        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime'));
     }
 
     //submit employee
