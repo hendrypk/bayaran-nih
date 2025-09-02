@@ -47,5 +47,7 @@ return [
         'apply_date' => 'Tanggal Pengajuan',
         'absence_date' => 'Tanggal Absen',
         'select_employee' => 'Pilih karyawan',
+        'annual_leave_total' => 'Total Cuti Tahunan',
+        'annual_leave_due' => 'Jatuh Tempo Cuti Tahunan',
     ],
 ];

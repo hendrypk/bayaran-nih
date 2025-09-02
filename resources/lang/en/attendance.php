@@ -47,5 +47,7 @@ return [
         'apply_date' => 'Apply Date',
         'absence_date' => 'Absence Date',
         'select_employee' => 'Select Employee',
+        'annual_leave_total' => 'Total Annual Leave',
+        'annual_leave_due' => 'Annual Leave Due',
     ],
 ];
