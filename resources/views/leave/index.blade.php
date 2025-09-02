@@ -50,15 +50,17 @@
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $leave->employee->eid }}</td>
                                 <td>{{ $leave->employee->name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($leave->created_at)->format('d F Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($leave->date)->format('d F Y') }}</td>
+                                <td>{{ formatDate($leave->created_at) }}</td>
+                                <td>{{ formatDate($leave->date) }}</td>
                                 <td>{{ ucfirst($leave->leave) }}</td>
                                 <td>{{ $leave->leave_note }}</td>
                                 <td>
                                     @if ($leave->leave_status === 1)
                                         <i class="status-leave accept ri-check-double-fill"></i>
-                                    @else 
+                                    @elseif ($leave->leave_status === 0)
                                         <i class="status-leave reject ri-close-fill"></i>
+                                    @else
+                                        <i class="status-leave pending ri-time-fill"></i>
                                     @endif
                                 </td>
                                 <td>
@@ -69,9 +71,9 @@
                                             data-id="{{ $leave->id }}" 
                                             data-name="{{ $leave->employee->name }}"
                                             data-employee_id="{{ $leave->employee_id }}"
-                                            data-date="{{ $leave->date }}"
-                                            data-start="{{ $leave->start_date }}"
-                                            data-end="{{ $leave->end_date }}"
+                                            data-date="{{ ($leave->date->format('Y-m-d')) }}"
+                                            data-start="{{ formatDate($leave->start_date) }}"
+                                            data-end="{{ formatDate($leave->end_date) }}"
                                             data-category="{{ $leave->leave }}"
                                             data-note="{{ $leave->leave_note }}">
                                             <i class="ri-edit-line"></i>

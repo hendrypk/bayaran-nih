@@ -162,19 +162,21 @@
                                         <th>{{ __('general.label.date') }}</th>
                                         <th>{{ __('general.label.status') }}</th>
                                         <th>{{  __('general.label.note') }}</th>
-                                        <th>{{  __('general.label.edit') }}</th>
-                                        <th>{{  __('general.label.delete') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($presences as $no=>$data)
                                     <tr>
                                         <td>{{ $no+1 }}</td>
-                                        <td>{{ $data->date }}</td>
-                                        <td>{{ $data->leave_status }}</td>
+                                        <td>{{ formatDate($data->date) }}</td>
+                                        <!-- <td>{{ $data->leave_status }}</td> -->
+                                        <td>@if ($data->leave_status === 1)
+                                                <i class="status-leave accept ri-check-double-fill"></i>
+                                            @else 
+                                                <i class="status-leave reject ri-close-fill"></i>
+                                            @endif
+                                        </td>
                                         <td>{{ $data->leave_note }}</td>
-                                        <td></td>
-                                        <td></td>
                                     </tr>
                                     @endforeach
                                 </tbody>

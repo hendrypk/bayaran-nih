@@ -43,6 +43,8 @@ class EmployeeRequest extends FormRequest
             'sales_status' => 'required',
             'workDay' => 'required|array|min:1',
             'officeLocations' => 'required|array|min:1',
+            'annual_leave' => 'nullable|integer',
+            'due_annual_leave' => 'nullable|date',
         ];
     }
 
@@ -78,6 +80,8 @@ class EmployeeRequest extends FormRequest
             'joining_date.date' => 'Tanggal bergabung harus berupa tanggal yang valid.',
             'employee_status.required' => 'Status karyawan wajib dipilih.',
             'sales_status.required' => 'Status sales wajib dipilih.',
+            'annual_leave.integer' => 'Cuti tahunan harus berupa angka.',
+            'due_annual_leave.date' => 'Tanggal cuti tahunan harus berupa tanggal yang valid.',
         ];
     }
 }
