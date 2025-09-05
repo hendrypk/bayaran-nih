@@ -12,7 +12,7 @@ return [
         'presence_summary' => 'Ringkasan Kehadiran',
         'presences' => 'Presensi',
         'overtime' => 'Lembur',
-        'leave' => 'Cuti',
+        'leave' => 'Perijinan',
         'performance' => 'Kinerja',
         'employee_grade' => 'Penilaian Karyawan',
         'kpi' => 'Indikator Kinerja Utama',

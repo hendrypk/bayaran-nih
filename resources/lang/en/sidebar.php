@@ -12,7 +12,7 @@ return [
         'presence_summary' => 'Summary',
         'presences' => 'Presences',
         'overtime' => 'Overtime',
-        'leave' => 'Leave',
+        'leave' => 'Permit',
         'performance' => 'Performance',
         'employee_grade' => 'Employee Grade',
         'kpi' => 'Key Performance Indicator',

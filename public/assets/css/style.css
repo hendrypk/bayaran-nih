@@ -1231,3 +1231,36 @@ h6 {
   color: #012970;
 }
 
+.form-step {
+    transition: all 0.3s ease-in-out;
+    padding: 20px;
+    border-radius: 10px;
+    height: 500px;
+    overflow-y: auto;
+}
+
+.step {
+    display: none; 
+    transition: all 0.3s ease-in-out;
+}
+
+.step.active {
+    display: block; 
+}
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    margin: 25px;
+    border-radius: 50%; /* Bikin lingkaran */
+    object-fit: cover; /* Agar gambar tidak terdistorsi */
+    border: 3px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.profile-photo:hover {
+    transform: scale(1.05); /* Efek zoom saat hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+

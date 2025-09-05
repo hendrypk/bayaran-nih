@@ -24,7 +24,7 @@
       'presenceSummary.list',
       'overtime.list',
       'leaves.index'
-    ]; 
+    ];
 
     $activePayroll = [
       'payroll.option',

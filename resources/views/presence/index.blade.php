@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.getElementById('employeeSelect').addEventListener('change', function () {
     var employeeId = this.value; 
-    var workDays = @json($workDay);
+    var workDays = @json($workDays);
     var workDaySelect = document.getElementById('workDaySelect');
     var workDayContainer = document.getElementById('workDayContainer');
 

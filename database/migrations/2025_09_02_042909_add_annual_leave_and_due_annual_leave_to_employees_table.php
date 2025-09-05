@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->integer('resignation')->nullable();
-            $table->date('resignation_date')->nullable();
+            $table->integer('annual_leave')->default(12);
+            $table->date('due_annual_leave')->nullable();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn('resignation');
-            $table->dropColumn('resignation_date');
+            $table->dropColumn('annual_leave');
+            $table->dropColumn('due_annual_leave');
         });
     }
 };

@@ -34,7 +34,7 @@ class Presence extends Model
         'leave_note',
     ];
     
-    // protected $dates = ['deleted_at']; 
+    protected $dates = ['deleted_at']; 
 
     // protected $casts = [
     //     'date' => 'date',

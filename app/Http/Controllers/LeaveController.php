@@ -115,32 +115,30 @@ public function save (Request $request) {
     $id = $request->id;
     $employeeId = $request->input('employee_id');
     $leaveDates = $request->input('leave_dates');
-    $leaveDates = explode(',', $leaveDates[0]);
+    if (is_array($leaveDates)) {
+        $leaveDates = explode(',', $leaveDates[0]);
+    } else {
+        $leaveDates = explode(',', $leaveDates);
+    }
     $leaveDates = array_map('trim', $leaveDates);
     $category = $request->input('category');
     $note = $request->input('note');
-    $action = $request->input('action');switch ($action) {
-        case 'accept':
-            $status = 1;
-            break;
-        case 'reject':
-            $status = null;
-            break;
-        default:
-            $status = null; 
-            break;
-        }
+        $action = $request->input('action');
 
-    $employee_name = Employee::where('id', $employeeId)->first();
-    $name = $employee_name->name;
-    $eid = $employee_name->eid;
+    $status = match ($action) {
+        'accept' => true,
+        'reject' => false,
+        default => null,
+    };
+
+    $employee = Employee::where('id', $employeeId)->first();
+    $name = $employee->name;
+    $eid = $employee->eid;
 
     $existPresence = Presence::where('employee_id', $employeeId)
         ->whereIn('date', $leaveDates)
         ->whereNotNull('check_in')
         ->pluck('date')->toArray();
-
-    // dd($leaveDates, $existPresence);
 
     if($existPresence) {
         return redirect()->back()->withErrors('Karyawan hadir pada tanggal tersebut. Silahkan hapus presensi untuk menyetujui ijin.');
@@ -148,10 +146,10 @@ public function save (Request $request) {
 
     $existLeave = Presence::where('employee_id', $employeeId)
         ->whereIn('date', $leaveDates)
-        ->whereNotNull('leave')
+        ->whereNotNull('leave_status')
         ->pluck('date')->toArray();
-        // dd($existLeave);
-    if(count($existLeave) > 1) {
+
+    if(count($existLeave) >= 1 && $status === 1) {
         return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
     }
 
@@ -161,8 +159,17 @@ public function save (Request $request) {
         'note' => 'required'
     ]);
 
+    $leaveCount = count($leaveDates);
+    if ($category === Presence::LEAVE_ANNUAL) {
+        if ($employee->annual_leave < $leaveCount) {
+            return redirect()->back()->withErrors('Sisa cuti tahunan tidak mencukupi untuk pengajuan ini.');
+        }
+    }
+
+    $annualLeaveCount = 0;
+
     foreach ($leaveDates as $date) {
-        $leaves = Presence::updateOrCreate(
+        Presence::updateOrCreate(
             ['id' => $id 
         ], [    
             'employee_id' => $employeeId,
@@ -172,6 +179,15 @@ public function save (Request $request) {
             'leave_status' => $status,
             'leave_note' => $note,
         ]);
+        
+        if ($status === true) {
+            $annualLeaveCount++;
+        }
+    }
+
+    if($annualLeaveCount > 0 && $category === Presence::LEAVE_ANNUAL) {
+        $employee = Employee::find($employeeId);
+        $employee->decrement('annual_leave', $annualLeaveCount);
     }
 
     return redirect()->back()->with('success', 'Leave for ' . $name . ' saved successfully');

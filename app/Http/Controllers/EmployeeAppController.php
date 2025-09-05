@@ -659,7 +659,7 @@ class EmployeeAppController extends Controller
         ]);
 
         $employeeId = Auth::id();
-        $employee = Auth::user();  // Jika ada relasi 'employee' pada model User
+        $employee = Auth::user();
         $eid = $employee->eid;
 
         $leaveDates = $request->input('leave_dates');
@@ -670,48 +670,38 @@ class EmployeeAppController extends Controller
 
         $existLeave = Presence::where('employee_id', $employeeId)
             ->whereIn('date', $leaveDates)
-            ->whereNotNull('leave')
+            ->whereNotNull('leave_status')
             ->pluck('date')->toArray();
         $existPresence = Presence::where('employee_id', $employeeId)
             ->whereIn('date', $leaveDates)
             ->whereNotNull('check_in')
             ->pluck('date')->toArray();
-
+        
+        $leaveCount = count($leaveDates);
+        if ($category === Presence::LEAVE_ANNUAL) {
+            if ($employee->annual_leave < $leaveCount) {
+                return redirect()->back()->withErrors('Sisa cuti tahunan tidak mencukupi untuk pengajuan ini.');
+            }
+        }
+        
         switch (true) {
             case $existLeave;
-                return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+                return redirect()->back()->withErrors(['leave_dates' => 'Kamu punya pengajuan cuti/ijin pada tanggal tersebut']);
                 break;
             case !empty($existPresence);
-                return redirect()->back()->withErrors('Kamu hadir pada tanggal tersebut');
+                return redirect()->back()->withErrors('Kamu masuk kerja pada tanggal tersebut');
                 break;
             default;
                 foreach ($leaveDates as $date) {
-                    $leave = Presence::create([
+                    Presence::create([
                         'eid' => $eid,
                         'employee_id' => $employeeId,
                         'date' => $date,
                         'leave' => $category,
                         'leave_note' => $note,
-                        // 'leave_status' => 0,
                     ]);
                 }
         }
-
-        // if($existLeave) {
-        //     return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
-        // } elseif(empty($pastPresence->check_out)) {
-        //     return redirect()->back()->withErrors('Silahkan absen keluar terlebih dahulu');
-        // }
-        // foreach ($leaveDates as $date) {
-        //     $leave = Presence::create([
-        //         'eid' => $eid,
-        //         'employee_id' => $employeeId,
-        //         'date' => $date,
-        //         'leave' => $category,
-        //         'leave_note' => $note,
-        //         'leave_status' => 0,
-        //     ]);
-        // }
 
         return redirect()->route('leave.index')->with('success', 'Cuti berhasil dibuat!');
     }

@@ -65,6 +65,9 @@ class EmployeeController extends Controller
     public function detail($id)
     {
         $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
+        $presences = Presence::where('employee_id', $id)
+            ->whereNotNull('leave')
+            ->get();
 
         $startDate = new DateTime($employee->joining_date);
         $dateBirth = new DateTime($employee->date_birth);
@@ -78,7 +81,7 @@ class EmployeeController extends Controller
 
         $totalOvertime = Overtime::where('employee_id', $employee->eid)
             ->sum('total');
-        return view('employee.detail', compact('employee', 'yo', 'years', 'months', 'days', 'totalOvertime'));
+        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime'));
     }
 
     //submit employee
@@ -162,5 +165,26 @@ class EmployeeController extends Controller
             $employee->delete();
         }
         return redirect()->route('employee.list');
+    }
+
+    //direct upload profile
+    public function upload(Request $request, $id)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $employee = Employee::find($id);
+        // dd($id);
+        if (!$employee->exists) {
+        return back()->with('error', 'Employee not found.');
+            }
+
+        if ($request->hasFile('profile_photo') && $request->file('profile_photo')->isValid()) {
+            $employee->clearMediaCollection('profile_photos');
+            $employee->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photos', 'public');
+        }
+                
+        return back()->with('success', 'Foto berhasil diunggah!');
     }
 }

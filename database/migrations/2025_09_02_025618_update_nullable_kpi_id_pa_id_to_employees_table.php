@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->integer('resignation')->nullable();
-            $table->date('resignation_date')->nullable();
+            $table->unsignedBigInteger('kpi_id')->nullable()->change();
+            $table->unsignedBigInteger('pa_id')->nullable()->change();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn('resignation');
-            $table->dropColumn('resignation_date');
+            $table->unsignedBigInteger('kpi_id')->nullable(false)->change();
+            $table->unsignedBigInteger('pa_id')->nullable(false)->change();
         });
     }
 };

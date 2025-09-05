@@ -11,14 +11,29 @@
     <div id="appCapsule">
         <div class="release-tag-mobile" id="latestRelease"></div>
         <div class="section" id="user-section">
-            <div id="user-detail">
-                {{-- <div class="avatar">
-                    <img src="" alt="" class="imaged w64 rounded">
-                </div> --}}
+                        <div id="user-detail" class="d-flex align-items-center">
+                {{-- Avatar --}}
+                {{-- {{ Auth::user()->getFirstMediaUrl('profile_photos') }} --}}
+                <div class="me-3">
+                    <img src="{{ Auth::user()->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg') }}" 
+                        alt="Avatar" 
+                        class="rounded-circle" 
+                        style="width: 50px; height: 50px; object-fit: cover;">
+                </div>
+
+                {{-- User Info --}}
+                <div id="user-info">
+                    <h3 id="user-name" class="mb-0">{{ Auth::user()->name }}</h3>
+                    <span id="user-role">{{ Auth::user()->position->name }} ({{ Auth::user()->eid }})</span>
+                </div>
+            </div>
+            {{-- <div id="user-detail">
                 <div id="user-info">
                     <h2 id="user-name">{{ Auth::user()->name }}</h2>
                     <span id="user-role">{{ Auth::user()->position->name }} ({{ Auth::user()->eid }})</span>
                 </div>
+            </div>
+        </div> --}}
             </div>
         </div>
 

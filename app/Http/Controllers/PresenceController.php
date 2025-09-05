@@ -76,7 +76,7 @@ public function index(Request $request){
         });
     }
     
-    return view('presence.index', compact('presence', 'workDay', 'employees'));
+    return view('presence.index', compact('presence', 'workDays', 'employees'));
 }
 
 

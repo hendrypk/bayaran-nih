@@ -79,8 +79,8 @@
                                 <td>{{ $overtime->employees->eid }}</td>
                                 <td>{{ $overtime->employees->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}</td>
-                                <td>{{ $overtime->start_at }}</td>
-                                <td>{{ $overtime->end_at }}</td>
+                                <td>{{ \Carbon\Carbon::parse($overtime->start_at)->format('h:i:s') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($overtime->end_at)->format('h:i:s') }}</td>
                                 <td> {{ $overtime->total }}</td>
                                 <td> {{ $overtime->note_in }}</td>
                                 <td> {{ $overtime->note_out }}</td>

@@ -12,31 +12,73 @@ use App\Models\KpiOptions;
 use App\Models\WorkCalendar;
 use App\Models\WorkSchedule;
 use App\Models\PayrollOption;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\EmployeeResetPasswordNotification;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Employee extends Authenticatable 
+
+class Employee extends Authenticatable implements HasMedia
+// class Employee extends Authenticatable Implements HasMedia
 {
-    use HasFactory;
-    use Notifiable;
-    use SoftDeletes;
+
+    use HasFactory, Notifiable, SoftDeletes, InteractsWithMedia;
+
+    // use HasFactory;
+    // use Notifiable;
+    // use SoftDeletes, InteractsWithMedia;
 
     protected $table = 'employees';
     protected $fillable = [
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
         'blood_type', 'gender', 'religion', 'marriage', 'education', 'whatsapp', 'bank', 'bank_number',
         'position_id', 'job_title_id', 'division_id', 'department_id', 'joining_date', 'employee_status',
-        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date', 'resignation_note'];
+        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date', 'resignation_note',
+        'annual_leave', 'due_annual_leave'];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
     protected $dates = ['deleted_at']; 
+
+
+    // public function getProfilePhotoThumbAttribute(): string
+    // {
+    //     $thumb = $this->getFirstMediaUrl('profile_photos', 'thumb');
+    //     return $thumb ?: asset('assets/images/placeholder/profile.jpg');
+    // }
+
+    // public function getProfilePhotoUrlAttribute(): string
+    // {
+    //     return $this->getFirstMediaUrl('profile_photos') ?: asset('assets/images/placeholder/profile.jpg');
+    // }
+
+    public function getProfilePhotoAttribute(): string
+{
+    return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
+}
+
+
+
+    // public function registerMediaCollections(): void
+    // {
+    //     $this->addMediaCollection('profile_photos')
+    //         ->useDisk('public')
+    //         ->singleFile()
+    //         ->registerMediaConversions(function (Media $media) {
+    //             $this->addMediaConversion('thumb')
+    //                 ->fit(Manipulations::FIT_CROP, 100, 100)
+    //                 ->optimize()
+    //                 ->performOnCollections('profile_photos');
+    //         });
+    // }
 
     //relation table position
     public function position()
