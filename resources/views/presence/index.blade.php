@@ -152,6 +152,7 @@
                                                 data-name="{{ $data->employee->name }}"
                                                 data-date="{{ $data['date'] }}"
                                                 data-workDay="{{ $data['work_day_id'] }}"
+                                                data-workday-name="{{ $data->workDay->name ?? '' }}"
                                                 data-checkin="{{ $data['check_in'] }}"
                                                 data-checkout="{{ $data['check_out'] }}">
                                             <i class="ri-edit-line"></i>
@@ -305,12 +306,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const name = button.getAttribute('data-name');
         const date = button.getAttribute('data-date');
         const workDay = button.getAttribute('data-workDay');
+        const workDayName = button.getAttribute('data-workday-name');
         const checkin = button.getAttribute('data-checkin');
         const checkout = button.getAttribute('data-checkout');
 
         document.getElementById('name').value = name;
         document.getElementById('date').value = date;
         document.getElementById('workDay').value = workDay;
+        document.getElementById('workDayName').value = workDayName;
         document.getElementById('checkin').value = checkin;
         document.getElementById('checkout').value = checkout;
 

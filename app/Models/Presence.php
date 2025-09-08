@@ -63,7 +63,7 @@ class Presence extends Model implements HasMedia
         
     public function workDay()
     {
-        return $this->belongsTo(WorkDay::class, 'work_day_id'); // Adjust 'work_day_id' based on your actual column
+        return $this->belongsTo(WorkDay::class, 'work_day_id');
     }
 
     public function position()
