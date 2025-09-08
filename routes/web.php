@@ -382,6 +382,8 @@ Route::middleware(['auth:employee'])->group(function () {
     
     // History
     Route::get('/history', [EmployeeAppController::class, 'history'])->name('presence.history');
+    Route::post('/self/upload-profile', [EmployeeAppController::class, 'upload'])->name('self.upload.profile');
+
     
     // Profile Routes
     Route::prefix('profile')->group(function () {
