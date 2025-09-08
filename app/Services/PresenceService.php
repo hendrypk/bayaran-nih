@@ -39,12 +39,13 @@ class PresenceService
             $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
         } elseif ($now->between($break_out, $check_out)) {
             $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)) - $breakDuration, 0);
-        } else {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
-            ], 500);
-        }
+        } 
+        // else {
+        //     return response()->json([
+        //         'status'  => 'error',
+        //         'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
+        //     ], 500);
+        // }
 
         return [$lateCheckIn, intval($lateArrival)];
     }
@@ -69,6 +70,8 @@ class PresenceService
             ];
         }
 
+        $checkOutEarly = 0;
+
         if ($isCountLate == 0) {
             $checkOutEarly = 0;
 
@@ -84,14 +87,15 @@ class PresenceService
         } elseif ($now->between($break_in, $break_out)) {
             $checkOutEarly = max(intval($break_out->diffInMinutes($check_out, false)), 0);
 
-        } else {
-            return [
-                'error'   => true,
-                'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
-                'lateCheckIn' => 0,
-                'lateArrival' => 0,
-            ];
-        }
+        } 
+        // else {
+        //     return [
+        //         'error'   => true,
+        //         'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
+        //         'lateCheckIn' => 0,
+        //         'lateArrival' => 0,
+        //     ];
+        // }
 
         return $checkOutEarly;
     }

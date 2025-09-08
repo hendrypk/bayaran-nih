@@ -132,17 +132,45 @@
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
+                                    @php
+                                        $photoIn = $data->getFirstMediaUrl('presence-in');
+                                    @endphp
+
+                                    @if ($photoIn)
+                                        <button type="button" class="btn btn-yellow"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#photoModal"
+                                                onclick="showPhoto('{{ $photoIn }}')">
                                             <i class="ri-gallery-line"></i>
-                                    </button>
+                                        </button>
+                                    @else
+                                        <span class="text-muted">No Photo</span>
+                                    @endif
                                 </td>
-                                <td>
+
+                                                                <td>
+                                    @php
+                                        $photoOut = $data->getFirstMediaUrl('presence-out');
+                                    @endphp
+
+                                    @if ($photoOut)
+                                        <button type="button" class="btn btn-yellow"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#photoModal"
+                                                onclick="showPhoto('{{ $photoOut }}')">
+                                            <i class="ri-gallery-line"></i>
+                                        </button>
+                                    @else
+                                        <span class="text-muted">No Photo</span>
+                                    @endif
+                                </td>
+
+                                <!-- <td>
                                     <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
                                             onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_out']) }}')">
                                             <i class="ri-gallery-line"></i>
                                     </button>
-                                </td>
+                                </td> -->
                                 <td>
                                     @can('update presence')
                                         <button type="button" class="btn btn-green"

@@ -324,7 +324,7 @@ class EmployeeAppController extends Controller
                 break;
 
             case (!is_null($presenceIn) && is_null($presenceOut)) && !is_null($pastPresenceOut):
-                $media = $this->savePresencePhotoOut($pastPresence, $request->photo);
+                $media = $this->savePresencePhotoOut($presence, $request->photo);
                 $fileName = $media->file_name ?? null;
                 $presence->update([
                     'check_out' => now()->toTimeString(),
