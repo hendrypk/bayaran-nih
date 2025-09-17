@@ -310,32 +310,6 @@ class EmployeeAppController extends Controller
         $message = '';
 
         switch (true) {
-            case !is_null($pastPresence) && is_null($pastPresenceOut) && is_null($presence):
-                $media = $this->savePresencePhotoOut($pastPresence, $request->photo);
-                $fileName = $media->file_name ?? null;
-                $pastPresence->update([
-                    'check_out'       => now()->toTimeString(),
-                    'check_out_early' => $lateResult['checkOutEarly'] ?? 0,
-                    'location_out'    => $loc,
-                    'photo_out'       => $fileName,
-                ]);
-
-                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
-                break;
-
-            case (!is_null($presenceIn) && is_null($presenceOut)) && !is_null($pastPresenceOut):
-                $media = $this->savePresencePhotoOut($presence, $request->photo);
-                $fileName = $media->file_name ?? null;
-                $presence->update([
-                    'check_out' => now()->toTimeString(),
-                    'check_out_early' => $lateResult['checkOutEarly'] ?? 0,
-                    'photo_out' => 'presence-out',
-                    'location_out' => $loc
-                ]);
-
-                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
-                break;
-
             case is_null($presence) || (!is_null($presence) && is_null($presence->leave_status)):
                 $presence = Presence::updateOrCreate(
                     [
@@ -356,6 +330,32 @@ class EmployeeAppController extends Controller
                 $fileName = $media->file_name ?? null;
 
                 $message = __('messages.late_check_in', ['minutes' => $lateResult['lateCheckIn'] ?? 0]);
+                break;
+                
+            case !is_null($pastPresence) && is_null($pastPresenceOut) && is_null($presence):
+                $media = $this->savePresencePhotoOut($pastPresence, $request->photo);
+                $fileName = $media->file_name ?? null;
+                $pastPresence->update([
+                    'check_out'       => now()->toTimeString(),
+                    'check_out_early' => 0,
+                    'photo_out' => 'presence-out',
+                    'location_out'    => $loc,
+                ]);
+
+                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
+                break;
+
+            case (!is_null($presenceIn) && is_null($presenceOut)) && !is_null($pastPresenceOut):
+                $media = $this->savePresencePhotoOut($presence, $request->photo);
+                $fileName = $media->file_name ?? null;
+                $presence->update([
+                    'check_out' => now()->toTimeString(),
+                    'check_out_early' => $lateResult['checkOutEarly'] ?? 0,
+                    'photo_out' => 'presence-out',
+                    'location_out' => $loc
+                ]);
+
+                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
                 break;
 
             case !is_null($presence) && !is_null($presenceIn) && !is_null($presenceOut):
