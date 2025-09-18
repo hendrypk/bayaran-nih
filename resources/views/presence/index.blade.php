@@ -178,7 +178,7 @@
                                             data-bs-target="#editPresence" 
                                                 data-id="{{ $data['id'] }}" 
                                                 data-name="{{ $data->employee->name }}"
-                                                data-date="{{ $data['date'] }}"
+                                                data-date="{{ formatDate($data['date'], 'd-m-Y') }}"
                                                 data-workDay="{{ $data['work_day_id'] }}"
                                                 data-workday-name="{{ $data->workDay->name ?? '' }}"
                                                 data-checkin="{{ $data['check_in'] }}"
