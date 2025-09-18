@@ -264,16 +264,17 @@ class EmployeeAppController extends Controller
 
         $presenceIn     = $presence?->check_in;
         $presenceOut    = $presence?->check_out;
-        $presenceWorkDay = $presence?->workDay; 
+        // $presenceWorkDay = $presence?->workDay; 
 
         $pastPresence = Presence::where('employee_id', auth::id())
             ->where('date', '<', $today)
             ->orderByDesc('date')
             ->first();
-        $pastPresenceIn = $pastPresence?->check_in;
+
+        // $pastPresenceIn = $pastPresence?->check_in;
         $pastPresenceOut = $pastPresence?->check_out;
-        $dayCheckIn = $pastPresence->workDay->check_in;
-        $dayCheckOut = $pastPresence->workDay->check_out;
+        // $dayCheckIn = $pastPresence->workDay->check_in;
+        // $dayCheckOut = $pastPresence->workDay->check_out;
 
         [$lateCheckIn, $lateArrival] = $presenceService->calculateLate(
             $now,
