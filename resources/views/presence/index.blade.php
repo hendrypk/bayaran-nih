@@ -87,12 +87,6 @@
                                 <th scope="col">{{ __('attendance.label.late_arrival') }}</th>
                                 <th scope="col">{{ __('attendance.label.late_check_in') }}</th>
                                 <th scope="col">{{ __('attendance.label.check_out_early') }}</th>
-                                {{-- <th scope="col">{{ __('attendance.label.note_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.note_out') }}</th> --}}
-                                <th scope="col">{{ __('attendance.label.location_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.location_out') }}</th>
-                                <th scope="col">{{ __('attendance.label.photo_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.photo_out') }}</th>
                                 <th scope="col">{{ __('general.label.edit') }}</th>
                                 <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
@@ -108,8 +102,28 @@
                                 <td>{{ $data->employee->name }}</td>
                                 <td>{{ $data->workDay->name ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
-                                <td>{{ $data['check_in'] }}</td>
-                                <td>{{ $data['check_out'] }}</td>
+                                <td>
+                                    <a href="javascript:void(0)" 
+                                        class="btn btn-link p-0"
+                                        onclick="showLocationAndPhoto(
+                                            'Check-in',
+                                            '{{ $data['location_in'] }}',
+                                            '{{ $data->getFirstMediaUrl('presence-in') }}'
+                                        )">
+                                        {{ $data['check_in'] }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" 
+                                        class="btn btn-link p-0"
+                                        onclick="showLocationAndPhoto(
+                                            'Check-out',
+                                            '{{ $data['location_out'] }}',
+                                            '{{ $data->getFirstMediaUrl('presence-out') }}'
+                                        )">
+                                        {{ $data['check_out'] }}
+                                    </a>
+                                </td>
                                 <td>
                                     @if($data['late_arrival'] == 1)
                                     {{ __('attendance.label.late') }}
@@ -119,30 +133,6 @@
                                 </td>
                                 <td>{{ $data['late_check_in'] }}</td>
                                 <td>{{ $data['check_out_early'] }}</td>
-                                {{-- <td>{{ $data['note_in']}}</td>
-                                <td>{{ $data['note_out'] }}</td> --}}
-                                <td>
-                                    <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
-                                        <i class="ri-road-map-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-blue" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
-                                        <i class="ri-road-map-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
-                                            <i class="ri-gallery-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_out']) }}')">
-                                            <i class="ri-gallery-line"></i>
-                                    </button>
-                                </td>
                                 <td>
                                     @can('update presence')
                                         <button type="button" class="btn btn-green"
@@ -150,8 +140,9 @@
                                             data-bs-target="#editPresence" 
                                                 data-id="{{ $data['id'] }}" 
                                                 data-name="{{ $data->employee->name }}"
-                                                data-date="{{ $data['date'] }}"
+                                                data-date="{{ formatDate($data['date'], 'd-m-Y') }}"
                                                 data-workDay="{{ $data['work_day_id'] }}"
+                                                data-workday-name="{{ $data->workDay->name ?? '' }}"
                                                 data-checkin="{{ $data['check_in'] }}"
                                                 data-checkout="{{ $data['check_out'] }}">
                                             <i class="ri-edit-line"></i>
@@ -223,44 +214,48 @@ function initMapPresence() {
     }).addTo(mapPresence);
 }
 
-// Menampilkan lokasi pada modal
-function showLocationModal(locationType, location) {
-    if (!mapPresence) {
-        console.error('Map is not initialized. Please call initMapPresence first.');
-        return;
-    }
+function showLocationAndPhoto(locationType, location, photoUrl) {
+    if (!mapPresence) initMapPresence();
 
     if (!location) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Lokasi presensi tidak ditemukan!',
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Lokasi presensi tidak ditemukan!' });
         return;
     }
 
-    // Memecah lat, lng yang diterima
     const [lat, lng] = location.split(',').map(Number);
-
     if (isNaN(lat) || isNaN(lng)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Koordinat lokasi tidak valid!',
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Koordinat lokasi tidak valid!' });
         return;
     }
 
-    // Menampilkan modal Bootstrap
-    const modal = new bootstrap.Modal(document.getElementById('locationModal'));
-    modal.show();
+    const img = new Image();
+    img.onload = function() {
+        document.getElementById('modalPhoto').src = photoUrl;
 
-    // Menghapus marker lama jika ada
-    if (marker) mapPresence.removeLayer(marker);
+        const modalEl = document.getElementById('locationPhotoModal');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
 
-    // Update peta dan tambahkan marker
-    mapPresence.setView([lat, lng], 15);  // Set peta ke lat, lng yang baru
-    marker = L.marker([lat, lng]).addTo(mapPresence).bindPopup(`${locationType}`).openPopup();
+        // Jalankan setelah modal benar-benar terbuka
+        modalEl.addEventListener('shown.bs.modal', function onShown() {
+            modalEl.removeEventListener('shown.bs.modal', onShown);
+
+            mapPresence.invalidateSize();
+
+            if (marker) mapPresence.removeLayer(marker);
+            mapPresence.setView([lat, lng], 15);
+            marker = L.marker([lat, lng])
+                .addTo(mapPresence)
+                .bindPopup(`${locationType}`)
+                .openPopup();
+        });
+    };
+
+    img.onerror = function() {
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Gambar tidak ditemukan!' });
+    };
+
+    img.src = photoUrl;
 }
 
 // Memanggil initMapPresence setelah halaman selesai dimuat
@@ -268,33 +263,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initMapPresence();
 });
 
-
-// Set the image src in the modal
-function showPhoto(photoUrl) {
-    const img = new Image();
-
-    // Cek apakah gambar tersedia
-    img.onload = function() {
-        // Jika gambar berhasil dimuat, set gambar ke dalam modal dan buka modal
-        document.getElementById('modalPhoto').src = photoUrl;
-        
-        // Buka modal setelah gambar dimuat
-        const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-        photoModal.show();
-    };
-
-    img.onerror = function() {
-        // Jika gambar gagal dimuat, tampilkan error menggunakan SweetAlert
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Gambar tidak ditemukan!',
-        });
-    };
-
-    // Menetapkan URL gambar untuk memulai pengecekan
-    img.src = photoUrl;
-}
 
 //script for edit
 document.addEventListener('DOMContentLoaded', function () {
@@ -305,12 +273,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const name = button.getAttribute('data-name');
         const date = button.getAttribute('data-date');
         const workDay = button.getAttribute('data-workDay');
+        const workDayName = button.getAttribute('data-workday-name');
         const checkin = button.getAttribute('data-checkin');
         const checkout = button.getAttribute('data-checkout');
 
         document.getElementById('name').value = name;
         document.getElementById('date').value = date;
         document.getElementById('workDay').value = workDay;
+        document.getElementById('workDayName').value = workDayName;
         document.getElementById('checkin').value = checkin;
         document.getElementById('checkout').value = checkout;
 
@@ -418,3 +388,4 @@ function confirmDelete(id, name, entity) {
 @include('presence.edit')
 @include('presence.map')
 @include('presence.photo')
+@include('presence.photoAndMap')

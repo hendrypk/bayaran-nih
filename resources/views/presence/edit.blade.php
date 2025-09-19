@@ -31,8 +31,9 @@
                             <label for="workDay" class="form-label">{{ __('attendance.label.work_day') }}</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="workDay" id="workDay" disabled>
+                            <input type="text" class="form-control" name="workDayName" id="workDayName" disabled>
                         </div>
+                            <input type="text" class="form-control" name="workDay" id="workDay" hidden>
                     </div>
 
                     <div class="row mb-3">

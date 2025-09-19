@@ -22,7 +22,7 @@ class PresenceController extends Controller
 
 //Presences List
 public function index(Request $request){
-    $query = Presence::with('employee')->whereNull('leave_status')->whereNotNull('work_day_id');
+    $query = Presence::with('employee', 'workDay')->whereNull('leave_status')->whereNotNull('work_day_id');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
     $defaultEndDate = $today->toDateString();
@@ -68,7 +68,7 @@ public function index(Request $request){
     $workDays = [];
     foreach ($employees as $employee) {
         // Ambil semua work days untuk masing-masing employee
-        $workDay[$employee->id] = $employee->workDay->map(function ($workDay) {
+        $workDays[$employee->id] = $employee->workDay->map(function ($workDay) {
             return [
                 'id' => $workDay->id,
                 'name' => $workDay->name,
