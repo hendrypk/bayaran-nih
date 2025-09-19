@@ -156,7 +156,7 @@ class Employee extends Authenticatable implements HasMedia
     }
 
     public function presences(){
-        return $this->belongsTo(Presence::class,'employee_id');
+        return $this->hasMany(Presence::class, 'employee_id', 'id');
     }
 
     public function sendPasswordResetNotification($token)

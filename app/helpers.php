@@ -10,13 +10,14 @@ if (! function_exists('formatDate')) {
      * @param string $format
      * @return string
      */
-    function formatDate($date, $format = 'd F Y')
+    function formatDate($date, $format = 'j M Y')
     {
         if (!$date) return '';
 
         return Carbon::parse($date)->translatedFormat($format);
     }
 }
+
 if (! function_exists('formatTanggalWaktu')) {
     /**
      * Format tanggal dan waktu dengan Carbon dan bahasa Indonesia

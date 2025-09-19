@@ -21,7 +21,83 @@ class PresenceController extends Controller
 {
 
 //Presences List
-public function index(Request $request){
+public function index(){
+    $employees = Employee::whereNull('resignation')->get();
+    return view('presence.index', compact('employees'));
+}
+
+public function indexOldd(Request $request)
+{
+    $query = Presence::with('employee', 'workDay')
+        ->whereNull('leave_status')
+        ->whereNotNull('work_day_id');
+
+    $today = now()->toDateString();
+    $defaultStartDate = now()->copy()->startOfMonth()->toDateString();
+    $defaultEndDate = now()->toDateString();
+
+    // ambil filter
+    $filter = $request->input('filter', null);
+
+    if ($filter === 'today') {
+        $startDate = $today;
+        $endDate = $today;
+    } else {
+        $startDate = $request->input('start_date', $defaultStartDate);
+        $endDate = $request->input('end_date', $defaultEndDate);
+    }
+
+    $userDivision = Auth::user()->division_id;
+    $userDepartment = Auth::user()->department_id;
+
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDivision) {
+            $query->whereHas('position', function ($query) use ($userDivision) {
+                $query->where('division_id', $userDivision);
+            });
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('employee', function ($query) use ($userDepartment) {
+            $query->whereHas('position', function ($query) use ($userDepartment) {
+                $query->where('department_id', $userDepartment);
+            });
+        });
+    }
+
+    if ($startDate && $endDate) {
+        $query->whereBetween('date', [$startDate, $endDate]);
+    }
+    
+    $presence = $query->get();
+
+    $query = Employee::query();
+    if ($userDivision && !$userDepartment) {
+        $query->whereHas('position',function ($query) use ($userDivision) {
+            $query->where('division_id', $userDivision);
+        });
+    } elseif (!$userDivision && $userDepartment) {
+        $query->whereHas('position', function ($query) use ($userDepartment) {
+            $query->where('department_id', $userDepartment);
+        });
+    } 
+
+    $query->whereNull('resignation');
+    $employees = $query->get();
+    
+    $workDays = [];
+    foreach ($employees as $employee) {
+        $workDays[$employee->id] = $employee->workDay->map(function ($workDay) {
+            return [
+                'id' => $workDay->id,
+                'name' => $workDay->name,
+            ];
+        });
+    }
+    
+    return view('presence.index', compact('presence', 'workDays', 'employees', 'startDate', 'endDate', 'filter'));
+}
+
+public function indexOld(Request $request){
     $query = Presence::with('employee', 'workDay')->whereNull('leave_status')->whereNotNull('work_day_id');
     $today = now();
     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();

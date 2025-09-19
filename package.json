@@ -11,6 +11,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "daterangepicker": "^3.1.0",
         "sweetalert2": "^11.15.10"
     }
 }

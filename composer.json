@@ -9,6 +9,7 @@
         "diglactic/laravel-breadcrumbs": "^9.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "livewire/livewire": "^3.6",
         "maatwebsite/excel": "*",
         "nesbot/carbon": "^3.8",
         "phpoffice/phpspreadsheet": "*",

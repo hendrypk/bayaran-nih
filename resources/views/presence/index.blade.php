@@ -4,36 +4,57 @@
 
 
 {{ Breadcrumbs::render('presence') }}
-<div class="row align-items-center">
-    <div class="col-md-9">
-        <x-date-filter action="{{ route('presence.list.admin') }}" 
-                        :startDate="request()->get('start_date')" 
-                        :endDate="request()->get('end_date')" />
-    </div>
-    <div class="col-md-3 d-flex justify-content-end">
-        @can('presence export')
-        <div class="form-container">
-            <form action="{{ route('presence.export') }}" method="POST" class="me-2" style="margin: 0;">
-                @csrf
+<div class="row align-items-center mb-3">
+    <!-- Filter -->
+    <div class="col-md-6">
+        <div class="d-flex flex-wrap gap-2">
+            <!-- Status Filter -->
+            <form action="{{ route('presence.list.admin') }}" method="GET" class="m-0 d-flex">
                 <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
                 <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                <button type="submit" class="btn btn-tosca">
-                    <i class="ri-download-cloud-2-fill"> {{ __('general.label.export') }}</i>
-                </button>
+                <select id="status" name="status" class="form-select"
+                        onchange="this.form.submit()">
+                    <option value="presence" {{ request()->get('status') === 'presence' ? 'selected' : '' }}>Presence</option>
+                    <option value="absence" {{ request()->get('status') === 'absence' ? 'selected' : '' }}>Absence</option>
+                </select>
             </form>
+
+            <!-- Date Range Filter -->
+            <livewire:date-range-filter 
+                startDate="{{ request()->get('start_date') ?: '' }}" 
+                endDate="{{ request()->get('end_date') ?: '' }}" />
         </div>
-        @endcan
-        <div class="form-container">
-            <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2">
-                <i class="ri-file-upload-fill">{{ __('general.label.import') }}</i></a>
+    </div>
+
+    <!-- Actions -->
+    <div class="col-md-6">
+        <div class="d-flex justify-content-md-end justify-content-start flex-wrap gap-2">
+            @can('presence export')
+                <form action="{{ route('presence.export') }}" method="POST" class="m-0">
+                    @csrf
+                    <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                    <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                    <button type="submit" class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
+                        <i class="ri-download-cloud-2-fill"></i>
+                        <span>{{ __('general.label.export') }}</span>
+                    </button>
+                </form>
+            @endcan
+
+            <a href="{{ route('presence.import') }}" 
+               class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
+                <i class="ri-file-upload-fill"></i>
+                <span>{{ __('general.label.import') }}</span>
+            </a>
+
+            @can('create presence')
+                <button type="button" class="btn btn-tosca btn-sm d-flex align-items-center"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#addPresence">
+                    <i class="ri-add-circle-line"></i>
+                </button>
+            @endcan
         </div>
-        @can('create presence')
-        <button type="button" class="btn btn-tosca btn-sm"
-                data-bs-toggle="modal" 
-                data-bs-target="#addPresence">
-            <i class="ri-add-circle-line"></i>
-        </button>
-        @endcan
     </div>
 </div>
 
@@ -71,96 +92,9 @@
                         </div> --}}
                 </div>
                 <div class="card-table-wrapper"> 
-                    <table class="table datatable table-hover">
-                        <thead>
-                            <tr>
-                                {{-- <th scope="col">
-                                    <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
-                                </th> --}}
-                                <th scope="col">#</th>
-                                <th scope="col">{{ __('employee.label.eid') }}</th>
-                                <th scope="col">{{ __('general.label.name') }}</th>
-                                <th scope="col">{{ __('attendance.label.work_day') }}</th>
-                                <th scope="col">{{ __('general.label.date') }}</th>
-                                <th scope="col">{{ __('attendance.label.check_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.check_out') }}</th>
-                                <th scope="col">{{ __('attendance.label.late_arrival') }}</th>
-                                <th scope="col">{{ __('attendance.label.late_check_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.check_out_early') }}</th>
-                                <th scope="col">{{ __('general.label.edit') }}</th>
-                                <th scope="col">{{ __('general.label.delete') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($presence as $no=>$data)
-                            <tr class="{{ $data->created_at != $data->updated_at ? 'row-edited' : '' }}">
-                                {{-- <td>
-                                    <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
-                                </td>                                        --}}
-                                <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $data->employee->eid }}</td>
-                                <td>{{ $data->employee->name }}</td>
-                                <td>{{ $data->workDay->name ?? '-' }}</td>
-                                <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
-                                <td>
-                                    <a href="javascript:void(0)" 
-                                        class="btn btn-link p-0"
-                                        onclick="showLocationAndPhoto(
-                                            'Check-in',
-                                            '{{ $data['location_in'] }}',
-                                            '{{ $data->getFirstMediaUrl('presence-in') }}'
-                                        )">
-                                        {{ $data['check_in'] }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:void(0)" 
-                                        class="btn btn-link p-0"
-                                        onclick="showLocationAndPhoto(
-                                            'Check-out',
-                                            '{{ $data['location_out'] }}',
-                                            '{{ $data->getFirstMediaUrl('presence-out') }}'
-                                        )">
-                                        {{ $data['check_out'] }}
-                                    </a>
-                                </td>
-                                <td>
-                                    @if($data['late_arrival'] == 1)
-                                    {{ __('attendance.label.late') }}
-                                        @else
-                                        {{ __('attendance.label.ontime') }}
-                                    @endif
-                                </td>
-                                <td>{{ $data['late_check_in'] }}</td>
-                                <td>{{ $data['check_out_early'] }}</td>
-                                <td>
-                                    @can('update presence')
-                                        <button type="button" class="btn btn-green"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#editPresence" 
-                                                data-id="{{ $data['id'] }}" 
-                                                data-name="{{ $data->employee->name }}"
-                                                data-date="{{ formatDate($data['date'], 'd-m-Y') }}"
-                                                data-workDay="{{ $data['work_day_id'] }}"
-                                                data-workday-name="{{ $data->workDay->name ?? '' }}"
-                                                data-checkin="{{ $data['check_in'] }}"
-                                                data-checkout="{{ $data['check_out'] }}">
-                                            <i class="ri-edit-line"></i>
-                                        </button>
-                                    @endcan
-                                </td>
-                                <td>
-                                    @can('delete presence')
-                                    <button type="button" class="btn btn-red" 
-                                        onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employee->name) }}', 'presences')">
-                                        <i class="ri-delete-bin-fill"></i>
-                                    </button>
-                                    @endcan
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:presence-table :status="request()->get('status')" 
+                                            :startDate="request()->get('start_date')" 
+                                            :endDate="request()->get('end_date')" />
                 </div>
             </div>
         </div>
@@ -290,47 +224,6 @@ document.addEventListener('DOMContentLoaded', function () {
         form.action = `{{ url('presences') }}/${id}/update`; 
         document.getElementById('presenceId').value = id;    
     });
-});
-
-document.getElementById('employeeSelect').addEventListener('change', function () {
-    var employeeId = this.value; 
-    var workDays = @json($workDays);
-    var workDaySelect = document.getElementById('workDaySelect');
-    var workDayContainer = document.getElementById('workDayContainer');
-
-    // Clear previous options
-    workDaySelect.innerHTML = '<option selected disabled>Select Work Day</option>';
-
-    // Cek jika employee_id ada di workDays
-    if (employeeId && workDays[employeeId]) {
-        var selectedWorkDays = workDays[employeeId];
-
-        // Check if there is more than one work day
-        if (selectedWorkDays.length > 1) {
-            selectedWorkDays.forEach(function(workDay) {
-                var option = document.createElement('option');
-                option.value = workDay.id; // Set the value to the ID
-                option.text = workDay.name; // Display the name
-                workDaySelect.appendChild(option);
-            });
-            workDaySelect.disabled = false; // Enable selection
-            workDayContainer.style.display = 'block';
-        } else if (selectedWorkDays.length === 1) {
-            // If there's only one work day, set its value and keep it enabled
-            workDaySelect.value = selectedWorkDays[0].id; // Set to the ID
-            workDaySelect.innerHTML = ''; // Clear previous options
-            var option = document.createElement('option');
-            option.value = selectedWorkDays[0].id; // Set the value
-            option.text = selectedWorkDays[0].name; // Display the name
-            workDaySelect.appendChild(option);
-            workDaySelect.disabled = false; // Keep it enabled
-            workDayContainer.style.display = 'block';
-        } else {
-            workDayContainer.style.display = 'block'; // No work days
-        }
-    } else {
-        workDayContainer.style.display = 'block'; // No employee selected
-    }
 });
 
 
