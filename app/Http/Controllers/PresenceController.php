@@ -489,21 +489,20 @@ public function indexOld(Request $request){
 
 //Presences Export
     public function export(Request $request) {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
-        $formattedEndDate = Carbon::parse($endDate)->format('Y-m-d');
-    
-        $fileName = "presence_{$formattedStartDate}_to_{$formattedEndDate}.xlsx";
-    
+        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $endDate   = $request->end_date ?? now()->format('Y-m-d');
+
         try {
-            return Excel::download(new PresencesExport($startDate, $endDate), $fileName);
+            $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
+            $formattedEndDate   = Carbon::parse($endDate)->format('Y-m-d');
+
+            $fileName = "presence_{$formattedStartDate}_to_{$formattedEndDate}.xlsx";
+
+            return Excel::download(new PresencesExport($formattedStartDate, $formattedEndDate), $fileName);
         } catch (\InvalidArgumentException $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
-
     }
-
 
 }
 
