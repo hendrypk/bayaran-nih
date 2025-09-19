@@ -70,7 +70,13 @@
                                 @endif
                             </td>
                             <td>{{ \Carbon\Carbon::parse($tgl)->format('j M Y') }}</td>
-                            <td colspan="7" class="text-center text-muted">Tidak ada data presence pada tanggal ini</td>
+                            <td colspan="" class="text-center text-muted">Belum check in</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     @endif
                 @endforeach
