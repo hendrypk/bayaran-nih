@@ -316,12 +316,12 @@ class EmployeeAppController extends Controller
                 $fileName = $media->file_name ?? null;
                 $pastPresence->update([
                     'check_out'       => now()->toTimeString(),
-                    'check_out_early' => $lateResult['checkOutEarly'] ?? 0,
+                    'check_out_early' => 0,
                     'location_out'    => $loc,
                     'photo_out'       => $fileName,
                 ]);
 
-                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
+                $message = __('messages.early_check_out', ['minutes' => 0]);
                 break;
 
             case (!is_null($presenceIn) && is_null($presenceOut)) && !is_null($pastPresenceOut):

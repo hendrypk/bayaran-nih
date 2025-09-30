@@ -24,28 +24,25 @@ class PresenceService
             return [0, 0];
         }
 
-        if ($isCountLate == 0) {
-            return [0, 0];
-        }
-
         $lateCheckIn = 0;
-        $lateArrival = ($now && $arrival && $arrival->diffInMinutes($now, false) > 1) ? 1 : 0;
+        $lateArrival = 0;
 
-        if ($excludeBreak) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
-        } elseif ($now->between($break_in, $break_out)) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
-        } elseif ($now->between($check_in, $break_in)) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
-        } elseif ($now->between($break_out, $check_out)) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)) - $breakDuration, 0);
-        } 
-        // else {
-        //     return response()->json([
-        //         'status'  => 'error',
-        //         'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
-        //     ], 500);
-        // }
+        if ($isCountLate == 1) {
+            $lateArrival = ($now && $arrival && $now->greaterThan($arrival->copy()->addMinute()))
+                ? 1 : 0;
+
+            if ($excludeBreak) {
+                $lateCheckIn = max($check_in->diffInMinutes($now, false), 0);
+            } else {
+                if ($now->between($check_in, $break_in)) {
+                    $lateCheckIn = max($check_in->diffInMinutes($now, false), 0);
+                } elseif ($now->between($break_in, $break_out)) {
+                    $lateCheckIn = max($check_in->diffInMinutes($break_in, false), 0);
+                } elseif ($now->between($break_out, $check_out)) {
+                    $lateCheckIn = max($check_in->diffInMinutes($now, false) - $breakDuration, 0);
+                }
+            }
+        }
 
         return [$lateCheckIn, intval($lateArrival)];
     }
@@ -88,14 +85,6 @@ class PresenceService
             $checkOutEarly = max(intval($break_out->diffInMinutes($check_out, false)), 0);
 
         } 
-        // else {
-        //     return [
-        //         'error'   => true,
-        //         'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
-        //         'lateCheckIn' => 0,
-        //         'lateArrival' => 0,
-        //     ];
-        // }
 
         return $checkOutEarly;
     }
