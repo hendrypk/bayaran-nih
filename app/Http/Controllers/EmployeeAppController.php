@@ -624,12 +624,17 @@ class EmployeeAppController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $employeeId = Auth::id();
-        $employee = Employee::findOrFail($employeeId);
-        $query = Presence::where('employee_id', $employeeId)->whereNull('leave_status')->whereNotNull('work_day_id');
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+            $endDate = Carbon::now()->toDateString();
         }
+        
+        $query = Presence::where('employee_id', Auth::id())
+            ->whereNull('leave_status')
+            ->whereNotNull('work_day_id')
+            ->whereBetween('date', [$startDate, $endDate]);
+
         $presences = $query->get();
         return view('_employee_app.history', compact('presences'));
     }
@@ -769,11 +774,15 @@ class EmployeeAppController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $employeeId = Auth::id();
-        $query = Overtime::where('employee_id', $employeeId);
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+            $endDate = Carbon::now()->toDateString();
         }
+
+        $query = Overtime::where('employee_id', Auth::id())
+            ->whereBetween('date', [$startDate, $endDate]);
+
         $overtime = $query->get();
 
         return view('_employee_app.overtime-history', compact('overtime'));
