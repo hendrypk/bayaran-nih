@@ -12,6 +12,7 @@
         "livewire/livewire": "^3.6",
         "maatwebsite/excel": "*",
         "nesbot/carbon": "^3.8",
+        "opcodesio/log-viewer": "^3.19",
         "phpoffice/phpspreadsheet": "*",
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-permission": "^6.9"

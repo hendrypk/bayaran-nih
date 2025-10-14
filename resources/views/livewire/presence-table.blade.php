@@ -1,14 +1,13 @@
-@php
+{{-- @php
     use Carbon\Carbon;
 
     // Default: tanggal 1 bulan ini sampai hari ini
     $defaultStartDate = Carbon::now()->startOfMonth()->format('Y-m-d');
     $defaultEndDate   = Carbon::now()->format('Y-m-d');
 
-    // Kalau ada filter tanggal dari user, pakai itu. 
-    // Kalau kosong/null, fallback ke default.
-    $startDate = !empty($startDate) ? $startDate : $defaultStartDate;
-    $endDate   = !empty($endDate) ? $endDate   : $defaultEndDate;
+    $startDate = request()->get('start_date') ?: $defaultStartDate;
+    $endDate   = request()->get('end_date')   ?: $defaultEndDate;
+    $filter    = request()->get('status')     ?: 'presence';
 
     // Helper untuk generate array tanggal dari startDate ke endDate
     function dateRange($start, $end) {
@@ -27,7 +26,7 @@
         : [];
 
     $row = 1;
-@endphp
+@endphp --}}
 
 
 
@@ -51,25 +50,20 @@
         </thead>
         <tbody>
         @if($filter === 'absence')
-            @foreach($absenceDates as $tgl)
-                @foreach($employees as $employee)
-                    @php
-                        // Cek apakah employee punya presence pada tanggal ini
-                        $hasPresence = $employee->presences->where('date', $tgl)->isNotEmpty();
-                    @endphp
-                    @if(!$hasPresence)
+            @foreach($absences as $no => $item)
+                {{-- @foreach ($allDates as $date) --}}
                         <tr>
-                            <th scope="row">{{ $row++ }}</th>
-                            <td>{{ $employee->eid ?? '-' }}</td>
-                            <td>{{ $employee->name ?? '-' }}</td>
+                            <th scope="row">{{ $no + 1 }}</th>
+                            <td>{{ $item['employee']->eid ?? '-' }}</td>
+                            <td>{{ $item['employee']->name ?? '-' }}</td>
                             <td>
-                                @if($employee->workDay && $employee->workDay->count())
-                                    {{ $employee->workDay->pluck('name')->join(', ') }}
+                                @if($item['employee']->workDay && $item['employee']->workDay->count())
+                                    {{ $item['employee']->workDay->pluck('name')->join(', ') }}
                                 @else
                                     -
                                 @endif
                             </td>
-                            <td>{{ \Carbon\Carbon::parse($tgl)->format('j M Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item['date'])->format('j M Y') }}</td>
                             <td colspan="" class="text-center text-muted">Belum check in</td>
                             <td></td>
                             <td></td>
@@ -78,26 +72,26 @@
                             <td></td>
                             <td></td>
                         </tr>
-                    @endif
-                @endforeach
+                    
+                {{-- @endforeach --}}
             @endforeach
         @else
             @foreach($presences as $no => $data)
-                <tr class="{{ $data->created_at != $data->updated_at ? 'row-edited' : '' }}">
+                <tr class="{{ $data['created_at'] != $data['updated_at'] ? 'row-edited' : '' }}">
                     <th scope="row">{{ $no + 1 }}</th>
                     <td>{{ $data->employee->eid ?? '-' }}</td>
                     <td>{{ $data->employee->name ?? '-' }}</td>
                     <td>{{ $data->workDay->name ?? '-' }}</td>
-                    <td>{{ \Carbon\Carbon::parse($data->date)->format('d F Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y') }}</td>
                     <td>
                         <a href="javascript:void(0)" class="btn btn-link p-0"
-                           onclick="showLocationAndPhoto('Check-in','{{ $data->location_in }}','{{ $data->getFirstMediaUrl('presence-in') }}')">
+                           onclick="showLocationAndPhoto('Check-in','{{ $data['location_in'] }}','{{ $data['photo_in_url'] }}')">
                            {{ $data->check_in }}
                         </a>
                     </td>
                     <td>
                         <a href="javascript:void(0)" class="btn btn-link p-0"
-                           onclick="showLocationAndPhoto('Check-out','{{ $data->location_out }}','{{ $data->getFirstMediaUrl('presence-out') }}')">
+                           onclick="showLocationAndPhoto('Check-out','{{ $data['location_out'] }}','{{ $data['photo_in_url'] }}')">
                            {{ $data->check_out }}
                         </a>
                     </td>

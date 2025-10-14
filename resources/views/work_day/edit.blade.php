@@ -64,7 +64,7 @@
                                     <td class="text-center">
                                         <div class="form-check form-switch">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <input class="form-check-input" type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->day_off == 1 ? 'checked' : '' }}>
+                                                <input class="form-check-input" type="checkbox" id="{{ $workDay->day }}-dayOff" name="dayOff[{{ $workDay->day }}]" value="1" {{ $workDay->is_offday == 1 ? 'checked' : '' }}>
                                             </div>
                                         </div>
                                     </td>

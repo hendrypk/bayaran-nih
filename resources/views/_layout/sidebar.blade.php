@@ -204,6 +204,12 @@
       </li>
       @endcan
     </ul>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{{ url('/log-viewer') }}" target="_blank">
+        <i class="ri-alert-fill"></i>
+        <span>Log</span>
+      </a>
+    </li>
     <li class="nav-item {{ request()->routeIs('auth.logout') ? 'active' : '' }}">
       <a class="nav-link collapsed" href="{{ route('auth.logout') }}">
         <i class="ri-logout-box-r-fill"></i>

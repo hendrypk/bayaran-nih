@@ -9,15 +9,15 @@
     <div class="col-md-6">
         <div class="d-flex flex-wrap gap-2">
             <!-- Status Filter -->
-            <form action="{{ route('presence.list.admin') }}" method="GET" class="m-0 d-flex">
-                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                <select id="status" name="status" class="form-select"
-                        onchange="this.form.submit()">
-                    <option value="presence" {{ request()->get('status') === 'presence' ? 'selected' : '' }}>Presence</option>
-                    <option value="absence" {{ request()->get('status') === 'absence' ? 'selected' : '' }}>Absence</option>
-                </select>
-            </form>
+                <form action="{{ route('presence.list.admin') }}" method="GET" class="m-0 d-flex">
+                    <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                    <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                    <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="presence" {{ request()->get('status') === 'presence' ? 'selected' : '' }}>Presence</option>
+                        <option value="absence" {{ request()->get('status') === 'absence' ? 'selected' : '' }}>Absence</option>
+                    </select>
+                </form>
+
 
             <!-- Date Range Filter -->
             <livewire:date-range-filter 
@@ -92,9 +92,10 @@
                         </div> --}}
                 </div>
                 <div class="card-table-wrapper"> 
-                    <livewire:presence-table :status="request()->get('status')" 
-                                            :startDate="request()->get('start_date')" 
-                                            :endDate="request()->get('end_date')" />
+                    <livewire:presence-table
+                        :status="request()->get('status')" 
+                        :startDate="request()->get('start_date')" 
+                        :endDate="request()->get('end_date')" />
                 </div>
             </div>
         </div>

@@ -63,7 +63,7 @@ public function update(Request $request, $id)
                 'day' => $day
             ],
             [
-                'id_day_off'   => isset($request->dayOff[$day]) ? 1 : 0,
+                'is_offday'   => isset($request->dayOff[$day]) ? 1 : 0,
                 'count_break'     => isset($request->break[$day]) ? 1 : 0,
                 'arrival'   => isset($request->dayOff[$day]) ? null : ($request->arrival[$day] ?? null),
                 'start_time'  => isset($request->dayOff[$day]) ? null : ($request->checkIn[$day] ?? null),
@@ -131,7 +131,7 @@ public function create(Request $request)
                 'day' => $day
             ],
             [
-                'id_day_off'   => isset($request->dayOff[$day]) ? 1 : 0,
+                'is_offday'   => isset($request->dayOff[$day]) ? 1 : 0,
                 'count_break'     => isset($request->break[$day]) ? 1 : 0,
                 'arrival'   => isset($request->dayOff[$day]) ? null : ($request->arrival[$day] ?? null),
                 'start_time'  => isset($request->dayOff[$day]) ? null : ($request->checkIn[$day] ?? null),
