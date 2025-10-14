@@ -3,34 +3,82 @@
 namespace App\Http\Controllers;
 
 use App\Models\WorkDay;
+use App\Models\WorkScheduleDay;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Http\Request;
 
 class WorkDayController extends Controller
 {
 //Work Day List
     public function index(){
-        $workDays = WorkDay::select('name')->groupBy('name')->get();
+        $workDays = WorkScheduleGroup::all();
         return view('work_day.index', compact('workDays'));
     }
 
 //Work Day Detail
 public function detail($name) {
     // Ambil semua work days dengan nama yang sama
-    $workDays = WorkDay::where('name', $name)->get();
-    
+    $workDays = WorkScheduleGroup::with('days')->where('name', $name)->firstOrFail();
+
     return view('work_day.detail', compact('workDays'));
 }
 
 //Work Day Edit
-public function edit(Request $request, $name) {
-    // Ambil semua work days dengan nama yang sama
-    $workDays = WorkDay::where('name', $name)->get();
-    
+public function edit(Request $request, $id) {
+    // Ambil semua work days dengan id yang sama
+    $workDays = WorkScheduleGroup::with('days')->findOrFail($id);
+    $name = $workDays->name;
+
     return view('work_day.edit', compact('workDays', 'name'));
 }
 
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'tolerance' => 'nullable|integer',
+        'countLate' => 'nullable|integer',
+        'dayOff' => 'array',
+        'arrival' => 'array',
+        'checkIn' => 'array',
+        'checkOut' => 'array',
+        'break' => 'array',
+    ]);
+
+    // Ambil group berdasarkan id
+    $group = WorkScheduleGroup::findOrFail($id);
+
+    // Update data group
+    $group->update([
+        'name'       => $request->name,
+        'tolerance'  => $request->tolerance ?? 0,
+        'count_late' => $request->countLate ?? 0,
+    ]);
+
+    // Update tiap hari
+    foreach (['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day) {
+        WorkScheduleDay::updateOrCreate(
+             [
+                'work_schedule_group_id' => $group->id,
+                'day' => $day
+            ],
+            [
+                'id_day_off'   => isset($request->dayOff[$day]) ? 1 : 0,
+                'count_break'     => isset($request->break[$day]) ? 1 : 0,
+                'arrival'   => isset($request->dayOff[$day]) ? null : ($request->arrival[$day] ?? null),
+                'start_time'  => isset($request->dayOff[$day]) ? null : ($request->checkIn[$day] ?? null),
+                'end_time' => isset($request->dayOff[$day]) ? null : ($request->checkOut[$day] ?? null),
+                'break_start'  => isset($request->dayOff[$day]) ? null : ($request->breakIn[$day] ?? null),
+                'break_end' => isset($request->dayOff[$day]) ? null : ($request->breakOut[$day] ?? null),
+            ]
+        );
+    }
+
+    return redirect()->route('workDay.edit', [$id])->with('success', 'Work day schedule updated successfully!');
+}
+
 //Work Day Update
-public function update(Request $request, $name) {
+public function updateOld(Request $request, $name) {
     $id = $request->id;
     $workDays = WorkDay::where('name', $name)->get();
     $newName = $request->input('name');
@@ -54,6 +102,51 @@ public function update(Request $request, $name) {
 
 //Add New Work Day
 public function create(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'tolerance' => 'nullable|integer',
+        'countLate' => 'nullable|integer',
+        'dayOff' => 'array',
+        'arrival' => 'array',
+        'checkIn' => 'array',
+        'checkOut' => 'array',
+        'break' => 'array',
+    ]);
+
+    // Buat atau update group
+    $group = WorkScheduleGroup::updateOrCreate(
+        ['name' => $request->name], // kunci unik
+        [
+            'tolerance' => $request->tolerance ?? 0,
+            'count_late' => $request->countLate ?? 0,
+        ]
+    );
+
+    // Loop semua hari
+    foreach (['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day) {
+        WorkScheduleDay::updateOrCreate(
+            [
+                'work_schedule_group_id' => $group->id,
+                'day' => $day
+            ],
+            [
+                'id_day_off'   => isset($request->dayOff[$day]) ? 1 : 0,
+                'count_break'     => isset($request->break[$day]) ? 1 : 0,
+                'arrival'   => isset($request->dayOff[$day]) ? null : ($request->arrival[$day] ?? null),
+                'start_time'  => isset($request->dayOff[$day]) ? null : ($request->checkIn[$day] ?? null),
+                'end_time' => isset($request->dayOff[$day]) ? null : ($request->checkOut[$day] ?? null),
+                'break_start'  => isset($request->dayOff[$day]) ? null : ($request->breakIn[$day] ?? null),
+                'break_end' => isset($request->dayOff[$day]) ? null : ($request->breakOut[$day] ?? null),
+            ]
+        );
+    }
+
+    return redirect()->route('workDay.index')->with('success', 'Work day schedule saved successfully!');
+}
+
+
+public function createOld(Request $request)
 {
     $request->validate([
         'name' => 'required|string|max:255',

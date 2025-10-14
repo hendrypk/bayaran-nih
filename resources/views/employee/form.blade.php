@@ -51,7 +51,7 @@
                                     ['name' => 'position_id', 'required' => true, 'type' => 'select', 'label' => __('employee.label.position'), 'options' => $position->pluck('name', 'id')->toArray(), 'placeholder' => __('employee.placeholders.select_position')],
                                     ['name' => 'sales_status', 'required' => true, 'type' => 'select', 'label' => __('employee.label.sales_status'), 'options' => [1 => 'Yes', 0 => 'No'], 'default' => 0, 'placeholder' => __('employee.placeholders.select_status')],
                                     ['name' => 'due_annual_leave', 'type' => 'date', 'label' => __('attendance.label.annual_leave_due')],
-                                    ['name' => 'workDay', 'required' => true, 'type' => 'checkbox_group', 'label' => __('employee.label.work_schedule'), 'options' => $workDay->pluck('name', 'id')->toArray()],
+                                    ['name' => 'workDay', 'required' => true, 'type' => 'checkbox_group', 'label' => __('employee.label.work_schedule'), 'options' => $workScheduleGroups->pluck('name', 'id')->toArray()],
                                 ];
 
                                 $performance = [

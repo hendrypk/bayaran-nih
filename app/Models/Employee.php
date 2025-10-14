@@ -106,8 +106,8 @@ class Employee extends Authenticatable implements HasMedia
 
     public function workDay()
     {
-        return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
-    }      
+        return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
+    }
 
     // public function positionKpi()
     // {

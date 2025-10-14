@@ -8,11 +8,11 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
-                    <h5 class="card-title">{{ __('option.label.edit_work_day') }} {{ $workDays->first()->name }}</h5>
+                    <h5 class="card-title">{{ __('option.label.edit_work_day') }} {{ $workDays->name }}</h5>
                 </div>
             </div> 
                  
-            <form action="{{ route('workDay.update', $workDays->first()->name) }}" method="POST">
+            <form action="{{ route('workDay.update', $workDays->id) }}" method="POST">
                 @csrf
                 @method('POST')
 
@@ -31,16 +31,16 @@
                 </div>
                 <div class="form-group row mb-3 container">
                     <div class="col-md-3">
-                        <input type="text" class="input-form" name="name" value="{{ $workDays->first()->name }}">
+                        <input type="text" class="input-form" name="name" value="{{ $workDays->name }}">
                     </div>
                     <div class="col-md-3">
-                        <input type="number" class="input-form" name="tolerance" value="{{ $workDays->first()->tolerance }}">
+                        <input type="number" class="input-form" name="tolerance" value="{{ $workDays->tolerance }}">
                     </div>
                     <div class="col-md-3">
                         <select class="select-form" name="countLate" aria-label="Default select example">
                             <option selected disabled>{{ __('employee.placeholders.select_status') }}</option>
-                            <option value="1" {{ $workDays->first()->count_late == '1' ? 'selected' : '' }}>Yes</option>
-                            <option value="0"{{ $workDays->first()->count_late == '0' ? 'selected' : '' }}>No</option>
+                            <option value="1" {{ $workDays->count_late == '1' ? 'selected' : '' }}>Yes</option>
+                            <option value="0"{{ $workDays->count_late == '0' ? 'selected' : '' }}>No</option>
                           </select>
                     </div>
                 </div>
@@ -58,10 +58,9 @@
                             <th>{{ __('option.label.exclude_break') }}</th>
                         </thead>
                         <tbody>
-                            @foreach($workDays as $workDay)
+                            @foreach($workDays->days as $workDay)
                                 <tr>
                                     <td class="text-center">{{ __('option.label.day.' . strtolower($workDay->day)) }}</td>
-                                    {{-- <td class="text-center"> ucfirst($workDay->day) }}</td> --}}
                                     <td class="text-center">
                                         <div class="form-check form-switch">
                                             <div class="d-flex justify-content-center align-items-center">
@@ -73,16 +72,16 @@
                                         <input type="time" id="{{ $workDay->day }}-arrival" class="input-form text-center" name="arrival[{{ $workDay->day }}]" value="{{ $workDay->arrival }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
                                     <td class="text-center">
-                                        <input type="time" id="{{ $workDay->day }}-checkIn" class="input-form text-center" name="checkIn[{{ $workDay->day }}]" value="{{ $workDay->check_in }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                        <input type="time" id="{{ $workDay->day }}-checkIn" class="input-form text-center" name="checkIn[{{ $workDay->day }}]" value="{{ $workDay->start_time }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
                                     <td class="text-center">
-                                        <input type="time" id="{{ $workDay->day }}-checkOut" class="input-form text-center" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->check_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                        <input type="time" id="{{ $workDay->day }}-checkOut" class="input-form text-center" name="checkOut[{{ $workDay->day }}]" value="{{ $workDay->end_time }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
                                     <td class="text-center">
-                                        <input type="time" id="{{ $workDay->day }}-breakIn" class="input-form text-center" name="breakIn[{{ $workDay->day }}]" value="{{ $workDay->break_in }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                        <input type="time" id="{{ $workDay->day }}-breakIn" class="input-form text-center" name="breakIn[{{ $workDay->day }}]" value="{{ $workDay->break_start }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
                                     <td class="text-center">
-                                        <input type="time" id="{{ $workDay->day }}-breakOut" class="input-form text-center" name="breakOut[{{ $workDay->day }}]" value="{{ $workDay->break_out }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
+                                        <input type="time" id="{{ $workDay->day }}-breakOut" class="input-form text-center" name="breakOut[{{ $workDay->day }}]" value="{{ $workDay->break_end }}" {{ $workDay->day_off == 1 ? 'disabled' : '' }}>
                                     </td>
                                     <td class="text-center">
                                         <div class="form-check form-switch">

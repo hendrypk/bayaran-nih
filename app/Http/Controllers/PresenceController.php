@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TemplateExportPresence;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Cache\RedisTagSet;
 
 class PresenceController extends Controller
@@ -216,16 +217,23 @@ public function indexOld(Request $request){
         $today = strtolower($date->format('l'));
         $workDayId = $request->workDay;
 
-        $workDayData = WorkDay::find($workDayId);
-        $workDay = WorkDay::where('name', $workDayData->name)->where('day', $today)->first();
+        $group = WorkScheduleGroup::find($request->workDay);
 
-        // $workDay = WorkDay::find($workDayId)->where('day', $today)->first();
+        if (!$group) {
+            
+            $message = 'Work Schedule Group not found for the employee.';
+            return redirect()->back()->with('error', $message);
+        }
+
+        $workDay = $group->days()
+            ->where('day', $today)
+            ->first();
+            
         $checked_in = $request->checkin;
-        $cheked_out = $request->checkout;
-        $day_off = $workDay->day_off;
+        $day_off = $workDay->is_offday;
         // dd($workDayId, $date, $today, $workDay->toArray(), $day_off);
-        $break = $workDay->break;
-        $isCountLate = $workDay->count_late;
+        $break = $workDay->count_break;
+        $isCountLate = $group->count_late;
         $isEmployeeLeave = Presence::where('date', $date)
             ->where('employee_id', $employee_id)
             ->whereNotNull('leave')
@@ -246,12 +254,11 @@ public function indexOld(Request $request){
         
         //get from work dat table
         $arrival = $workDay ? $parseTime($workDay->arrival) : null;
-        $check_in = $workDay ? $parseTime($workDay->check_in) : null;
-        $check_out = $workDay ? $parseTime($workDay->check_out) : null;
-        $break_in = $workDay ? $parseTime($workDay->break_in) : null;
-        $break_out = $workDay ? $parseTime($workDay->break_out) : null;
+        $check_in = $workDay ? $parseTime($workDay->start_time) : null;
+        $check_out = $workDay ? $parseTime($workDay->end_time) : null;
+        $break_in = $workDay ? $parseTime($workDay->break_start) : null;
+        $break_out = $workDay ? $parseTime($workDay->break_end) : null;
         $excldueBreak = $break == 1;
-        $noCountLate = $isCountLate == 0;
 
         //Break Duration
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
@@ -259,9 +266,6 @@ public function indexOld(Request $request){
         //get from form
         $checked_in = $request ? $parseTime($request->checkin) : null;
         $checked_out = $request ? $parseTime($request->checkout) : null;
-        // $lateArrival = $checked_in && $arrival ? ($arrival->diffInMinutes($checked_in, false)> 1 ? 1 : 0) :0;
-        // $lateArrival = intval($lateArrival);
-        // $lateCheckIn = $checked_in && $check_in ? max(intval($check_in->diffInMinutes($checked_in, false)), 0) : '0';
 
         if($checked_in && $check_in) {
             switch(true) {

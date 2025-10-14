@@ -281,10 +281,10 @@ Route::middleware(['auth:web'])->group(function () {
         Route::prefix('work-pattern')->group(function () {
             Route::get('', [WorkDayController::class, 'index'])->name('workDay.index');
             Route::post('submit', [WorkDayController::class, 'create'])->name('workDay.create');
-            Route::get('detail/{name}', [WorkDayController::class, 'detail'])->name('workDay.detail');
-            Route::get('edit/{name}', [WorkDayController::class, 'edit'])->name('workDay.edit');
-            Route::post('{name}/update', [WorkDayController::class, 'update'])->name('workDay.update');
-            Route::post('{name}/delete', [WorkDayController::class, 'delete'])->name('workDay.delete');
+            Route::get('detail/{id}', [WorkDayController::class, 'detail'])->name('workDay.detail');
+            Route::get('edit/{id}', [WorkDayController::class, 'edit'])->name('workDay.edit');
+            Route::post('{id}/update', [WorkDayController::class, 'update'])->name('workDay.update');
+            Route::post('{id}/delete', [WorkDayController::class, 'delete'])->name('workDay.delete');
         });
     });
 
