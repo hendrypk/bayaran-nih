@@ -206,6 +206,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::post('import/submit', [PresenceController::class, 'importStore'])->name('import');
             Route::post('{id}/delete', [PresenceController::class, 'delete'])->name('presence.delete');
             Route::post('submit', [PresenceController::class, 'create'])->name('presence.create.admin');
+            Route::post('save', [PresenceController::class, 'save'])->name('presence.save.admin');
             Route::post('{id}/update', [PresenceController::class, 'update'])->name('presence.update.admin');
             Route::post('export', [PresenceController::class, 'export'])->name('presence.export');
             Route::get('import/template', [PresenceController::class, 'template'])->name('template.import');

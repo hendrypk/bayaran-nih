@@ -13,13 +13,13 @@ class PresenceTable extends Component
 {
     public $startDate;
     public $endDate;
-    public $filter = 'presence';
+    public $status = 'presence';
 
     protected $listeners = ['dateRangeChanged' => 'setDateRange'];
 
     public function mount()
     {
-        $this->filter = request()->get('status', 'presence');
+        $this->status = request()->get('status');
         $this->startDate = request()->get('start_date') ?: now()->startOfMonth()->format('Y-m-d');
         $this->endDate = request()->get('end_date') ?: now()->format('Y-m-d');
     }
@@ -53,27 +53,6 @@ class PresenceTable extends Component
         );
     }
 
-    protected function isOffday($employee, $date)
-    {
-        $dayName = strtolower(date('l', strtotime($date))); // monday, tuesday, etc.
-        $workDay = $employee->workDay->first();
-
-        if(!$workDay) {
-            return false;
-        }
-
-        return $workDay->days
-            ->where('day', $dayName)
-            ->contains(fn($day) => $day->is_offday);
-    }
-    
-    protected function hasPresence($employee, $date)
-    {
-        return $employee->presences
-            ->filter(fn($p) => \Carbon\Carbon::parse($p->date)->format('Y-m-d') === $date)
-            ->isNotEmpty();
-    }
-
     public function render()
     {
         $start = $this->startDate;
@@ -89,13 +68,15 @@ class PresenceTable extends Component
             $current = strtotime('+1 day', $current);
         }
 
-        $employees = Employee::with([
-            'workDay.days',
-            'presences' => fn($q) => $q->whereBetween('date', [$start, $end])
-        ])
-        ->whereNull('resignation')
-        ->where(fn ($q) => $this->filterByUserPosition($q))
-        ->get();
+        $employees = Employee::with(
+            [
+                'workDay.days',
+                'presences' => fn($q) => $q->whereBetween('date', [$start, $end])
+            ]
+        )
+            ->whereNull('resignation')
+            ->where(fn ($q) => $this->filterByUserPosition($q))
+            ->get();
 
         $allDates = $this->setDateRange($start, $end);
 
@@ -120,6 +101,7 @@ class PresenceTable extends Component
                         'date' => $date,
                     ];
                 }
+                \Log::info('foto', [$presence]);
             }
         }
 
@@ -137,7 +119,7 @@ class PresenceTable extends Component
             'employees' => $employees,
             'startDate' => $start,
             'endDate'   => $end,
-            'filter'    => $this->filter,
+            'status'    => $this->status,
             'allDates'  => $allDates,
         ]);
     }

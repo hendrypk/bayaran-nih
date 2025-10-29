@@ -60,7 +60,8 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
             $row->check_out_early,
             $row->leave,
             $row->leave_note,
-            $row->leave_status == 1 ? 'accept' : 'reject',
+            $row->leave_status === null ? '' : ($row->leave_status == 1 ? 'accept' : 'reject')
+
         ];
     }
     
@@ -100,7 +101,7 @@ class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyle
     {
         $sheet->mergeCells('A1:O1')->getStyle('A1:O1')->getAlignment()->setHorizontal('center');
         $sheet->mergeCells('A2:B2')->getStyle('A2:B2')->getAlignment()->setHorizontal('left');
-        $sheet->mergeCells('C2:G2');
+        $sheet->mergeCells('C2:D2')->getStyle('C2:D2')->getAlignment()->setHorizontal('left');
         
 
         $sheet->getStyle('A3:I3')->getAlignment()->setHorizontal('center');

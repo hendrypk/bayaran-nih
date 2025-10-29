@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('presence.create.admin') }}" method="POST">
+                <form action="{{ route('presence.save.admin') }}" method="POST">
                     @csrf   
 
                     <div class="row mb-3">

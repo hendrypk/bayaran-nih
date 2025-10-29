@@ -16,15 +16,29 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TemplateExportPresence;
 use App\Models\WorkScheduleGroup;
+use App\Services\PresenceService;
 use Illuminate\Cache\RedisTagSet;
 
 class PresenceController extends Controller
 {
+    protected $presenceService;
+
+    public function __construct(PresenceService $presenceService)
+    {
+        $this->presenceService = $presenceService;
+    }
+
 
 //Presences List
 public function index(){
     $employees = Employee::whereNull('resignation')->get();
-    return view('presence.index', compact('employees'));
+            $workDays = $employees->mapWithKeys(fn($e) => [
+            $e->id => $e->workDay->map(fn($wd) => [
+                'id' => $wd->id,
+                'name' => $wd->name
+            ])
+        ])->toArray();
+    return view('presence.index', compact('employees', 'workDays'));
 }
 
 public function indexOldd(Request $request)
@@ -475,8 +489,57 @@ public function indexOld(Request $request){
         $presence->late_check_in = $lateCheckIn;
         $presence->check_out_early = $checkOutEarly;
         $presence->save();
-        // return redirect()->route('presence.list.admin', compact('employees'))->with('success', 'Update Manual Presence Successfull');
-        return redirect()->back()->with('success', 'Update Manual Presence Successfull');
+        return redirect()->back()->with('success', 'Manual Presence Successfully saved');
+    }
+
+
+    public function save (Request $request, PresenceService $presenceService) {
+        $validated = $request->validate([
+            'id' => 'nullable|exists:presences,id',
+            'employee_id' => 'required|exists:employees,id',
+            'workDay' => 'required|exists:work_schedule_groups,id',
+            'date' => 'required|date',
+            'checkin' => 'required',
+            'checkout' => 'nullable',
+        ]);
+
+        $employee = Employee::findOrFail($request->employee_id);
+        $group = WorkScheduleGroup::findOrFail($request->workDay);
+        $date = Carbon::parse($request->date);
+        $today = strtolower($date->format('l'));
+        $workDay = $group->days()->where('day', $today)->first();
+        $checkin = Carbon::parse($request->checkin);
+        $checkout = Carbon::parse($request->checkout);
+
+        if (!$group) {
+            throw new \Exception("WorkDay data not found for selected date ($today).");
+        }
+
+        $requiredFields = ['arrival', 'start_time', 'end_time', 'break_start', 'break_end'];
+        foreach ($requiredFields as $field) {
+            if (empty($workDay->$field)) {
+                throw new \Exception("Missing required work day field: {$field}");
+            }
+        }
+
+        $presenceData = $presenceService->calculateManualPresence($employee, $workDay, $group, $date, $checkin, $checkout);
+
+        Presence::updateOrCreate(
+            [
+                'id' => $request->id,
+                'date' => $request->date,
+                'employee_id' => $request->employee_id,
+                'work_day_id' => $request->workDay,
+            ],
+            [
+                'check_in' => $checkin,
+                'check_out' => $checkout,
+                'late_check_in' => $presenceData['late_check_in'],
+                'late_arrival' => $presenceData['late_arrival'],
+                'check_out_early' => $presenceData['check_out_early'],
+            ]
+        );
+        return redirect()->back()->with('success', 'Manual Presence Successfully saved');
     }
 
 //Presence Delete
@@ -495,7 +558,8 @@ public function indexOld(Request $request){
     public function export(Request $request) {
         $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
         $endDate   = $request->end_date ?? now()->format('Y-m-d');
-
+        $status    = $request->status;
+        // dd($status);
         try {
             $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
             $formattedEndDate   = Carbon::parse($endDate)->format('Y-m-d');

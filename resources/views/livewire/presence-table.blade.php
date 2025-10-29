@@ -1,35 +1,3 @@
-{{-- @php
-    use Carbon\Carbon;
-
-    // Default: tanggal 1 bulan ini sampai hari ini
-    $defaultStartDate = Carbon::now()->startOfMonth()->format('Y-m-d');
-    $defaultEndDate   = Carbon::now()->format('Y-m-d');
-
-    $startDate = request()->get('start_date') ?: $defaultStartDate;
-    $endDate   = request()->get('end_date')   ?: $defaultEndDate;
-    $filter    = request()->get('status')     ?: 'presence';
-
-    // Helper untuk generate array tanggal dari startDate ke endDate
-    function dateRange($start, $end) {
-        $dates = [];
-        $current = Carbon::parse($start);
-        $last    = Carbon::parse($end);
-        while ($current->lte($last)) {
-            $dates[] = $current->format('Y-m-d');
-            $current->addDay();
-        }
-        return $dates;
-    }
-
-    $absenceDates = ($filter === 'absence' && $startDate && $endDate) 
-        ? dateRange($startDate, $endDate) 
-        : [];
-
-    $row = 1;
-@endphp --}}
-
-
-
 <div class="card-table-wrapper">
     <table class="table datatable table-hover">
         <thead>
@@ -49,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-        @if($filter === 'absence')
+        @if($status === 'absence')
             @foreach($absences as $no => $item)
                 {{-- @foreach ($allDates as $date) --}}
                         <tr>
@@ -85,7 +53,7 @@
                     <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y') }}</td>
                     <td>
                         <a href="javascript:void(0)" class="btn btn-link p-0"
-                           onclick="showLocationAndPhoto('Check-in','{{ $data['location_in'] }}','{{ $data['photo_in_url'] }}')">
+                           onclick="showLocationAndPhoto('Check-in','{{ $data['location_in'] }}','{{ $data->getFirstMediaUrl('presence-in') }}')">
                            {{ $data->check_in }}
                         </a>
                     </td>
@@ -108,6 +76,7 @@
                         @can('update presence')
                             <button type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editPresence"
                                 data-id="{{ $data->id }}"
+                                data-employee-id="{{ $data->employee->id ?? '' }}"
                                 data-name="{{ $data->employee->name ?? '' }}"
                                 data-date="{{ formatDate($data->date, 'd-m-Y') }}"
                                 data-workDay="{{ $data->work_day_id }}"
@@ -130,47 +99,4 @@
         @endif
         </tbody>
     </table>
-
-    <script>
-document.getElementById('employeeSelect').addEventListener('change', function () {
-    var employeeId = this.value; 
-    var workDays = @json($workDays);
-    var workDaySelect = document.getElementById('workDaySelect');
-    var workDayContainer = document.getElementById('workDayContainer');
-
-    // Clear previous options
-    workDaySelect.innerHTML = '<option selected disabled>Select Work Day</option>';
-
-    // Cek jika employee_id ada di workDays
-    if (employeeId && workDays[employeeId]) {
-        var selectedWorkDays = workDays[employeeId];
-
-        // Check if there is more than one work day
-        if (selectedWorkDays.length > 1) {
-            selectedWorkDays.forEach(function(workDay) {
-                var option = document.createElement('option');
-                option.value = workDay.id; // Set the value to the ID
-                option.text = workDay.name; // Display the name
-                workDaySelect.appendChild(option);
-            });
-            workDaySelect.disabled = false; // Enable selection
-            workDayContainer.style.display = 'block';
-        } else if (selectedWorkDays.length === 1) {
-            // If there's only one work day, set its value and keep it enabled
-            workDaySelect.value = selectedWorkDays[0].id; // Set to the ID
-            workDaySelect.innerHTML = ''; // Clear previous options
-            var option = document.createElement('option');
-            option.value = selectedWorkDays[0].id; // Set the value
-            option.text = selectedWorkDays[0].name; // Display the name
-            workDaySelect.appendChild(option);
-            workDaySelect.disabled = false; // Keep it enabled
-            workDayContainer.style.display = 'block';
-        } else {
-            workDayContainer.style.display = 'block'; // No work days
-        }
-    } else {
-        workDayContainer.style.display = 'block'; // No employee selected
-    }
-});
-    </script>
 </div>
