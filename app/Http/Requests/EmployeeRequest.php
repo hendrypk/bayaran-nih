@@ -45,6 +45,9 @@ class EmployeeRequest extends FormRequest
             'officeLocations' => 'required|array|min:1',
             'annual_leave' => 'nullable|integer',
             'due_annual_leave' => 'nullable|date',
+            'kpi_id' => 'nullable|integer',
+            'pa_id' => 'nullable|integer',
+            'bobot_kpi' => 'nullable|integer',
         ];
     }
 

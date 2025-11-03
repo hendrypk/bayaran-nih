@@ -106,8 +106,8 @@ class Employee extends Authenticatable implements HasMedia
 
     public function workDay()
     {
-        return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
-    }      
+        return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
+    }
 
     // public function positionKpi()
     // {
@@ -156,7 +156,7 @@ class Employee extends Authenticatable implements HasMedia
     }
 
     public function presences(){
-        return $this->belongsTo(Presence::class,'employee_id');
+        return $this->hasMany(Presence::class, 'employee_id', 'id')->with('media');
     }
 
     public function sendPasswordResetNotification($token)

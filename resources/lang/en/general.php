@@ -69,6 +69,7 @@ return [
         'attachment' => 'Attachmment',
         'edit_lapor_hr' => 'Edit Lapor HR',
         'age' => 'Age',
+        'number' => 'Number',
 
 
     ],

@@ -2,10 +2,139 @@
 
 namespace App\Services;
 
+use App\Models\Employee;
 use App\Models\WorkDay;
+use Carbon\Carbon;
 
 class PresenceService
 {
+        /**
+     * Ambil data presence / absence untuk range tanggal
+     *
+     * @param string $start
+     * @param string $end
+     * @param string $status 'presence' atau 'absence'
+     * @return array
+     */
+    public function getPresenceData(string $start, string $end, string $status = 'presence'): array
+    {
+        $allDates = [];
+        $current = strtotime($start);
+        $last = strtotime($end);
+
+        while ($current <= $last) {
+            $allDates[] = date('Y-m-d', $current);
+            $current = strtotime('+1 day', $current);
+        }
+
+        $employees = Employee::with([
+            'workDay.days',
+            'presences' => fn($q) => $q->whereBetween('date', [$start, $end])
+        ])
+        ->whereNull('resignation')
+        ->get();
+
+        $data = [];
+
+        foreach ($employees as $employee) {
+            $workDay = $employee->workDay->first();
+            foreach ($allDates as $date) {
+                $dayName = strtolower(date('l', strtotime($date)));
+                $isOffday = $workDay ? $workDay->days->where('day', $dayName)->contains(fn($day) => $day->is_offday) : false;
+                $presence = $employee->presences->first(fn($p) => Carbon::parse($p->date)->format('Y-m-d') === $date);
+
+                if ($status === 'presence' && $presence && !$isOffday) {
+                    $data[] = $presence;
+                }
+
+                if ($status === 'absence' && !$presence && !$isOffday) {
+                    $data[] = [
+                        'employee' => $employee,
+                        'date' => $date,
+                    ];
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Calculate add manual presence
+     */
+    public function calculateManualPresence($employee, $workDay, $group, $date, $checkin, $checkout)
+    {
+        $parseTime = fn($time) => $time && $time !== 'N/A' ? Carbon::parse($time) : null;
+
+        $arrival = $workDay ? $parseTime($workDay->arrival) : null;
+        $check_in = $workDay ? $parseTime($workDay->start_time) : null;
+        $check_out = $workDay ? $parseTime($workDay->end_time) : null;
+        $break_in = $workDay ? $parseTime($workDay->break_start) : null;
+        $break_out = $workDay ? $parseTime($workDay->break_end) : null;
+
+        $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
+        $isCountLate = $group->count_late;
+        $excldueBreak = $workDay->count_break == 1;
+
+        $lateCheckIn = 0;
+        $lateArrival = 0;
+        $checkOutEarly = 0;
+
+        if ($checkin && $check_in) {
+            switch (true) {
+                case $isCountLate == 0:
+                    $lateCheckIn = 0;
+                    break;
+                case $excldueBreak:
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checkin, false)), 0);
+                    break;
+                case $checkin->between($break_in, $break_out):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
+                    break;
+                case $break_in->lt($checkin):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checkin, false)) - $breakDuration, 0);
+                    break;
+                case $checkin->lt($break_in):
+                    $lateCheckIn = max(intval($check_in->diffInMinutes($checkin, false)), 0);
+                    break;
+            }
+
+            $lateArrival = $checkin && $arrival && $arrival->diffInMinutes($checkin, false) > 1 ? 1 : 0;
+        }
+
+        if ($checkout && $check_out) {
+            $cutStart = Carbon::parse($check_out->format('Y-m-d' . ' 12:00:00 '));
+            $cutEnd = Carbon::parse($check_out->format('Y-m-d' . ' 13:00:00 '));
+
+            switch (true) {
+                case $isCountLate == 0:
+                    $checkOutEarly = 0;
+                    break;
+                case $excldueBreak:
+                    $checkOutEarly = max(intval($checkout->diffInMinutes($check_out, false)), 0);
+                    break;
+                case $checkout->lt($check_in):
+                    $checkOutEarly = 0;
+                    break;
+                case $checkout->lt($cutStart):
+                    $checkOutEarly = max(intval($checkout->diffInMinutes($check_out, false)) - 60, 0);
+                    break;
+                case $checkout->between($cutStart, $cutEnd):
+                    $checkOutEarly = max(intval($cutEnd->diffInMinutes($check_out, false)), 0);
+                    break;
+                default:
+                    $checkOutEarly = max(intval($checkout->diffInMinutes($check_out, false)), 0);
+                    break;
+            }
+        }
+
+        return [
+            'late_check_in' => $lateCheckIn,
+            'late_arrival' => $lateArrival,
+            'check_out_early' => $checkOutEarly,
+        ];
+    }
+    
     /**
      * Calculate late check-in and late arrival
      */
@@ -24,28 +153,25 @@ class PresenceService
             return [0, 0];
         }
 
-        if ($isCountLate == 0) {
-            return [0, 0];
-        }
-
         $lateCheckIn = 0;
-        $lateArrival = ($now && $arrival && $arrival->diffInMinutes($now, false) > 1) ? 1 : 0;
+        $lateArrival = 0;
 
-        if ($excludeBreak) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
-        } elseif ($now->between($break_in, $break_out)) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($break_in, false)), 0);
-        } elseif ($now->between($check_in, $break_in)) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)), 0);
-        } elseif ($now->between($break_out, $check_out)) {
-            $lateCheckIn = max(intval($check_in->diffInMinutes($now, false)) - $breakDuration, 0);
-        } 
-        // else {
-        //     return response()->json([
-        //         'status'  => 'error',
-        //         'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
-        //     ], 500);
-        // }
+        if ($isCountLate == 1) {
+            $lateArrival = ($now && $arrival && $now->greaterThan($arrival->copy()->addMinute()))
+                ? 1 : 0;
+
+            if ($excludeBreak) {
+                $lateCheckIn = max($check_in->diffInMinutes($now, false), 0);
+            } else {
+                if ($now->between($check_in, $break_in)) {
+                    $lateCheckIn = max($check_in->diffInMinutes($now, false), 0);
+                } elseif ($now->between($break_in, $break_out)) {
+                    $lateCheckIn = max($check_in->diffInMinutes($break_in, false), 0);
+                } elseif ($now->between($break_out, $check_out)) {
+                    $lateCheckIn = max($check_in->diffInMinutes($now, false) - $breakDuration, 0);
+                }
+            }
+        }
 
         return [$lateCheckIn, intval($lateArrival)];
     }
@@ -88,14 +214,6 @@ class PresenceService
             $checkOutEarly = max(intval($break_out->diffInMinutes($check_out, false)), 0);
 
         } 
-        // else {
-        //     return [
-        //         'error'   => true,
-        //         'message' => 'Tidak ada kondisi yang terpenuhi saat menghitung keterlambatan.',
-        //         'lateCheckIn' => 0,
-        //         'lateArrival' => 0,
-        //     ];
-        // }
 
         return $checkOutEarly;
     }

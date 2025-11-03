@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\EmployeeRequest;
 use App\Models\Presence;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -39,8 +40,7 @@ class EmployeeController extends Controller
         $job_title = JobTitle::all();
         $division = Division::all();
         $department = Department::all();
-        $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-            ->groupBy('name')->get();
+        $workScheduleGroups = WorkScheduleGroup::all();
         $officeLocations = OfficeLocation::all();
         $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
@@ -54,10 +54,10 @@ class EmployeeController extends Controller
         $educations = $options['educations'];
 
         return view('employee.form', compact(
-            'employee', 'position', 'job_title', 'division', 'workDay',
+            'employee', 'position', 'job_title', 'division',
             'officeLocations', 'department', 'status',
             'pa_id', 'kpi_id', 'bloods', 'marriages',
-            'genders', 'religions', 'educations', 'banks'
+            'genders', 'religions', 'educations', 'banks', 'workScheduleGroups'
         ));
     }
 

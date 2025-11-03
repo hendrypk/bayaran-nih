@@ -27,7 +27,7 @@ Breadcrumbs::for('employee_detail', function (BreadcrumbTrail $trail, $employee)
     $trail->push(__('breadcrumb.employee_detail'), route('employee.list'));
 });
 
-Breadcrumbs::for('employee_form', function (BreadcrumbTrail $trail, $mode, Employee $employee = null) {
+Breadcrumbs::for('employee_form', function (BreadcrumbTrail $trail, $mode, ?Employee $employee = null) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
 

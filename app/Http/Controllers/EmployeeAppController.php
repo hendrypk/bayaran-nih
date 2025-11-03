@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\OfficeLocation;
 use App\Models\LaporHrCategory;
 use App\Models\LaporHrAttachment;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Support\Facades\Log;
 use App\Traits\PresenceSummaryTrait;
 use Illuminate\Support\Facades\Auth;
@@ -198,11 +199,41 @@ class EmployeeAppController extends Controller
             'photo.required' => __('messages.photo_required'),
         ]);
 
+
+        $parseTime = function ($time) {
+            return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
+        };
+
+        $today = now()->toDateString();
+        $now   = $parseTime(now()->toTimeString());
         $day = strtolower(now()->format('l'));
-        $workDayData = WorkDay::find($request->workDay)
-            ->where('day', $day)
-            ->first();
-        
+        $group = WorkScheduleGroup::findOrFail($request->workDay);
+        $workDayData = $group->days()->where('day', $day)->first();
+
+        if (!$workDayData) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Work day data not found for today...',
+            ], 404);
+        }
+
+        if($workDayData->is_offday == 1) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hari ini adalah hari libur...',
+            ], 404);
+        };
+
+        $requiredFields = ['arrival', 'start_time', 'end_time', 'break_start', 'break_end'];
+        foreach ($requiredFields as $field) {
+            if (empty($workDayData->$field) && $workDayData->is_offday == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Missing required work day field: {$field}",
+                ], 404);
+            }
+        }
+
         //Get Office Location From Table
         $location = OfficeLocation::where('name', $request->officeLocations)->first();
         $latOffice = $location->latitude;
@@ -225,38 +256,17 @@ class EmployeeAppController extends Controller
             ]);
         };
 
-        if (!$workDayData) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Work day data not found for today...',
-            ], 404);
-        }
-
-        if($workDayData->day_off == 1) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Hari ini adalah hari libur...',
-            ], 404);
-        };
-
         // Get work day times
-        $parseTime = function ($time) {
-            return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
-        };
-
         $arrival   = $workDayData?->arrival   ? $parseTime($workDayData->arrival)   : null;
-        $check_in  = $workDayData?->check_in  ? $parseTime($workDayData->check_in)  : null;
-        $check_out = $workDayData?->check_out ? $parseTime($workDayData->check_out) : null;
-        $break_in  = $workDayData?->break_in  ? $parseTime($workDayData->break_in)  : null;
-        $break_out = $workDayData?->break_out ? $parseTime($workDayData->break_out) : null;
+        $check_in  = $workDayData?->start_time  ? $parseTime($workDayData->start_time)  : null;
+        $check_out = $workDayData?->end_time ? $parseTime($workDayData->end_time) : null;
+        $break_in  = $workDayData?->break_start  ? $parseTime($workDayData->break_start)  : null;
+        $break_out = $workDayData?->break_end ? $parseTime($workDayData->break_end) : null;
         $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
-        $isCountLate = $workDayData->count_late;
-        $excludeBreak = $workDayData->break;
+        $isCountLate = $group->count_late;
+        $excludeBreak = $workDayData->count_break;
         
         // Get today presence
-        $today = now()->toDateString();
-        $now   = $parseTime(now()->toTimeString());
-
         $presence = Presence::with('workDay')
             ->where('employee_id', Auth::id())
             ->where('date', $today)
@@ -271,11 +281,7 @@ class EmployeeAppController extends Controller
             ->orderByDesc('date')
             ->first();
 
-        // $pastPresenceIn = $pastPresence?->check_in;
         $pastPresenceOut = $pastPresence?->check_out;
-        // $dayCheckIn = $pastPresence->workDay->check_in;
-        // $dayCheckOut = $pastPresence->workDay->check_out;
-
         [$lateCheckIn, $lateArrival] = $presenceService->calculateLate(
             $now,
             $check_in,
@@ -316,12 +322,12 @@ class EmployeeAppController extends Controller
                 $fileName = $media->file_name ?? null;
                 $pastPresence->update([
                     'check_out'       => now()->toTimeString(),
-                    'check_out_early' => $lateResult['checkOutEarly'] ?? 0,
+                    'check_out_early' => 0,
                     'location_out'    => $loc,
                     'photo_out'       => $fileName,
                 ]);
 
-                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
+                $message = __('messages.early_check_out', ['minutes' => 0]);
                 break;
 
             case (!is_null($presenceIn) && is_null($presenceOut)) && !is_null($pastPresenceOut):
@@ -624,12 +630,17 @@ class EmployeeAppController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $employeeId = Auth::id();
-        $employee = Employee::findOrFail($employeeId);
-        $query = Presence::where('employee_id', $employeeId)->whereNull('leave_status')->whereNotNull('work_day_id');
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+            $endDate = Carbon::now()->toDateString();
         }
+        
+        $query = Presence::where('employee_id', Auth::id())
+            ->whereNull('leave_status')
+            ->whereNotNull('work_day_id')
+            ->whereBetween('date', [$startDate, $endDate]);
+
         $presences = $query->get();
         return view('_employee_app.history', compact('presences'));
     }
@@ -769,11 +780,15 @@ class EmployeeAppController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $employeeId = Auth::id();
-        $query = Overtime::where('employee_id', $employeeId);
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+            $endDate = Carbon::now()->toDateString();
         }
+
+        $query = Overtime::where('employee_id', Auth::id())
+            ->whereBetween('date', [$startDate, $endDate]);
+
         $overtime = $query->get();
 
         return view('_employee_app.overtime-history', compact('overtime'));
