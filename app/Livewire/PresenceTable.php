@@ -101,7 +101,6 @@ class PresenceTable extends Component
                         'date' => $date,
                     ];
                 }
-                \Log::info('foto', [$presence]);
             }
         }
 
