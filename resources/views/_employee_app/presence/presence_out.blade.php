@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input type="text" class="form-control" value="{{ $workDayName ?? '-'}}" name="" readonly>
-                                    <input type="hidden" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
+                                    <input type="hidden" class="form-control" value="{{ $workDay->id }}" name="workDay" readonly>
                                 </div>
                             </div>
                             <div class="col-6">
