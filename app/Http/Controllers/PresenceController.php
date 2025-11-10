@@ -527,11 +527,11 @@ public function indexOld(Request $request){
         Presence::updateOrCreate(
             [
                 'id' => $request->id,
+            ],
+            [
                 'date' => $request->date,
                 'employee_id' => $request->employee_id,
                 'work_day_id' => $request->workDay,
-            ],
-            [
                 'check_in' => $checkin,
                 'check_out' => $checkout,
                 'late_check_in' => $presenceData['late_check_in'],
