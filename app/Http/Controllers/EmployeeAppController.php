@@ -106,8 +106,8 @@ class EmployeeAppController extends Controller
             ->whereNull('leave')
             ->first();
 
-        $workDay = $pastPresence->work_day_id;
-        $workDayName = WorkDay::where('id', $workDay)->first()->name;
+        $workDay = WorkScheduleGroup::findOrFail($pastPresence->work_day_id);
+        $workDayName = $workDay->name;
 
         $lokasi = $employee->officeLocations->first();
         $officeLatitude = $lokasi->latitude;
