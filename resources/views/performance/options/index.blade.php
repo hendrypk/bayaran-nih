@@ -218,10 +218,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" class="form-control" name="indicators[${index}][aspect]" required>
                 </div>
                 <div class="col-2">
-                    <input type="number" class="form-control" name="indicators[${index}][target]" required>
+                    <input type="number" class="form-control" name="indicators[${index}][target]" step="0.01" required>
                 </div>
                 <div class="col-2">
-                    <input type="number" class="form-control bobot-input" name="indicators[${index}][bobot]" required>
+                    <input type="number" class="form-control bobot-input" name="indicators[${index}][bobot]" step="0.01" required>
                 </div>
                 <div class="col-1">
                     <button type="button" class="btn btn-red removeIndicatorBtn">
