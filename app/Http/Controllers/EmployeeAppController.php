@@ -987,12 +987,15 @@ class EmployeeAppController extends Controller
 
     public function laporHrSubmit (Request $request) {
         $request->validate([
-            'report_attachment' => 'required|array',
-            'report_attachment.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,mov,avi,mkv|max:5120',
+            'report_date' => 'required|date',
+            'report_category' => 'required|exists:lapor_hr_categories,id',
+            'report_description' => 'required|string',
+            'report_attachment' => 'nullable|array',
+            'report_attachment.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,mov,avi,mkv|max:10000',
         ], [
             'report_attachment.*.file' => 'Setiap file harus berupa file yang valid.',
             'report_attachment.*.mimes' => 'File harus berformat: jpg, jpeg, png, pdf, mp4, mov, avi, atau mkv.',
-            'report_attachment.*.max' => 'Ukuran maksimal file adalah 5MB.',
+            'report_attachment.*.max' => 'Ukuran maksimal file adalah 10MB.',
         ]);       
 
         $laporHr = LaporHr::updateOrCreate(
