@@ -19,6 +19,7 @@ use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\EmployeeRequest;
+use App\Models\EmployeePositionChange;
 use App\Models\Presence;
 use App\Models\WorkScheduleGroup;
 use Illuminate\Support\Facades\Validator;
@@ -64,11 +65,12 @@ class EmployeeController extends Controller
     //employee detail
     public function detail($id)
     {
-        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
+        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
         $presences = Presence::where('employee_id', $id)
             ->whereNotNull('leave')
             ->get();
-
+        $careers = $employee->positionChange()->orderBy('effective_date', 'desc')->get();
+        
         $startDate = new DateTime($employee->joining_date);
         $dateBirth = new DateTime($employee->date_birth);
         $currentDate = new DateTime();
@@ -81,7 +83,7 @@ class EmployeeController extends Controller
 
         $totalOvertime = Overtime::where('employee_id', $employee->eid)
             ->sum('total');
-        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime'));
+        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime', 'careers'));
     }
 
     //submit employee

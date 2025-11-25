@@ -41,7 +41,7 @@ class EmployeeRequest extends FormRequest
             'joining_date' => 'required|date',
             'employee_status' => 'required',
             'sales_status' => 'required',
-            'workDay' => 'required|array|min:1',
+            'workDay' => 'required|array|min:1|exists:work_schedule_groups,id',
             'officeLocations' => 'required|array|min:1',
             'annual_leave' => 'nullable|integer',
             'due_annual_leave' => 'nullable|date',

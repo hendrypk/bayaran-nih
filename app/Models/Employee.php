@@ -222,5 +222,9 @@ class Employee extends Authenticatable implements HasMedia
         ];
     }
 
+    public function positionChange()
+    {
+        return $this->hasMany(EmployeePositionChange::class, 'employee_id','id');
+    }
 
 }
