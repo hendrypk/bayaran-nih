@@ -57,7 +57,7 @@
                                 $performance = [
                                     ['name' => 'kpi_id', 'type' => 'select', 'label' => __('employee.label.kpi'), 'options' => $kpi_id->pluck('name', 'id')->toArray(), 'placeholder' => __('employee.placeholders.select_kpi')],
                                     ['name' => 'pa_id', 'type' => 'select', 'label' => __('employee.label.appraisal'), 'options' => $pa_id->pluck('name', 'id')->toArray(), 'placeholder' => __('employee.placeholders.select_appraisal')],
-                                    ['name' => 'bobot_kpi', 'type' => 'number', 'label' => __('employee.label.kpi_weight'), 'min' => 0],
+                                    ['name' => 'bobot_kpi', 'type' => 'number', 'label' => __('employee.label.kpi_weight'), 'min' => 0, 'max' => 100],
                                 ];
                             @endphp
 
@@ -295,7 +295,7 @@
                                                 <div class="mb-3">
                                                     <label for="{{ $field['name'] }}" class="form-label">{{ $field['label'] }}</label>
 
-                                                    @php $oldValue = old($field['name']); @endphp
+                                                    @php $oldValue = old($field['name']). $employee->{$field['name']} ?? null; @endphp
 
                                                     @if($field['type'] === 'textarea')
                                                         <textarea name="{{ $field['name'] }}" id="{{ $field['name'] }}" rows="3" class="form-control" {{ $field['required'] ?? false ? 'required' : '' }}>{{ $oldValue }}</textarea>
