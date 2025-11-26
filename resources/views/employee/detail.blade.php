@@ -66,6 +66,13 @@
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.marital_status.' . $employee->marriage) }}</div>
                             <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.education') }}</div>
                             <div class="col-lg-8 col-md-8"><span>: </span>{{ __('employee.options.education.' . $employee->education) }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.employee_status') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->employeeStatus->name }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.joining_date') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ formatDate($employee->joining_date) }}</div>
+                            <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.work_duration') }}</div>
+                            <div class="col-lg-8 col-md-8"><span>: </span>{{ $years }} {{ __('general.label.years') }} {{ $months }} {{ __('general.label.months') }} {{ $days }} {{ __('general.label.days') }}</div>
+
                         </div>
                     </div>
 
@@ -86,8 +93,6 @@
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->division->name ?? '-' }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.department') }}</div>
                                 <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->position->department->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.joining_date') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d F Y') }}</div>
                                 <div class="col-lg-4 col-md-4 label">{{ __('employee.label.work_schedule') }}</div>
                                 <div class="col-lg-8 col-md-8">
                                     <span>: </span>
@@ -110,19 +115,8 @@
                                         @endforeach
                                     @endif
                                 </div>  
-                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.employee_status') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->employeeStatus->name }}</div>
                                 <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.sales_status') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->sales_status == 1 ? 'Yes' : 'No' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->kpis->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.kpi_weight') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->bobot_kpi ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.appraisal') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->pas->name ?? '-' }}</div>
-                                <div class="col-lg-4 col-md-4 label ">{{ __('employee.label.work_duration') }}</div>
-                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $years }} {{ __('general.label.years') }} {{ $months }} {{ __('general.label.months') }} {{ $days }} {{ __('general.label.days') }}</div>
-                            </div>
+                                <div class="col-lg-8 col-md-8"><span>: </span>{{ $employee->sales_status == 1 ? 'Yes' : 'No' }}</div>                            </div>
                     </div>
 
                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="v-pills-contact-tab">
@@ -143,7 +137,26 @@
                             </div>
                         </div>
                         <div class="row">
-
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Old Position</th>
+                                        <th>New Position</th>
+                                        <th>Effective Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($careers as $no => $career)
+                                        <tr>
+                                            <td>{{ $no + 1 }}</td>
+                                            <td>{{ $career->oldPosition->name ?? '' }}</td>
+                                            <td>{{ $career->position->name ?? '' }}</td>
+                                            <td>{{ formatDate($career->effective_date) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
