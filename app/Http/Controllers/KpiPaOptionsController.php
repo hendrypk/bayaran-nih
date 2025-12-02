@@ -8,6 +8,7 @@ use App\Models\Performance;
 use Illuminate\Http\Request;
 use App\Models\PerformanceKpi;
 use App\Models\PerformanceAppraisal;
+use App\Models\PerformanceKpiName;
 use App\Models\Position;
 
 use function PHPUnit\Framework\isEmpty;
@@ -132,11 +133,14 @@ public function indicatorUpdate(Request $request, $kpi_id) {
 
 //Indicator Delete
 public function indicatorDelete($id){
-    $indicators = PerformanceKpi::where('kpi_id', $id);
-    $indicators->delete();
 
-    $kpi_id = KpiAspect::findOrFail($id);
-    $kpi_id->delete();
+    $kpi = PerformanceKpiName::find($id);
+
+    if (!$kpi) {
+        return; // atau throw error
+    }
+
+    $kpi->indicators()->delete(); // hapus semua indikator terkait
     
     return response()->json([
         'success' => true,

@@ -12,10 +12,10 @@ class PerformanceAppraisal extends Model
     use SoftDeletes;
 
     protected $table = 'performance_appraisals';
-    protected $fillable = ['appraisal_id', 'aspect'];
+    protected $fillable = ['appraisal_id', 'aspect', 'description'];
     protected $dates = ['deleted_at']; 
     
-    public function gradePas()
+    public function appraisals()
     {
         return $this->hasMany(GradePa::class, 'appraisal_id');
     }

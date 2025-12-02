@@ -71,7 +71,7 @@
       </div>
     </section>
   </main>
-
+<x-modal />
   <!-- ======= Footer ======= -->
   {{-- <footer id="footer" class="footer">
     <div class="credits">

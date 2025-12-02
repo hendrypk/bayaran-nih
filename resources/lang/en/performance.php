@@ -5,7 +5,9 @@ return [
         'select_month' => 'Select Month',
         'select_year' => 'Select Year',
         'kpi' => 'KPI',
+        'kpi_long' => 'Key Performance Indicator',
         'pa' => 'PA',
+        'pa_long' => 'Performance Appraisal',
         'grade' => 'Grade',
         'showing' => 'Showing',
         'entries' => 'Entries',
@@ -35,5 +37,8 @@ return [
         'employee_information' => 'Employee Information',
         'kpi_achievement' => 'KPI Achievement',
         'final_grade' => 'Final Grade',
+        'total_weight' => 'Total Weight',
+        'description' => 'Description',
+
     ]
 ];

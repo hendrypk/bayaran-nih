@@ -5,7 +5,9 @@ return [
         'select_month' => 'Pilih Bulan',
         'select_year' => 'Pilih Tahun',
         'kpi' => 'KPI',
+        'kpi_long' => 'Key Performance Indicator',
         'pa' => 'PA',
+        'pa_long' => 'Performance Appraisal',
         'grade' => 'Nilai',
         'showing' => 'Menampilkan',
         'entries' => 'Entri',
@@ -35,5 +37,7 @@ return [
         'employee_information' => 'Informasi Karyawan',
         'kpi_achievement' => 'Capaian KPI',
         'final_grade' => 'Nilai Akhir',
+        'total_weight' => 'Total Bobot',
+        'description' => 'Deskripsi',
     ]
 ];

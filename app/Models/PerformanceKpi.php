@@ -18,15 +18,15 @@ class PerformanceKpi extends Model
     protected $fillable = [
         'kpi_id',
         'aspect',
-        'position_name',
+        'description',
         'target',
-        'bobot',
+        'weight',
     ];
     protected $dates = ['deleted_at']; 
 
     protected $casts = [
         'target' => 'decimal:2', // Cast to decimal with 2 decimal places
-        'bobot' => 'decimal:2',
+        'weight' => 'decimal:2',
     ];
 
     public function position()
