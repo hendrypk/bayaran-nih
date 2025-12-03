@@ -33,3 +33,35 @@ if (! function_exists('formatTanggalWaktu')) {
         return Carbon::parse($date)->translatedFormat($format);
     }
 }
+
+if (! function_exists('formatNumber')) {
+    function formatNumber($number)
+    {
+        return number_format($number, 0, ',', '.');
+    }
+}
+
+if (! function_exists('formatDecimal')) {
+    function formatDecimal($number)
+    {
+        return number_format($number, 2, ',', '.');
+    }
+}
+
+if (! function_exists('formatRupiah')) {
+    function formatRupiah($number)
+    {
+        return 'Rp ' . number_format($number, 0, ',', '.');
+    }
+}
+
+
+if (! function_exists('formatPercent')) {
+    function formatPercent($number, $decimals = 2)
+    {
+        if ($number <= 1) {
+            $number = $number * 100;
+        }
+        return number_format($number, $decimals, ',', '.') . '%';
+    }
+}

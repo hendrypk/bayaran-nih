@@ -16,10 +16,10 @@ class PerformanceKpiName extends Model
     ];
     protected $dates = ['deleted_at']; 
     
-    public function kpis()
-    {
-        return $this->hasMany(PerformanceKpi::class, 'kpi_id', 'id');
-    }
+    // public function kpis()
+    // {
+    //     return $this->hasMany(PerformanceKpi::class, 'kpi_id', 'id');
+    // }
 
     public function indicators()
     {

@@ -110,30 +110,33 @@ Breadcrumbs::for('kpi', function (BreadcrumbTrail $trail) {
 });
 
 // Home > KPI > Create KPI Report
-Breadcrumbs::for('create_kpi', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('kpi.form', function (BreadcrumbTrail $trail, $isEditing = false, $id = null) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.kpi'), route('kpi.list'));
-    $trail->push(__('breadcrumb.create_kpi'), route('kpi.add'));
+
+    if ($isEditing && $id) {
+        $trail->push(__('breadcrumb.edit_kpi'), route('kpi.edit', ['id' => $id]));
+    } else {
+        $trail->push(__('breadcrumb.create_kpi'), route('kpi.add'));
+    }
 });
 
+
 // Home > KPI > KPI Detail
-Breadcrumbs::for('kpi_detail', function (BreadcrumbTrail $trail, $gradeKpi) {
+Breadcrumbs::for('kpi_detail', function (BreadcrumbTrail $trail, $kpi) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.kpi'), route('kpi.list'));
-    $trail->push(__('breadcrumb.kpi_detail'), route('kpi.detail', [
-        'employee_id' => $gradeKpi->employee_id,
-        'month' => $gradeKpi->month,
-        'year' => $gradeKpi->year]));
+    $trail->push(__('breadcrumb.kpi_detail'), route('kpi.detail', ['id' => $kpi->id]));
 });
 
 // Home > KPI > Edit KPI Report
-Breadcrumbs::for('edit_kpi', function (BreadcrumbTrail $trail, $gradeKpi) {
+Breadcrumbs::for('edit_kpi', function (BreadcrumbTrail $trail, $kpi) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.kpi'), route('kpi.list'));
     $trail->push(__('breadcrumb.edit_kpi'), route('kpi.edit', [
-        'employee_id' => $gradeKpi->employee_id,
-        'month' => $gradeKpi->month,
-        'year' => $gradeKpi->year]));
+        'employee_id' => $kpi->employee_id,
+        'month' => $kpi->month,
+        'year' => $kpi->year]));
 });
 
 // Home > Appraisal

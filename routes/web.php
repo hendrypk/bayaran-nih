@@ -230,16 +230,18 @@ Route::middleware(['auth:web'])->group(function () {
     //kpi
     Route::group(['middleware' => ['permission:view kpi']], function() {
         Route::prefix('kpi')->group(function () {
-            Route::get('', [KpiController::class, 'indexKpi'])->name('kpi.list');
-            Route::get('add', [KpiController::class, 'addKpi'])->name('kpi.add');
-            Route::post('submit', [KpiController::class, 'create'])->name('kpi.create');
-            Route::get('get-by-kpi-id/{kpiId}', [KpiController::class, 'getKpiByEmployee'])->name('kpi.getByEmployee');
-            Route::get('{employee_id}/{month?}/{year}', [KpiController::class, 'detail'])->name('kpi.detail'); 
-            Route::post('{employee_id}/{month}/{year?}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
-            Route::get('{employee_id}/{month?}/{year?}/edit', [KpiController::class, 'edit'])->name('kpi.edit'); 
-            Route::post('{employee_id}/{month}/{year?}/update', [KpiController::class, 'update'])->name('kpi.update');
+            Route::get('', [KpiController::class, 'index'])->name('kpi.list');
+            Route::get('add', [KpiController::class, 'create'])->name('kpi.add');
+            Route::get('{id}', [KpiController::class, 'detail'])->name('kpi.detail'); 
+            Route::post('{id}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
+            Route::get('{id}/edit', [KpiController::class, 'edit'])->name('kpi.edit'); 
             Route::post('filter', [KpiController::class, 'filterKpisByPosition'])->name('kpi.filter');
-        });
+
+            // Route::post('submit', [KpiController::class, 'create'])->name('kpi.create');
+            // Route::post('{employee_id}/{month}/{year?}/update', [KpiController::class, 'update'])->name('kpi.update');
+            // Route::post('{employee_id}/{month}/{year?}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
+            // Route::get('get-by-kpi-id/{kpiId}', [KpiController::class, 'getKpiByEmployee'])->name('kpi.getByEmployee');        
+            });
     });
     
     //appraisal

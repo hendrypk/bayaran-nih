@@ -83,7 +83,7 @@ class Employee extends Authenticatable implements HasMedia
     //relation table position
     public function position()
     {
-        return $this->belongsTo(Position::class, 'position_id', 'id');
+        return $this->belongsTo(Position::class, 'position_id');
     }
 
     //relation table division
@@ -134,12 +134,12 @@ class Employee extends Authenticatable implements HasMedia
 
     public function kpis()
     {
-        return $this->belongsTo(KpiAspect::class, 'kpi_id');
+        return $this->belongsTo(PerformanceKpiName::class, 'kpi_id');
     }
 
     public function pas()
     {
-        return $this->belongsTo(AppraisalName::class, 'pa_id');
+        return $this->belongsTo(PerformanceAppraisalName::class, 'pa_id');
     }
 
     public function performanceKpis()
@@ -226,5 +226,13 @@ class Employee extends Authenticatable implements HasMedia
     {
         return $this->hasMany(EmployeePositionChange::class, 'employee_id','id');
     }
+    
+    public function kpiResults()
+    {
+        return $this->hasMany(PerformanceKpiResult::class, 'employee_id');
+    }
+
 
 }
+
+

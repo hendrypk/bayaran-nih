@@ -24,7 +24,7 @@ class GradeKpi extends Model
 
     protected $dates = ['deleted_at']; 
     protected $casts = [
-        'achievement' => 'decimal:2', // Cast to decimal with 2 decimal places
+        'achievement' => 'decimal:2',
         'grade' => 'decimal:2',
     ];
 

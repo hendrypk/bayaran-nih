@@ -70,7 +70,8 @@ return [
         'edit_lapor_hr' => 'Edit Lapor HR',
         'age' => 'Age',
         'number' => 'Number',
-
+        'created_by' => 'Created by',
+        'updated_by' => 'Updated by',
 
     ],
     'placeholder' => [

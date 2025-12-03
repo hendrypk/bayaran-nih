@@ -2,19 +2,17 @@
 @section('title', 'Performance - KPI Detail')
 @section('content')
 
-{{ Breadcrumbs::render('kpi_detail', $gradeKpi->first()) }}
+{{-- {{ Breadcrumbs::render('kpi_detail', $kpi->name) }} --}}
 
 <div class="row align-item-center mb-3">
     <div class="col md-9">
-        <h3 class="card-title mb-0 py-3">{{ __('performance.label.kpi_detail') }} {{ $month ?? 'All Months' }} {{ $year ?? 'All Years' }}</h3>
+        <h3 class="card-title mb-0 py-3">{{ __('performance.label.kpi_detail') }} {{ $kpi->month }} {{ $kpi->year }}</h3>
     </div>
     
     <div class="col-md-3 d-flex justify-content-end">
         @can('update employee')
         <a href="{{ route('kpi.edit', [
-            'employee_id' => $employees->id,
-            'month' => $month,
-            'year' => $year
+            'id' => $kpi->id,
             ]) }}" class="btn btn-tosca btn-sm d-flex justify-content-center align-items-center me-2">
             <i class="ri-edit-line"></i>
         </a>
@@ -22,14 +20,14 @@
         
         @can('delete employee')
         <button type="button" class="btn btn-red btn-sm" 
-            onclick="confirmDelete({{ $employees->id }}, '{{ $month }}', '{{ $year }}', '{{ $employees->name }}', 'KPI')">
+            onclick="confirmDelete({{ $kpi->id }}, '{{ $kpi->month }}', '{{ $kpi->year }}', '{{ $kpi->employees->name }}', 'KPI')">
             <i class="ri-delete-bin-fill"></i>
         </button>
         @endcan
     </div>
 </div>
 
-<div class="row mb-3    ">
+<div class="row mb-3">
     <div class="col-lg-4">
         <div class="card mb-4">
             <div class="card-body">
@@ -37,27 +35,27 @@
                 {{-- <div class="col-lg-8"> --}}
                     <div class="row mb-2">
                         <div class="col-lg-4 fw-bold"> {{ __('employee.label.eid') }} </div>
-                        <div class="col">: {{ $employees->eid }}</div>
+                        <div class="col">: {{ $employee->eid }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-4 fw-bold"> {{ __('general.label.name') }} </div>
-                        <div class="col">: {{ $employees->name }}</div>
+                        <div class="col">: {{ $employee->name }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-4 fw-bold"> {{ __('employee.label.job_title') }} </div>
-                        <div class="col">: {{ $employees->job_title->name }}</div>
+                        <div class="col">: {{ $employee->position->job_title->name }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-4 fw-bold"> {{ __('employee.label.position') }} </div>
-                        <div class="col">: {{ $employees->position->name }}</div>
+                        <div class="col">: {{ $employee->position->name }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-4 fw-bold"> {{ __('employee.label.division') }} </div>
-                        <div class="col">: {{ $employees->division->name ?? '-' }}</div>
+                        <div class="col">: {{ $employee->division->name ?? '-' }}</div>
                     </div>
                     <div class="row mb-2    ">
                         <div class="col-lg-4 fw-bold"> {{ __('employee.label.department') }} </div>
-                        <div class="col">: {{ $employees->department->name ?? '-' }}</div>
+                        <div class="col">: {{ $employee->department->name ?? '-' }}</div>
                     </div>
                 {{-- </div> --}}
             </div>
@@ -68,8 +66,38 @@
       <!-- Display KPI Details -->
     <div class="col-lg-8">
         <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-title"> {{ __('performance.label.kpi_achievement') }} {{ $kpi->kpiName->name }}</div>
+                <div class="small">
+                    <div class="d-flex">
+                        <span class="fw-bold" style="width:120px;">@lang('general.label.created_by')</span>
+                        @php
+                            if ($kpi->user_created) {
+                                $creator = $kpi->creator->name;
+                                $created_at = $kpi->created_at;
+                            } else {
+                                $creator = '';
+                                $created_at = '';
+                            }
+                        @endphp
+                        <span>: {{ $creator ?: '-' }} / {{ $created_at ?: '-' }}</span>
+                    </div>
+                    <div class="d-flex">
+                        <span class="fw-bold" style="width:120px;">@lang('general.label.updated_by')</span>
+                        @php
+                            if ($kpi->user_updated) {
+                                $updater = $kpi->updater->name;
+                                $updated_at = $kpi->updated_at;
+                            } else {
+                                $updater = '';
+                                $updated_at = '';
+                            }
+                        @endphp
+                        <span>: {{ $updater ?: '-' }} / {{ $updated_at ?: '-' }}</span>
+                    </div>
+                </div>
+            </div>
             <div class="card-body">
-                <div class="card-title"> {{ __('performance.label.kpi_achievement') }} </div>
             <div class="row">
                 <table class="table table-bordered">
                     <thead>
@@ -83,12 +111,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($gradeKpi as $no=>$gradeKpi)
+                        @foreach ($kpi->details as $no=>$gradeKpi)
                             <tr>
                                 <td class="text-center">{{ $no+1 }}</td>
-                                <td>{{ $gradeKpi->indicator->aspect }}</td>
-                                <td class="text-center">{{ number_format($gradeKpi->indicator->target, 2, '.', ',') }}</td>
-                                <td class="text-center">{{ number_format($gradeKpi->indicator->bobot, 2, '.', ',') }}</td>
+                                <td>{{ $gradeKpi->aspect }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->target, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->bobot, 2, '.', ',') }}</td>
                                 <td class="text-end">{{ number_format($gradeKpi->achievement, 2, '.', ',') }}</td>
                                 <td class="text-center">{{ number_format($gradeKpi->grade, 2, '.', ',') }}</td>
                                 
@@ -98,7 +126,7 @@
                     <tfoot>
                         <tr>
                             <th colspan="5">{{ __('performance.label.final_grade') }}</th>
-                            <th class="text-center">{{$totalGrade}}</th>
+                            <th class="text-center">{{$kpi->grade}}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -126,7 +154,7 @@ function confirmDelete(id, month, year, name, entity) {
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/kpi/${id}/${month}/${year}/delete`, { 
+            fetch(`/kpi/${id}/delete`, { 
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}' // CSRF token for Laravel

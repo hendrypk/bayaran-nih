@@ -26,66 +26,7 @@
                         <h5 class="card-title mb-0 py-3">{{ __('sidebar.label.kpi') }}</h5>
                     </div>
                 </div>
-
-        
-                <!-- Table with hoverable rows -->
-                    <table class="table datatable table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="text-center">#</th>
-                                <th scope="col" class="text-center">{{ __('general.label.month') }}</th>
-                                <th scope="col" class="text-center">{{ __('general.label.year') }}</th>
-                                <th scope="col" class="text-center">{{ __('employee.label.eid') }}</th>
-                                <th scope="col" class="text-center">{{ __('general.label.name') }}</th>
-                                <th scope="col" class="text-center">{{ __('performance.label.kpi_grade') }}</th>
-                                <th scope="col" class="text-center">{{ __('general.label.view') }}</th>
-                                {{-- <th scope="col" class="text-center">Edit</th> --}}
-                                <th scope="col" class="text-center">{{ __('general.label.delete') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($gradeKpi as $no=>$gradeKpi)
-                            <tr>
-                                <th scope="row">{{ $no+1 }}</th>
-                                <td class="text-center">{{ $gradeKpi->month }}</td>
-                                <td class="text-center">{{ $gradeKpi->year }}</td>
-                                <td class="text-center">{{ $gradeKpi->employees->eid }}</td>
-                                <td class="text-center">{{ $gradeKpi->employees->name }}</td>
-                                <td class="text-center">{{ number_format($gradeKpi->final_kpi, 2, '.', ',') }}</td>
-
-                                <td class="text-center">
-                                    <a href="{{ route('kpi.detail', [
-                                    'employee_id' => $gradeKpi->employee_id,
-                                    'month' => $gradeKpi->month,
-                                    'year' => $gradeKpi->year]) }}" class="btn btn-blue">
-                                    <i class="ri-eye-fill"></i>
-                                    </a>
-                                </td>
-                                {{-- <td class="text-center">
-                                    @can('edit kpi')
-                                        <a href="{{ route('kpi.edit', [
-                                            'employee_id' => $gradeKpi->employee_id,
-                                            'month' => $gradeKpi->month,
-                                            'year' => $gradeKpi->year
-                                            ]) }}" class="btn btn-outline-success">
-                                            <i class="ri-edit-line"></i>
-                                        </a>
-                                    @endcan
-                                </td> --}}
-                                <td class="text-center">
-                                    @can('delete kpi')
-                                        <button type="button" class="btn btn-red" 
-                                            onclick="confirmDelete({{ $gradeKpi->employee_id }}, '{{ $gradeKpi->month }}', '{{ $gradeKpi->year }}', '{{ $gradeKpi->employees->name }}', 'KPI')">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button>
-                                    @endcan
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                <!-- End Table with hoverable rows -->
-            </div>
+                @livewire('kpi-datatable', ['month' => request('month', date('F')), 'year' => request('year', date('Y'))])
         </div>
     </div>
 </div>
