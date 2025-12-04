@@ -29,12 +29,12 @@
               <th scope="col">{{ __('employee.label.job_title') }}</th>
               <th scope="col">{{ __('employee.label.division') }}</th>
               <th scope="col">{{ __('employee.label.department') }}</th>
-              <th scope="col">{{ __('employee.label.sales_status') }}</th>
-              <th scope="col">
+              {{-- <th scope="col">{{ __('employee.label.sales_status') }}</th> --}}
+              {{-- <th scope="col">
                 <button type="button" id="customButton" class="btn btn-untosca" data-bs-toggle="modal" data-bs-target="#columnsModal">
                   {{ __('employee.label.custom') }}
                 </button>
-              </th>
+              </th> --}}
               
             </tr>
           </thead>
@@ -50,10 +50,10 @@
               <td>{{ $data->position->job_title->name ?? '-' }}</td>
               <td>{{ $data->position->division->name ?? '-' }}</td>
               <td>{{ $data->position->department->name ?? '-' }}</td>
-              <td>{!! $data->sales_status == 1 ? '<i class="ri-check-double-fill"></i>' : '-' !!}</td>
-              <td>
+              {{-- <td>{!! $data->sales_status == 1 ? '<i class="ri-check-double-fill"></i>' : '-' !!}</td> --}}
+              {{-- <td>
 
-              </td>
+              </td> --}}
             </tr>
             @endforeach
           </tbody>
@@ -64,91 +64,6 @@
     </div>
   </div>
 </div>
-@section('script')
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-  const customButton = document.getElementById("customButton");
-  const columnsSelect = document.getElementById("columns");
 
-  // Event listener saat form disubmit
-  document.querySelector("form").addEventListener("submit", function (e) {
-    e.preventDefault(); // Mencegah submit form untuk testing
-
-    // Ambil nilai yang dipilih
-    const selectedColumns = Array.from(columnsSelect.selectedOptions).map(option => option.value);
-
-    // Update teks tombol
-    if (selectedColumns.length > 0) {
-      customButton.textContent = selectedColumns.join(", ");
-    } else {
-      customButton.textContent = "custom";
-    }
-
-    // Kirim request ke server menggunakan route
-    fetch("{{ route('employee.updateTableColumns') }}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-      },
-      body: JSON.stringify({ columns: selectedColumns })
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Update tabel dengan data karyawan
-      updateEmployeeTable(data);
-    })
-    .catch(error => console.error('Error:', error));
-
-    // Tutup modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('columnsModal'));
-    modal.hide();
-  });
-});
-
-function updateEmployeeTable(data) {
-  const tableBody = document.querySelector("table tbody");
-  tableBody.innerHTML = ""; // Kosongkan tabel sebelum update
-
-  // Menampilkan data karyawan berdasarkan kolom yang dipilih
-  data.employees.forEach(employee => {
-    const tr = document.createElement("tr");
-
-    data.columns.forEach(column => {
-      const td = document.createElement("td");
-      td.textContent = employee[column] || "-"; // Tampilkan "-" jika data tidak ada
-      tr.appendChild(td);
-    });
-
-    tableBody.appendChild(tr);
-  });
-}
-
-  // document.addEventListener("DOMContentLoaded", function () {
-  //   const customButton = document.getElementById("customButton");
-  //   const columnsSelect = document.getElementById("columns");
-
-  //   // Event listener saat form disubmit
-  //   document.querySelector("form").addEventListener("submit", function (e) {
-  //     e.preventDefault(); // Mencegah submit form untuk testing
-
-  //     // Ambil nilai yang dipilih
-  //     const selectedColumns = Array.from(columnsSelect.selectedOptions).map(option => option.text);
-
-  //     // Update teks tombol
-  //     if (selectedColumns.length > 0) {
-  //       customButton.textContent = selectedColumns.join(", ");
-  //     } else {
-  //       customButton.textContent = "custom";
-  //     }
-
-  //     // Tutup modal
-  //     const modal = bootstrap.Modal.getInstance(document.getElementById('columnsModal'));
-  //     modal.hide();
-  //   });
-  // });
-</script>
-
-@endsection
 @endsection
 @include('employee.custom_column')

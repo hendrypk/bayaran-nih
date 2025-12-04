@@ -40,7 +40,7 @@
                         </td> --}}
                         <td>
                             @can('update work pattern')
-                                <a href="{{ route('workDay.edit', ['name' => $workDay->name]) }}" class="btn btn-blue">
+                                <a href="{{ route('workDay.edit', ['id' => $workDay->id]) }}" class="btn btn-blue">
                                     <i class="ri-eye-fill"></i>
                                 </a>
                             @endcan
@@ -48,7 +48,7 @@
                         <td>
                             @can('delete work pattern')                               
                                 <button type="button" class="btn btn-red" 
-                                    onclick="confirmDelete('{{ $workDay->name }}', 'work-pattern')">
+                                    onclick="confirmDelete('{{ $workDay->id }}', 'work-pattern')">
                                     <i class="ri-delete-bin-fill"></i>
                                 </button>
                             @endcan

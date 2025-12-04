@@ -13,11 +13,14 @@ use Illuminate\Http\Request;
 use App\Models\OfficeLocation;
 use App\Models\LaporHrCategory;
 use App\Models\LaporHrAttachment;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Support\Facades\Log;
 use App\Traits\PresenceSummaryTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Services\AttendanceService;
+use App\Services\PresenceService;
 
 class EmployeeAppController extends Controller
 {
@@ -103,15 +106,13 @@ class EmployeeAppController extends Controller
             ->whereNull('leave')
             ->first();
 
-        $workDay = $pastPresence->work_day_id;
-        $workDayName = WorkDay::where('id', $workDay)->first()->name;
+        $workDay = WorkScheduleGroup::findOrFail($pastPresence->work_day_id);
+        $workDayName = $workDay->name;
 
         $lokasi = $employee->officeLocations->first();
         $officeLatitude = $lokasi->latitude;
         $officeLongitude = $lokasi->longitude;
         $radius = $lokasi->radius;
-
-        // $workDay = $employee->workDay;
         return view('_employee_app.presence.presence_out', compact('employee', 'workDay', 'workDayName', 'officeLatitude', 'officeLongitude', 'radius'));
     }
 
@@ -160,8 +161,231 @@ class EmployeeAppController extends Controller
         return compact('meters', 'kilometers', 'miles');
     }
 
+    private function storePhoto(string $imageBase64): string
+    {
+        $imageData = str_replace('data:image/jpeg;base64,', '', $imageBase64);
+        $imageData = base64_decode($imageData);
+
+        // buat file sementara yang tetap ada
+        $tempPath = tempnam(sys_get_temp_dir(), 'presence_') . '.jpg';
+        file_put_contents($tempPath, $imageData);
+
+        return $tempPath;
+    }
+
+    private function savePresencePhotoIn(Presence $presence, string $imageBase64): void
+    {
+        $tempPath = $this->storePhoto($imageBase64);
+        $presence->addMedia($tempPath)
+            ->toMediaCollection('presence-in');
+    }
+
+    private function savePresencePhotoOut(Presence $presence, string $imageBase64): void
+    {
+        $tempPath = $this->storePhoto($imageBase64);
+        $presence->addMedia($tempPath)
+            ->toMediaCollection('presence-out');
+    }
+
+    public function save(Request $request, PresenceService $presenceService)
+    {
+        $request->validate([
+            'location' => 'required',
+            'workDay' => 'required',
+            'photo' => 'required|string'
+        ], [
+            'location.required' => __('messages.location_required'),
+            'workDay.required' => __('messages.work_day_required'),
+            'photo.required' => __('messages.photo_required'),
+        ]);
+
+
+        $parseTime = function ($time) {
+            return $time && $time !== 'N/A' ? Carbon::parse($time) : null;
+        };
+
+        $today = now()->toDateString();
+        $now   = $parseTime(now()->toTimeString());
+        $day = strtolower(now()->format('l'));
+        $group = WorkScheduleGroup::findOrFail($request->workDay);
+        $workDayData = $group->days()->where('day', $day)->first();
+
+        if (!$workDayData) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Work day data not found for today...',
+            ], 404);
+        }
+
+        if($workDayData->is_offday == 1) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hari ini adalah hari libur...',
+            ], 404);
+        };
+
+        $requiredFields = ['arrival', 'start_time', 'end_time', 'break_start', 'break_end'];
+        foreach ($requiredFields as $field) {
+            if (empty($workDayData->$field) && $workDayData->is_offday == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Missing required work day field: {$field}",
+                ], 404);
+            }
+        }
+
+        //Get Office Location From Table
+        $location = OfficeLocation::where('name', $request->officeLocations)->first();
+        $latOffice = $location->latitude;
+        $lonOffice = $location->longitude;
+        $maxRadius = $location->radius;
+
+        //Get Location User
+        $loc = $request->input('location');
+        $location = explode(',', $loc);
+        $latUser = $location[0];
+        $lonUser = $location[1];
+        $distance = $this->distance($latOffice, $lonOffice, $latUser, $lonUser);
+        $radius = round($distance["meters"]);
+
+        // Validate radius
+        if ($radius > $maxRadius) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('messages.outside_radius', ['meters' => $radius]),
+            ]);
+        };
+
+        // Get work day times
+        $arrival   = $workDayData?->arrival   ? $parseTime($workDayData->arrival)   : null;
+        $check_in  = $workDayData?->start_time  ? $parseTime($workDayData->start_time)  : null;
+        $check_out = $workDayData?->end_time ? $parseTime($workDayData->end_time) : null;
+        $break_in  = $workDayData?->break_start  ? $parseTime($workDayData->break_start)  : null;
+        $break_out = $workDayData?->break_end ? $parseTime($workDayData->break_end) : null;
+        $breakDuration = max(intval($break_in->diffInMinutes($break_out, false)), 0);
+        $isCountLate = $group->count_late;
+        $excludeBreak = $workDayData->count_break;
+        
+        // Get today presence
+        $presence = Presence::with('workDay')
+            ->where('employee_id', Auth::id())
+            ->where('date', $today)
+            ->first();
+
+        $presenceIn     = $presence?->check_in;
+        $presenceOut    = $presence?->check_out;
+        // $presenceWorkDay = $presence?->workDay; 
+
+        $pastPresence = Presence::where('employee_id', auth::id())
+            ->where('date', '<', $today)
+            ->orderByDesc('date')
+            ->first();
+
+        $pastPresenceOut = $pastPresence?->check_out;
+        [$lateCheckIn, $lateArrival] = $presenceService->calculateLate(
+            $now,
+            $check_in,
+            $check_out,
+            $arrival,
+            $break_in,
+            $break_out,
+            $breakDuration,
+            $isCountLate,
+            $excludeBreak
+        );
+
+        $earlyResult = $presenceService->calculateCheckOutEarly(
+            $now,
+            $break_in,
+            $break_out,
+            $isCountLate,
+            $excludeBreak,
+            $check_out,
+            $check_in,
+            $breakDuration
+        );
+
+        $lateCheckIn;
+        $lateArrival;
+        $earlyResult;
+        $lateResult = [
+            'lateCheckIn' => $lateCheckIn,
+            'lateArrival' => $lateArrival,
+            'checkOutEarly' => $earlyResult
+        ];
+        
+        $message = '';
+
+        switch (true) {
+            case !is_null($pastPresence) && is_null($pastPresenceOut) && is_null($presence):
+                $media = $this->savePresencePhotoOut($pastPresence, $request->photo);
+                $fileName = $media->file_name ?? null;
+                $pastPresence->update([
+                    'check_out'       => now()->toTimeString(),
+                    'check_out_early' => 0,
+                    'location_out'    => $loc,
+                    'photo_out'       => $fileName,
+                ]);
+
+                $message = __('messages.early_check_out', ['minutes' => 0]);
+                break;
+
+            case (!is_null($presenceIn) && is_null($presenceOut)) && !is_null($pastPresenceOut):
+                $media = $this->savePresencePhotoOut($presence, $request->photo);
+                $fileName = $media->file_name ?? null;
+                $presence->update([
+                    'check_out' => now()->toTimeString(),
+                    'check_out_early' => $lateResult['checkOutEarly'] ?? 0,
+                    'photo_out' => 'presence-out',
+                    'location_out' => $loc
+                ]);
+
+                $message = __('messages.early_check_out', ['minutes' => $lateResult['checkOutEarly'] ?? 0]);
+                break;
+
+            case is_null($presence) || (!is_null($presence) && is_null($presence->leave_status)):
+                $presence = Presence::updateOrCreate(
+                    [
+                        'employee_id' => Auth::id(),
+                        'date' => $today,
+                    ],
+                    [
+                        'work_day_id' => $request->workDay,
+                        'check_in' => $now->toTimeString(),
+                        'late_check_in' => $lateResult['lateCheckIn'] ?? 0,
+                        'late_arrival' => $lateResult['lateArrival'] ?? 0,
+                        'photo_in' => 'presence-in',
+                        'location_in' => $loc,
+                    ]
+                );
+
+                $media = $this->savePresencePhotoIn($presence, $request->photo);
+                $fileName = $media->file_name ?? null;
+
+                $message = __('messages.late_check_in', ['minutes' => $lateResult['lateCheckIn'] ?? 0]);
+                break;
+
+            case !is_null($presence) && !is_null($presenceIn) && !is_null($presenceOut):
+
+                $message = __('messages.already_check_in');
+                return redirect()->back()->with('error', $message);
+                break;
+
+            default:
+                $message = __('messages.system_error');
+                return redirect()->back()->with('error', $message);
+                break;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'redirectUrl' => route('employee.app')
+        ]);
+    }
+
     //try save presence with new logic
-    public function save(Request $request)
+    public function savePresence(Request $request)
     {
         $request->validate([
             // 'note' => 'required',
@@ -243,7 +467,21 @@ class EmployeeAppController extends Controller
             ->whereNull('leave_status')
             ->whereNull('leave')
             ->first();
-        // dd($pastPresence);
+            
+        //Calculate Late Arrival and Late Check In
+        if ($now && $check_in) {
+            list($lateCheckIn, $lateArrival) = $this->calculateLate($now, $check_in, $arrival, $break_in, $break_out, $breakDuration, $isCountLate, $excldueBreak);
+        } else {
+            $lateCheckIn = 0;
+            $lateArrival = 0;
+        }
+
+        if($now && $check_out) {
+            $checkOutEarly = $this->calculateCheckOutEarly($now, $check_in, $check_out, $break_in, $break_out, $isCountLate, $excldueBreak);
+        } else {
+            $checkOutEarly = 0;
+        }
+         
         if ($now && $check_in) {
             switch (true) {
                 case $isCountLate == 0:
@@ -277,29 +515,8 @@ class EmployeeAppController extends Controller
             }
         }
 
-        $message = '';
 
-        switch (true) {
-            case !is_null($pastPresence) && is_null($pastPresence->check_out):
-                $checkOutEarly = 0;
-                $path = storage_path('app/public/presences/' . $photoName);
-                file_put_contents($path, $imageData);
-
-                $pastPresence->update([
-                    'check_out' => now()->toTimeString(),
-                    'check_out_early' => $checkOutEarly,
-                    // 'note_out' => $request->note,
-                    'photo_out' => $photoName,
-                    'location_out' => $loc
-                ]);
-
-                $message = __('messages.early_check_out', ['minutes' => $checkOutEarly]);
-                break;
-
-            case (!empty($presence) && !is_null($presence->check_in) && is_null($presence->check_out)) || (!empty($pastPresence) && is_null($pastPresence->check_out)):
-
-                // case !is_null($presence->check_in) && is_null($presence->check_out) || !is_null($pastPresence) && is_null($pastPresence->check_out):
-
+                //Calculate Early Check Out                
                 if ($now && $check_out) {
                     $workDayId = $presence->work_day_id;
                     $lastWorkDayData = WorkDay::find($workDayId);
@@ -335,13 +552,34 @@ class EmployeeAppController extends Controller
                     }
                 }
 
+        $message = '';
+
+        switch (true) {
+            case !is_null($pastPresence) && is_null($pastPresence->check_out):
+                $checkOutEarly = 0;
+                $path = storage_path('app/public/presences/' . $photoName);
+                file_put_contents($path, $imageData);
+
+                $pastPresence->update([
+                    'check_out' => now()->toTimeString(),
+                    'check_out_early' => $checkOutEarly,
+                    // 'note_out' => $request->note,
+                    'photo_out' => $photoName,
+                    'location_out' => $loc
+                ]);
+
+                $message = __('messages.early_check_out', ['minutes' => $checkOutEarly]);
+                break;
+
+            case (!empty($presence) && !is_null($presence->check_in) && is_null($presence->check_out)) || (!empty($pastPresence) && is_null($pastPresence->check_out)):
+
+
                 $path = storage_path('app/public/presences/' . $photoName);
                 file_put_contents($path, $imageData);
 
                 $presence->update([
                     'check_out' => now()->toTimeString(),
                     'check_out_early' => $checkOutEarly,
-                    // 'note_out' => $request->note,
                     'photo_out' => $photoName,
                     'location_out' => $loc
                 ]);
@@ -362,7 +600,6 @@ class EmployeeAppController extends Controller
                     'check_in' => $timePhoto,
                     'late_check_in' => $lateCheckIn,
                     'late_arrival' => $lateArrival,
-                    // 'note_in' => $request->note,
                     'photo_in' => $photoName,
                     'location_in' => $loc
                 ]);
@@ -393,12 +630,17 @@ class EmployeeAppController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $employeeId = Auth::id();
-        $employee = Employee::findOrFail($employeeId);
-        $query = Presence::where('employee_id', $employeeId)->whereNull('leave_status')->whereNotNull('work_day_id');
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+            $endDate = Carbon::now()->toDateString();
         }
+        
+        $query = Presence::where('employee_id', Auth::id())
+            ->whereNull('leave_status')
+            ->whereNotNull('work_day_id')
+            ->whereBetween('date', [$startDate, $endDate]);
+
         $presences = $query->get();
         return view('_employee_app.history', compact('presences'));
     }
@@ -538,11 +780,15 @@ class EmployeeAppController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $employeeId = Auth::id();
-        $query = Overtime::where('employee_id', $employeeId);
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
+
+        if (!$startDate || !$endDate) {
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+            $endDate = Carbon::now()->toDateString();
         }
+
+        $query = Overtime::where('employee_id', Auth::id())
+            ->whereBetween('date', [$startDate, $endDate]);
+
         $overtime = $query->get();
 
         return view('_employee_app.overtime-history', compact('overtime'));
@@ -659,7 +905,7 @@ class EmployeeAppController extends Controller
         ]);
 
         $employeeId = Auth::id();
-        $employee = Auth::user();  // Jika ada relasi 'employee' pada model User
+        $employee = Auth::user();
         $eid = $employee->eid;
 
         $leaveDates = $request->input('leave_dates');
@@ -670,48 +916,38 @@ class EmployeeAppController extends Controller
 
         $existLeave = Presence::where('employee_id', $employeeId)
             ->whereIn('date', $leaveDates)
-            ->whereNotNull('leave')
+            ->whereNotNull('leave_status')
             ->pluck('date')->toArray();
         $existPresence = Presence::where('employee_id', $employeeId)
             ->whereIn('date', $leaveDates)
             ->whereNotNull('check_in')
             ->pluck('date')->toArray();
-
+        
+        $leaveCount = count($leaveDates);
+        if ($category === Presence::LEAVE_ANNUAL) {
+            if ($employee->annual_leave < $leaveCount) {
+                return redirect()->back()->withErrors('Sisa cuti tahunan tidak mencukupi untuk pengajuan ini.');
+            }
+        }
+        
         switch (true) {
             case $existLeave;
-                return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+                return redirect()->back()->withErrors(['leave_dates' => 'Kamu punya pengajuan cuti/ijin pada tanggal tersebut']);
                 break;
             case !empty($existPresence);
-                return redirect()->back()->withErrors('Kamu hadir pada tanggal tersebut');
+                return redirect()->back()->withErrors('Kamu masuk kerja pada tanggal tersebut');
                 break;
             default;
                 foreach ($leaveDates as $date) {
-                    $leave = Presence::create([
+                    Presence::create([
                         'eid' => $eid,
                         'employee_id' => $employeeId,
                         'date' => $date,
                         'leave' => $category,
                         'leave_note' => $note,
-                        // 'leave_status' => 0,
                     ]);
                 }
         }
-
-        // if($existLeave) {
-        //     return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
-        // } elseif(empty($pastPresence->check_out)) {
-        //     return redirect()->back()->withErrors('Silahkan absen keluar terlebih dahulu');
-        // }
-        // foreach ($leaveDates as $date) {
-        //     $leave = Presence::create([
-        //         'eid' => $eid,
-        //         'employee_id' => $employeeId,
-        //         'date' => $date,
-        //         'leave' => $category,
-        //         'leave_note' => $note,
-        //         'leave_status' => 0,
-        //     ]);
-        // }
 
         return redirect()->route('leave.index')->with('success', 'Cuti berhasil dibuat!');
     }
@@ -751,12 +987,15 @@ class EmployeeAppController extends Controller
 
     public function laporHrSubmit (Request $request) {
         $request->validate([
-            'report_attachment' => 'required|array',
-            'report_attachment.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,mov,avi,mkv|max:5120',
+            'report_date' => 'required|date',
+            'report_category' => 'required|exists:lapor_hr_categories,id',
+            'report_description' => 'required|string',
+            'report_attachment' => 'nullable|array',
+            'report_attachment.*' => 'file|mimes:jpg,jpeg,png,pdf,mp4,mov,avi,mkv|max:10000',
         ], [
             'report_attachment.*.file' => 'Setiap file harus berupa file yang valid.',
             'report_attachment.*.mimes' => 'File harus berformat: jpg, jpeg, png, pdf, mp4, mov, avi, atau mkv.',
-            'report_attachment.*.max' => 'Ukuran maksimal file adalah 5MB.',
+            'report_attachment.*.max' => 'Ukuran maksimal file adalah 10MB.',
         ]);       
 
         $laporHr = LaporHr::updateOrCreate(

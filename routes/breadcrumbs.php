@@ -2,10 +2,11 @@
 
 // Note: Laravel will automatically resolve `Breadcrumbs::` without
 // this import. This is nice for IDE syntax and refactoring.
-use Diglactic\Breadcrumbs\Breadcrumbs;
+use App\Models\Employee;
 
 // This import is also not required, and you could replace `BreadcrumbTrail $trail`
 //  with `$trail`. This is nice for IDE type checking and completion.
+use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
 // Home
@@ -26,20 +27,32 @@ Breadcrumbs::for('employee_detail', function (BreadcrumbTrail $trail, $employee)
     $trail->push(__('breadcrumb.employee_detail'), route('employee.list'));
 });
 
-// Home > Employee List > Employee Detail > Edit
-Breadcrumbs::for('employee_edit', function (BreadcrumbTrail $trail, $employee) {
+Breadcrumbs::for('employee_form', function (BreadcrumbTrail $trail, $mode, ?Employee $employee = null) {
     $trail->push(__('breadcrumb.home'), route('home'));
     $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
-    $trail->push(__('breadcrumb.employee_detail'), route('employee.list'));
-    $trail->push(__('general.label.edit'), route('employee.list'));
+
+    if ($mode === 'edit' && $employee) {
+        $trail->push(__('breadcrumb.employee_detail'), route('employee.detail', $employee->id));
+        $trail->push(__('general.label.edit'), route('employee.edit', $employee->id));
+    } else {
+        $trail->push(__('general.label.add'), route('employee.add'));
+    }
 });
 
-// Home > Add Employee
-Breadcrumbs::for('add_employee', function (BreadcrumbTrail $trail) {
-    $trail->push(__('breadcrumb.home'), route('home'));
-    $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
-    $trail->push(__('general.label.add'), route('employee.add'));
-});
+// // Home > Employee List > Employee Detail > Edit
+// Breadcrumbs::for('employee_edit', function (BreadcrumbTrail $trail, $employee) {
+//     $trail->push(__('breadcrumb.home'), route('home'));
+//     $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
+//     $trail->push(__('breadcrumb.employee_detail'), route('employee.list'));
+//     $trail->push(__('general.label.edit'), route('employee.list'));
+// });
+
+// // Home > Add Employee
+// Breadcrumbs::for('add_employee', function (BreadcrumbTrail $trail) {
+//     $trail->push(__('breadcrumb.home'), route('home'));
+//     $trail->push(__('breadcrumb.employee_list'), route('employee.list'));
+//     $trail->push(__('general.label.add'), route('employee.add'));
+// });
 
 // Home > Employee Resignation
 Breadcrumbs::for('employee_resignation', function (BreadcrumbTrail $trail) {

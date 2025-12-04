@@ -52,6 +52,7 @@ return [
         'modal_title_add_resign' => 'Add Resignation',
         'modal_title_edit_resign' => 'Edit Resignation',
         'career' => 'Career',
+        'contact' => 'Contact Information',
     ],
     'placeholders' => [
         'select_blood_type' => '- Select Blood Type -',

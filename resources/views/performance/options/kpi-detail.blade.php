@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newIndicatorGroup.classList.add('edit-indicator-group', 'mb-3');
         newIndicatorGroup.innerHTML = `
             <div class="row">
-                                            <input type="text" class="form-control" name="indicators[${index}][id]" value="" hidden>  
+                    <input type="text" class="form-control" name="indicators[${index}][id]" value="" hidden>  
                 <div class="col-7">
                     <input type="text" class="form-control" name="indicators[${index}][aspect]" required>
                 </div>

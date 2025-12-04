@@ -35,6 +35,7 @@ class OvertimeExport implements FromQuery, WithMapping, WithHeadings, WithStyles
         return Overtime::query()
             ->with('employees')
             ->whereBetween('date', [$this->start, $this->end])
+            ->where('status', true)
             ->when($this->employee_id, function ($query) {
                 $query->where('employee_id', $this->employee_id);
             });

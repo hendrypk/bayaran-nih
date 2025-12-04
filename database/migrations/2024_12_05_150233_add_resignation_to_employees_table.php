@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('employees', function (Blueprint $table) {
-        //     $table->integer('resignation')->nullable();
-        //     $table->date('resignation_date')->nullable();
-        // });
+        Schema::table('employees', function (Blueprint $table) {
+            $table->integer('resignation')->nullable();
+            $table->date('resignation_date')->nullable();
+        });
     }
 
     /**
@@ -22,9 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::table('employees', function (Blueprint $table) {
-        //     $table->dropColumn('resignation');
-        //     $table->dropColumn('resignation_date');
-        // });
+        Schema::table('employees', function (Blueprint $table) {
+            $table->dropColumn('resignation');
+            $table->dropColumn('resignation_date');
+        });
     }
 };

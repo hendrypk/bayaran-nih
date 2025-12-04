@@ -1250,6 +1250,10 @@ table.datatable-table:focus {
     border-radius: 15px;
     box-shadow: 0px 0 30px rgba(1, 41, 112, 0.3 );
   }
+
+  .card-employee {
+    height: 500px;
+  }
   
   .card-table-wrapper {
     max-width: 100%;
@@ -1287,11 +1291,15 @@ table.datatable-table:focus {
   }
   
   .card-body {
-    padding: 0 20px 20px 20px;
+    padding: 10px 30px 20px 30px;
   }
   
   .card-img-overlay {
     background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .card-employee {
+    height: 500px;
   }
 
   /* NAV */
@@ -1805,4 +1813,44 @@ select {
     font-size: 9px;
     line-height: 1.5;
     color: #333;
+}
+
+.text-tosca {
+  color: var(--tosca);
+}
+
+.employee-name {
+  font-weight: 900;
+}
+
+.form-step {
+    transition: all 0.3s ease-in-out;
+    padding: 20px;
+}
+
+.step {
+    display: none; /* default tidak tampil */
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.step.active {
+    display: block; /* tampilkan hanya step yang aktif */
+}
+
+.profile-photo {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.profile-photo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

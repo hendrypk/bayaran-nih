@@ -28,7 +28,7 @@
                     @foreach($presences as $no=>$presence)
                     <tr>
                         {{-- <td>{{ $no+1 }}</td> --}}
-                        <td>{{ $presence->date }}</td>
+                        <td>{{ formatDate($presence->date) }}</td>
                         <td>{{ $presence->check_in }}</td>
                         <td>{{ $presence->check_out ?? '-' }}</td>
                         <td>{{ $presence->late_arrival == 1 ? 'Late' : "On Time" }}</td>

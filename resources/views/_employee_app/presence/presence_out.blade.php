@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input type="text" class="form-control" value="{{ $workDayName ?? '-'}}" name="" readonly>
-                                    <input type="hidden" class="form-control" value="{{ $workDay }}" name="workDay" readonly>
+                                    <input type="hidden" class="form-control" value="{{ $workDay->id }}" name="workDay" readonly>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -155,7 +155,7 @@ $('#take-presence').click(function (event) {
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}', 
-                image: uri, 
+                photo: uri, 
                 workDay: $('[name="workDay"]').val(), 
                 officeLocations: $('[name="officeLocations"]').val(), 
                 note: $('[name="note"]').val(), 
@@ -166,7 +166,7 @@ $('#take-presence').click(function (event) {
                 let remainingTime = Math.max(1000 - elapsedTime, 0);
 
                 setTimeout(() => {
-                    $('#loader').fadeOut(); 
+                    $('#loader').fadeOut(); // Sembunyikan loader
                     Swal.fire({
                         icon: response.status === 'success' ? 'success' : 'error',
                         title: response.status === 'success' ? 'Success!' : 'Error',
@@ -177,64 +177,25 @@ $('#take-presence').click(function (event) {
                         }
                     });
                 }, remainingTime);
-
-                // $('#loader').fadeOut();
-                // if (response.status === 'success') {
-                //     Swal.fire({
-                //         icon: 'success',
-                //         title: 'Berhasil!',
-                //         text: response.message, 
-                //     }).then(() => {
-                //         window.location.href = response.redirectUrl; 
-                //     });
-                // } else if ( response.status = 'error') {
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Eror',
-                //         text: response.message,
-                //         confirmButtonText: 'Try Again'
-                //     });
-                // }
             },
-            error: function (xhr, status, error,) {
+            error: function (xhr, status, error) {
 
                 let elapsedTime = Date.now() - startTime;
                 let remainingTime = Math.max(1000 - elapsedTime, 0);
 
                 setTimeout(() => {
                     $('#loader').fadeOut(); // Sembunyikan loader
-                    if (xhr.status === 422) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: xhr.responseJSON.message, 
-                            confirmButtonText: 'Try Again'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan saat mengirim data!',
-                        });
+                    let errorMsg = 'Terjadi kesalahan saat mengirim data!';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
                     }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMsg,
+                        confirmButtonText: 'Try Again'
+                    });
                 }, remainingTime);
-
-                // $('#loader').fadeOut();
-
-                // if (xhr.status === 422) {
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Error',
-                //         text: xhr.responseJSON.message, 
-                //         confirmButtonText: 'Try Again'
-                //     });
-                // } else {
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Oops...',
-                //         text: 'Terjadi kesalahan saat mengirim data!',
-                //     });
-                // }
             }
         });
     });

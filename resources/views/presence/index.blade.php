@@ -4,36 +4,59 @@
 
 
 {{ Breadcrumbs::render('presence') }}
-<div class="row align-items-center">
-    <div class="col-md-9">
-        <x-date-filter action="{{ route('presence.list.admin') }}" 
-                        :startDate="request()->get('start_date')" 
-                        :endDate="request()->get('end_date')" />
+<div class="row align-items-center mb-3">
+    <!-- Filter -->
+    <div class="col-md-6">
+        <div class="d-flex flex-wrap gap-2">
+            <!-- Status Filter -->
+                <form action="{{ route('presence.list.admin') }}" method="GET" class="m-0 d-flex">
+                    <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
+                    <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
+                    <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="presence" {{ request()->get('status') === 'presence' ? 'selected' : '' }}>Presence</option>
+                        <option value="absence" {{ request()->get('status') === 'absence' ? 'selected' : '' }}>Absence</option>
+                    </select>
+                </form>
+
+
+            <!-- Date Range Filter -->
+            <livewire:date-range-filter 
+                startDate="{{ request()->get('start_date') ?: '' }}" 
+                endDate="{{ request()->get('end_date') ?: '' }}" />
+        </div>
     </div>
-    <div class="col-md-3 d-flex justify-content-end">
-        @can('presence export')
-        <div class="form-container">
-            <form action="{{ route('presence.export') }}" method="POST" class="me-2" style="margin: 0;">
-                @csrf
-                <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                <button type="submit" class="btn btn-tosca">
-                    <i class="ri-download-cloud-2-fill"> {{ __('general.label.export') }}</i>
+
+    <!-- Actions -->
+    <div class="col-md-6">
+        <div class="d-flex justify-content-md-end justify-content-start flex-wrap gap-2">
+            @can('presence export')
+                <form action="{{ route('presence.export') }}" method="POST" class="m-0">
+                    @csrf
+                    <input type="hidden" id="exportStart" name="start_date" value="{{ request()->get('start_date') }}">
+                    <input type="hidden" id="exportEnd" name="end_date" value="{{ request()->get('end_date') }}">
+                    <input type="hidden" id="exportStatus" name="status" value="{{ request()->get('status') }}">
+                
+                    <button type="submit" class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
+                        <i class="ri-download-cloud-2-fill"></i>
+                        <span>{{ __('general.label.export') }}</span>
+                    </button>
+                </form>
+            @endcan
+
+            <a href="{{ route('presence.import') }}" 
+               class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
+                <i class="ri-file-upload-fill"></i>
+                <span>{{ __('general.label.import') }}</span>
+            </a>
+
+            @can('create presence')
+                <button type="button" class="btn btn-tosca btn-sm d-flex align-items-center"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#addPresence">
+                    <i class="ri-add-circle-line"></i>
                 </button>
-            </form>
+            @endcan
         </div>
-        @endcan
-        <div class="form-container">
-            <a href="{{ route('presence.import') }}" class="btn btn-tosca me-2">
-                <i class="ri-file-upload-fill">{{ __('general.label.import') }}</i></a>
-        </div>
-        @can('create presence')
-        <button type="button" class="btn btn-tosca btn-sm"
-                data-bs-toggle="modal" 
-                data-bs-target="#addPresence">
-            <i class="ri-add-circle-line"></i>
-        </button>
-        @endcan
     </div>
 </div>
 
@@ -45,164 +68,20 @@
                     <div class="col-md-9">
                         <h5 class="card-title mb-0 py-3">{{ __('attendance.label.presence_list') }}</h5>
                     </div>
-                        {{-- <div class="button-container">
-                            @can('presence export')
-                            <div class="form-container">
-                                <form action="{{ route('presence.export') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                                    <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                                    <button type="submit" class="btn btn-tosca">Export</button>
-                                </form>
-                            </div>
-                            @endcan
-
-                            <div class="form-container">
-                                <a href="{{ route('presence.import') }}" class="btn btn-tosca">Import</a>
-                            </div>
-
-                            @can('create presence')
-                                <button type="button" class="btn btn-untosca"
-                                data-bs-toggle="modal" 
-                                data-bs-target="#addPresence">
-                                Add Presence
-                                </button>
-                            @endcan
-                        </div> --}}
                 </div>
                 <div class="card-table-wrapper"> 
-                    <table class="table datatable table-hover">
-                        <thead>
-                            <tr>
-                                {{-- <th scope="col">
-                                    <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)">
-                                </th> --}}
-                                <th scope="col">#</th>
-                                <th scope="col">{{ __('employee.label.eid') }}</th>
-                                <th scope="col">{{ __('general.label.name') }}</th>
-                                <th scope="col">{{ __('attendance.label.work_day') }}</th>
-                                <th scope="col">{{ __('general.label.date') }}</th>
-                                <th scope="col">{{ __('attendance.label.check_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.check_out') }}</th>
-                                <th scope="col">{{ __('attendance.label.late_arrival') }}</th>
-                                <th scope="col">{{ __('attendance.label.late_check_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.check_out_early') }}</th>
-                                {{-- <th scope="col">{{ __('attendance.label.note_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.note_out') }}</th> --}}
-                                <th scope="col">{{ __('attendance.label.location_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.location_out') }}</th>
-                                <th scope="col">{{ __('attendance.label.photo_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.photo_out') }}</th>
-                                <th scope="col">{{ __('general.label.edit') }}</th>
-                                <th scope="col">{{ __('general.label.delete') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($presence as $no=>$data)
-                            <tr class="{{ $data->created_at != $data->updated_at ? 'row-edited' : '' }}">
-                                {{-- <td>
-                                    <input type="checkbox" class="select-item" value="{{ $data['id'] }}">
-                                </td>                                        --}}
-                                <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $data->employee->eid }}</td>
-                                <td>{{ $data->employee->name }}</td>
-                                <td>{{ $data->workDay->name ?? '-' }}</td>
-                                <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y')  }}</td>
-                                <td>{{ $data['check_in'] }}</td>
-                                <td>{{ $data['check_out'] }}</td>
-                                <td>
-                                    @if($data['late_arrival'] == 1)
-                                    {{ __('attendance.label.late') }}
-                                        @else
-                                        {{ __('attendance.label.ontime') }}
-                                    @endif
-                                </td>
-                                <td>{{ $data['late_check_in'] }}</td>
-                                <td>{{ $data['check_out_early'] }}</td>
-                                {{-- <td>{{ $data['note_in']}}</td>
-                                <td>{{ $data['note_out'] }}</td> --}}
-                                <td>
-                                    <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $data['location_in'] }}')">
-                                        <i class="ri-road-map-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-blue" onclick="showLocationModal('location_out', '{{ $data['location_out'] }}')">
-                                        <i class="ri-road-map-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_in']) }}')">
-                                            <i class="ri-gallery-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/presences/' . $data['photo_out']) }}')">
-                                            <i class="ri-gallery-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    @can('update presence')
-                                        <button type="button" class="btn btn-green"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#editPresence" 
-                                                data-id="{{ $data['id'] }}" 
-                                                data-name="{{ $data->employee->name }}"
-                                                data-date="{{ $data['date'] }}"
-                                                data-workDay="{{ $data['work_day_id'] }}"
-                                                data-checkin="{{ $data['check_in'] }}"
-                                                data-checkout="{{ $data['check_out'] }}">
-                                            <i class="ri-edit-line"></i>
-                                        </button>
-                                    @endcan
-                                </td>
-                                <td>
-                                    @can('delete presence')
-                                    <button type="button" class="btn btn-red" 
-                                        onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employee->name) }}', 'presences')">
-                                        <i class="ri-delete-bin-fill"></i>
-                                    </button>
-                                    @endcan
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <livewire:presence-table
+                        :status="request()->get('status')" 
+                        :startDate="request()->get('start_date')" 
+                        :endDate="request()->get('end_date')" />
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- <!-- Modal -->
-<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="photoModalLabel">Employee Photo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <img id="modalPhoto" src="" alt="Employee Photo" class="img-fluid">
-            </div>
-        </div>
-    </div>
-</div> --}}
-
-
 @section('script')
 <script>
-
-//Select all
-function toggleSelectAll(source) {
-    const checkboxes = document.querySelectorAll('.select-item');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = source.checked;
-    });
-}
-
 
 //Show map
 let mapPresence, marker;  // Variabel untuk peta dan marker
@@ -223,144 +102,137 @@ function initMapPresence() {
     }).addTo(mapPresence);
 }
 
-// Menampilkan lokasi pada modal
-function showLocationModal(locationType, location) {
-    if (!mapPresence) {
-        console.error('Map is not initialized. Please call initMapPresence first.');
-        return;
-    }
+function showLocationAndPhoto(locationType, location, photoUrl) {
+    if (!mapPresence) initMapPresence();
 
     if (!location) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Lokasi presensi tidak ditemukan!',
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Lokasi presensi tidak ditemukan!' });
         return;
     }
 
-    // Memecah lat, lng yang diterima
     const [lat, lng] = location.split(',').map(Number);
-
     if (isNaN(lat) || isNaN(lng)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Koordinat lokasi tidak valid!',
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Koordinat lokasi tidak valid!' });
         return;
     }
 
-    // Menampilkan modal Bootstrap
-    const modal = new bootstrap.Modal(document.getElementById('locationModal'));
-    modal.show();
-
-    // Menghapus marker lama jika ada
-    if (marker) mapPresence.removeLayer(marker);
-
-    // Update peta dan tambahkan marker
-    mapPresence.setView([lat, lng], 15);  // Set peta ke lat, lng yang baru
-    marker = L.marker([lat, lng]).addTo(mapPresence).bindPopup(`${locationType}`).openPopup();
-}
-
-// Memanggil initMapPresence setelah halaman selesai dimuat
-document.addEventListener('DOMContentLoaded', function () {
-    initMapPresence();
-});
-
-
-// Set the image src in the modal
-function showPhoto(photoUrl) {
     const img = new Image();
-
-    // Cek apakah gambar tersedia
     img.onload = function() {
-        // Jika gambar berhasil dimuat, set gambar ke dalam modal dan buka modal
         document.getElementById('modalPhoto').src = photoUrl;
-        
-        // Buka modal setelah gambar dimuat
-        const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-        photoModal.show();
+
+        const modalEl = document.getElementById('locationPhotoModal');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+
+        // Jalankan setelah modal benar-benar terbuka
+        modalEl.addEventListener('shown.bs.modal', function onShown() {
+            modalEl.removeEventListener('shown.bs.modal', onShown);
+
+            mapPresence.invalidateSize();
+
+            if (marker) mapPresence.removeLayer(marker);
+            mapPresence.setView([lat, lng], 15);
+            marker = L.marker([lat, lng])
+                .addTo(mapPresence)
+                .bindPopup(`${locationType}`)
+                .openPopup();
+        });
     };
 
     img.onerror = function() {
-        // Jika gambar gagal dimuat, tampilkan error menggunakan SweetAlert
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Gambar tidak ditemukan!',
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Gambar tidak ditemukan!' });
     };
 
-    // Menetapkan URL gambar untuk memulai pengecekan
     img.src = photoUrl;
 }
 
-//script for edit
 document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('editPresence');
-    editModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; 
-        const id = button.getAttribute('data-id');
-        const name = button.getAttribute('data-name');
-        const date = button.getAttribute('data-date');
-        const workDay = button.getAttribute('data-workDay');
-        const checkin = button.getAttribute('data-checkin');
-        const checkout = button.getAttribute('data-checkout');
+    initMapPresence();
 
-        document.getElementById('name').value = name;
-        document.getElementById('date').value = date;
-        document.getElementById('workDay').value = workDay;
-        document.getElementById('checkin').value = checkin;
-        document.getElementById('checkout').value = checkout;
+    // ===== Employee → WorkDays Dropdown =====
+    function setupEmployeeWorkDays(employeeSelectId, workDaySelectId, workDayContainerId, workDays) {
+        const employeeSelect = document.getElementById(employeeSelectId);
+        const workDaySelect = document.getElementById(workDaySelectId);
+        const workDayContainer = document.getElementById(workDayContainerId);
 
+        if (!employeeSelect || !workDaySelect || !workDayContainer) return;
 
-        // Set form action dynamically with the correct ID
-        const form = document.getElementById('editPresenceForm');
-        form.action = `{{ url('presences') }}/${id}/update`; 
-        document.getElementById('presenceId').value = id;    
-    });
-});
+        employeeSelect.addEventListener('change', function () {
+            const employeeId = this.value;
 
-document.getElementById('employeeSelect').addEventListener('change', function () {
-    var employeeId = this.value; 
-    var workDays = @json($workDay);
-    var workDaySelect = document.getElementById('workDaySelect');
-    var workDayContainer = document.getElementById('workDayContainer');
+            // Clear previous options
+            workDaySelect.innerHTML = '<option selected disabled>Select Work Day</option>';
 
-    // Clear previous options
-    workDaySelect.innerHTML = '<option selected disabled>Select Work Day</option>';
-
-    // Cek jika employee_id ada di workDays
-    if (employeeId && workDays[employeeId]) {
-        var selectedWorkDays = workDays[employeeId];
-
-        // Check if there is more than one work day
-        if (selectedWorkDays.length > 1) {
-            selectedWorkDays.forEach(function(workDay) {
-                var option = document.createElement('option');
-                option.value = workDay.id; // Set the value to the ID
-                option.text = workDay.name; // Display the name
-                workDaySelect.appendChild(option);
-            });
-            workDaySelect.disabled = false; // Enable selection
-            workDayContainer.style.display = 'block';
-        } else if (selectedWorkDays.length === 1) {
-            // If there's only one work day, set its value and keep it enabled
-            workDaySelect.value = selectedWorkDays[0].id; // Set to the ID
-            workDaySelect.innerHTML = ''; // Clear previous options
-            var option = document.createElement('option');
-            option.value = selectedWorkDays[0].id; // Set the value
-            option.text = selectedWorkDays[0].name; // Display the name
-            workDaySelect.appendChild(option);
-            workDaySelect.disabled = false; // Keep it enabled
-            workDayContainer.style.display = 'block';
-        } else {
-            workDayContainer.style.display = 'block'; // No work days
-        }
-    } else {
-        workDayContainer.style.display = 'block'; // No employee selected
+            if (employeeId && workDays[employeeId] && workDays[employeeId].length > 0) {
+                workDays[employeeId].forEach(function (workDay) {
+                    const option = document.createElement('option');
+                    option.value = workDay.id;
+                    option.text = workDay.name;
+                    workDaySelect.appendChild(option);
+                });
+                workDaySelect.disabled = false;
+                workDayContainer.style.display = 'block';
+            } else {
+                workDaySelect.disabled = true;
+                workDayContainer.style.display = 'none';
+            }
+        });
     }
+
+    // ===== Modal Edit =====
+    const editModal = document.getElementById('editPresence');
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; 
+            const id = button.getAttribute('data-id');
+            const employee_id = button.getAttribute('data-employee-id');
+            const name = button.getAttribute('data-name');
+            const date = button.getAttribute('data-date');
+            const workDay = button.getAttribute('data-workDay');
+            const workDayName = button.getAttribute('data-workday-name');
+            const checkin = button.getAttribute('data-checkin');
+            const checkout = button.getAttribute('data-checkout');
+
+            document.getElementById('id').value = id;
+            document.getElementById('employee_id').value = employee_id;
+            document.getElementById('name').value = name;
+            document.getElementById('date').value = date;
+            document.getElementById('workDay').value = workDay;
+            document.getElementById('workDayName').value = workDayName;
+            document.getElementById('checkin').value = checkin;
+            document.getElementById('checkout').value = checkout;
+
+            // Set form action dynamically
+            const form = document.getElementById('editPresenceForm');
+            if (form) form.action = `{{ url('presences') }}/save`; 
+            const presenceIdInput = document.getElementById('presenceId');
+            if (presenceIdInput) presenceIdInput.value = id;    
+
+            // Setup workDays dropdown for edit modal
+            setupEmployeeWorkDays('employeeSelectEdit', 'workDaySelectEdit', 'workDayContainerEdit', @json($workDays));
+        });
+    }
+
+    // ===== Modal Add =====
+    setupEmployeeWorkDays('employeeSelect', 'workDaySelect', 'workDayContainer', @json($workDays));
+
+    // Fungsi untuk update hidden input form export
+    function syncExportFormWithURL() {
+        const params = new URLSearchParams(window.location.search);
+        const startDate = params.get('start_date') || '';
+        const endDate = params.get('end_date') || '';
+
+        document.getElementById('exportStart').value = startDate;
+        document.getElementById('exportEnd').value = endDate;
+    }
+
+    // Jalankan saat halaman pertama kali dimuat
+    syncExportFormWithURL();
+
+    // Jalankan setiap kali date range picker diubah
+    const observer = new MutationObserver(syncExportFormWithURL);
+    observer.observe(document.querySelector('#dateRangeInput'), { attributes: true, attributeFilter: ['value'] });
+
 });
 
 
@@ -418,3 +290,4 @@ function confirmDelete(id, name, entity) {
 @include('presence.edit')
 @include('presence.map')
 @include('presence.photo')
+@include('presence.photoAndMap')

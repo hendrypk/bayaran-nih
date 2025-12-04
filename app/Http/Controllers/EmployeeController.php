@@ -12,324 +12,122 @@ use App\Models\Overtime;
 use App\Models\Position;
 use App\Models\KpiAspect;
 use App\Models\Department;
-use App\Models\WorkCalendar;
-use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
 use App\Models\AppraisalName;
 use App\Models\EmployeeStatus;
 use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\EmployeeRequest;
+use App\Models\EmployeePositionChange;
+use App\Models\Presence;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
     //Employee List
-    function employeelist(){
+    function employeelist()
+    {
         $employee = Employee::whereNull('resignation')->get();
         return view('employee.index', compact('employee'));
     }
-    public function customColumns(Request $request)
+
+    //Employee Form
+    public function form($id = null)
     {
-        // Ambil kolom yang dipilih dari form
-        $selectedColumns = $request->input('columns', []);
-
-        // Fetch data dengan hanya kolom yang dipilih
-        $columnsToSelect = array_merge(['id'], $selectedColumns); // Tambahkan 'id' untuk routing detail
-        $employees = Employee::select($columnsToSelect)->get();
-
-        return view('employee.index', compact('employees', 'selectedColumns'));
-    }
-
-    public function updateTableColumns(Request $request)
-    {
-        // Ambil kolom yang dipilih
-        $selectedColumns = $request->input('columns', []);
-
-        // Kolom valid yang bisa dipilih
-        $validColumns = [
-            'eid', 'name', 'employee_status', 'position_id', 'job_title_id',
-            'division_id', 'department_id', 'sales_status'
-        ];
-
-        // Filter kolom yang dipilih, hanya yang valid
-        $columnsToQuery = array_intersect($selectedColumns, $validColumns);
-
-        // Query data karyawan dengan kolom yang dipilih
-        $employees = Employee::select($columnsToQuery)->get();
-
-        // Kirimkan kolom dan data karyawan sebagai response
-        return response()->json([
-            'columns' => $columnsToQuery,
-            'employees' => $employees
-        ]);
-    }
-
-
-    //Add employee modal
-    function create(){
+        $employee = $id ? Employee::with(['workDay', 'officeLocations'])->findOrFail($id) : new Employee();
         $position = Position::all();
         $job_title = JobTitle::all();
         $division = Division::all();
         $department = Department::all();
-        $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-            ->groupBy('name')
-            ->get();
+        $workScheduleGroups = WorkScheduleGroup::all();
         $officeLocations = OfficeLocation::all();
         $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
         $status = EmployeeStatus::all();
-        $genders = ['Male', 'Female'];
-        $bloods = ['A', 'B', 'AB', 'O'];
-        $marriage = ['single', 'married', 'widowed'];
-        $religions = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
-        $educations = [
-            'elementary_school',
-            'junior_school',
-            'high_school',
-            'diploma',
-            'bachelor',
-            'master',
-            'doctorate',
-        ];
-        $banks = [
-            'Bank Mandiri', 
-            'Bank BNI', 
-            'Bank BRI', 
-            'Bank BCA', 
-            'Bank BTN', 
-            'Bank Syariah Indonesia',
-            'Bank Danamon', 
-            'CIMB Niaga', 
-            'Bank Permata', 
-            'Bank Mega'
-        ];
-        return view('employee.add', compact('position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'status',
-        'pa_id', 'kpi_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
+        $options = Employee::options();
+        $genders = $options['genders'];
+        $marriages = $options['marriages'];
+        $bloods = $options['bloods'];
+        $religions = $options['religions'];
+        $banks = $options['banks'];
+        $educations = $options['educations'];
+
+        return view('employee.form', compact(
+            'employee', 'position', 'job_title', 'division',
+            'officeLocations', 'department', 'status',
+            'pa_id', 'kpi_id', 'bloods', 'marriages',
+            'genders', 'religions', 'educations', 'banks', 'workScheduleGroups'
+        ));
     }
 
-    //submit new employee
-    function submit(Request $request){
-
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'name' => 'required',
-            'city' => 'required',
-            'domicile' => 'required',
-            'place_birth' => 'required',
-            'date_birth' => 'required|date',
-            'gender' => 'required',
-            'religion' => 'required',
-            'marriage' => 'required',
-            'education' => 'required',
-            'whatsapp' => 'required|regex:/^[0-9]+$/',
-            'bank' => 'required',
-            'bank_number' => 'required|numeric',
-            'position_id' => 'required|integer',
-            // 'job_title_id' => 'required|integer',
-            'joining_date' => 'required|date',
-            'employee_status' => 'required',
-            'sales_status' => 'required',
-            'workDay' => 'required|array|min:1',
-            'officeLocations' => 'required|array|min:1'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-    
-        $section = JobTitle::find($request->job_title_id);
-        $id = Employee::max('id') + 1; 
-        $position = Position::with('job_title')->find($request->position_id);
-        $section = $position->job_title->section;
-        $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
-        $eid = $section . $formattedId;
-        $password = Carbon::parse($request->date_birth)->format('dmY');
-        $defaultPassword = Hash::make($password);
-
-
-        $employee = Employee::create([
-            'eid' => $eid,
-            'email' => $request->email,
-            'username' => $eid,
-            'password' => $defaultPassword,
-            'name' => $request->name,
-            'city' => $request->city,
-            'domicile' => $request->domicile,
-            'place_birth' => $request->place_birth,
-            'date_birth' => $request->date_birth,
-            'blood_type' => $request->blood_type,
-            'gender' => $request->gender,
-            'religion' => $request->religion,
-            'marriage' => $request->marriage,
-            'education' => $request->education,
-            'whatsapp' => $request->whatsapp,
-            'bank' => $request->bank,
-            'bank_number' => $request->bank_number,
-            'position_id' => $request->position_id,
-            // 'job_title_id' => $request->job_title_id,
-            // 'division_id' => $request->division_id,
-            // 'department_id' => $request->department_id,
-            'joining_date' => $request->joining_date,
-            'employee_status' => $request->employee_status,
-            'sales_status' => $request->sales_status,
-            'pa_id' => $request->pa_id,
-            'kpi_id' => $request->kpi_id,
-            'bobot_kpi' => $request->bobot_kpi,
-        ]);
-        $employee->workDay()->sync($request->workDay);
-        $employee->officeLocations()->sync($request->officeLocations);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Employee added successfully', 
-            'route' => route('employee.detail', ['id' => $employee->id])
-        ], 200);
-    }
-    
     //employee detail
-    public function detail($id){
-        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
-
+    public function detail($id)
+    {
+        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
+        $presences = Presence::where('employee_id', $id)
+            ->whereNotNull('leave')
+            ->get();
+        $careers = $employee->positionChange()->orderBy('effective_date', 'desc')->get();
+        
         $startDate = new DateTime($employee->joining_date);
+        $dateBirth = new DateTime($employee->date_birth);
         $currentDate = new DateTime();
-        $interval = $startDate->diff($currentDate);
+        $yo = $startDate->diff($currentDate);
+        $joining_date = $startDate->diff($currentDate);
 
-        $years = $interval->y;
-        $months = $interval->m;
-        $days = $interval->d;
+        $years = $joining_date->y;
+        $months = $joining_date->m;
+        $days = $joining_date->d;
 
         $totalOvertime = Overtime::where('employee_id', $employee->eid)
-        ->sum('total');
-        return view('employee.detail', compact('employee', 'years', 'months', 'days', 'totalOvertime'));
+            ->sum('total');
+        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime', 'careers'));
     }
 
-    //employee edit
-    public function edit($id){
-        $employee = Employee::findOrFail($id);
-        $position = Position::all();
-        $job_title = JobTitle::all();
-        $division = Division::all();
-        $department = Department::all();
-        $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-        ->groupBy('name')
-        ->get();
-        $officeLocations = OfficeLocation::all();
-        $pa_id = AppraisalName::all();
-        $kpi_id = KpiAspect::all();
-        $status = EmployeeStatus::all();
-        $genders = ['Male', 'Female'];
-        $bloods = ['A', 'B', 'AB', 'O'];
-        $marriage = ['single', 'married', 'widowed'];
-        $religions = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
-        $educations = [
-            'elementary_school',
-            'junior_school',
-            'high_school',
-            'diploma',
-            'bachelor',
-            'master',
-            'doctorate',
-        ];
-        $banks = [
-            'Bank Mandiri', 
-            'Bank BNI', 
-            'Bank BRI', 
-            'Bank BCA', 
-            'Bank BTN', 
-            'Bank Syariah Indonesia',
-            'Bank Danamon', 
-            'CIMB Niaga', 
-            'Bank Permata', 
-            'Bank Mega'
-        ];
+    //submit employee
+    public function submit(EmployeeRequest $request)
+    {
+        $data = $request->validated();
+        $position = Position::with('job_title')->findOrFail($data['position_id']);
+        $section = $position->job_title->section ?? 'XXX';
 
-        return view('employee.edit', compact('employee', 'position', 'job_title', 'division', 'workDay', 'officeLocations', 'department', 'kpi_id', 'status',
-        'pa_id', 'bloods', 'marriage', 'genders', 'religions', 'educations', 'banks'));
-    }
-    
-    public function update(Request $request, $id){
+        $isUpdate = isset($data['id']) && Employee::find($data['id']);
 
-        // $position = Position::with('job_title')->find($request->position_id);
-        // $section = $position->job_title->section;
-        // $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
-        // $eid = $section . $formattedId;
+        if (!$isUpdate) {
+            $id = Employee::max('id') + 1; 
+            $position = Position::with('job_title')->find($request->position_id);
+            $section = $position->job_title->section;
+            $formattedId = str_pad($id, 3, '0', STR_PAD_LEFT);
+            $eid = $section . $formattedId;
 
-        //find employeeId
-        $employee = Employee::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'city' => 'required',
-            'domicile' => 'required',
-            'place_birth' => 'required',
-            'date_birth' => 'required',
-            'place_birth' => 'required',
-            'gender' => 'required',
-            'religion' => 'required',
-            'marriage' => 'required',
-            'education' => 'required',
-            'whatsapp' => 'required',
-            'bank' => 'required',
-            'bank_number' => 'required',
-            // 'job_title_id' => 'required',
-            'joining_date' => 'required',
-            'employee_status' => 'required',
-            'sales_status' => 'required',
-            'workDay' => 'required|array|min:1',
-            'officeLocations' => 'required|array|min:1'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+            $rawPassword = \Carbon\Carbon::parse($data['date_birth'])->format('dmY');
+            $data['password'] = Hash::make($rawPassword);
+            $data['eid'] = $eid;
+            $data['username'] = $eid;
+        } else {
+            $eid = $data['eid'] ?? null;
         }
 
-        $employee->update([
-            // 'eid' => $eid,
-            'email' => $request->email,
-            'name' => $request->name,
-            'city' => $request->city,
-            'domicile' => $request->domicile,
-            'place_birth' => $request->place_birth,
-            'date_birth' => $request->date_birth,
-            'blood_type' => $request->blood_type,
-            'gender' => $request->gender,
-            'religion' => $request->religion,
-            'marriage' => $request->marriage,
-            'education' => $request->education,
-            'whatsapp' => $request->whatsapp,
-            'bank' => $request->bank,
-            'bank_number' => $request->bank_number,
-            // 'position_id' => $request->position_id,
-            // 'job_title_id' => $request->job_title_id,
-            // 'division_id' => $request->division_id,
-            // 'department_id' => $request->department_id,
-            'joining_date' => $request->joining_date,
-            'employee_status' => $request->employee_status,
-            'sales_status' => $request->sales_status,
-            'pa_id' => $request->pa_id,
-            'kpi_id' => $request->kpi_id,
-            'bobot_kpi' => $request->bobot_kpi,
-        ]);
+        $employee = Employee::updateOrCreate(
+            ['id' => $data['id'] ?? null],
+            $data
+        );
 
-        $employee->workDay()->sync($request->workDay);
-        $employee->officeLocations()->sync($request->officeLocations);
-        
+        $employee->workDay()->sync($request->workDay ?? []);
+        $employee->officeLocations()->sync($request->officeLocations ?? []);
+
         return response()->json([
             'success' => true,
-            'message' => 'Employee updated successfully', 
+            'message' => 'Employee saved successfully',
             'route' => route('employee.detail', ['id' => $employee->id])
-        ], 200);
+        ]);
     }
-//Reset Username Password
-    public function resetUsernamePassword(Request $request, $id) {
+
+    //Reset Username Password
+    public function resetUsernamePassword(Request $request, $id)
+    {
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|regex:/^\S*$/|unique:employees,username',
         ]);
@@ -355,12 +153,40 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-
-//employee delete
-    function delete($id){
-        $employee = Employee::find($id);
-        $employee->delete();
+    //employee delete
+    function delete($id)
+    {
+        $employee = Presence::where('employee_id', $id)->first();
+        if($employee) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Karyawan yang sudah melakukan presensi, tidak dapat dihapus'
+            ], 200);
+        } else {
+            $employee = Employee::find($id);
+            $employee->delete();
+        }
         return redirect()->route('employee.list');
     }
 
+    //direct upload profile
+    public function upload(Request $request, $id)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $employee = Employee::find($id);
+        // dd($id);
+        if (!$employee->exists) {
+        return back()->with('error', 'Employee not found.');
+            }
+
+        if ($request->hasFile('profile_photo') && $request->file('profile_photo')->isValid()) {
+            $employee->clearMediaCollection('profile_photos');
+            $employee->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photos', 'public');
+        }
+                
+        return back()->with('success', 'Foto berhasil diunggah!');
+    }
 }

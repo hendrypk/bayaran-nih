@@ -12,31 +12,73 @@ use App\Models\KpiOptions;
 use App\Models\WorkCalendar;
 use App\Models\WorkSchedule;
 use App\Models\PayrollOption;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\EmployeeResetPasswordNotification;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Employee extends Authenticatable 
+
+class Employee extends Authenticatable implements HasMedia
+// class Employee extends Authenticatable Implements HasMedia
 {
-    use HasFactory;
-    use Notifiable;
-    use SoftDeletes;
+
+    use HasFactory, Notifiable, SoftDeletes, InteractsWithMedia;
+
+    // use HasFactory;
+    // use Notifiable;
+    // use SoftDeletes, InteractsWithMedia;
 
     protected $table = 'employees';
     protected $fillable = [
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
         'blood_type', 'gender', 'religion', 'marriage', 'education', 'whatsapp', 'bank', 'bank_number',
         'position_id', 'job_title_id', 'division_id', 'department_id', 'joining_date', 'employee_status',
-        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date', 'resignation_note'];
+        'sales_status', 'pa_id', 'kpi_id', 'bobot_kpi', 'role', 'resignation', 'resignation_date', 'resignation_note',
+        'annual_leave', 'due_annual_leave'];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
     protected $dates = ['deleted_at']; 
+
+
+    // public function getProfilePhotoThumbAttribute(): string
+    // {
+    //     $thumb = $this->getFirstMediaUrl('profile_photos', 'thumb');
+    //     return $thumb ?: asset('assets/images/placeholder/profile.jpg');
+    // }
+
+    // public function getProfilePhotoUrlAttribute(): string
+    // {
+    //     return $this->getFirstMediaUrl('profile_photos') ?: asset('assets/images/placeholder/profile.jpg');
+    // }
+
+    public function getProfilePhotoAttribute(): string
+{
+    return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
+}
+
+
+
+    // public function registerMediaCollections(): void
+    // {
+    //     $this->addMediaCollection('profile_photos')
+    //         ->useDisk('public')
+    //         ->singleFile()
+    //         ->registerMediaConversions(function (Media $media) {
+    //             $this->addMediaConversion('thumb')
+    //                 ->fit(Manipulations::FIT_CROP, 100, 100)
+    //                 ->optimize()
+    //                 ->performOnCollections('profile_photos');
+    //         });
+    // }
 
     //relation table position
     public function position()
@@ -64,8 +106,8 @@ class Employee extends Authenticatable
 
     public function workDay()
     {
-        return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
-    }      
+        return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
+    }
 
     // public function positionKpi()
     // {
@@ -114,7 +156,7 @@ class Employee extends Authenticatable
     }
 
     public function presences(){
-        return $this->belongsTo(Presence::class,'employee_id');
+        return $this->hasMany(Presence::class, 'employee_id', 'id')->with('media');
     }
 
     public function sendPasswordResetNotification($token)
@@ -137,6 +179,52 @@ class Employee extends Authenticatable
         return $this->belongsTo(EmployeeStatus::class, 'employee_status');
     }
       
-  
+    protected const GENDERS = ['Male', 'Female'];
+
+    protected const BLOODS = ['A', 'B', 'AB', 'O'];
+
+    protected const MARRIAGES = ['single', 'married', 'widowed'];
+
+    protected const RELIGIONS = ['buddha', 'catholic', 'christian', 'hindu', 'islam', 'konghuchu'];
+
+    protected const EDUCATIONS = [
+        'elementary_school',
+        'junior_school',
+        'high_school',
+        'diploma',
+        'bachelor',
+        'master',
+        'doctorate',
+    ];
+
+    protected const BANKS = [
+        'Bank Mandiri',
+        'Bank BNI',
+        'Bank BRI',
+        'Bank BCA',
+        'Bank BTN',
+        'Bank Syariah Indonesia',
+        'Bank Danamon',
+        'CIMB Niaga',
+        'Bank Permata',
+        'Bank Mega'
+    ];
+
+    public static function options(): array
+    {
+        return [
+            'genders' => self::GENDERS,
+            'bloods' => self::BLOODS,
+            'marriages' => self::MARRIAGES,
+            'religions' => self::RELIGIONS,
+            'educations' => self::EDUCATIONS,
+            'banks' => self::BANKS,
+        ];
+    }
+
+    public function positionChange()
+    {
+        return $this->hasMany(EmployeePositionChange::class, 'employee_id','id');
+    }
 
 }

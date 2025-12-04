@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ route('employee.updateTableColumns') }}" id="columnForm">>
+                <form method="POST" action="" id="columnForm">>
                     @csrf
                     <label for="columns">Select Columns:</label>
                     <select name="columns[]" id="columns" class="form-control" multiple>

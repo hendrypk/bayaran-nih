@@ -68,6 +68,8 @@ return [
         'solve_description' => 'Solve Description',
         'attachment' => 'Attachmment',
         'edit_lapor_hr' => 'Edit Lapor HR',
+        'age' => 'Age',
+        'number' => 'Number',
 
 
     ],

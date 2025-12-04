@@ -8,12 +8,15 @@
             <div class="modal-body">
                 <form id="editPresenceForm" action="" method="POST">
                     @csrf
+                    <input type="text" class="form-control" id="id" name="id" hidden>
+
                     <div class="row mb-3">
                         <div class="col-sm-3">
                             <label for="name" class="form-label">{{ __('general.label.name') }}</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="name" name="name" disabled>
+                            <input type="text" class="form-control" name="employee_id" id="employee_id" hidden>
+                            <input type="text" class="form-control" id="name" name="name" readonly>
                         </div>
                     </div>
 
@@ -22,7 +25,7 @@
                             <label for="date" class="form-label">{{ __('general.label.date') }}</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="date" name="date" disabled>
+                            <input type="text" class="form-control" id="date" name="date" readonly>
                         </div>
                     </div>
 
@@ -31,8 +34,9 @@
                             <label for="workDay" class="form-label">{{ __('attendance.label.work_day') }}</label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="workDay" id="workDay" disabled>
+                            <input type="text" class="form-control" name="workDayName" id="workDayName" readonly>
                         </div>
+                            <input type="text" class="form-control" name="workDay" id="workDay" hidden>
                     </div>
 
                     <div class="row mb-3">

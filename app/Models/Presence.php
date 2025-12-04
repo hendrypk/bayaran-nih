@@ -6,11 +6,13 @@ use App\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Presence extends Model
+
+class Presence extends Model implements HasMedia
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'employee_id',
@@ -34,7 +36,7 @@ class Presence extends Model
         'leave_note',
     ];
     
-    // protected $dates = ['deleted_at']; 
+    protected $dates = ['deleted_at']; 
 
     // protected $casts = [
     //     'date' => 'date',
@@ -52,6 +54,29 @@ class Presence extends Model
     const LEAVE_FULL_DAY_PERMIT = 'full day permit';
     const LEAVE_HALF_DAY_PERMIT = 'half day permit';
 
+    public $start_date;
+    public $end_date;
+
+    protected $listeners = ['dateRangeChanged' => 'updateDateRange'];
+    
+    public function updateDateRange($payload)
+    {
+        $this->start_date = $payload['start_date'];
+        $this->end_date   = $payload['end_date'];
+    }
+
+    public function render()
+    {
+        $query = Presence::with('employee','workDay');
+
+        if ($this->start_date && $this->end_date) {
+            $query->whereBetween('date', [$this->start_date, $this->end_date]);
+        }
+
+        return view('livewire.presence-table', [
+            'presence' => $query->get(),
+        ]);
+    }
     
     public function employee()
     {
@@ -60,7 +85,7 @@ class Presence extends Model
         
     public function workDay()
     {
-        return $this->belongsTo(WorkDay::class, 'work_day_id'); // Adjust 'work_day_id' based on your actual column
+        return $this->belongsTo(WorkScheduleGroup::class, 'work_day_id');
     }
 
     public function position()
