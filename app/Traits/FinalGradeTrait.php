@@ -30,13 +30,13 @@ trait FinalGradeTrait
         }
 
         $employees = $query->with([
-            'GradePas' => function($query) use ($selectedMonth, $selectedYear) {
+            'paResults' => function($query) use ($selectedMonth, $selectedYear) {
                 $query->select('employee_id', 'month', 'year', DB::raw('avg(grade) as final_pa'))
                     ->where('month', $selectedMonth)
                     ->where('year', $selectedYear)
                     ->groupBy('employee_id', 'month', 'year');
             },
-            'GradeKpis' => function($query) use ($selectedMonth, $selectedYear) {
+            'kpiResults' => function($query) use ($selectedMonth, $selectedYear) {
                 $query->select('employee_id', 'month', 'year', DB::raw('sum(grade) as final_kpi'))
                     ->where('month', $selectedMonth)
                     ->where('year', $selectedYear)
@@ -48,12 +48,12 @@ trait FinalGradeTrait
             $final_pa = 0;
             $final_kpi = 0;
 
-            if ($employee->GradePas->isNotEmpty()) {
-                $final_pa = $employee->GradePas->first()->final_pa;
+            if ($employee->paResults->isNotEmpty()) {
+                $final_pa = $employee->paResults()->first()->final_pa;
             }
 
-            if ($employee->GradeKpis->isNotEmpty()) {
-                $final_kpi = $employee->GradeKpis->first()->final_kpi;
+            if ($employee->kpiResults->isNotEmpty()) {
+                $final_kpi = $employee->kpiResults->first()->final_kpi;
             }
 
             $bobot_kpi = $employee->bobot_kpi / 100;

@@ -48,37 +48,10 @@ class Employee extends Authenticatable implements HasMedia
     ];
     protected $dates = ['deleted_at']; 
 
-
-    // public function getProfilePhotoThumbAttribute(): string
-    // {
-    //     $thumb = $this->getFirstMediaUrl('profile_photos', 'thumb');
-    //     return $thumb ?: asset('assets/images/placeholder/profile.jpg');
-    // }
-
-    // public function getProfilePhotoUrlAttribute(): string
-    // {
-    //     return $this->getFirstMediaUrl('profile_photos') ?: asset('assets/images/placeholder/profile.jpg');
-    // }
-
     public function getProfilePhotoAttribute(): string
-{
+    {
     return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
-}
-
-
-
-    // public function registerMediaCollections(): void
-    // {
-    //     $this->addMediaCollection('profile_photos')
-    //         ->useDisk('public')
-    //         ->singleFile()
-    //         ->registerMediaConversions(function (Media $media) {
-    //             $this->addMediaConversion('thumb')
-    //                 ->fit(Manipulations::FIT_CROP, 100, 100)
-    //                 ->optimize()
-    //                 ->performOnCollections('profile_photos');
-    //         });
-    // }
+    }
 
     //relation table position
     public function position()
@@ -108,11 +81,6 @@ class Employee extends Authenticatable implements HasMedia
     {
         return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
     }
-
-    // public function positionKpi()
-    // {
-    //     return $this->belongsTo(KpiOptions::class);
-    // }
 
     //relation table grade_pa
     public function gradePas()
@@ -230,6 +198,11 @@ class Employee extends Authenticatable implements HasMedia
     public function kpiResults()
     {
         return $this->hasMany(PerformanceKpiResult::class, 'employee_id');
+    }
+
+    public function paResults()
+    {
+        return $this->hasMany(PerformanceAppraisalResult::class, 'employee_id');
     }
 
 

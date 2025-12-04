@@ -34,8 +34,8 @@ class FinalGradeExport implements FromCollection, WithHeadings, WithStyles
                 $employee->name, // Name
                 $this->selectedMonth, // Month
                 $this->selectedYear, // Year
-                $employee->GradeKpis->isNotEmpty() ? $employee->GradeKpis->first()->final_kpi : 0, // KPI
-                $employee->GradePas->isNotEmpty() ? $employee->GradePas->first()->final_pa : 0, // PA
+                $employee->kpiResults->isNotEmpty() ? $employee->kpiResults->first()->final_kpi : 0, // KPI
+                $employee->paResults->isNotEmpty() ? $employee->paResults->first()->final_pa : 0, // PA
                 $employee->finalGrade, // Final Grade
             ];
         });
