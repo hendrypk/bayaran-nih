@@ -250,7 +250,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::get('', [AppraisalController::class, 'index'])->name('pa.list');
             Route::post('submit', [AppraisalController::class, 'create'])->name('pa.add');
             Route::get('get-by-pa-id/{paId}', [AppraisalController::class, 'getPaByEmployee'])->name('pa.getByEmployee');
-            Route::get('{employee_id}/{month?}/{year}', [AppraisalController::class, 'detail'])->name('pa.detail'); 
+            Route::get('{id}', [AppraisalController::class, 'detail'])->name('pa.detail'); 
             Route::get('{employee_id}/{month?}/{year?}/edit', [AppraisalController::class, 'edit'])->name('pa.edit'); 
             Route::post('{employee_id}/{month}/{year?}/update', [AppraisalController::class, 'update'])->name('pa.update'); 
             Route::post('{employee_id}/{month}/{year?}/delete', [AppraisalController::class, 'delete'])->name('pa.delete'); 

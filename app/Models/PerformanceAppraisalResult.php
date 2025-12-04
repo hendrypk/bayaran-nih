@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class PerformanceAppraisalResult extends Model
+{
+    use SoftDeletes;
+
+    protected $table = 'performance_appraisal_results';
+    protected $fillable =[
+        'user_created',
+        'user_updated',
+        'employee_id',
+        'pa_id',
+        'month',
+        'year',
+        'grade'
+    ];
+
+    public function employees()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function appraisalName()
+    {
+        return $this->belongsTo(PerformanceAppraisalName::class, 'appraisal_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(PerformanceAppraisalResultDetail::class, 'appraisal_result_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_created');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'user_updated');
+    }
+}
