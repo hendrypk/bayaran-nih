@@ -14,17 +14,22 @@ class KpiModal extends Component
     public $editingId;
     public $errorText = '';
     public $totalWeight= 0;
+    public $units;
 
     protected $listeners = ['delete'];
 
     public function mount($id = null)
     {
+        $this->units = \App\Models\Unit::all();
+        $defaultUnitId = $this->units->first()?->id ?? null;
+
         if ($id) {
             $this->isEditing = true;
             $this->editingId = $id;
 
             $kpi = PerformanceKpiName::with('indicators')->findOrFail($id);
-
+            
+            
             $this->name = $kpi->name;
 
             $this->indicators = $kpi->indicators->map(function ($item) {
@@ -33,11 +38,22 @@ class KpiModal extends Component
                     'description' => $item->description,
                     'target' => $item->target,
                     'weight' => $item->weight,
+                    'active' =>(bool) $item->active, 
+                    'locked' => $item->locked ?? false,
+                    'unit_id' => $item->unit_id,
                 ];
             })->toArray();
         } else {
             $this->indicators = [
-                ['aspect' => '', 'target' => '', 'weight' => '']
+                [
+                    'aspect' => 'Kehadiran',
+                    'description' => 'Persentase kehadiran karyawan dalam periode penilaian',
+                    'target' => '100',
+                    'weight' => '',
+                    'active' => true,
+                    'locked' => true,
+                    'unit_id' => $defaultUnitId,
+                ]
             ];
         }
 
@@ -46,7 +62,18 @@ class KpiModal extends Component
 
     public function addIndicator(): void
     {
-        $this->indicators[] = ['aspect' => '', 'target' => 0, 'weight' => 0];
+        $defaultUnitId = $this->units->first()?->id ?? null;
+
+        // $this->indicators[] = ['aspect' => '', 'target' => 0, 'weight' => 0, 'active' => true,];
+        $this->indicators [] = [
+            'aspect' => '',
+            'description' => '',
+            'target' => '0',
+            'weight' => '0',
+            'active' => true,
+            'locked' => false,
+            'unit_id' => $defaultUnitId,
+        ];
     }
 
     public function removeIndicator(int $index): void

@@ -7,56 +7,90 @@
             </div>
 
             <h6>@lang('performance.label.indicator')</h6>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="aspect-col">Aspect</th>
+                            <th class="description-col">Description</th>
+                            <th class="target-col">Target</th>
+                            <th class="unit-col">Unit</th>
+                            <th class="weight-col">Weight</th>
+                            <th class="active-col">Aktif</th>
+                            <th class="action-col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($indicators as $index => $item)
+                        <tr class="{{ $item['locked'] ? 'table-secondary' : '' }}">
+                            <td class="aspect-col">
+                                <input type="text"
+                                    class="form-control"
+                                    @if($item['locked']) disabled @endif
+                                    wire:model="indicators.{{ $index }}.aspect"
+                                    placeholder="Aspect">
+                            </td>
+                            <td class="description-col">
+                                <textarea class="form-control"
+                                        @if($item['locked']) disabled @endif
+                                        wire:model="indicators.{{ $index }}.description"
+                                        rows="2"
+                                        placeholder="Description"></textarea>
+                            </td>
+                            <td class="target-col">
+                                <input type="text"
+                                    class="form-control"
+                                    wire:model="indicators.{{ $index }}.target"
+                                    placeholder="Target">
+                            </td>
+                            <td class="unit-col">
+                                <select class="form-control"
+                                        wire:model="indicators.{{ $index }}.unit_id">
+                                    <option value="">Pilih Satuan</option>
+                                    @foreach($units as $unit)
+                                        <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="weight-col">
+                                <div class="input-group">
+                                    <input type="text"
+                                        class="form-control"
+                                        wire:model.lazy="indicators.{{ $index }}.weight"
+                                        placeholder="Weight">
+                                    <span class="input-group-text text">%</span>
+                                </div>
+                            </td>
+                            <td class="active-col">
+                                <input type="checkbox"
+                                    class="form-check-input"
+                                    wire:model="indicators.{{ $index }}.active">
+                            </td>
+                            <td class="action-col">
+                                @if(empty($item['locked']))
+                                    <button class="btn btn-danger btn-sm"
+                                            wire:click="removeIndicator({{ $index }})">
+                                        <i class="ri-delete-bin-fill"></i>
+                                    </button>
+                                @else
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="ri-lock-fill"></i>
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-            @foreach($indicators as $index => $item)
-                <div class="row d-flex mb-3 justify-content-between align-items-center">
 
-                    <div class="col-md-4">
-                        <input type="text"
-                               class="form-control"
-                               wire:model="indicators.{{ $index }}.aspect"
-                               placeholder="@lang('performance.label.aspect')">
-                    </div>
-
-                    <div class="col-md-4">
-                        <input type="text"
-                               class="form-control"
-                               wire:model="indicators.{{ $index }}.description"
-                               placeholder="@lang('performance.label.description')">
-                    </div>
-
-                    <div class="col-md-2">
-                        <input type="text"
-                               class="form-control"
-                               wire:model="indicators.{{ $index }}.target"
-                               placeholder="@lang('performance.label.target')">
-                    </div>
-
-                    <div class="col-md-1">
-                        <input type="text"
-                               class="form-control"
-                               wire:model.lazy="indicators.{{ $index }}.weight"
-                               placeholder="@lang('performance.label.weight')">
-                    </div>
-
-                    <div class="col-md-1 d-flex justify-content-end">
-                        <button class="btn btn-red btn-sm ms-auto"
-                                wire:click="removeIndicator({{ $index }})">
-                                <i class="ri-delete-bin-fill"></i>
-                        </button>
-                    </div>
-
-                </div>
-            @endforeach
-
-            <div class="d-flex mt-2 justify-content-between align-items-center">
-                <strong>@lang('performance.label.total_weight') : {{ $totalWeight }}%</strong>
-
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <strong>Total Weight: {{ $totalWeight }}%</strong>
                 <button class="btn btn-tosca btn-sm" wire:click="addIndicator">
                     <i class="ri-add-circle-line"></i>
                 </button>
             </div>
-
             <hr>
             <div class="mt-3">
                 <div class="d-flex justify-content-between align-items-center">

@@ -79,11 +79,14 @@ class KpiForm extends Component
         $this->kpiName = $employee->kpis->name ?? '';
         $this->kpiId = $employee->kpis->id ?? null;
 
-        // Jangan overwrite achievement & result jika sedang edit
+        $activeIndicators = $employee->kpis
+            ? $employee->kpis->indicators->filter(fn($indicator) => $indicator->active)
+            : collect();
+
         if ($kpiResult) {
-            $this->kpis = $employee->kpis ? $employee->kpis->indicators : collect();
+            $this->kpis = $activeIndicators;
         } else {
-            $this->kpis = $employee->kpis ? $employee->kpis->indicators : collect();
+            $this->kpis = $activeIndicators;
             $this->achievement = [];
             $this->result = [];
         }

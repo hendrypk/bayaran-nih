@@ -1854,3 +1854,39 @@ select {
     transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
+
+.table th.aspect-col, .table td.aspect-col {
+    max-width: 200px;
+    width: 200px;
+}
+
+.table th.description-col, .table td.description-col {
+    max-width: 300px;
+}
+
+.table th.target-col, .table td.target-col {
+    max-width: 200px;
+    width: 200px;
+}
+
+.table th.unit-col, .table td.unit-col {
+    max-width: 120px;
+    width: 120px;
+}
+
+.table th.weight-col, .table td.weight-col {
+    max-width: 130px;
+    width: 130px;
+}
+
+.table th.active-col, .table td.active-col {
+    max-width: 80px;
+    width: 80px;
+    text-align: center;
+}
+
+.table th.action-col, .table td.action-col {
+    max-width: 80px;
+    width: 80px;
+    text-align: center;
+}
