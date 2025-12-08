@@ -42,6 +42,7 @@ return [
         'kpi_name' => 'KPI Name',
         'pa_name' => 'PA Name',
         'result' => 'Result',
+        'unit' => 'Unit',
 
     ],
     'placeholders' => [

@@ -14,11 +14,13 @@ class KpiDatatable extends Component
 
     protected $paginationTheme = 'bootstrap'; // jika pakai bootstrap
 
-    public function mount($month = null, $year = null)
-    {
-        $this->month = $month ?? date('F');
-        $this->year = $year ?? date('Y');
-    }
+public function mount($month = null, $year = null)
+{
+    $this->month = is_numeric($month) ? intval($month) : date('n');
+    $this->year  = is_numeric($year)  ? intval($year)  : date('Y');
+}
+
+
 
     public function updatedMonth()
     {

@@ -104,7 +104,9 @@
                         <tr>
                             <th class="text-center" style="width: 5%;">No</th>
                             <th class="text-center" style="width: 40%;">{{ __('performance.label.aspect') }}</th>
+                            <th class="text-center" style="width: 40%;">{{ __('performance.label.description') }}</th>
                             <th class="text-center" style="width: 15%;">{{ __('performance.label.target') }}</th>
+                            <th class="text-center" style="width: 15%;">{{ __('performance.label.unit') }}</th>
                             <th class="text-center" style="width: 15%;">{{ __('performance.label.weight') }}</th>
                             <th class="text-center" style="width: 15%;">{{ __('performance.label.achievement') }}</th>
                             <th class="text-center" style="width: 15%;">{{ __('performance.label.grade') }}</th>
@@ -115,17 +117,19 @@
                             <tr>
                                 <td class="text-center">{{ $no+1 }}</td>
                                 <td>{{ $gradeKpi->aspect }}</td>
+                                <td>{{ $gradeKpi->description }}</td>
                                 <td class="text-center">{{ number_format($gradeKpi->target, 2, '.', ',') }}</td>
-                                <td class="text-center">{{ number_format($gradeKpi->bobot, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ $gradeKpi->unit }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->weight, 2, '.', ',') }}</td>
                                 <td class="text-end">{{ number_format($gradeKpi->achievement, 2, '.', ',') }}</td>
-                                <td class="text-center">{{ number_format($gradeKpi->grade, 2, '.', ',') }}</td>
+                                <td class="text-center">{{ number_format($gradeKpi->result, 2, '.', ',') }}</td>
                                 
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="5">{{ __('performance.label.final_grade') }}</th>
+                            <th colspan="7">{{ __('performance.label.final_grade') }}</th>
                             <th class="text-center">{{$kpi->grade}}</th>
                         </tr>
                     </tfoot>

@@ -14,7 +14,7 @@
                 <tr onclick="window.open('{{ route('kpi.detail', $item->id) }}', '_blank')" style="cursor: pointer;">
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->employees->name }}</td>
-                    <td>{{ $item->month }}</td>
+                    <td>{{ DateTime::createFromFormat('!m', $item->month)->format('F') }}</td>
                     <td>{{ $item->year }}</td>
                     <td>{{ number_format($item->grade, 2) }}</td>
                 </tr>

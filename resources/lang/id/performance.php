@@ -42,6 +42,8 @@ return [
         'kpi_name' => 'Nama KPI',
         'pa_name' => 'Nama PA',
         'result' => 'Hasil',
+        'unit' => 'Satuan',
+
     ],
     'placeholders' => [
         'select_employee' => 'Pilih Karyawan',

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Employee;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -92,5 +93,23 @@ class Presence extends Model implements HasMedia
     {
         return $this->belongsTo(Position::class, 'position_id', 'id');
     }
+
+    /**
+     * Ambil total kehadiran (presence) dalam periode
+     */
+public static function getPresence($employeeId, $startDate, $endDate)
+{
+    return self::where('employee_id', $employeeId)
+                ->where(function($q){
+                    $q->whereNull('leave')->orWhere('leave', ''); // termasuk empty string
+                })
+                ->whereBetween('date', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ])
+                ->count();
+}
+
+
 
 }

@@ -10,11 +10,14 @@ class KpiController extends Controller
 {
 
 //KPI Index
-public function index(Request $request){
-    $selectedMonth = $request->input('month', date('F'));
-    $selectedYear = $request->input('year', date('Y'));    
+public function index(Request $request)
+{
+    $selectedMonth = $request->input('month', date('n')); // 1–12
+    $selectedYear  = $request->input('year', date('Y'));
+
     return view('performance.kpi.index', compact('selectedMonth', 'selectedYear'));
 }
+
 
 //Kpi Add
 public function create(){

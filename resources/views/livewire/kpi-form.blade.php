@@ -29,19 +29,20 @@
             </div>
             <div class="col-2">
                 <label class="form-label">{{ __('general.label.month') }}</label>
-                <select class="select-form" wire:model="month">
+                <select class="select-form" wire:model="month" wire:change="$set('month', $event.target.value)">>
                     @foreach(range(1, 12) as $m)
                         @php 
+                            $month = DateTime::createFromFormat('!m', $m)->format('n');
                             $monthName = DateTime::createFromFormat('!m', $m)->format('F');
                         @endphp
-                        <option value="{{ $monthName }}">{{ $monthName }}</option>
+                        <option value="{{ $month }}">{{ $monthName }}</option>
                    @endforeach
                 </select>
             </div>
             
             <div class="col-2">
                 <label class="form-label">{{ __('general.label.year') }}</label>
-                <select class="select-form" wire:model="year">
+                <select class="select-form" wire:model="year" wire:change="$set('year', $event.target.value)">>
                     @foreach(range(date('Y') - 1, date('Y') + 5) as $y)
                     <option value="{{ $y }}">{{ $y }}</option>
                     @endforeach
@@ -52,14 +53,15 @@
         <div class="col mb-3">
             <label for="" class="form-label">@lang('performance.label.kpi_name') : <span>{{$kpiName}}</span></label>
         </div>
-        <div class="col">
+        <div class="col table-responsive">
             @if($kpis && $kpis->count())
-            <table class="table table-bordered">
+            <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">@lang('performance.label.aspect')</th>
                         <th class="text-center">@lang('performance.label.description')</th>
                         <th class="text-center">@lang('performance.label.target')</th>
+                        <th class="text-center">@lang('performance.label.unit')</th>
                         <th class="text-center">@lang('performance.label.weight')</th>
                         <th class="text-center">@lang('performance.label.achievement')</th>
                         <th class="text-center">@lang('performance.label.result')</th>
@@ -70,14 +72,32 @@
                     <tr>
                         <td class="text-center">{{ $kpi->aspect ?? '—' }}</td>
                         <td class="text-center">{{ $kpi->description ?? '—' }}</td>
-                        <td class="text-center">{{ formatNumber($kpi->target ?? '—') }}</td>
+                        <td class="text-center">
+                            @if(strtolower($kpi->aspect) === 'kehadiran')
+                            {{ formatNumber($effectiveDays) }}
+                            @else
+                                {{ formatNumber($kpi->target) }}
+                            @endif
+                            
+                        </td>
+                        <td class="text-center">{{ $kpi->unit ?? '-' }}</td>
                         <td class="text-center">{{ formatPercent($kpi->weight ?? '—') }}</td>
                         <td class="text-center">
-                            <input type="number" 
-                            class="form-control"
-                            wire:model.lazy="achievement.{{ $index }}"
-                            min="0"
-                            step="0.01">
+                            @if(strtolower($kpi->aspect) === 'kehadiran')
+                                <input type="number"
+                                    class="form-control bg-light"
+                                    value="{{ $presenceTotal }}"
+                                    disabled>
+
+                                <input type="hidden"
+                                    wire:model="achievement.{{ $index }}">
+                            @else
+                                <input type="number" 
+                                    class="form-control"
+                                    wire:model.lazy="achievement.{{ $index }}"
+                                    min="0"
+                                    step="0.01">
+                            @endif
                         </td>
                         <td class="text-center">{{ $result[$index] ?? '0.00' }}</td>
                     </tr>
@@ -85,7 +105,7 @@
                 </tbody>
                 <tfoot class="table-secondary">
                     <tr>
-                        <th colspan="5" class="text-end">@lang('performance.label.grade')</th>
+                        <th colspan="6" class="text-end">@lang('performance.label.grade')</th>
                         <th class="text-center">{{ $this->grade }}</th>
                     </tr>
                 </tfoot>

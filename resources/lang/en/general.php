@@ -72,6 +72,7 @@ return [
         'number' => 'Number',
         'created_by' => 'Created by',
         'updated_by' => 'Updated by',
+        'active' => 'Active',
 
     ],
     'placeholder' => [

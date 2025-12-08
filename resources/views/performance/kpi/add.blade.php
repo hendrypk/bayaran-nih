@@ -4,7 +4,7 @@
 {{ Breadcrumbs::render('kpi.form', $isEditing ?? false, $id ?? null) }}
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col">
         <div class="card">
             <div class="card-body">
                 <livewire:kpi-form :kpiId="$id ?? null" />

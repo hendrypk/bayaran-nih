@@ -11,13 +11,13 @@
                 <table class="table table-bordered table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th class="aspect-col">Aspect</th>
-                            <th class="description-col">Description</th>
-                            <th class="target-col">Target</th>
-                            <th class="unit-col">Unit</th>
-                            <th class="weight-col">Weight</th>
-                            <th class="active-col">Aktif</th>
-                            <th class="action-col">Action</th>
+                            <th class="aspect-col">@lang('performance.label.aspect')</th>
+                            <th class="description-col">@lang('performance.label.description')</th>
+                            <th class="target-col">@lang('performance.label.target')</th>
+                            <th class="unit-col">@lang('performance.label.unit')</th>
+                            <th class="weight-col">@lang('performance.label.weight')</th>
+                            <th class="active-col">@lang('general.label.active')</th>
+                            <th class="action-col">@lang('general.label.action')</th>
                         </tr>
                     </thead>
                     <tbody>

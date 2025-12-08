@@ -21,7 +21,7 @@ class KpiModal extends Component
     public function mount($id = null)
     {
         $this->units = \App\Models\Unit::all();
-        $defaultUnitId = $this->units->first()?->id ?? null;
+        $defaultUnitId = $this->units->where('symbol', '%')->first()?->id ?? null;
 
         if ($id) {
             $this->isEditing = true;

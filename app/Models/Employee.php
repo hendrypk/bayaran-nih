@@ -30,10 +30,6 @@ class Employee extends Authenticatable implements HasMedia
 
     use HasFactory, Notifiable, SoftDeletes, InteractsWithMedia;
 
-    // use HasFactory;
-    // use Notifiable;
-    // use SoftDeletes, InteractsWithMedia;
-
     protected $table = 'employees';
     protected $fillable = [
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
@@ -50,7 +46,7 @@ class Employee extends Authenticatable implements HasMedia
 
     public function getProfilePhotoAttribute(): string
     {
-    return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
+        return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
     }
 
     //relation table position
@@ -59,40 +55,40 @@ class Employee extends Authenticatable implements HasMedia
         return $this->belongsTo(Position::class, 'position_id');
     }
 
-    //relation table division
-    public function division()
-    {
-        return $this->belongsTo(Division::class, 'division_id', 'id');
-    }
+    // //relation table division
+    // public function division()
+    // {
+    //     return $this->belongsTo(Division::class, 'division_id', 'id');
+    // }
 
-    //relation table department
-    public function department()
-    {
-        return $this->belongsTo(Department::class, 'department_id', 'id');
-    }
+    // //relation table department
+    // public function department()
+    // {
+    //     return $this->belongsTo(Department::class, 'department_id', 'id');
+    // }
 
-    //relation table job_title
-    public function job_title()
-    {
-        return $this->belongsTo(JobTitle::class, 'job_title_id', 'id');
-    }
+    // //relation table job_title
+    // public function job_title()
+    // {
+    //     return $this->belongsTo(JobTitle::class, 'job_title_id', 'id');
+    // }
 
     public function workDay()
     {
         return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
     }
 
-    //relation table grade_pa
-    public function gradePas()
-    {
-        return $this->hasMany(GradePa::class, 'employee_id');
-    }
+    // //relation table grade_pa
+    // public function gradePas()
+    // {
+    //     return $this->hasMany(GradePa::class, 'employee_id');
+    // }
 
-    //relation table grade_kpi
-    public function gradeKpis()
-    {
-        return $this->hasMany(GradeKpi::class, 'employee_id');
-    }
+    // //relation table grade_kpi
+    // public function gradeKpis()
+    // {
+    //     return $this->hasMany(GradeKpi::class, 'employee_id');
+    // }
 
     //relasi ke Payroll
     public function payroll()
@@ -110,10 +106,10 @@ class Employee extends Authenticatable implements HasMedia
         return $this->belongsTo(PerformanceAppraisalName::class, 'pa_id');
     }
 
-    public function performanceKpis()
-    {
-        return $this->belongsTo(PerformanceKpi::class, 'kpi_id');
-    }
+    // public function performanceKpis()
+    // {
+    //     return $this->belongsTo(PerformanceKpi::class, 'kpi_id');
+    // }
 
     public function overtimes(){
         return $this->hasMany(Overtime::class, 'employee_id');

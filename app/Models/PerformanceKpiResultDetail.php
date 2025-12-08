@@ -14,8 +14,10 @@ class PerformanceKpiResultDetail extends Model
     protected $fillable =[
         'kpi_result_id',
         'aspect',
+        'description',
         'target',
         'weight',
+        'unit',
         'achievement',
         'result',
     ];
