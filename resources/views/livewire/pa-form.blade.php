@@ -66,6 +66,7 @@
                                 class="form-control"
                                 wire:model.lazy="achievement.{{ $index }}"
                                 min="0"
+                                max="100"
                                 step="0.01">
                             </td>
                         </tr>

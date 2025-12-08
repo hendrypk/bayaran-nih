@@ -92,7 +92,7 @@ class PaForm extends Component
             'paId' => 'required|exists:performance_appraisal_name,id',
             'employeeId' => 'required|exists:employees,id',
             'achievement' => 'required|array',
-            'achievement.*' => 'required|numeric|min:0',
+            'achievement.*' => 'required|numeric|min:0|max:100',
         ];
     }
 
