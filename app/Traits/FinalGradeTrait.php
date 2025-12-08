@@ -49,7 +49,7 @@ trait FinalGradeTrait
             $final_kpi = 0;
 
             if ($employee->paResults->isNotEmpty()) {
-                $final_pa = $employee->paResults()->first()->final_pa;
+                $final_pa = $employee->paResults->first()->final_pa;
             }
 
             if ($employee->kpiResults->isNotEmpty()) {
@@ -63,7 +63,8 @@ trait FinalGradeTrait
             $finalGrade = $kpi_value + $pa_value;
             $employee->finalGrade = number_format($finalGrade, 2, '.', '');
             $employee->final_pa = number_format($final_pa, 2, '.', '');
-            $employee->final_kpi = number_format($final_kpi, 2, '.', '');
+            $employee->kpi_weight = $employee->bobot_kpi;
+            $employee->pa_weight = 100 - $employee->bobot_kpi ;
         }
 
         return $employees;

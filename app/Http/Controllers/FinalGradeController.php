@@ -17,7 +17,7 @@ class FinalGradeController extends Controller
 
     public function index(Request $request)
     {
-        $selectedMonth = $request->input('month', date('F'));
+        $selectedMonth = $request->input('month', date('n'));
         $selectedYear = $request->input('year', date('Y'));
         
         $userDivision = Auth::user()->division_id;
