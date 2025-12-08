@@ -24,19 +24,20 @@
                 </div>
                 <div class="col-2">
                     <label class="form-label">{{ __('general.label.month') }}</label>
-                    <select class="select-form" wire:model="month">
+                    <select class="select-form" wire:model="month" wire:change="$set('month', $event.target.value)">>
                         @foreach(range(1, 12) as $m)
                             @php 
+                                $month = DateTime::createFromFormat('!m', $m)->format('n');
                                 $monthName = DateTime::createFromFormat('!m', $m)->format('F');
                             @endphp
-                            <option value="{{ $monthName }}">{{ $monthName }}</option>
+                            <option value="{{ $month }}">{{ $monthName }}</option>
                     @endforeach
                     </select>
                 </div>
                 
                 <div class="col-2">
                     <label class="form-label">{{ __('general.label.year') }}</label>
-                    <select class="select-form" wire:model="year">
+                    <select class="select-form" wire:model="year" wire:change="$set('year', $event.target.value)">>
                         @foreach(range(date('Y') - 1, date('Y') + 5) as $y)
                         <option value="{{ $y }}">{{ $y }}</option>
                         @endforeach
@@ -83,14 +84,60 @@
                 <p class="text-muted">Tidak ada PA untuk employee ini.</p>
                 @endif
             </div>
-            <div class="row mb-2 mt-3 justify-content-end">
+
+            @if($isEditing)
+            <div class="small mt-3 mb-2">
+                <div class="d-flex">
+                    <span class="fw-bold" style="width:130px;">@lang('general.label.created_by')</span>
+                    <span>
+                        : {{ $creator ?? '-' }} 
+                        @if($creator && $created)
+                            / {{ $created->format('d M Y H:i') }}
+                        @endif
+                </div>
+                <div class="d-flex">
+                    <span class="fw-bold" style="width:130px;">@lang('general.label.updated_by')</span>
+                    <span>
+                        : {{ $updater ?? '-' }} 
+                        @if($updater && $updated)
+                            / {{ $updated->format('d M Y H:i') }}
+                        @endif
+                    </span>
+                </div>
+            </div>
+            @endif
+
+            <div class="d-flex justify-content-between align-items-center">
+                @if($isEditing)
+                    <x-swal-confirm 
+                        title="Hapus PA Karyawan?" 
+                        text="Apakah Anda yakin ingin menghapus PA Karyawan?"
+                        callback="delete"
+                        :id="$paResultId"
+                        class="btn btn-red btn-sm">
+                        <i class="ri-delete-bin-fill"></i>
+                    </x-swal-confirm>
+                @else
+                <div></div>
+                @endif
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-untosca" wire:click="$dispatch('closeModal')">
+                        @lang('general.label.cancel')
+                    </button>
+                    <button class="btn btn-tosca btn-sm" wire:click="save">
+                        @lang('general.label.save')
+                    </button>
+                </div>
+            </div>
+            {{-- <div class="row mb-2 mt-3 justify-content-end">
                 <div class="d-grid gap-2 col-2">
                     <button type="button" class="btn btn-red" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
                 </div>
                 <div class="d-grid gap-2 col-2">
                     <button type="submit" class="btn btn-tosca">{{ __('general.label.save') }}</button>
                 </div>
-            </div>
+            </div> --}}
         </form>
     </x-ui.modal>
 </div>

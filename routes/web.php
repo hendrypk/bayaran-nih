@@ -231,11 +231,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view kpi']], function() {
         Route::prefix('kpi')->group(function () {
             Route::get('', [KpiController::class, 'index'])->name('kpi.list');
-            Route::get('add', [KpiController::class, 'create'])->name('kpi.add');
-            Route::get('{id}', [KpiController::class, 'detail'])->name('kpi.detail'); 
-            Route::post('{id}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
-            Route::get('{id}/edit', [KpiController::class, 'edit'])->name('kpi.edit'); 
-            Route::post('filter', [KpiController::class, 'filterKpisByPosition'])->name('kpi.filter');
+            // Route::get('add', [KpiController::class, 'create'])->name('kpi.add');
+            // Route::get('{id}', [KpiController::class, 'detail'])->name('kpi.detail'); 
+            // Route::post('{id}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
+            // Route::get('{id}/edit', [KpiController::class, 'edit'])->name('kpi.edit'); 
+            // Route::post('filter', [KpiController::class, 'filterKpisByPosition'])->name('kpi.filter');
 
             // Route::post('submit', [KpiController::class, 'create'])->name('kpi.create');
             // Route::post('{employee_id}/{month}/{year?}/update', [KpiController::class, 'update'])->name('kpi.update');

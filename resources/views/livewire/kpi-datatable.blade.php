@@ -7,24 +7,29 @@
                 <th>@lang('general.label.month')</th>
                 <th>@lang('general.label.year')</th>
                 <th>@lang('performance.label.grade')</th>
+                <th>@lang('general.label.view')</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($gradeKpi as $item)
-                <tr onclick="window.open('{{ route('kpi.detail', $item->id) }}', '_blank')" style="cursor: pointer;">
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->employees->name }}</td>
-                    <td>{{ DateTime::createFromFormat('!m', $item->month)->format('F') }}</td>
-                    <td>{{ $item->year }}</td>
-                    <td>{{ number_format($item->grade, 2) }}</td>
-                </tr>
-
-
-            @empty
+            @foreach($gradeKpi as $kpi)
                 <tr>
-                    <td colspan="4" class="text-center">No data found</td>
+                    <td>{{ $kpi->id }}</td>
+                    <td>{{ $kpi->employees->name }}</td>
+                    <td>{{ DateTime::createFromFormat('!m', $kpi->month)->format('F') }}</td>
+                    <td>{{ $kpi->year }}</td>
+                    <td>{{ number_format($kpi->grade, 2) }}</td>
+                    <td>                        
+                        <x-modal-trigger
+                            class="btn btn-blue"
+                            title="Edit KPI"
+                            modal="kpi-form"
+                            :args="['id' => $kpi->id]"
+                            size="xl">
+                            <i class="ri-eye-fill"></i>
+                        </x-modal-trigger>
+                    </td>
                 </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 

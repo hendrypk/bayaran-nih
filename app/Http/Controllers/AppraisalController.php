@@ -13,44 +13,12 @@ use Illuminate\Support\Facades\Auth;
 class AppraisalController extends Controller
 {
 //Appraisal Index
-function index(Request $request){
-    $userDivision = Auth::user()->division_id;
-    $userDepartment = Auth::user()->department_id;
-        $query = Employee::query();
-        if ($userDivision && !$userDepartment) {
-            $query->where('division_id', $userDivision);
-        } elseif (!$userDivision && $userDepartment) {
-            $query->where('department_id', $userDepartment);
-        } 
-        $query->whereNull('resignation');
-        $employees = $query->get();
-        
-        $appraisals = PerformanceAppraisal::get();
-        $selectedMonth = $request->input('month', date('F'));
-        $selectedYear = $request->input('year', date('Y'));
+public function index(Request $request)
+{
+    $selectedMonth = $request->input('month', date('n')); 
+    $selectedYear  = $request->input('year', date('Y'));
 
-        $gradePa = GradePa::with('employees')
-            ->select('employee_id', 'month', 'year')
-            ->where('month', $selectedMonth)
-            ->where('year', $selectedYear)
-            ->groupBy('employee_id', 'month', 'year')
-            ->get();
-
-            $averageGrades = GradePa::select('employee_id', DB::raw('AVG(grade) as average_grade'))
-            ->where('month', $selectedMonth)
-            ->where('year', $selectedYear)
-            ->groupBy('employee_id')
-            ->get();
-
-        $avgGrade = $gradePa->groupBy('employee_id')->map(function($group){
-            return $group->avg('grade');
-        });
-
-        $finalGrade = $gradePa->groupBy(['employee_id'])->map(function ($group) {
-                return $group->avg('grade');
-            });
-
-    return view('performance.pa.index', [$gradePa], compact('averageGrades', 'gradePa', 'employees', 'appraisals', 'finalGrade', 'selectedMonth', 'selectedYear', 'avgGrade'));
+    return view('performance.pa.index', compact('selectedMonth', 'selectedYear'));
 }
 
 //Get PA per pa_id

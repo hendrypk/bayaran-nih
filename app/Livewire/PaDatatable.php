@@ -28,9 +28,9 @@ class PaDatatable extends Component
     {
         $this->resetPage();
     }
+
     public function render()
     {
-
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
 

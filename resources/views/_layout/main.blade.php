@@ -96,7 +96,7 @@
   <!-- Template Main JS File -->
   <script src="{{ asset('assets/js/main.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
-  <script src="{{ asset('assets/js/release.js') }}"></script>
+  {{-- <script src="{{ asset('assets/js/release.js') }}"></script> --}}
 
   <!-- jQuery, moment, daterangepicker (urutan WAJIB seperti ini, hanya satu jQuery) -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
@@ -118,7 +118,7 @@
   @stack('scripts')
   @yield('script')
 
-  <script>
+  {{-- <script>
     function showSuccessAlert(message) {
         Swal.fire({
             icon: 'success',
@@ -159,7 +159,7 @@
             confirmButtonText: 'Try Again'
         });
     @endif
-  </script>
+  </script> --}}
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {

@@ -319,10 +319,6 @@
 })();
 
 document.addEventListener('livewire:init', () => {
-
-    // ============================
-    // GLOBAL SWAL SUCCESS
-    // ============================
     Livewire.on('swal:success', (data = {}) => {
         Swal.fire({
             title: data.title ?? 'Success',
@@ -334,11 +330,8 @@ document.addEventListener('livewire:init', () => {
           window.location.reload();
         });
     });
-
-    // ============================
-    // GLOBAL SWAL ERROR
-    // ============================
     Livewire.on('swal:error', (data = {}) => {
+      console.log(data);
         Swal.fire({
             title: data.title ?? 'Error',
             text: data.message ?? 'Something went wrong!',
@@ -348,51 +341,44 @@ document.addEventListener('livewire:init', () => {
 });
 
 
-function confirmDelete(id, name, entity) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete the " + entity + ": " + name,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '',
-            cancelButtonColor: '',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/${entity}/${id}/delete`, { 
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: data.message, // Use message from the server
-                            icon: 'success'
-                        }).then(() => {
-                            // Reload the page or redirect to another route
-                            window.location.href = data.redirect; // Redirect to the desired route
-                        });
-                    } else {
-                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            }
-        });
-    }
+function toDelete(url) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.success) {
+                    Swal.fire('Deleted!', data.message, 'success')
+                        .then(() => window.location.href = data.redirect);
+                } else {
+                    Swal.fire('Error!', data.message || 'Delete failed.', 'error');
+                }
+
+            })
+            .catch(() => {
+                Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
+            });
+        }
+
+    });
+}
+
 
 Livewire.on('swal:confirm', ({ message, callback }) => {
     Swal.fire({

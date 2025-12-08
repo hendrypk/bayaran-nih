@@ -11,11 +11,11 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($gradePa as $pa)
+            @foreach($gradePa as $pa)
                 <tr>
                     <td>{{ $pa->id }}</td>
                     <td>{{ $pa->employees->name }}</td>
-                    <td>{{ $pa->month }}</td>
+                    <td>{{ DateTime::createFromFormat('!m', $pa->month)->format('F') }}</td>
                     <td>{{ $pa->year }}</td>
                     <td>{{ number_format($pa->grade, 2) }}</td>
                     <td>
@@ -30,12 +30,7 @@
                     </td>
                 </tr>
 
-
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center">No data found</td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 

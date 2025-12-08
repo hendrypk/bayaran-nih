@@ -8,19 +8,16 @@ use Livewire\Component;
 
 class KpiDatatable extends Component
 {
-
     public $month;
     public $year;
 
-    protected $paginationTheme = 'bootstrap'; // jika pakai bootstrap
+    protected $paginationTheme = 'bootstrap';
 
-public function mount($month = null, $year = null)
-{
-    $this->month = is_numeric($month) ? intval($month) : date('n');
-    $this->year  = is_numeric($year)  ? intval($year)  : date('Y');
-}
-
-
+    public function mount($month = null, $year = null)
+    {
+        $this->month = $month ?? date('F');
+        $this->year = $year ?? date('Y');
+    }
 
     public function updatedMonth()
     {
@@ -38,7 +35,6 @@ public function mount($month = null, $year = null)
         $userDepartment = Auth::user()->department_id;
 
         $query = PerformanceKpiResult::with('details', 'employees')
-            // ->select('employee_id', 'kpi_id', 'month', 'year', 'grade')
             ->where('month', $this->month)
             ->where('year', $this->year);
 

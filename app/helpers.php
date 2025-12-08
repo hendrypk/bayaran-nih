@@ -65,3 +65,12 @@ if (! function_exists('formatPercent')) {
         return number_format($number, $decimals, ',', '.') . '%';
     }
 }
+
+if (! function_exists('formatBulan')) {
+    function formatBulan($date, $format = 'F')
+    {
+        if (!$date) return '';
+
+        return Carbon::parse($date)->translatedFormat($format);
+    }
+}
