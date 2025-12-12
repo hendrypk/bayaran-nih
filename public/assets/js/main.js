@@ -394,3 +394,38 @@ Livewire.on('swal:confirm', ({ message, callback }) => {
         }
     });
 });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Select multiple elements using a query selector
+      const datePickers = document.querySelectorAll("#leave-dates, #holiday-dates");
+
+      // Loop over each element and initialize flatpickr
+      datePickers.forEach(function(datePicker) {
+          flatpickr(datePicker, {
+              mode: "multiple",
+              dateFormat: "Y-m-d",
+          });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleIcons = document.querySelectorAll('.toggle-password');
+
+        toggleIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('bi-eye-fill');
+                    this.classList.add('bi-eye-slash-fill');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('bi-eye-slash-fill');
+                    this.classList.add('bi-eye-fill');
+                }
+            });
+        });
+    });

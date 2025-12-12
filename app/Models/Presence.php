@@ -32,6 +32,9 @@ class Presence extends Model implements HasMedia
         'photo_out',
         'location_in',
         'location_out',
+        'creator',
+        'updater',
+        'deleter',
         'leave',
         'leave_status',
         'leave_note',
@@ -97,18 +100,18 @@ class Presence extends Model implements HasMedia
     /**
      * Ambil total kehadiran (presence) dalam periode
      */
-public static function getPresence($employeeId, $startDate, $endDate)
-{
-    return self::where('employee_id', $employeeId)
-                ->where(function($q){
-                    $q->whereNull('leave')->orWhere('leave', ''); // termasuk empty string
-                })
-                ->whereBetween('date', [
-                    Carbon::parse($startDate)->startOfDay(),
-                    Carbon::parse($endDate)->endOfDay()
-                ])
-                ->count();
-}
+    public static function getPresence($employeeId, $startDate, $endDate)
+    {
+        return self::where('employee_id', $employeeId)
+                    ->where(function($q){
+                        $q->whereNull('leave')->orWhere('leave', ''); // termasuk empty string
+                    })
+                    ->whereBetween('date', [
+                        Carbon::parse($startDate)->startOfDay(),
+                        Carbon::parse($endDate)->endOfDay()
+                    ])
+                    ->count();
+    }
 
 
 

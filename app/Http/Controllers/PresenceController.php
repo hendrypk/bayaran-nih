@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\PresencesDataTable;
 use Carbon\Carbon;
 use App\Models\WorkDay;
 use App\Models\Employee;
@@ -30,7 +31,16 @@ class PresenceController extends Controller
 
 
 //Presences List
-public function index(){
+    public function index(PresencesDataTable $dt){
+        if (request()->ajax()) {
+            return $dt->ajax();
+        }
+        $p = $dt->html();
+        return view('presence.index', compact('p'));
+    }
+
+    
+public function indexOlod(){
     $employees = Employee::whereNull('resignation')->get();
             $workDays = $employees->mapWithKeys(fn($e) => [
             $e->id => $e->workDay->map(fn($wd) => [

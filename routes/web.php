@@ -1,5 +1,6 @@
 <?php
 
+use App\DataTables\PresencesDataTable;
 use App\Models\User;
 use App\Models\Options;
 use App\Http\Controllers\Test;
@@ -202,6 +203,12 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view presence']], function() {
         Route::prefix('presences')->group(function () {
             Route::get('', [PresenceController::class, 'index'])->name('presence.list.admin');
+    //         Route::get('datatable', [PresenceController::class, 'datatable'])
+    // ->name('presences.datatable');
+
+            Route::get('datatable', function(PresencesDataTable $dt) {return $dt->ajax(); })->name('presences.datatable');
+            // Route::get('sales/order/datatable', function (\App\DataTables\Sales\SalesOrdersDataTable $dt){ return $dt->ajax(); })->can(PermissionName::VIEW_SALES_ORDER)->name('sales.order.datatable');
+
             Route::get('import', [PresenceController::class, 'import'])->name('presence.import');
             Route::post('import/submit', [PresenceController::class, 'importStore'])->name('import');
             Route::post('{id}/delete', [PresenceController::class, 'delete'])->name('presence.delete');
