@@ -133,34 +133,28 @@ class LeaveModal extends Component
             $this->dispatch('swal:success', message: 'Ijin karyawan berhasil dibuat.');
         }
 
-        $leave = Leave::updateOrCreate(
-            ['id' => $this->leaveId],
-            array_merge($data, ['status' => $this->status])
-        );
+        if ($this->status) {
+            $presenceStatus = $this->status === Leave::LEAVE_ACC
+                ? $this->category
+                : PRESENCE::STATUS_ABSENCE;
 
-        $presenceStatus = $this->status === Leave::LEAVE_ACC
-            ? $this->category
-            : PRESENCE::STATUS_ABSENCE;
-
-        \App\Models\Presence::updateOrCreate(
-            [
-                'employee_id' => $this->employeeId,
-                'date'        => $this->date,
-            ],
-            [
-                'status'     => $presenceStatus,
-                'note'       => $this->note,
-                'updater' => auth()->id(),
-            ]
-        );
+            \App\Models\Presence::updateOrCreate(
+                [
+                    'employee_id' => $this->employeeId,
+                    'date'        => $this->date,
+                ],
+                [
+                    'status'     => $presenceStatus,
+                    'note'       => $this->note,
+                    'updater' => auth()->id(),
+                ]
+            );
+        }
 
         $this->dispatch(
             'swal:success',
             message: $this->leaveId ? 'Ijin karyawan berhasil diperbarui.' : 'Ijin karyawan berhasil dibuat.'
         );
-
-
-
     }
 
     public function delete($id = null)
