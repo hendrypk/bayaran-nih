@@ -33,10 +33,11 @@ return new class extends Migration
                 CASE
                     WHEN status_old = 1 THEN 'accepted'
                     WHEN status_old = 0 THEN 'pending'
-                    ELSE 'reject'
+                    ELSE 'rejected'
                 END
             ")
         ]);
+
     
         Schema::table('leaves', function (Blueprint $table) {
             $table->dropColumn('status_old');
