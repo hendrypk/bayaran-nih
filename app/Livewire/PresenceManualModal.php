@@ -269,7 +269,7 @@ class PresenceManualModal extends Component
             'workDayId' => 'required|exists:work_schedule_groups,id',
             'date' => 'required',
             'checkIn' => 'required',
-            'checkOut' => 'required'
+            'checkOut' => ''
         ];
     }
 
@@ -302,8 +302,8 @@ class PresenceManualModal extends Component
         // Data yang akan disimpan
         $data = [
             'employee_id'     => $this->employeeId,
-            'eid'             => $employee->eid ?? $this->employeeId,
-            'employee_name'   => $employee->name ?? '-',
+            // 'eid'             => $employee->eid ?? $this->employeeId,
+            // 'employee_name'   => $employee->name ?? '-',
             'work_day_id'     => $this->workDayId,
             'date'            => $this->date,
             'check_in'        => $this->checkIn,
@@ -311,6 +311,7 @@ class PresenceManualModal extends Component
             'late_check_in'   => $lateCheckIn,
             'late_arrival'    => $lateArrival,
             'check_out_early' => $checkOutEarly,
+            'status'          => Presence::STATUS_PRESENCE 
         ];
 
         if ($this->isEditing && $this->presenceId) {
@@ -341,15 +342,29 @@ class PresenceManualModal extends Component
             Presence::create($data);
             $this->dispatch('swal:success', message: 'Presensi berhasil dibuat.');
         }
-
-        // Event untuk close modal
-        $this->dispatch('close-modal');
-
-        // Event untuk reload data
-        $this->dispatch('reload-data');
     }
 
+    public function delete($id = null)
+    {
+        $id = $id ?? $this->presenceId;
 
+        if (!$id) {
+            $this->dispatch('swal:error', message: 'Tidak ada data untuk dihapus.');
+            return;
+        }
+
+        try {
+            $p = Presence::findOrFail($id);
+            $p->deleter = auth()->id();
+            $p->save();
+            $p->delete();
+
+            $this->dispatch('close-modal');
+            $this->dispatch('swal:success', message: 'Presensi berhasil dihapus.');
+        } catch (\Exception $e) {
+            $this->dispatch('swal:error', message: 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
 
     public function render()
     {

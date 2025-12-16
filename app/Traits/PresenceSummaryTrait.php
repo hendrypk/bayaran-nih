@@ -29,7 +29,7 @@ trait PresenceSummaryTrait
 
             // ----- Presence -----
             $employee->presence = Presence::where('employee_id', $employee->id)
-                ->whereNull('leave')
+                ->where('status', 'presence')
                 ->whereBetween('date', [$countStartDate, $countEndDate])
                 ->count('date');
 
@@ -48,10 +48,10 @@ trait PresenceSummaryTrait
                                                 ->count();
 
             // ----- Leaves -----
-            $employee->annual_leave     = $this->countLeave($employee->id, PRESENCE::LEAVE_ANNUAL, $countStartDate, $countEndDate);
-            $employee->sick_permit      = $this->countLeave($employee->id, PRESENCE::LEAVE_SICK, $countStartDate, $countEndDate);
-            $employee->full_day_permit  = $this->countLeave($employee->id, PRESENCE::LEAVE_FULL_DAY_PERMIT, $countStartDate, $countEndDate);
-            $employee->half_day_permit  = $this->countLeave($employee->id, PRESENCE::LEAVE_HALF_DAY_PERMIT, $countStartDate, $countEndDate);
+            $employee->annual_leave     = $this->countLeave($employee->id, PRESENCE::STATUS_ANNUAL, $countStartDate, $countEndDate);
+            $employee->sick_permit      = $this->countLeave($employee->id, PRESENCE::STATUS_SICK, $countStartDate, $countEndDate);
+            $employee->full_day_permit  = $this->countLeave($employee->id, PRESENCE::STATUS_PERMIT, $countStartDate, $countEndDate);
+            $employee->half_day_permit  = $this->countLeave($employee->id, PRESENCE::STATUS_HALFDAY, $countStartDate, $countEndDate);
 
             // ----- Holiday -----
             $employee->holiday = Holiday::whereBetween('date', [$countStartDate, $countEndDate])
@@ -100,8 +100,7 @@ trait PresenceSummaryTrait
     private function countLeave($employeeId, $leaveType, $start, $end)
     {
         return Presence::where('employee_id', $employeeId)
-                    ->where('leave', $leaveType)
-                    ->where('leave_status', 1)
+                    ->where('status', $leaveType)
                     ->whereBetween('date', [$start, $end])
                     ->count();
     }

@@ -1,4 +1,5 @@
-<div x-data="_livewireModal()" x-on:open-x-ilz-modal.window="onOpen($event)"
+<div x-data="_livewireModal()"
+     x-on:open-x-ilz-modal.window="onOpen($event)"
      x-on:modal-ready.window="ready = true"
      x-init="boot()"
      class="modal-dialog" :class="[size ? `modal-${size}` : '', centered ? 'modal-dialog-centered' : '', scrollable ? 'modal-dialog-scrollable' : '']" role="document">

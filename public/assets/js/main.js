@@ -319,7 +319,9 @@
 })();
 
 document.addEventListener('livewire:init', () => {
+
     Livewire.on('swal:success', (data = {}) => {
+      console.log();
         Swal.fire({
             title: data.title ?? 'Success',
             text: data.message ?? 'Data saved successfully!',
@@ -331,7 +333,6 @@ document.addEventListener('livewire:init', () => {
         });
     });
     Livewire.on('swal:error', (data = {}) => {
-      console.log(data);
         Swal.fire({
             title: data.title ?? 'Error',
             text: data.message ?? 'Something went wrong!',

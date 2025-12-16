@@ -58,21 +58,21 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8', // Password is optional on update
             'role_id' => 'required|exists:roles,id', // Ensure a valid role is selected
         ]);
-
         // Find the user
         $user = User::findOrFail($id);
 
         // Update user fields
-        $user->name = $request->name;
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->division_id = $request->division;
-        $user->department_id =  $request->department;
+        $user->update([
+            'name'          => $request->name,
+            'username'      => $request->username,
+            'email'         => $request->email,
+            'division_id'   => $request->division,
+            'department_id' => $request->department,
+            'password'      => $request->filled('password')
+                ? Hash::make($request->password)
+                : $user->password,
+        ]);
 
-        // Only update the password if it's provided
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
 
         // Assign the role
         $user->roles()->sync([$request->role_id]); // Sync the role (adjust based on your logic)

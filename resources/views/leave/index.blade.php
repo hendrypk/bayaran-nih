@@ -11,11 +11,13 @@
     </div>
     <div class="col-md-3 d-flex justify-content-end">
         @can('create leave')
-        <button type="button" class="btn btn-tosca btn-sm"
-                data-bs-toggle="modal" 
-                data-bs-target="#addLeave">
-            <i class="ri-add-circle-line"></i>
-        </button>
+                    <x-modal-trigger
+                        class="btn btn-tosca"
+                        title="{{ __('attendance.label.add_leave') }}"
+                        modal="leave-modal"
+                        size="md">
+                        <i class="ri-add-circle-line"></i>
+                    </x-modal-trigger>
         @endcan
     </div>
 </div>
@@ -41,7 +43,6 @@
                                 <th scope="col">{{ __('general.label.note') }}</th>
                                 <th scope="col">{{ __('general.label.status') }}</th>
                                 <th scope="col">{{ __('general.label.edit') }}</th>
-                                <th scope="col">{{ __('general.label.delete') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,42 +52,29 @@
                                 <td>{{ $leave->employee->eid }}</td>
                                 <td>{{ $leave->employee->name }}</td>
                                 <td>{{ formatDate($leave->created_at) }}</td>
-                                <td>{{ formatDate($leave->date) }}</td>
-                                <td>{{ ucfirst($leave->leave) }}</td>
-                                <td>{{ $leave->leave_note }}</td>
+                                <td>{{ formatDate($leave->start_date) }}</td>
+                                <td>{{ ucfirst($leave->category) }}</td>
+                                <td>{{ $leave->note }}</td>
                                 <td>
-                                    @if ($leave->leave_status === 1)
-                                        <i class="status-leave accept ri-check-double-fill"></i>
-                                    @elseif ($leave->leave_status === 0)
-                                        <i class="status-leave reject ri-close-fill"></i>
+                                    @if ($leave->status === 'accepted')
+                                        <span class="px-2 py-1 rounded bg-success bg-opacity-10 text-success fw-semibold"><i class="ri-check-double-line"></i></span>
+                                    @elseif ($leave->status === 'rejected')
+                                        <span class="px-2 py-1 rounded bg-danger bg-opacity-10 text-danger fw-semibold"><i class="ri-close-line"></i></span>
                                     @else
-                                        <i class="status-leave pending ri-time-fill"></i>
+                                        <span class="px-2 py-1 rounded bg-primary bg-opacity-10 text-primary fw-semibold"><i class="ri-time-line"></i></span>
                                     @endif
                                 </td>
                                 <td>
                                     @can('update leave')
-                                        <button type="button" class="btn btn-green"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#leaveEdit" 
-                                            data-id="{{ $leave->id }}" 
-                                            data-name="{{ $leave->employee->name }}"
-                                            data-employee_id="{{ $leave->employee_id }}"
-                                            data-date="{{ ($leave->date->format('Y-m-d')) }}"
-                                            data-start="{{ formatDate($leave->start_date) }}"
-                                            data-end="{{ formatDate($leave->end_date) }}"
-                                            data-category="{{ $leave->leave }}"
-                                            data-note="{{ $leave->leave_note }}">
+                                        <x-modal-trigger
+                                            class="btn btn-success btn-sm"
+                                            title="{{ __('attendance.label.edit_leave') }}"
+                                            modal="leave-modal"
+                                            :args="['leaveId' => $leave->id]"
+                                            size="md">
                                             <i class="ri-edit-line"></i>
-                                        </button>
+                                        </x-modal-trigger>
                                     @endcan                                
-                                </td>
-                                <td>
-                                    @can('delete leave')
-                                        <button type="button" class="btn btn-red" 
-                                            onclick="confirmDelete({{ $leave->id }}, '{{ $leave->employee->name }}', 'leaves')">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button>                                            
-                                    @endcan
                                 </td>
                             </tr>
                             @endforeach
@@ -98,87 +86,3 @@
 </div>
 
 @endsection
-@section('script')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('leaveEdit');
-    editModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; 
-        const id = button.getAttribute('data-id');
-        const employee_id = button.getAttribute('data-employee_id');
-        const name = button.getAttribute('data-name');
-        const date = button.getAttribute('data-date');
-        const category = button.getAttribute('data-category');
-        const note = button.getAttribute('data-note');
-
-        if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-        document.getElementById('leave-date').value = date;
-    } else {
-        console.warn('Invalid date format:', date);
-        document.getElementById('leave-date').value = '';
-    }
-
-        // Populate the form fields
-        document.getElementById('id').value = id;
-        document.getElementById('selectEmployee').value = employee_id;
-        document.getElementById('selectCategory').value = category;
-        document.getElementById('inputNote').value = note;
-
-        // Update modal title
-        const modalTitle = document.getElementById('modalTitle');
-        modalTitle.textContent = `Edit Leave for ${name}`;
-    });
-});
-
-function confirmDelete(id, name, entity) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete the " + entity + ": " + name,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '',
-            cancelButtonColor: '',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/${entity}/${id}/delete`, { 
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' 
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: data.message, 
-                            icon: 'success'
-                        }).then(() => {
-                            window.location.href = data.redirect;
-                        });
-                    } else {
-                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            }
-        });
-    }
-
-</script>
-@endsection
-
-@include('leave.add')
-@include('leave.edit')
-@include('leave.update_status')
-@include('modal.delete')

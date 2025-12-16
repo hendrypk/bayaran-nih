@@ -43,17 +43,17 @@ class EmployeeAppController extends Controller
         $today = Carbon::today()->toDateString();
         $presenceToday = Presence::where('employee_id', $employeeId)
             ->whereDate('date', $today)
-            ->whereNull('leave_status')
+            ->whereIn('status', ['presence', 'absence'])
             ->first();
 
         $leaveAccepted = Presence::where('employee_id', $employeeId)
             ->where('date', $today)
-            ->where('leave_status', 1)
+            ->where('status', ['leave', 'sick', 'permit'])
             ->first();
 
         $pastPresence = Presence::where('employee_id', $employeeId)
             ->orderBy('date', 'desc')
-            ->whereNull('leave_status')
+            ->where('status', 'presence')
             ->first();
 
         $overtimeToday = Overtime::where('employee_id', $employeeId)
@@ -103,7 +103,7 @@ class EmployeeAppController extends Controller
         $pastPresence = Presence::where('employee_id', $employeeId)
             ->orderBy('date', 'desc')
             ->whereNull('deleted_at')
-            ->whereNull('leave')
+            ->where('status', 'presence')
             ->first();
 
         $workDay = WorkScheduleGroup::findOrFail($pastPresence->work_day_id);

@@ -114,7 +114,7 @@
                                     
                                     {{-- FOTO --}}
                                     <div class="col-md-6">
-                                        <div class="fw-bold">Foto Check In</div>
+                                        <div class="fw-bold">Foto Check Out</div>
                                         <img src="{{ $checkOutPhoto }}" 
                                             class="img-fluid rounded-3 shadow-sm w-100"
                                             style="height: 300px; object-fit: cover;">
@@ -122,7 +122,7 @@
 
                                     {{-- MAP --}}
                                     <div class="col-md-6">
-                                        <div class="fw-bold">Lokasi Check In (Map)</div>
+                                        <div class="fw-bold">Lokasi Check Out (Map)</div>
                                         <div id="mapCheckOut" 
                                             style="height: 300px; width: 100%; border-radius: 10px;" 
                                             class="shadow-sm"></div>
@@ -140,16 +140,7 @@
             {{-- ========================== --}}
             {{-- FOOTER BUTTONS --}}
             {{-- ========================== --}}
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <x-swal-confirm 
-                    title="Hapus Presensi?" 
-                    text="Apakah Anda yakin ingin menghapus Presensi?"
-                    callback="delete"
-                    :id="$presenceId"
-                    class="btn btn-red btn-sm">
-                    <i class="ri-delete-bin-fill"></i>
-                </x-swal-confirm>
-
+            <div class="d-flex justify-content-end align-items-center mt-3">
                 <div class="d-flex gap-2">
                     <button class="btn btn-untosca" wire:click="$dispatch('closeModal')">
                         @lang('general.label.cancel')

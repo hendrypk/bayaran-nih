@@ -21,34 +21,70 @@ class PresencesDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query->with('employee', 'workDay')))
-            ->editColumn('eid', function ($presence) {
-                return '<a href="' 
-                    . route('employee.detail', ['id' => $presence->employee_id]) 
-                    . '"
-                    . class="">' 
-                    . ($presence->employee->eid ?? '-') 
-                    . '</a>';
+    $query
+        ->leftJoin('employees', 'presences.employee_id', '=', 'employees.id')
+        ->select([
+            'presences.*',
+            'employees.name as name',
+            'employees.eid as eid',
+        ])
+        ->when(
+            request()->filled(['date_start', 'date_end']),
+            fn ($q) => $q->whereBetween('presences.date', [
+                request('date_start'),
+                request('date_end'),
+            ]),
+            fn ($q) => $q->whereRaw('1 = 0') // force empty result jika tanggal belum dipilih
+        )
+        ->when(request('status'), function ($q, $status) {
+            return match ($status) {
+                'presence' => $q->where('status', 'presence'),
+                'leave', 'sick', 'permit' => $q->where('status', $status),
+                'absence' => $q->where('status', 'absence'),
+                default => $q,
+            };
+        });
+
+        return (new EloquentDataTable($query))
+            ->filter(function ($query) {
+                $search = request()->get('search')['value'] ?? null;
+                if ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->orWhere('emplpoyees.name', 'like', '%'.$search.'%');
+                    });
+                }
             })
-            ->editColumn('employee_id', function ($presence) {
+
+            ->addColumn('eid', function ($presence) {
                 return '<a href="' 
                     . route('employee.detail', ['id' => $presence->employee_id]) 
                     . '"
-                    . class="">' 
+                    . class="text-primary fw-normal text-decoration-none hover-underline">' 
+                    . ($presence->eid ?? '-') 
+                    . '</a>';
+
+            })
+            ->editColumn('name', function ($presence) {
+                return '<a href="' 
+                    . route('employee.detail', ['id' => $presence->employee_id]) 
+                    . '"
+                    . class="text-primary fw-normal text-decoration-none hover-underline">' 
                     . ($presence->employee->name ?? '-') 
                     . '</a>';
             })
+
             ->editColumn('date', function($presence) {
                 return '<span class="">' . formatDate($presence->date) . '</span>';
             })
+
             ->editColumn('work_day_id', function ($presence) {
             if (empty($presence->work_day_id)) {
-                return '<span class="px-3 py-1 rounded bg-success bg-opacity-10 text-success fw-semibold">' . ($presence->leave ?? '-') . '</span>';
+                return '-';
             }
-
                 return '<a href="' 
-                    . route('workDay.detail', ['id' => $presence->work_day_id]) 
-                    . '">' 
+                    . route('workDay.edit', ['id' => $presence->work_day_id]) 
+                    . '"
+                    . class="text-primary fw-normal text-decoration-none hover-underline">' 
                     . ($presence->workday->name ?? '-') 
                     . '</a>';
             })
@@ -98,7 +134,7 @@ class PresencesDataTable extends DataTable
             })
 
             ->setRowId('id')
-            ->rawColumns(['eid', 'employee_id', 'work_day_id', 'date', 'check_in', 'check_out', 'edit', 'detail']);
+            ->rawColumns(['eid', 'name', 'employee_id', 'work_day_id', 'date', 'check_in', 'check_out', 'edit', 'detail']);
     }
 
     /**
@@ -120,6 +156,11 @@ class PresencesDataTable extends DataTable
                     ->ajax([
                         'url' => route('presences.datatable'),
                         'type' => 'GET',
+                        'data' => 'function(d) {
+                            d.date_start = startDate;
+                            d.date_end = endDate;
+                            d.status = status;
+                        }',
                     ])
                     ->orderBy(1)
                     ->selectStyleSingle()
@@ -146,9 +187,10 @@ public function getColumns(): array
 {
     return [
         Column::make('id'),
-        Column::make('eid'),
-        Column::make('employee_id')->_title('general.label.name'),
         Column::make('date'),
+        Column::make('eid'),
+        Column::make('name'),
+        Column::make('status'),
         Column::make('work_day_id'),
         Column::make('check_in'),
         Column::make('check_out'),

@@ -17,10 +17,9 @@ class Presence extends Model implements HasMedia
 
     protected $fillable = [
         'employee_id',
-        'eid',
-        'employee_name',
         'work_day_id',
         'date',
+        'status',
         'check_in',
         'check_out',
         'late_arrival',
@@ -35,9 +34,6 @@ class Presence extends Model implements HasMedia
         'creator',
         'updater',
         'deleter',
-        'leave',
-        'leave_status',
-        'leave_note',
     ];
     
     protected $dates = ['deleted_at']; 
@@ -53,10 +49,12 @@ class Presence extends Model implements HasMedia
         'end_at' => 'time'
     ];
 
-    const LEAVE_ANNUAL = 'annual leave';
-    const LEAVE_SICK = 'sick';
-    const LEAVE_FULL_DAY_PERMIT = 'full day permit';
-    const LEAVE_HALF_DAY_PERMIT = 'half day permit';
+    const STATUS_LEAVE = 'leave';
+    const STATUS_SICK = 'sick';
+    const STATUS_PERMIT = 'permit';
+    const STATUS_HALFDAY = 'halfday';
+    const STATUS_ABSENCE = 'absence';
+    const STATUS_PRESENCE = 'presence';
 
     public $start_date;
     public $end_date;
@@ -97,9 +95,6 @@ class Presence extends Model implements HasMedia
         return $this->belongsTo(Position::class, 'position_id', 'id');
     }
 
-    /**
-     * Ambil total kehadiran (presence) dalam periode
-     */
     public static function getPresence($employeeId, $startDate, $endDate)
     {
         return self::where('employee_id', $employeeId)

@@ -1,5 +1,5 @@
 <div>
-    <x-ui.modal id="presence-manual-modal">
+    <x-ui.modal>
 
         <div class="p-3 bg-white rounded-4 shadow-sm border">
 
@@ -163,22 +163,23 @@
         </div>
 
         {{-- BUTTONS --}}
-        <div class="d-flex justify-content-end mt-4">
-            <button 
-                type="button" 
-                class="btn btn-outline-secondary px-4 me-2" 
-                data-bs-dismiss="modal"
-            >
-                {{ __('general.label.cancel') }}
-            </button>
-
-            <button 
-                type="button"
-                wire:click="save"
-                class="btn btn-tosca px-4"
-            >
-                {{ __('general.label.save') }}
-            </button>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+                <x-swal-confirm 
+                    title="Hapus Presensi?" 
+                    text="Apakah Anda yakin ingin menghapus Presensi?"
+                    callback="delete"
+                    :id="$presenceId"
+                    class="btn btn-red btn-sm">
+                    <i class="ri-delete-bin-fill"></i>
+                </x-swal-confirm>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-untosca" wire:click="$dispatch('closeModal')">
+                        @lang('general.label.cancel')
+                    </button>
+                    <button class="btn btn-tosca btn-sm" wire:click="save">
+                        @lang('general.label.save')
+                    </button>
+                </div>
         </div>
 
     </x-ui.modal>

@@ -56,28 +56,6 @@ class PresenceDetailModal extends Component
         );
     }
 
-    public function delete($id = null)
-    {
-        $id = $id ?? $this->presenceId;
-
-        if (!$id) {
-            $this->dispatch('swal:error', message: 'Tidak ada data untuk dihapus.');
-            return;
-        }
-
-        try {
-            $p = Presence::findOrFail($id);
-            $p->deleter = auth()->id();
-            $p->save();
-            $p->delete();
-
-            $this->dispatch('close-modal');
-            $this->dispatch('swal:success', message: 'Presensi berhasil dihapus.');
-        } catch (\Exception $e) {
-            $this->dispatch('swal:error', message: 'Gagal menghapus data: ' . $e->getMessage());
-        }
-    }
-
     public function render()
     {
         return view('livewire.presence-detail-modal');

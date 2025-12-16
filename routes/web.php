@@ -1,5 +1,6 @@
 <?php
 
+use App\DataTables\LeaveDataTable;
 use App\DataTables\PresencesDataTable;
 use App\Models\User;
 use App\Models\Options;
@@ -203,12 +204,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view presence']], function() {
         Route::prefix('presences')->group(function () {
             Route::get('', [PresenceController::class, 'index'])->name('presence.list.admin');
-    //         Route::get('datatable', [PresenceController::class, 'datatable'])
-    // ->name('presences.datatable');
-
             Route::get('datatable', function(PresencesDataTable $dt) {return $dt->ajax(); })->name('presences.datatable');
-            // Route::get('sales/order/datatable', function (\App\DataTables\Sales\SalesOrdersDataTable $dt){ return $dt->ajax(); })->can(PermissionName::VIEW_SALES_ORDER)->name('sales.order.datatable');
-
             Route::get('import', [PresenceController::class, 'import'])->name('presence.import');
             Route::post('import/submit', [PresenceController::class, 'importStore'])->name('import');
             Route::post('{id}/delete', [PresenceController::class, 'delete'])->name('presence.delete');
@@ -322,7 +318,8 @@ Route::middleware(['auth:web'])->group(function () {
     
     Route::group(['middleware' => ['permission:view leave']], function() {
         Route::prefix('leaves')->group(function () {
-            Route::get('', [LeaveController::class, 'ind'])->name('leaves.index');
+            Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
+            Route::get('datatable', function(LeaveDataTable $dt) {return $dt->ajax(); })->name('leaves.datatable');
             Route::post('submit', [LeaveController::class, 'save'])->name('leaves.create');
             Route::post('{id}/delete', [LeaveController::class, 'destroy'])->name('leaves.delete');
         });

@@ -55,40 +55,18 @@ class Employee extends Authenticatable implements HasMedia
         return $this->belongsTo(Position::class, 'position_id');
     }
 
-    // //relation table division
-    // public function division()
-    // {
-    //     return $this->belongsTo(Division::class, 'division_id', 'id');
-    // }
-
-    // //relation table department
-    // public function department()
-    // {
-    //     return $this->belongsTo(Department::class, 'department_id', 'id');
-    // }
-
-    // //relation table job_title
-    // public function job_title()
-    // {
-    //     return $this->belongsTo(JobTitle::class, 'job_title_id', 'id');
-    // }
+    public function scopeSameOrg($query, $user)
+    {
+        return $query->whereHas('position', fn ($q) =>
+            $user->division_id && $q->where('division_id', $user->division_id) ||
+            $user->department_id && $q->where('department_id', $user->department_id)
+        );
+    }
 
     public function workDay()
     {
         return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
     }
-
-    // //relation table grade_pa
-    // public function gradePas()
-    // {
-    //     return $this->hasMany(GradePa::class, 'employee_id');
-    // }
-
-    // //relation table grade_kpi
-    // public function gradeKpis()
-    // {
-    //     return $this->hasMany(GradeKpi::class, 'employee_id');
-    // }
 
     //relasi ke Payroll
     public function payroll()
@@ -105,11 +83,6 @@ class Employee extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(PerformanceAppraisalName::class, 'pa_id');
     }
-
-    // public function performanceKpis()
-    // {
-    //     return $this->belongsTo(PerformanceKpi::class, 'kpi_id');
-    // }
 
     public function overtimes(){
         return $this->hasMany(Overtime::class, 'employee_id');
