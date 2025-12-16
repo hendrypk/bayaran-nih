@@ -13,22 +13,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leaves', function (Blueprint $table) {
-            // Rename kolom lama
-            $table->renameColumn('status', 'status_old');
+            if (!Schema::hasColumn('leaves', 'status_old')) {
+                $table->renameColumn('status', 'status_old');
+            }
         });
 
         Schema::table('leaves', function (Blueprint $table) {
-            // Tambah kolom enum baru
-            $table->enum('status', ['pending', 'accepted', 'rejected'])
-                  ->default('pending')
-                  ->after('note');
+            if (!Schema::hasColumn('leaves', 'status')) {
+                $table->enum('status', ['pending', 'accepted', 'rejected'])
+                    ->default('pending')
+                    ->after('note');
+            }
         });
+
 
         // OPTIONAL: mapping data lama (jika sebelumnya pakai int)
         DB::table('leaves')->update([
             'status' => DB::raw("
                 CASE
-                    WHEN status_old = 1 THEN 'acc'
+                    WHEN status_old = 1 THEN 'accepted'
                     WHEN status_old = 0 THEN 'pending'
                     ELSE 'reject'
                 END
