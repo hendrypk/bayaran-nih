@@ -107,12 +107,12 @@ class PresencesDataTable extends DataTable
                 if (empty($presence)) return '';
 
                 return \Illuminate\Support\Facades\Blade::render(
-                    '<x-modal-trigger class="btn btn-untosca" 
+                    '<x-modal-trigger class="btn btn-green" 
                         title="Edit Presensi" 
                         modal="presence-manual-modal" 
                         :args="[\'presenceId\' => ' . $presence->id . ']" 
                         size="lg">
-                        Edit
+                        <i class="ri-edit-box-fill"></i>
                     </x-modal-trigger>'
                 );
 
@@ -127,7 +127,7 @@ class PresencesDataTable extends DataTable
                         modal="presence-detail-modal" 
                         :args="[\'id\' => ' . $presence->id . ']" 
                         size="xl">
-                        Detail
+                        <i class="ri-eye-fill"></i>
                     </x-modal-trigger>'
                 );
 

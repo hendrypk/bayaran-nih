@@ -577,11 +577,11 @@ body {
 .btn-tosca { 
   background: linear-gradient(to bottom, #00B4DB, #0083B0); 
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  padding: 10px 20px; 
+  padding: 8px 16px; 
   border: none;
-  border-radius: 20px; 
+  border-radius: 16px; 
   cursor: pointer;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
   transition: all 0.3s ease;
@@ -725,11 +725,11 @@ body {
 .btn-red {
   background: linear-gradient(to bottom, #FF5F5F, #D32F2F); 
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  padding: 10px 20px; 
+  padding: 8px 16px; 
   border: none;
-  border-radius: 20px; 
+  border-radius: 16px; 
   cursor: pointer;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
   transition: all 0.3s ease;
@@ -758,11 +758,11 @@ body {
 .btn-green {
   background: linear-gradient(to bottom, #4CAF50, #2E7D32); 
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  padding: 10px 20px; 
+  padding: 8px 16px; 
   border: none;
-  border-radius: 20px; 
+  border-radius: 16px; 
   cursor: pointer;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
   transition: all 0.3s ease;
@@ -924,11 +924,11 @@ body {
 .btn-untosca {
   color: var(--tosca);
   background: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  padding: 8px 18px; 
+  padding: 6px 14px; 
   border: solid 2px var(--tosca);
-  border-radius: 20px; 
+  border-radius: 16px; 
   cursor: pointer;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
   transition: all 0.3s ease;
@@ -938,11 +938,12 @@ body {
 }
 
 .btn-untosca:hover {
-  background: linear-gradient(to bottom, #00D4FF, #006699); 
+  background: linear-gradient(to bottom, #00B4DB, #0083B0); 
   color: white;
   box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
-  padding: 10px 20px; 
-  border: none;
+  transform: scale(1.05);
+  /* padding: 8px 14px;  */
+  /* border: none; */
 }
 
 .btn-untosca:active {
@@ -951,7 +952,7 @@ body {
 }
 
 .btn-untosca i {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 a {

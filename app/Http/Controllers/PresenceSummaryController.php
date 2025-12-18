@@ -98,44 +98,8 @@ class PresenceSummaryController extends Controller
             if ($startDate && $endDate) {
                 $late_arrival->whereBetween('date', [$startDate, $endDate]);
             }
-            $employee->late_arrival = $late_arrival->where('late_arrival', 1)->whereNull('leave')->count();
+            $employee->late_arrival = $late_arrival->where('late_arrival', 1)->where('status', Presence::STATUS_PRESENCE)->count();
 
-        // //Count Annnual Leave
-        //     $annualLeave = 'Annual leave';
-        //     $annual_leave = Leave::where('employee_id', $employee->id);
-
-        //     if($startDate && $endDate) {
-        //         $annual_leave->whereBetween('date', [$startDate, $endDate]);
-        //     }
-        //     $employee->annual_leave = $annual_leave->where('category', $annualLeave)->where('status', 1)->count();
-
-        // //Count Sick Leave
-        //     $sickLeave = 'Sick';
-        //     $sick_leave = Leave::where('employee_id', $employee->id)->where('status', '1');
-
-        //     if($startDate && $endDate) {
-        //         $sick_leave->whereBetween('date', [$startDate, $endDate]);
-        //     }
-        //     $employee->sick_leave = $sick_leave->where('category', $sickLeave)->where('status', 1)->count();
-
-        
-        // //Count Permit Leave
-        //     $permitLeave = 'Permit';
-        //     $permit_leave = Leave::where('employee_id', $employee->id);
-
-        //     if($startDate && $endDate) {
-        //         $permit_leave->whereBetween('date', [$startDate, $endDate]);
-        //     }
-        //     $employee->permit_leave = $permit_leave->where('category', $permitLeave)->where('status', 1)->count();
-
-        // //Holiday
-        //     if($startDate && $endDate) {
-        //         $holidays = Holiday::whereBetween('date', [$startDate, $endDate])->get();
-        //     }
-        //     $employee->holiday = $holidays->count();
-
-        // //Count Alpha
-        //     $employee->alpha = $effectiveDays - $employee->annual_leave - $employee->sick_leave - $employee->permit_leave - $employee->presence - $employee->holiday;
         });
 
                 // Calculate presence summary using the trait

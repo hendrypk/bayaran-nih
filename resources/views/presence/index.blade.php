@@ -41,20 +41,6 @@
                         <span>{{ __('general.label.export') }}</span>
                     </button>
 
-                    {{-- @can('presence export')
-                        <form action="{{ route('presence.export') }}" method="POST" class="m-0">
-                            @csrf
-                            <input type="hidden" id="exportStart" name="start_date" value="{{ request()->get('start_date') }}">
-                            <input type="hidden" id="exportEnd" name="end_date" value="{{ request()->get('end_date') }}">
-                            <input type="hidden" id="exportStatus" name="status" value="{{ request()->get('status') }}">
-                        
-                            <button type="submit" class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
-                                <i class="ri-download-cloud-2-fill"></i>
-                                <span>{{ __('general.label.export') }}</span>
-                            </button>
-                        </form>
-                    @endcan --}}
-
                     <a href="{{ route('presence.import') }}" 
                     class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
                         <i class="ri-file-upload-fill"></i>
