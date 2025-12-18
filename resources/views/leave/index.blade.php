@@ -12,7 +12,7 @@
     <div class="col-md-3 d-flex justify-content-end">
         @can('create leave')
                     <x-modal-trigger
-                        class="btn btn-tosca"
+                        class="btn btn-primary btn-md"
                         title="{{ __('attendance.label.add_leave') }}"
                         modal="leave-modal"
                         size="md">

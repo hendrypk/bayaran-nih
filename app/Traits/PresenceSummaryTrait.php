@@ -48,7 +48,7 @@ trait PresenceSummaryTrait
                                                 ->count();
 
             // ----- Leaves -----
-            $employee->annual_leave     = $this->countLeave($employee->id, PRESENCE::STATUS_ANNUAL, $countStartDate, $countEndDate);
+            $employee->annual_leave     = $this->countLeave($employee->id, PRESENCE::STATUS_LEAVE, $countStartDate, $countEndDate);
             $employee->sick_permit      = $this->countLeave($employee->id, PRESENCE::STATUS_SICK, $countStartDate, $countEndDate);
             $employee->full_day_permit  = $this->countLeave($employee->id, PRESENCE::STATUS_PERMIT, $countStartDate, $countEndDate);
             $employee->half_day_permit  = $this->countLeave($employee->id, PRESENCE::STATUS_HALFDAY, $countStartDate, $countEndDate);
