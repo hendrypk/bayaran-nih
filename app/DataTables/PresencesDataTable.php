@@ -169,15 +169,24 @@ class PresencesDataTable extends DataTable
                         'searching'    => false,
                         'dom'          => 'lrtip'
                     ])
-
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+                        ->buttons([
+                            [
+                                'extend' => 'print',
+                                'text' => __('Print'),
+                                'title' => 'function() { return "Sales Quotation " + moment(startDate, "YYYY-MM-DD").format("D MMMM YYYY") + " - " + moment(endDate, "YYYY-MM-DD").format("D MMMM YYYY"); }',
+                                'exportOptions' => ['modifier' => ['selected' => true]],
+                                'className' => 'd-none',
+                            ],
+            //                [
+            //                    'extend' => 'excelHtml5',
+            //                    'text' => __('Excel'),
+            //                    // use dynamic file name based on startDate and endDate in javascript
+            //                    'filename' => 'function() { return "Sales Quotation_" + moment(startDate, "YYYY-MM-DD").format("D MMMM YYYY") + " - " + moment(endDate, "YYYY-MM-DD").format("D MMMM YYYY"); }',
+            //                    'title' => 'function() { return "Sales Quotation " + moment(startDate, "YYYY-MM-DD").format("D MMMM YYYY") + " - " + moment(endDate, "YYYY-MM-DD").format("D MMMM YYYY"); }',
+            //                    'exportOptions' => ['modifier' => ['selected' => true]],
+            //                    'className' => 'd-none',
+            //                ],
+                        ]);
     }
 
     /**

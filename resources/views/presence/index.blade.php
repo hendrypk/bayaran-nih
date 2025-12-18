@@ -36,7 +36,12 @@
                                             :maxDate="0" startDate="{{ app('request')->input('startDate') }}"
                                             endDate="{{ app('request')->input('endDate') }}"/>
                 <div class="d-flex gap-2 justify-content-end">
-                    @can('presence export')
+                    <button id="downloadExcel" class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
+                        <i class="ri-download-cloud-2-fill"></i>
+                        <span>{{ __('general.label.export') }}</span>
+                    </button>
+
+                    {{-- @can('presence export')
                         <form action="{{ route('presence.export') }}" method="POST" class="m-0">
                             @csrf
                             <input type="hidden" id="exportStart" name="start_date" value="{{ request()->get('start_date') }}">
@@ -48,7 +53,7 @@
                                 <span>{{ __('general.label.export') }}</span>
                             </button>
                         </form>
-                    @endcan
+                    @endcan --}}
 
                     <a href="{{ route('presence.import') }}" 
                     class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
@@ -140,17 +145,36 @@
                 $('#presence_table').DataTable().ajax.reload();
                 dispatchFilters();
             });
-            $(document).on('click', '#print', function(){
-                // $(".buttons-print")[0].click(); //trigger the click event
-                // $(".buttons-excel")[0].click(); //trigger the click event
-                // go to route sales.quotation.download-list
-                window.location.href = '?startDate=' + startDate + '&endDate=' + endDate + '&status=' + status;
-            });
-            // on datatable ajax request, block the table using ILZApp.block and unblock it after request is completed
-            // $('#presence_table').on('preXhr.dt', function () {
-            //     ILZApp.block('#presence_table');
-            // }).on('xhr.dt', function () {
-            //     ILZApp.unblock('#presence_table');
+            $(document).on('click', '#downloadExcel', function() {
+    const form = $('<form>', {
+        action: "{{ route('presence.export') }}",
+        method: 'POST'
+    });
+
+    // CSRF token
+    form.append($('<input>', {
+        type: 'hidden',
+        name: '_token',
+        value: '{{ csrf_token() }}'
+    }));
+
+    // Filter inputs
+    form.append($('<input>', {type: 'hidden', name: 'start_date', value: startDate}));
+    form.append($('<input>', {type: 'hidden', name: 'end_date', value: endDate}));
+    form.append($('<input>', {type: 'hidden', name: 'status', value: status}));
+    form.append($('<input>', {type: 'hidden', name: 'search', value: search}));
+
+    // Append & submit
+    $('body').append(form);
+    form.submit();
+});
+
+
+            // $(document).on('click', '#print', function(){
+            //     // $(".buttons-print")[0].click(); //trigger the click event
+            //     // $(".buttons-excel")[0].click(); //trigger the click event
+            //     // go to route sales.quotation.download-list
+            //     window.location.href = '?startDate=' + startDate + '&endDate=' + endDate + '&status=' + status;
             // });
 
             dispatchFilters();
