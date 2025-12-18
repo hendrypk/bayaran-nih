@@ -24,6 +24,10 @@ class PresenceManualModal extends Component
     public $lateCheckIn = 0;
     public $lateArrival = false;
     public $checkOutEarly = 0;
+    public $start;
+    public $end;
+    public $break_start;
+    public $break_end;
     public $isEditing = false;
 
 
@@ -133,6 +137,12 @@ class PresenceManualModal extends Component
         $parse = fn($t) => $t && $t !== 'N/A' ? Carbon::parse($t) : null;
 
         if (!$workDay) return;
+
+        $this->start = $workDay->start_time;
+        $this->end = $workDay->end_time;
+        $this->break_start = $workDay->break_start;
+        $this->break_end = $workDay->break_end;
+
 
         $params = (object)[
             'checkIn'    => $parse($this->checkIn),
