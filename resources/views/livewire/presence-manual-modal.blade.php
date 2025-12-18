@@ -2,37 +2,50 @@
     <x-ui.modal>
 
         <div class="p-3 bg-white rounded-4 shadow-sm border">
-
-            {{-- EMPLOYEE --}}
-            <div class="mb-4">
-                <label class="text-muted small fw-semibold mb-1">
-                    {{ __('general.label.name') }}
-                </label>
-
-                <div class="input-group">
-                    <span class="input-group-text bg-light">
-                        <i class="ri-user-line"></i>
-                    </span>
-
-                    <select 
-                        class="form-select rounded-end"
-                        wire:model="employeeId"
-                        wire:change="$set('employeeId', $event.target.value)"
-                        required
-                    >
-                        <option value="">{{ __('attendance.label.select_employee') }}</option>
-                        @foreach ($employees as $emp)
-                            <option value="{{ $emp['id'] }}">
-                                {{ $emp['name'] }} ({{ $emp['eid'] }})
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-
+            
             {{-- GRID --}}
             <div class="row g-4">
+                {{-- EMPLOYEE --}}
+                <div class="col-md-6">
+                    <label class="text-muted small fw-semibold mb-1"> {{ __('general.label.name') }}</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="ri-user-line"></i>
+                        </span>
+
+                        <select 
+                            class="form-select rounded-end"
+                            wire:model="employeeId"
+                            wire:change="$set('employeeId', $event.target.value)"
+                            required
+                        >
+                            <option value="">{{ __('attendance.label.select_employee') }}</option>
+                            @foreach ($employees as $emp)
+                                <option value="{{ $emp['id'] }}">
+                                    {{ $emp['name'] }} ({{ $emp['eid'] }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- POSITION --}}
+                <div class="col-md-6">
+                    <label class="text-muted small fw-semibold mb-1"> {{ __('employee.label.position') }}</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="ri-user-line"></i>
+                        </span>
+                        <input 
+                            type="text"
+                            class="form-control rounded-end"
+                            wire:model="position"
+                            disabled
+                        >
+                    </div>
+                </div>
 
                 {{-- WORKDAY --}}
                 <div class="col-md-6">

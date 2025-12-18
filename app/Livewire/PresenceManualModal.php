@@ -14,6 +14,7 @@ class PresenceManualModal extends Component
 {
     public $employees = [];
     public $employeeId;
+    public $position;
     public $date;
     public $checkIn;
     public $checkOut;
@@ -89,12 +90,13 @@ class PresenceManualModal extends Component
             return;
         }
 
-        $employee = Employee::with('workDay')->find($value);
+        $employee = Employee::with('position', 'workDay')->find($value);
         if (!$employee) {
             $this->resetWorkDays();
             return;
         }
 
+        $this->position = $employee->position->name;
         $this->workDays = $employee->workDay->map(fn($item) => [
             'id' => $item->id,
             'name' => $item->name,
