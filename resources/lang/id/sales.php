@@ -8,5 +8,6 @@ return [
         'edit_sales_report' => 'Ubah Laporan Penjualan',
         'sales_person' => 'Tenaga Penjualan',
         'add_sales_person' => 'Tambah Tenaga Penjualan',
+        'all_sales_person' => 'Semua Sales',
     ]
 ];

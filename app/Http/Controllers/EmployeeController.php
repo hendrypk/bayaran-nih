@@ -19,7 +19,9 @@ use App\Models\OfficeLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\EmployeeRequest;
+use App\Models\EmployeePositionChange;
 use App\Models\Presence;
+use App\Models\WorkScheduleGroup;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -39,8 +41,7 @@ class EmployeeController extends Controller
         $job_title = JobTitle::all();
         $division = Division::all();
         $department = Department::all();
-        $workDay = WorkDay::select(DB::raw('MIN(id) as id'), 'name')
-            ->groupBy('name')->get();
+        $workScheduleGroups = WorkScheduleGroup::all();
         $officeLocations = OfficeLocation::all();
         $pa_id = AppraisalName::all();
         $kpi_id = KpiAspect::all();
@@ -54,21 +55,20 @@ class EmployeeController extends Controller
         $educations = $options['educations'];
 
         return view('employee.form', compact(
-            'employee', 'position', 'job_title', 'division', 'workDay',
+            'employee', 'position', 'job_title', 'division',
             'officeLocations', 'department', 'status',
             'pa_id', 'kpi_id', 'bloods', 'marriages',
-            'genders', 'religions', 'educations', 'banks'
+            'genders', 'religions', 'educations', 'banks', 'workScheduleGroups'
         ));
     }
 
     //employee detail
     public function detail($id)
     {
-        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis')->findOrFail($id);
-        $presences = Presence::where('employee_id', $id)
-            ->whereNotNull('leave')
-            ->get();
-
+        $employee = Employee::with('position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
+        $presences = Presence::where('employee_id', $id)->get();
+        $careers = $employee->positionChange()->orderBy('effective_date', 'desc')->get();
+        
         $startDate = new DateTime($employee->joining_date);
         $dateBirth = new DateTime($employee->date_birth);
         $currentDate = new DateTime();
@@ -81,7 +81,7 @@ class EmployeeController extends Controller
 
         $totalOvertime = Overtime::where('employee_id', $employee->eid)
             ->sum('total');
-        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime'));
+        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime', 'careers'));
     }
 
     //submit employee

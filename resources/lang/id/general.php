@@ -59,6 +59,10 @@ return [
         'no' => 'Tidak',
         'pending' => 'Tertunda',
         'age' => 'Umur',
+        'created_by' => 'Dibuat Oleh',
+        'updated_by' => 'Diubah Oleh',
+        'active' => 'Aktif',
+
 
     ],
     'placeholder' => [

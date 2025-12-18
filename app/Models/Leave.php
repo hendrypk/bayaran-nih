@@ -12,7 +12,6 @@ class Leave extends Model
     protected $table = 'leaves';
     protected $fillable = [
         'employee_id',
-        'date',
         'start_date',
         'end_date',
         'category',
@@ -21,7 +20,11 @@ class Leave extends Model
     ];
     protected $dates = ['deleted_at']; 
     
-    public function employees() {
+    const LEAVE_ACC = 'accepted';
+    const LEAVE_REJECT = 'rejected';
+    const LEAVE_PENDING = 'pending';
+
+    public function employee() {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 }

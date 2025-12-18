@@ -69,7 +69,10 @@ return [
         'attachment' => 'Attachmment',
         'edit_lapor_hr' => 'Edit Lapor HR',
         'age' => 'Age',
-
+        'number' => 'Number',
+        'created_by' => 'Created by',
+        'updated_by' => 'Updated by',
+        'active' => 'Active',
 
     ],
     'placeholder' => [

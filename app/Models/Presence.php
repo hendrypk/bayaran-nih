@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Employee;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,10 +17,9 @@ class Presence extends Model implements HasMedia
 
     protected $fillable = [
         'employee_id',
-        'eid',
-        'employee_name',
         'work_day_id',
         'date',
+        'status',
         'check_in',
         'check_out',
         'late_arrival',
@@ -31,9 +31,9 @@ class Presence extends Model implements HasMedia
         'photo_out',
         'location_in',
         'location_out',
-        'leave',
-        'leave_status',
-        'leave_note',
+        'creator',
+        'updater',
+        'deleter',
     ];
     
     protected $dates = ['deleted_at']; 
@@ -49,10 +49,12 @@ class Presence extends Model implements HasMedia
         'end_at' => 'time'
     ];
 
-    const LEAVE_ANNUAL = 'annual leave';
-    const LEAVE_SICK = 'sick';
-    const LEAVE_FULL_DAY_PERMIT = 'full day permit';
-    const LEAVE_HALF_DAY_PERMIT = 'half day permit';
+    const STATUS_LEAVE = 'leave';
+    const STATUS_SICK = 'sick';
+    const STATUS_PERMIT = 'permit';
+    const STATUS_HALFDAY = 'halfday';
+    const STATUS_ABSENCE = 'absence';
+    const STATUS_PRESENCE = 'presence';
 
     public $start_date;
     public $end_date;
@@ -85,12 +87,25 @@ class Presence extends Model implements HasMedia
         
     public function workDay()
     {
-        return $this->belongsTo(WorkDay::class, 'work_day_id');
+        return $this->belongsTo(WorkScheduleGroup::class, 'work_day_id');
     }
 
     public function position()
     {
         return $this->belongsTo(Position::class, 'position_id', 'id');
     }
+
+    public static function getPresence($employeeId, $startDate, $endDate)
+    {
+        return self::where('employee_id', $employeeId)
+                    ->where('status', Presence::STATUS_PRESENCE)
+                    ->whereBetween('date', [
+                        Carbon::parse($startDate)->startOfDay(),
+                        Carbon::parse($endDate)->endOfDay()
+                    ])
+                    ->count();
+    }
+
+
 
 }

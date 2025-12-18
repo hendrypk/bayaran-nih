@@ -30,10 +30,6 @@ class Employee extends Authenticatable implements HasMedia
 
     use HasFactory, Notifiable, SoftDeletes, InteractsWithMedia;
 
-    // use HasFactory;
-    // use Notifiable;
-    // use SoftDeletes, InteractsWithMedia;
-
     protected $table = 'employees';
     protected $fillable = [
         'eid', 'email', 'username', 'password', 'name', 'city', 'domicile', 'place_birth', 'date_birth',
@@ -48,82 +44,28 @@ class Employee extends Authenticatable implements HasMedia
     ];
     protected $dates = ['deleted_at']; 
 
-
-    // public function getProfilePhotoThumbAttribute(): string
-    // {
-    //     $thumb = $this->getFirstMediaUrl('profile_photos', 'thumb');
-    //     return $thumb ?: asset('assets/images/placeholder/profile.jpg');
-    // }
-
-    // public function getProfilePhotoUrlAttribute(): string
-    // {
-    //     return $this->getFirstMediaUrl('profile_photos') ?: asset('assets/images/placeholder/profile.jpg');
-    // }
-
     public function getProfilePhotoAttribute(): string
-{
-    return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
-}
-
-
-
-    // public function registerMediaCollections(): void
-    // {
-    //     $this->addMediaCollection('profile_photos')
-    //         ->useDisk('public')
-    //         ->singleFile()
-    //         ->registerMediaConversions(function (Media $media) {
-    //             $this->addMediaConversion('thumb')
-    //                 ->fit(Manipulations::FIT_CROP, 100, 100)
-    //                 ->optimize()
-    //                 ->performOnCollections('profile_photos');
-    //         });
-    // }
+    {
+        return $this->getFirstMediaUrl('profile_photos') ?: asset('default-profile.jpg');
+    }
 
     //relation table position
     public function position()
     {
-        return $this->belongsTo(Position::class, 'position_id', 'id');
+        return $this->belongsTo(Position::class, 'position_id');
     }
 
-    //relation table division
-    public function division()
+    public function scopeSameOrg($query, $user)
     {
-        return $this->belongsTo(Division::class, 'division_id', 'id');
-    }
-
-    //relation table department
-    public function department()
-    {
-        return $this->belongsTo(Department::class, 'department_id', 'id');
-    }
-
-    //relation table job_title
-    public function job_title()
-    {
-        return $this->belongsTo(JobTitle::class, 'job_title_id', 'id');
+        return $query->whereHas('position', fn ($q) =>
+            $user->division_id && $q->where('division_id', $user->division_id) ||
+            $user->department_id && $q->where('department_id', $user->department_id)
+        );
     }
 
     public function workDay()
     {
-        return $this->belongsToMany(WorkDay::class, 'employee_work_day', 'employee_id', 'work_day_id');
-    }      
-
-    // public function positionKpi()
-    // {
-    //     return $this->belongsTo(KpiOptions::class);
-    // }
-
-    //relation table grade_pa
-    public function gradePas()
-    {
-        return $this->hasMany(GradePa::class, 'employee_id');
-    }
-
-    //relation table grade_kpi
-    public function gradeKpis()
-    {
-        return $this->hasMany(GradeKpi::class, 'employee_id');
+        return $this->belongsToMany(WorkScheduleGroup::class, 'employee_work_schedules', 'employee_id', 'work_schedule_group_id');
     }
 
     //relasi ke Payroll
@@ -134,17 +76,12 @@ class Employee extends Authenticatable implements HasMedia
 
     public function kpis()
     {
-        return $this->belongsTo(KpiAspect::class, 'kpi_id');
+        return $this->belongsTo(PerformanceKpiName::class, 'kpi_id');
     }
 
     public function pas()
     {
-        return $this->belongsTo(AppraisalName::class, 'pa_id');
-    }
-
-    public function performanceKpis()
-    {
-        return $this->belongsTo(PerformanceKpi::class, 'kpi_id');
+        return $this->belongsTo(PerformanceAppraisalName::class, 'pa_id');
     }
 
     public function overtimes(){
@@ -156,7 +93,7 @@ class Employee extends Authenticatable implements HasMedia
     }
 
     public function presences(){
-        return $this->hasMany(Presence::class, 'employee_id', 'id');
+        return $this->hasMany(Presence::class, 'employee_id', 'id')->with('media');
     }
 
     public function sendPasswordResetNotification($token)
@@ -222,5 +159,22 @@ class Employee extends Authenticatable implements HasMedia
         ];
     }
 
+    public function positionChange()
+    {
+        return $this->hasMany(EmployeePositionChange::class, 'employee_id','id');
+    }
+    
+    public function kpiResults()
+    {
+        return $this->hasMany(PerformanceKpiResult::class, 'employee_id');
+    }
+
+    public function paResults()
+    {
+        return $this->hasMany(PerformanceAppraisalResult::class, 'employee_id');
+    }
+
 
 }
+
+

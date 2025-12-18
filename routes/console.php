@@ -9,3 +9,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('app:delete-old-media')->daily();
+
+Schedule::command('app:generate-daily-absence')
+    ->dailyAt('01:00')
+    ->withoutOverlapping()
+    ->runInBackground();

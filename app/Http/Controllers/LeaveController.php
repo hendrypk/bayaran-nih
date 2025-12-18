@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\LeaveDataTable;
 use Carbon\Carbon;
 use App\Models\Leave;
 use App\Models\Employee;
@@ -13,213 +14,76 @@ class LeaveController extends Controller
 {
 
 //Index
-public function ind (Request $request) {
-    $leave = Presence::whereNotNull('leave');
-    $today = now();
-    $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
-    $defaultEndDate = $today->copy()->endOfDay()->toDateString();
-    $startDate = Carbon::parse($request->input('start_date', $defaultStartDate));
-    $endDate = Carbon::parse($request->input('end_date', $defaultEndDate))->endOfDay();
-    $dateType = $request->input('date_type', 'created_at'); 
-
-    // Filter by division and/or department if set
-    $userDivision = Auth::user()->division_id;
-    $userDepartment = Auth::user()->department_id;
-
-    if ($userDivision && !$userDepartment) {
-        $leave->whereHas('employee', function ($q) use ($userDivision) {
-            $q->whereHas('position', function ($q) use ($userDivision) {
-                $q->where('division_id', $userDivision);
-            });
-        });
-    } elseif (!$userDivision && $userDepartment) {
-        $leave->whereHas('employee', function ($q) use ($userDepartment) {
-            $q->whereHas('position', function ($q) use ($userDepartment) {
-                $q->where('department_id', $userDepartment); // Perbaiki dari division_id ke department_id
-            });
-        });
-    }
-
-    $leaves = $leave->whereBetween($dateType, [$startDate, $endDate])->get();
-
-    $employee = Employee::query();
-    if ($userDivision && !$userDepartment) {
-        $employee->whereHas('position',function ($employee) use ($userDivision) {
-            $employee->where('division_id', $userDivision);
-        });
-    } elseif (!$userDivision && $userDepartment) {
-        $employee->whereHas('position', function ($employee) use ($userDepartment) {
-            $employee->where('department_id', $userDepartment);
-        });
-    } 
-    $employee->whereNull('resignation');
-    $employees = $employee->get();
-
-    $category = [
-        PRESENCE::LEAVE_ANNUAL,
-        PRESENCE::LEAVE_SICK,
-        PRESENCE::LEAVE_FULL_DAY_PERMIT,
-        PRESENCE::LEAVE_HALF_DAY_PERMIT,
-    ];
-    return view('leave.index', compact('leaves', 'employees', 'category', 'startDate', 'endDate'));
-
-}
-
-    public function index (Request $request) {
-        $query = Leave::query();
+    public function index(Request $request)
+    {
         $today = now();
-        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
-        $defaultEndDate = $today->copy()->endOfDay()->toDateString();
-        $startDate = Carbon::parse($request->input('start_date', $defaultStartDate));
-        $endDate = Carbon::parse($request->input('end_date', $defaultEndDate))->endOfDay();
-        $dateType = $request->input('date_type', 'created_at'); 
 
+        $startDate = Carbon::parse(
+            $request->input('start_date', $today->copy()->startOfMonth())
+        );
+
+        $endDate = Carbon::parse(
+            $request->input('end_date', $today->copy()->endOfDay())
+        )->endOfDay();
+
+        $dateType = $request->input('date_type', 'created_at');
+
+        $user = Auth::user();
         $userDivision = Auth::user()->division_id;
         $userDepartment = Auth::user()->department_id;
-    
-        // Filter by division and/or department if set
-        if ($userDivision && !$userDepartment) {
-            $query->whereHas('employees', function ($query) use ($userDivision) {
-                $query->where('division_id', $userDivision);
-            });
-        } elseif (!$userDivision && $userDepartment) {
-            $query->whereHas('employees', function ($query) use ($userDepartment) {
-                $query->where('department_id', $userDepartment);
-            });
-        } elseif ($userDivision && $userDepartment) {
-            $query->whereHas('employees', function ($query) use ($userDivision, $userDepartment) {
-                $query->where('division_id', $userDivision)
-                      ->where('department_id', $userDepartment);
-            });
-        }
-    
-        if ($dateType && $startDate && $endDate) {
-            $query->whereBetween($dateType, [$startDate, $endDate]);
-        }
-
-        $leaves = $query->with('employees')->get();
-
-        $employees = Employee::whereNull('resignation')->get();
-        $category = [
-            'Annual leave', 
-            'Sick',
-            'Permit'
-        ];
-        return view('leave.index', compact('leaves', 'employees', 'category', 'startDate', 'endDate'));
-    }
-
-
-//Store
-
-public function save (Request $request) {
-    $id = $request->id;
-    $employeeId = $request->input('employee_id');
-    $leaveDates = $request->input('leave_dates');
-    if (is_array($leaveDates)) {
-        $leaveDates = explode(',', $leaveDates[0]);
-    } else {
-        $leaveDates = explode(',', $leaveDates);
-    }
-    $leaveDates = array_map('trim', $leaveDates);
-    $category = $request->input('category');
-    $note = $request->input('note');
-        $action = $request->input('action');
-
-    $status = match ($action) {
-        'accept' => true,
-        'reject' => false,
-        default => null,
-    };
-
-    $employee = Employee::where('id', $employeeId)->first();
-    $name = $employee->name;
-    $eid = $employee->eid;
-
-    $existPresence = Presence::where('employee_id', $employeeId)
-        ->whereIn('date', $leaveDates)
-        ->whereNotNull('check_in')
-        ->pluck('date')->toArray();
-
-    if($existPresence) {
-        return redirect()->back()->withErrors('Karyawan hadir pada tanggal tersebut. Silahkan hapus presensi untuk menyetujui ijin.');
-    }
-
-    $existLeave = Presence::where('employee_id', $employeeId)
-        ->whereIn('date', $leaveDates)
-        ->whereNotNull('leave_status')
-        ->pluck('date')->toArray();
-
-    if(count($existLeave) >= 1 && $status === 1) {
-        return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
-    }
-
-    $request->validate([
-        'employee_id' => 'required',
-        'category' => 'required',
-        'note' => 'required'
-    ]);
-
-    $leaveCount = count($leaveDates);
-    if ($category === Presence::LEAVE_ANNUAL) {
-        if ($employee->annual_leave < $leaveCount) {
-            return redirect()->back()->withErrors('Sisa cuti tahunan tidak mencukupi untuk pengajuan ini.');
-        }
-    }
-
-    $annualLeaveCount = 0;
-
-    foreach ($leaveDates as $date) {
-        Presence::updateOrCreate(
-            ['id' => $id 
-        ], [    
-            'employee_id' => $employeeId,
-            'eid' => $eid,
-            'date' => $date,
-            'leave' => $category,
-            'leave_status' => $status,
-            'leave_note' => $note,
-        ]);
         
-        if ($status === true) {
-            $annualLeaveCount++;
-        }
+        $employees = Employee::whereNull('resignation')
+            ->sameOrg($user)
+            ->get();
+
+        $leaves = Leave::whereBetween($dateType, [$startDate, $endDate])
+            ->whereHas('employee', fn ($q) => $q->sameOrg($user))
+            ->get();
+
+
+
+        // $category = [
+        //     PRESENCE::STATUS_LEAVE,
+        //     PRESENCE::STATUS_HALFDAY,
+        //     PRESENCE::STATUS_PERMIT,
+        //     PRESENCE::STATUS_SICK,
+        // ];
+
+        return view('leave.index', compact(
+            'leaves',
+            // 'employees',
+            // 'category',
+            'startDate',
+            'endDate'
+        ));
     }
 
-    if($annualLeaveCount > 0 && $category === Presence::LEAVE_ANNUAL) {
-        $employee = Employee::find($employeeId);
-        $employee->decrement('annual_leave', $annualLeaveCount);
-    }
 
-    return redirect()->back()->with('success', 'Leave for ' . $name . ' saved successfully');
-}
 
-    public function store (Request $request) {
+
+    public function save (Request $request) {
         $id = $request->id;
         $employeeId = $request->input('employee_id');
         $leaveDates = $request->input('leave_dates');
-        $leaveDates = explode(',', $leaveDates[0]);
+        if (is_array($leaveDates)) {
+            $leaveDates = explode(',', $leaveDates[0]);
+        } else {
+            $leaveDates = explode(',', $leaveDates);
+        }
         $leaveDates = array_map('trim', $leaveDates);
         $category = $request->input('category');
         $note = $request->input('note');
-        $action = $request->input('action');
-        $status = ($action === 'accept') ? 1 : 0;
-    
-        $employee_name = Employee::where('id', $employeeId)->first();
-        $name = $employee_name->name;
+            $action = $request->input('action');
 
-        $existLeave = Leave::where('employee_id', $employeeId)
-                           ->whereIn('date', $leaveDates)
-                           ->pluck('date')->toArray();
-                            
-        if(count($existLeave) > 0 && $status === '') {
-            return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
-        }
+        $status = match ($action) {
+            'accept' => true,
+            'reject' => false,
+            default => null,
+        };
 
-        $request->validate([
-            'employee_id' => 'required',
-            'category' => 'required',
-            'note' => 'required'
-        ]);
+        $employee = Employee::where('id', $employeeId)->first();
+        $name = $employee->name;
+        $eid = $employee->eid;
 
         $existPresence = Presence::where('employee_id', $employeeId)
             ->whereIn('date', $leaveDates)
@@ -230,42 +94,66 @@ public function save (Request $request) {
             return redirect()->back()->withErrors('Karyawan hadir pada tanggal tersebut. Silahkan hapus presensi untuk menyetujui ijin.');
         }
 
+        $existLeave = Presence::where('employee_id', $employeeId)
+            ->whereIn('date', $leaveDates)
+            ->whereNotNull('leave_status')
+            ->pluck('date')->toArray();
+
+        if(count($existLeave) >= 1 && $status === 1) {
+            return redirect()->back()->withErrors(['leave_dates' => 'There have been applications for leave on several dates.']);
+        }
+
+        $request->validate([
+            'employee_id' => 'required',
+            'category' => 'required',
+            'note' => 'required'
+        ]);
+
+        $leaveCount = count($leaveDates);
+        if ($category === Presence::LEAVE_ANNUAL) {
+            if ($employee->annual_leave < $leaveCount) {
+                return redirect()->back()->withErrors('Sisa cuti tahunan tidak mencukupi untuk pengajuan ini.');
+            }
+        }
+
+        $annualLeaveCount = 0;
+
         foreach ($leaveDates as $date) {
-            $leaves = Leave::updateOrCreate(
+            Presence::updateOrCreate(
                 ['id' => $id 
             ], [    
                 'employee_id' => $employeeId,
+                'eid' => $eid,
                 'date' => $date,
-                'category' => $category,
-                'note' => $note,
-                'status' => $status,
+                'leave' => $category,
+                'leave_status' => $status,
+                'leave_note' => $note,
             ]);
+            
+            if ($status === true) {
+                $annualLeaveCount++;
+            }
         }
 
-        return redirect()->back()->with('success', 'Leave for ' . $name . ' updated successfully');
+        if($annualLeaveCount > 0 && $category === Presence::LEAVE_ANNUAL) {
+            $employee = Employee::find($employeeId);
+            $employee->decrement('annual_leave', $annualLeaveCount);
+        }
+
+        return redirect()->back()->with('success', 'Leave for ' . $name . ' saved successfully');
     }
 
-//Delete
-public function destroy ($id) {
-    $leave = Presence::findOrFail($id);
-    $leave->update([
-        'leave' => null,
-        'leave_status' => null,
-    ]);
-    return response()->json([
-        'success' => true,
-        'message' => 'Leave has been deleted.',
-        'redirect' => url()->previous()
-    ]);
-}
-
-    public function delete ($id) {
-        $leave = Leave::findOrFail($id);
-        $leave->delete();
+    public function destroy ($id) {
+        $leave = Presence::findOrFail($id);
+        $leave->update([
+            'leave' => null,
+            'leave_status' => null,
+        ]);
         return response()->json([
             'success' => true,
             'message' => 'Leave has been deleted.',
             'redirect' => url()->previous()
         ]);
     }
+
 }

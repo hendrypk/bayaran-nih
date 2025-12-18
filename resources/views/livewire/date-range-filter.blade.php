@@ -1,14 +1,13 @@
-
 <div class="{{ $class }}">
 @php
-    // Untuk input (tampilan)
+    // Display untuk input
     $displayStart = $startDate && $startDate != '' 
         ? formatDate($startDate) 
         : formatDate(now()->startOfMonth());
 
     $displayEnd = $endDate && $endDate != '' 
         ? formatDate($endDate) 
-        : formatDate(now()); // ⬅️ pakai hari ini
+        : formatDate(now());
 
     // Untuk JS (daterangepicker)
     $defaultStart = $startDate && $startDate != '' 
@@ -17,76 +16,87 @@
 
     $defaultEnd = $endDate && $endDate != '' 
         ? \Carbon\Carbon::parse($endDate)->format('Y-m-d') 
-        : now()->format('Y-m-d'); // ⬅️ pakai hari ini
+        : now()->format('Y-m-d');
 @endphp
 
-    <input
-        type="text"
-        id="dateRangeInput"
-        class="form-control d-inline-block text-center"
-        style="max-width: 250px;"
-        readonly
-        placeholder="Pilih rentang tanggal"
-        value="{{ $displayStart && $displayEnd ? $displayStart . ' - ' . $displayEnd : '' }}"
-    />
+<input
+    type="text"
+    id="dateRangeInput"
+    class="form-control d-inline-block text-center"
+    style="max-width: 250px;"
+    readonly
+    placeholder="Pilih rentang tanggal"
+    value="{{ $displayStart && $displayEnd ? $displayStart . ' - ' . $displayEnd : '' }}"
+/>
 </div>
 
 @push('scripts')
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    let input = $('#dateRangeInput');
+    const input = $('#dateRangeInput');
+
     if (!input.data('daterangepicker')) {
         input.daterangepicker({
             autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear',
-                format: 'YYYY-MM-DD'
-            },
+            locale: { cancelLabel: 'Clear', format: 'YYYY-MM-DD' },
             startDate: "{{ $defaultStart }}",
             endDate: "{{ $defaultEnd }}"
         });
 
-        // Helper JS untuk format lokal (samakan dengan formatDate di PHP)
         function formatIndo(dateStr) {
-            const bulan = [
-                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-            ];
+            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             let d = new Date(dateStr);
             let tgl = ('0' + d.getDate()).slice(-2);
-            let bln = bulan[d.getMonth()];
-            let thn = d.getFullYear();
-            return `${tgl} ${bln} ${thn}`;
+            return `${tgl} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // Set value input dan preview saat pertama kali load (format lokal)
-        input.val("{{ $displayStart }} - {{ $displayEnd }}");
-        $('.daterangepicker .drp-selected').text("{{ $displayStart }} - {{ $displayEnd }}");
+        function updatePreview(start, end) {
+            input.val(formatIndo(start) + ' - ' + formatIndo(end));
+            $('.daterangepicker .drp-selected').text(formatIndo(start) + ' - ' + formatIndo(end));
+        }
 
-        // Update preview dan input setiap kali tanggal berubah
-        input.on('show.daterangepicker apply.daterangepicker', function(ev, picker) {
-            let start = picker.startDate.format('YYYY-MM-DD');
-            let end = picker.endDate.format('YYYY-MM-DD');
-            let preview = formatIndo(start) + ' - ' + formatIndo(end);
-            $('.daterangepicker .drp-selected').text(preview);
-        });
+        function updateURL(start, end) {
+            const params = new URLSearchParams(window.location.search);
+            params.set('start_date', start);
+            params.set('end_date', end);
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        // Set initial preview
+        updatePreview("{{ $defaultStart }}", "{{ $defaultEnd }}");
 
         input.on('apply.daterangepicker', function(ev, picker) {
-            let start = picker.startDate.format('YYYY-MM-DD');
-            let end = picker.endDate.format('YYYY-MM-DD');
+            const start = picker.startDate.format('YYYY-MM-DD');
+            const end = picker.endDate.format('YYYY-MM-DD');
+
+            // Update Livewire
             @this.set('startDate', start);
             @this.set('endDate', end);
             @this.call('onDateRangeChanged', start, end);
-            // Set input dengan format lokal
-            $(this).val(formatIndo(start) + ' - ' + formatIndo(end));
+
+            // Update input preview
+            updatePreview(start, end);
+
+            // Update URL query string
+            updateURL(start, end);
         });
 
-        input.on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
+        input.on('cancel.daterangepicker', function() {
+            input.val('');
+            $('.daterangepicker .drp-selected').text('');
+
+            // Reset Livewire
             @this.set('startDate', '');
             @this.set('endDate', '');
             @this.call('onDateRangeChanged', '', '');
-            $('.daterangepicker .drp-selected').text('');
+
+            // Remove from URL
+            const params = new URLSearchParams(window.location.search);
+            params.delete('start_date');
+            params.delete('end_date');
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.replaceState({}, '', newUrl);
         });
     }
 });

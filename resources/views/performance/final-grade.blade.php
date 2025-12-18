@@ -47,8 +47,8 @@
                                 <th scope="row">{{ $no+1 }}</th>
                                 <td>{{ $employee->eid }}</td>
                                 <td>{{ $employee->name }}</td>
-                                <td>{{ $employee->final_kpi }}</td>
-                                <td>{{ $employee->final_pa }}</td>
+                                <td>{{ $employee->final_kpi }} ({{ $employee->bobot_kpi .'%' }})</td>
+                                <td>{{ $employee->final_pa }} ({{ 100 - $employee->bobot_kpi .'%' }})</td>
                                 <td>{{ $employee->finalGrade }}</td>
                             </tr>
                             @endforeach
