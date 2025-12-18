@@ -98,9 +98,7 @@ class Presence extends Model implements HasMedia
     public static function getPresence($employeeId, $startDate, $endDate)
     {
         return self::where('employee_id', $employeeId)
-                    ->where(function($q){
-                        $q->whereNull('leave')->orWhere('leave', ''); // termasuk empty string
-                    })
+                    ->where('status', Presence::STATUS_PRESENCE)
                     ->whereBetween('date', [
                         Carbon::parse($startDate)->startOfDay(),
                         Carbon::parse($endDate)->endOfDay()
