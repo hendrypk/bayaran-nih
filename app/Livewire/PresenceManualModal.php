@@ -24,6 +24,7 @@ class PresenceManualModal extends Component
     public $lateCheckIn = 0;
     public $lateArrival = false;
     public $checkOutEarly = 0;
+    public $arrival;
     public $start;
     public $end;
     public $break_start;
@@ -138,6 +139,7 @@ class PresenceManualModal extends Component
 
         if (!$workDay) return;
 
+        $this->arrival = $workDay->arrival;
         $this->start = $workDay->start_time;
         $this->end = $workDay->end_time;
         $this->break_start = $workDay->break_start;

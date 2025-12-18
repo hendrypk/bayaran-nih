@@ -125,10 +125,11 @@
 
                 {{-- INFO BOX --}}
                 <div class="col-12">
-                    <div class="row g-2">
+                    <div class="d-flex gap-2 flex-nowrap overflow-auto">
 
                         @php
                             $items = [
+                                ['label' => 'Arrival', 'value' => $arrival, 'icon' => 'ri-timer-line', 'color' => 'info'],
                                 ['label' => 'Check In', 'value' => $start, 'icon' => 'ri-login-box-line', 'color' => 'primary'],
                                 ['label' => 'Check Out', 'value' => $end, 'icon' => 'ri-logout-box-line', 'color' => 'primary'],
                                 ['label' => 'Istirahat Mulai', 'value' => $break_start, 'icon' => 'ri-cup-line', 'color' => 'success'],
@@ -136,17 +137,19 @@
                             ];
                         @endphp
 
-                        @foreach ($items as $item)
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 rounded-3 border bg-white shadow-sm text-center h-100">
-                                    <div class="text-{{ $item['color'] }} mb-1">
-                                        <i class="{{ $item['icon'] }} fs-4"></i>
-                                    </div>
-                                    <div class="text-muted small">{{ $item['label'] }}</div>
-                                    <div class="fw-semibold fs-6">{{ $item['value'] ?? '-' }}</div>
-                                </div>
-                            </div>
-                        @endforeach
+        @foreach ($items as $item)
+            <div style="min-width: 140px">
+                <div class="p-2 rounded-3 border bg-white shadow-sm text-center h-100">
+                    <div class="text-{{ $item['color'] }} mb-1">
+                        <i class="{{ $item['icon'] }} fs-4"></i>
+                    </div>
+                    <div class="text-muted small">{{ $item['label'] }}</div>
+                    <div class="fw-semibold fs-6 text-nowrap">
+                        {{ $item['value'] ?? '-' }}
+                    </div>
+                </div>
+            </div>
+        @endforeach
 
                     </div>
                 </div>
