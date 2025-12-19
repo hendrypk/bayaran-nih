@@ -29,27 +29,20 @@ class PaDatatable extends Component
         $this->resetPage();
     }
 
-    public function render()
-    {
-        $userDivision = Auth::user()->division_id;
-        $userDepartment = Auth::user()->department_id;
+public function render()
+{
+    $user = Auth::user();
 
-        $query = PerformanceAppraisalResult::with('details', 'employees')
-            ->where('month', $this->month)
-            ->where('year', $this->year);
+    $query = PerformanceAppraisalResult::with('details', 'employees')
+        ->where('month', $this->month)
+        ->where('year', $this->year)
+        ->whereHas('employees', fn($q) => $q->sameOrg($user));
 
-        if ($userDivision && !$userDepartment) {
-            $query->whereHas('employees', fn($q) => $q->where('division_id', $userDivision));
-        } elseif (!$userDivision && $userDepartment) {
-            $query->whereHas('employees', fn($q) => $q->where('department_id', $userDepartment));
-        } elseif ($userDivision && $userDepartment) {
-            $query->whereHas('employees', fn($q) => $q->where('division_id', $userDivision)
-                                                      ->where('department_id', $userDepartment));
-        }
+    $gradePa = $query->paginate(10);
 
-        $gradePa = $query->paginate(10);
-        return view('livewire.pa-datatable', [
-            'gradePa' => $gradePa
-        ]);
-    }
+    return view('livewire.pa-datatable', [
+        'gradePa' => $gradePa
+    ]);
+}
+
 }

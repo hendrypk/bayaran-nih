@@ -39,27 +39,11 @@ class LeaveController extends Controller
         $leaves = Leave::whereBetween($dateType, [$startDate, $endDate])
             ->whereHas('employee', fn ($q) => $q->sameOrg($user))
             ->get();
-
-
-
-        // $category = [
-        //     PRESENCE::STATUS_LEAVE,
-        //     PRESENCE::STATUS_HALFDAY,
-        //     PRESENCE::STATUS_PERMIT,
-        //     PRESENCE::STATUS_SICK,
-        // ];
-
         return view('leave.index', compact(
             'leaves',
-            // 'employees',
-            // 'category',
-            'startDate',
             'endDate'
         ));
     }
-
-
-
 
     public function save (Request $request) {
         $id = $request->id;
