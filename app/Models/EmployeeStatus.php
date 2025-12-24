@@ -13,4 +13,5 @@ class EmployeeStatus extends Model
 
     protected $table = 'employee_status';
     protected $dates = ['deleted_at']; 
+    protected $fillable = ['name'];
 }

@@ -79,8 +79,8 @@
                     <button type="button" class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-rose-500 transition-colors">
                         Lupa Password?
                     </button>
-                    <button type="submit" class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all">
-                        Masuk Sekarang
+                    <button type="submit" class="px-8 py-3 bg-cyan-500 text-white hover:bg-cyan-600  shadow-cyan-500/30 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+                        Masuk
                     </button>
                 </div>
             </form>

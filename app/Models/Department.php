@@ -12,6 +12,6 @@ class Department extends Model
     use SoftDeletes;
 
     protected $table = 'departments';
-
+    protected $guarded = [];
     protected $dates = ['deleted_at'];  
 }

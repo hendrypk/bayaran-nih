@@ -74,3 +74,18 @@ if (! function_exists('formatBulan')) {
         return Carbon::parse($date)->translatedFormat($format);
     }
 }
+
+if (! function_exists('formatHariTanggal')) {
+    /**
+     * Format: Minggu, 24 Desember 2025
+     *
+     * @param string|null $date
+     * @return string
+     */
+    function formatHariTanggal($date)
+    {
+        if (!$date) return '';
+
+        return Carbon::parse($date)->translatedFormat('l, j M Y');
+    }
+}

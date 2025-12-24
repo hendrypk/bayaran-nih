@@ -19,7 +19,7 @@ class OptionsController extends Controller
 
 //index
     function index(){
-        $positions = Position::get();
+$positions = Position::with('job_title', 'department', 'division')->get();
         $divisions = Division::get();
         $job_titles = JobTitle::get();
         $departments = Department::get();

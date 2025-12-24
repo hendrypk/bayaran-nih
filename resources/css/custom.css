@@ -144,7 +144,7 @@ table.dataTable tbody tr:hover {
 
   /* --- Dynamic Label --- */
 .form-label-puffy {
-      @apply block text-[10px] font-black uppercase tracking-[0.2em] mb-2 transition-all duration-300;
+      @apply block text-[10px] font-black tracking-[0.2em] mb-2 transition-all duration-300;
       @apply text-slate-400 dark:text-slate-500;
 
       /* Menggunakan group-focus-within (Cara Standar) */
@@ -181,4 +181,65 @@ table.dataTable tbody tr:hover {
   .card-footer-puffy {
       @apply px-8 py-6 bg-slate-50/50 dark:bg-slate-950/30 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-end gap-4;
   }
+}
+
+@layer components {
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #06b6d4;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+  }
+
+  input[type=range]::-moz-range-thumb {
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+      background: #06b6d4;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+  }
+}
+
+@layer components {
+    /* Container Utama */
+    .flatpickr-calendar {
+        @apply bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl rounded-[1.5rem] !important;
+        font-family: inherit !important;
+    }
+
+    /* Header & Nama Hari */
+    .flatpickr-months .flatpickr-month,
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    span.flatpickr-weekday {
+        @apply text-slate-500 dark:text-slate-400 font-black uppercase !important;
+        font-size: 10px !important;
+        letter-spacing: 0.1em;
+    }
+
+    /* Gaya Angka Tanggal */
+    .flatpickr-day {
+        @apply text-slate-700 dark:text-slate-300 transition-all duration-200 !important;
+        border-radius: 0.75rem !important;
+    }
+
+    /* HOVER EFFECT: Cyan Modern */
+    .flatpickr-day:hover {
+        @apply bg-cyan-50 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-400/20 !important;
+    }
+
+    /* SELECTED STATE: Cyan Solid */
+    .flatpickr-day.selected {
+        @apply bg-cyan-500 border-cyan-500 text-white shadow-lg shadow-cyan-500/40 !important;
+    }
+
+    /* Navigasi Arrows */
+    .flatpickr-prev-month:hover svg, 
+    .flatpickr-next-month:hover svg {
+        @apply fill-cyan-500 !important;
+    }
 }
