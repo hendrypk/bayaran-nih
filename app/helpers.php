@@ -89,3 +89,33 @@ if (! function_exists('formatHariTanggal')) {
         return Carbon::parse($date)->translatedFormat('l, j M Y');
     }
 }
+
+if (! function_exists('formatTimeHIS')) {
+    /**
+     * Format: 17:30:05
+     *
+     * @param string|null $time
+     * @return string
+     */
+    function formatTimeHIS($time)
+    {
+        if (!$time) return '';
+
+        return Carbon::parse($time)->format('H:i:s');
+    }
+}
+
+if (! function_exists('formatTimeHI')) {
+    /**
+     * Format: 17:30 (Sering digunakan untuk input type="time")
+     *
+     * @param string|null $time
+     * @return string
+     */
+    function formatTimeHI($time)
+    {
+        if (!$time) return '';
+
+        return Carbon::parse($time)->format('H:i');
+    }
+}

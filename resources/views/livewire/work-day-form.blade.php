@@ -1,0 +1,183 @@
+<x-ui.modal> {{-- Batas lebar ideal 1280px --}}
+    <div class="flex flex-col max-h-[90vh]"> {{-- Bungkus seluruh isi modal --}}
+        <x-slot name="title">
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-cyan-500/10 text-cyan-500 rounded-lg">
+                        <iconify-icon icon="lucide:settings-2" width="24"></iconify-icon>
+                    </div>
+                    <span class="font-bold text-slate-800 dark:text-white">Konfigurasi Pola Kerja</span>
+                </div>
+                <div class="text-[10px] bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full text-slate-500 font-bold uppercase tracking-widest">
+                    ID: {{ $selectedId ?? 'NEW' }}
+                </div>
+            </div>
+        </x-slot>
+
+        <form wire:submit.prevent="save" class="space-y-6">
+            {{-- Row Atas Tetap Sama --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800">
+                <div class="space-y-2">
+                    <label class="form-label-puffy">Nama Pola</label>
+                    <input type="text" wire:model="name" class="form-input-puffy" placeholder="Shift Kantor">
+                </div>
+                <div class="space-y-2">
+                    <label class="form-label-puffy">Toleransi (Menit)</label>
+                    <input type="number" wire:model="tolerance" class="form-input-puffy">
+                </div>
+                <div class="space-y-2">
+                    <label class="form-label-puffy">Hitung Terlambat</label>
+                    <select wire:model="count_late" class="form-input-puffy">
+                        <option value="1">Ya</option>
+                        <option value="0">Tidak</option>
+                    </select>
+                </div>
+            </div>
+
+            {{-- Table dengan Tombol Apply To All --}}
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 dark:bg-slate-950 text-white">
+                                <th class="px-6 py-5 text-[10px] font-black uppercase tracking-widest w-40">Hari</th>
+                                <th class="px-4 py-5 text-[10px] font-black uppercase tracking-widest text-center w-24">Libur</th>
+                                
+                                {{-- Header dengan Action --}}
+                                @php
+                                    $headers = [
+                                        ['label' => 'Arrival', 'key' => 'arrival'],
+                                        ['label' => 'Jam Masuk', 'key' => 'start_time'],
+                                        ['label' => 'Jam Pulang', 'key' => 'end_time'],
+                                        ['label' => 'Mulai Istirahat', 'key' => 'break_start'],
+                                        ['label' => 'Selesai Istirahat', 'key' => 'break_end'],
+                                    ];
+                                @endphp
+
+                                @foreach($headers as $h)
+                                <th class="px-4 py-4 min-w-[140px]">
+                                    <div class="flex flex-col gap-2">
+                                        <span class="text-[10px] font-black uppercase tracking-widest">{{ $h['label'] }}</span>
+                                        <button type="button" 
+                                            wire:click="applyToAll('{{ $h['key'] }}')"
+                                            class="flex items-center gap-1.5 w-fit bg-white/10 hover:bg-cyan-500 text-[9px] py-1 px-2 rounded-md transition-all group">
+                                            <iconify-icon icon="lucide:copy-check" class="group-hover:animate-bounce"></iconify-icon>
+                                            Samakan
+                                        </button>
+                                    </div>
+                                </th>
+                                @endforeach
+                                <th class="px-4 py-5 text-[10px] font-black uppercase tracking-widest text-center">
+                                    <div class="group relative flex justify-center items-center gap-1 cursor-pointer">
+                                        <span>EXC. BREAK</span>
+                                        <iconify-icon icon="lucide:help-circle" width="12" class="text-slate-400"></iconify-icon>
+                                        
+                                        <div class="absolute top-full right-0 mt-2 hidden group-hover:block w-56 p-2.5 bg-slate-800 text-[9px] text-white rounded-lg shadow-2xl z-[9999] normal-case font-medium leading-relaxed pointer-events-none border border-slate-700">
+                                            <div class="relative z-10 text-left">
+                                                Durasi istirahat **tidak akan memotong** total jam kerja harian jika opsi ini dicentang.
+                                            </div>
+                                            <div class="absolute bottom-full right-3 border-4 border-transparent border-b-slate-800"></div>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        @php
+                            $headers = [
+                                ['label' => 'Arrival', 'key' => 'arrival'],
+                                ['label' => 'Jam Masuk', 'key' => 'start_time'],
+                                ['label' => 'Jam Pulang', 'key' => 'end_time'],
+                                ['label' => 'Mulai Istirahat', 'key' => 'break_start'],
+                                ['label' => 'Selesai Istirahat', 'key' => 'break_end'],
+                            ];
+                        @endphp
+
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                            @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
+                            {{-- WAJIB: Tambahkan wire:key agar Livewire bisa melacak perubahan DOM --}}
+                            <tr wire:key="workday-row-{{ $day }}-{{ $selectedId }}" 
+                                class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all" 
+                                x-data="{ isOff: @entangle('daysData.'.$day.'.is_offday') }">
+                                
+                                <td class="px-6 py-4">
+                                    <span class="font-bold text-slate-700 dark:text-slate-200">{{ $day }}</span>
+                                </td>
+
+                                {{-- Toggle Libur --}}
+                                <td class="px-4 py-4 text-center">
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" x-model="isOff" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:bg-rose-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all shadow-inner"></div>
+                                    </label>
+                                </td>
+                                
+                                {{-- Dynamic Row Inputs --}}
+                                @foreach($headers as $h)
+                                <td class="px-4 py-4">
+                                    <div class="relative" x-bind:class="isOff && 'opacity-20 grayscale pointer-events-none'">
+                                        <input type="time" 
+                                            wire:model="daysData.{{ $day }}.{{ $h['key'] }}" 
+                                            class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-2 px-3 text-xs focus:ring-2 focus:ring-cyan-500 transition-all font-medium">
+                                    </div>
+                                </td>
+                                @endforeach
+
+                        <td class="px-4 py-4 text-center">
+                            <div class="group relative flex justify-center" 
+                                title="Exclude Break: Istirahat tidak memotong jam kerja"> {{-- Tooltip bawaan browser --}}
+                                
+                                <input type="checkbox" 
+                                    wire:model="daysData.{{ $day }}.is_break" 
+                                    x-bind:disabled="isOff"
+                                    class="w-5 h-5 rounded-lg border-slate-300 text-cyan-500 focus:ring-cyan-500 
+                                        dark:bg-slate-800 dark:border-slate-700 transition-transform hover:scale-110 cursor-pointer">
+                                
+                                <span class="absolute -top-8 hidden group-hover:block bg-cyan-600 text-white text-[9px] px-2 py-1 rounded whitespace-nowrap shadow-lg">
+                                    Potong jam kerja?
+                                </span>
+                            </div>
+                        </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                            <p class="text-xs text-slate-500 italic">
+                    * Klik tombol <strong>"Samakan"</strong> di header untuk menyalin nilai hari Senin ke semua hari.
+                </p>
+            <x-slot:footer>
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex items-center gap-4">
+                        @if($isEditing)
+                        <x-swal-confirm 
+                            title="Hapus jadwal kerja?" 
+                            text="Apakah Anda yakin ingin menghapus jadwal kerja {{ $name }}?"
+                            callback="delete"
+                            :id="$selectedId"
+                            class="inline-flex items-center p-2 bg-rose-100 text-rose-600 hover:bg-rose-600 hover:text-white 
+                                   dark:bg-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white rounded-lg transition-all">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                            viewBox="0 0 24 24"><path fill="none" stroke="currentColor" 
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M4 7h16M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-5 5l4 4m0-4l-4 4"/></svg>
+                        </x-swal-confirm>
+                        @endif
+                    </div>
+
+                    <div class="flex gap-2">
+                        <x-action-button type="cancel" @click="onClose()">
+                            @lang('general.label.cancel')
+                        </x-action-button>
+
+                        <x-action-button type="save" wire:click="save" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="save">@lang('general.label.save')</span>
+                            <span wire:loading wire:target="save">Menyimpan...</span>
+                        </x-action-button>
+                    </div>
+                </div>
+            </x-slot:footer>
+        </form>
+    </div>
+</x-ui.modal>

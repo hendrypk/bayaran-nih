@@ -10,11 +10,18 @@ use Illuminate\Http\Request;
 class WorkDayController extends Controller
 {
 //Work Day List
-    public function index(){
-        $workDays = WorkScheduleGroup::all();
-        return view('work_day.index', compact('workDays'));
-    }
+public function index() {
+    $workDays = WorkScheduleGroup::withCount([
+        // Hitung total hari kerja (is_offday = false)
+        'days as total_working_days' => function ($query) {
+            $query->where('is_offday', false);
+        },
+        // Hitung berapa karyawan yang menggunakan group ini
+        'employeeWorkSchedules as total_employees' 
+    ])->get();
 
+    return view('work_day.index', compact('workDays'));
+}
 //Work Day Detail
 public function detail($name) {
     // Ambil semua work days dengan nama yang sama

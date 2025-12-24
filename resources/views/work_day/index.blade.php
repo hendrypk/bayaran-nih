@@ -1,183 +1,63 @@
-@extends('_layout.main')
-@section('title', __('sidebar.label.work_day'))
-@section('content')
+<x-layouts.app>
+    <x-slot:title>
+        @lang('sidebar.label.work_day')
+    </x-slot>
 
-{{ Breadcrumbs::render('work_day') }}
-<div class="row">
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="card-header d-flex align-items-center py-0">
-                    <h5 class="card-title mb-0 py-3">{{ __('option.label.work_day') }}</h5>
-                    @can('create work pattern')
-                        <div class="ms-auto my-auto">
-                            <button type="button" 
-                            class="btn btn-tosca content-align-center" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#addWorkDay">
-                            <i class="ri-add-circle-line"></i>
-                        </button>
-                        </div>
-                    @endcan
-                </div>
-            </div>
-            <table class="table datatable table-hover">
-                <thead>
-                    <th>#</th>
-                    <th>{{ __('general.label.name') }}</th>
-                    <th>{{ __('general.label.view') }}</th>
-                    <th>{{ __('general.label.delete') }}</th>
-                </thead>
-                <tbody>
-                    @foreach($workDays as $no=>$workDay)
-                    <tr>
-                        <td>{{ $no+1 }}</td>
-                        <td>{{ $workDay->name }}</td>
-                        {{-- <td>
-                            <a href="{{ route('workDay.detail', ['name' => $workDay->name]) }}" class="btn btn-outline-primary">
-                                <i class="ri-eye-fill"></i>
-                            </a>
-                        </td> --}}
-                        <td>
-                            @can('update work pattern')
-                                <a href="{{ route('workDay.edit', ['id' => $workDay->id]) }}" class="btn btn-blue">
-                                    <i class="ri-eye-fill"></i>
-                                </a>
-                            @endcan
-                        </td>
-                        <td>
-                            @can('delete work pattern')                               
-                                <button type="button" class="btn btn-red" 
-                                    onclick="confirmDelete('{{ $workDay->id }}', 'work-pattern')">
-                                    <i class="ri-delete-bin-fill"></i>
-                                </button>
-                            @endcan
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-                
-            </table>
-        </div>
+    {{-- Header Section --}}
+    <div class="px-4 py-2 m-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h5 class="text-lg font-bold text-slate-800 dark:text-white">
+            {{ __('option.label.work_day') }}
+        </h5>
+        
+        @can('create work pattern')
+        <x-modal-trigger
+            modal="work-day-form"
+            title="Tambah Pola Kerja"
+            size="max-w-7xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c7.2 0 9 1.8 9 9s-1.8 9-9 9s-9-1.8-9-9s1.8-9 9-9m3 9H9m3-3v6"/></svg>
+        </x-modal-trigger>
+        @endcan
     </div>
-</div>
 
-@section('script') 
-<script>
-        $(document).ready(function() {
-            // Disable time inputs if the holiday checkbox is checked
-            $('input[type=checkbox]').on('change', function() {
-                var day = $(this).attr('id').split('-')[0];
-                var isHoliday = $(this).is(':checked');
-                $('#' + day + '-start').prop('disabled', isHoliday);
-                $('#' + day + '-end').prop('disabled', isHoliday);
-            });
-        });
+    {{-- Content Section --}}
+    <div class="bg-white dark:bg-slate-900 shadow-sm rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden mx-4">
+        <x-ui.datatable 
+            id="workDayTable" 
+            :headers="['#', __('general.label.name'), 'Status', 'Pengguna', 'Edit']">
 
-//Delete Modal
-    document.addEventListener('DOMContentLoaded', function () {
-    const deleteModal = document.getElementById('deleteModal');
-
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const name = button.getAttribute('data-name'); // WorkDay Name
-        
-        // Set form action dynamically
-        const form = document.getElementById('deleteForm');
-        form.action = `/work-day/${name}/delete`;
-        
-        // Optionally update the modal text
-        const entityNameElement = document.getElementById('entityName');
-        entityNameElement.textContent = name;
-    });
-});
-
-    function confirmDelete(name, entity) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete the " + entity + ": " + name,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '',
-            cancelButtonColor: '',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/${entity}/${name}/delete`, { 
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: data.message, // Use message from the server
-                            icon: 'success'
-                        }).then(() => {
-                            // Reload the page or redirect to another route
-                            window.location.href = data.redirect; // Redirect to the desired route
-                        });
-                    } else {
-                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            }
-        });
-    }
-
-//Disabled if Day-Off
-document.addEventListener('DOMContentLoaded', function () {
-    // Define the toggleTimeInputs function
-    function toggleTimeInputs(day) {
-        const isDayOff = document.querySelector(`input[id="dayOff[${day}]"]`).checked;
-        const isBreak = document.querySelector(`input[id="break[${day}]"]`).checked;
-
-        // Disable all time inputs if day-off is checked
-        if (isDayOff) {
-            document.querySelector(`input[id="arrival[${day}]"]`).disabled = true;
-            document.querySelector(`input[id="checkIn[${day}]"]`).disabled = true;
-            document.querySelector(`input[id="checkOut[${day}]"]`).disabled = true;
-            document.querySelector(`input[id="breakIn[${day}]"]`).disabled = true;
-            document.querySelector(`input[id="breakOut[${day}]"]`).disabled = true;
-            document.querySelector(`input[id="break[${day}]"]`).disabled = true;
-        } else {
-            document.querySelector(`input[id="arrival[${day}]"]`).disabled = false;
-            document.querySelector(`input[id="checkIn[${day}]"]`).disabled = false;
-            document.querySelector(`input[id="checkOut[${day}]"]`).disabled = false;
-            document.querySelector(`input[id="breakIn[${day}]"]`).disabled = false;
-            document.querySelector(`input[id="breakOut[${day}]"]`).disabled = false;
-            document.querySelector(`input[id="break[${day}]"]`).disabled = false;
-        }
-    }
-
-    // Trigger the function when the checkbox changes
-    document.querySelectorAll('input[type=checkbox]').forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            const day = this.id.match(/\[([^\]]+)\]/)[1]; // Extract the day from the checkbox ID
-            toggleTimeInputs(day); // Call the function on checkbox change
-        });
-
-        // Trigger change event on page load to set the initial state
-        checkbox.dispatchEvent(new Event('change'));
-    });
-});
-
-</script>
-@endsection
-@endsection
-
-@include('work_day.add')
-@include('modal.delete')
+            @foreach($workDays as $no => $workDay)
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td class="text-center">{{ $no + 1 }}</td>
+                    <td class="font-medium text-slate-700 dark:text-slate-200">
+                        {{ $workDay->name }}
+                    </td>
+                    <td>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300">
+                            {{ $workDay->total_working_days ?? 0 }} Hari Kerja
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <iconify-icon icon="lucide:users" class="text-slate-400"></iconify-icon>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                                {{ $workDay->total_employees ?? 0 }} <span class="text-[10px] font-normal">Orang</span>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        @can('update work pattern')
+                        <x-modal-trigger
+                            class="inline-flex items-center p-1.5 bg-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white rounded-lg transition-all"
+                            modal="work-day-form"
+                            :args="['id' => $workDay->id]"
+                            title="Edit Pola Kerja"
+                            size="max-w-7xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m12 15l8.385-8.415a2.1 2.1 0 0 0-2.97-2.97L9 12v3zm4-10l3 3"/><path d="M9 7.07A7 7 0 0 0 10 21a7 7 0 0 0 6.929-6"/></g></svg>
+                        </x-modal-trigger>
+                        @endcan
+                    </td>
+                </tr>
+            @endforeach
+        </x-ui.datatable>
+    </div>
+</x-layouts.app>

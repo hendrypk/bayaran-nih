@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WorkScheduleGroup extends Model
 {
@@ -13,6 +15,15 @@ class WorkScheduleGroup extends Model
         'tolerance',
     ];
 
+    /**
+     * Relasi ke tabel employee_work_schedules
+     */
+    public function employeeWorkSchedules(): HasMany
+    {
+        // Parameter kedua adalah foreign key di tabel employee_work_schedules
+        return $this->hasMany(EmployeeWorkSchedule::class, 'work_schedule_group_id');
+    }
+    
     public function days()
     {
         return $this->hasMany(WorkScheduleDay::class, 'work_schedule_group_id');
