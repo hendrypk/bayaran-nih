@@ -146,19 +146,19 @@ x-data="{ tableTitle: '', isEdit: false }"
                 
                 {{-- BARIS PERTAMA: NAME, LAT, LON --}}
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                    <div class="lg:col-span-6 group">
+                    <div class="lg:col-span-4 group">
                         <label class="form-label-puffy">Nama Lokasi Kantor</label>
                         <input type="text" wire:model="name" placeholder="Contoh: Kantor Pusat" class="form-input-puffy">
                     </div>
-                    <div class="lg:col-span-3">
+                    <div class="lg:col-span-4">
                         <label class="form-label-puffy">Latitude</label>
-                        <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700 h-[46px] flex items-center">
+                        <div class="form-input-puffy">
                             <span class="text-xs font-mono text-cyan-400" x-text="$wire.latitude || '-'"></span>
                         </div>
                     </div>
-                    <div class="lg:col-span-3">
+                    <div class="lg:col-span-4">
                         <label class="form-label-puffy">Longitude</label>
-                        <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700 h-[46px] flex items-center">
+                        <div class="form-input-puffy">
                             <span class="text-xs font-mono text-cyan-400" x-text="$wire.longitude || '-'"></span>
                         </div>
                     </div>
