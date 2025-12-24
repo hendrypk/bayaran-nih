@@ -33,6 +33,24 @@ class EmployeeController extends Controller
         return view('employee.index', compact('employee'));
     }
 
+    public function index(Request $request) {
+        $status = $request->get('status', 'all');
+        
+        $query = Employee::with(['employeeStatus', 'position.division', 'position.department']);
+        
+        if($status == 'active') $query->where('is_active', true);
+        if($status == 'inactive') $query->where('is_active', false);
+
+        $employee = $query->get();
+        $counts = [
+            'all' => Employee::count(),
+            'active' => Employee::where('is_active', true)->count(),
+            'inactive' => Employee::where('is_active', false)->count(),
+        ];
+
+        return view('employee.index', compact('employee', 'counts', 'status'));
+    }
+
     //Employee Form
     public function form($id = null)
     {

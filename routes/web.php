@@ -190,7 +190,7 @@ Route::middleware(['auth:web'])->group(function () {
     //employee
     Route::group(['middleware' => ['permission:view employee']], function() {
         Route::prefix('employee')->group(function () {
-            Route::get('', [EmployeeController::class,'employeelist'])->name('employee.list'); 
+            Route::get('', [EmployeeController::class,'index'])->name('employee.list'); 
             Route::get('add', [EmployeeController::class,'form'])->name('employee.add');
             Route::post('submit', [EmployeeController::class,'submit'])->name('employee.submit'); 
             Route::get('{id}', [EmployeeController::class, 'detail'])->name('employee.detail'); 
