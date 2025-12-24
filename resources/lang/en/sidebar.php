@@ -25,6 +25,7 @@ return [
         'role' => 'Role',
         'user' => 'User',
         'log_out' => 'Log Out',
+        'setting' => 'Setting',
     ],
     'placeholder' => [
         'search' => 'Search...',

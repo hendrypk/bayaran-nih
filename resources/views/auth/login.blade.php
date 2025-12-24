@@ -1,206 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-layouts.guest>
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <div class="absolute top-4 right-6 flex items-center gap-3">
+            <x-dark-light-toggle />
+            <x-nav-lang-dropdown />
+        </div>
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-
-  <title>@yield('title','Gajiplus')</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  {{-- <link href="{{asset('e-presensi/assets/img/bayaran-favicon.png')}}" rel="icon"> --}}
-  <link href="{{asset('e-presensi/assets/img/logo/favicon.jpg')}}" rel="icon">
-  <link href="{{asset('assets/img/apple-touch-icon.png')}}" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/quill/quill.snow.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
-  <link href="{{asset('assets/vendor/simple-datatables/style.css')}}" rel="stylesheet">
-
-  <link href="{{asset('assets/css/custom.css')}}" rel="stylesheet">
-  <!-- Include SweetAlert2 CSS and JS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-  <!-- flatpickr date -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  
-  <!-- Show Maps -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-
-  <!-- Template Main CSS File -->
-  <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Apr 20 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
-</head>
-<header id="header" class="">    
-    {{-- <div class="d-flex align-items-center justify-content-beetween">
-      <div class="release-tag" id="releaseList"></div>
-    </div> --}}
-</header>
-<body>
-    <div class="container d-flex align-items-center justify-content-center vh-100">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">          
-                    <div class="d-flex justify-content-center py-4">
-                        <img src="{{asset('e-presensi/assets/img/logo/logo.jpg')}}" alt="" class="login-icon">
-                    </div>
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="pb-2">
-                                <h5 class="card-title text-center pb-0 fs-4">Login</h5>
-                                <p class="text-center small">Enter your username & password to login</p>
-                            </div>
-                            <form class="row g-3 needs-validation" action="{{ route('login.process') }}" method="POST" novalidate>
-                                @csrf
-                                <div class="col-12">
-                                    <label for="yourUsername" class="form-label">Username</label>
-                                    <div class="input-group has-validation">
-                                        <span class="input-group-text" id="inputGroupPrepend"><i class="ri-user-received-2-line"></i></span>
-                                        <input type="text" name="name" class="form-control" id="yourUsername" value="{{ Session::get('name') }}" required>
-                                        <div class="invalid-feedback">Please enter your username.</div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="password" class="form-label">Password</label>
-                                    <div class="position-relative password-field">
-                                        <input id="password" class="form-control" type="password" name="password" placeholder="Enter current password">
-                                        <i class="bi bi-eye-fill toggle-password" data-target="password"></i>
-                                    </div>
-                                </div>
-                            
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                        <label class="form-check-label" for="rememberMe">Remember me</label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-tosca w-100" type="submit">Login</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                        <div class="release-tag d-flex align-items-center justify-content-beetween" id="releaseList">Checking version release...</div>
+        <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+            <div class="flex justify-center mb-6">
+                <div class="logo-wrapper flex flex-col items-center space-y-4">
+                    <img src="{{ asset('assets/img/bayaran-text.png') }}"
+                        class="h-8 w-auto object-contain block" alt="Logo Full">
                 </div>
             </div>
         </div>
+
+        <div class="card-puffy max-w-md mx-auto w-full">
+            <div class="card-header-puffy">
+                <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-6 bg-cyan-500 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.4)]"></div>
+                    <h3 class="font-black uppercase tracking-widest text-slate-800 dark:text-white text-sm">
+                        Login System
+                    </h3>
+                </div>
+                <iconify-icon icon="mdi:shield-lock-outline" class="text-2xl text-slate-400"></iconify-icon>
+            </div>
+
+            <form action="{{ route('login.process') }}" method="POST">
+                @csrf
+                <div class="card-body-puffy space-y-6">
+                    <div class="group">
+                        <label for="yourUsername" class="form-label-puffy">
+                            Username
+                        </label>
+                        <div class="mt-2 relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <iconify-icon icon="mdi:account-box-outline" class="text-xl text-slate-400 group-focus-within:text-cyan-500 transition-colors"></iconify-icon>
+                            </div>
+                            <input id="yourUsername" name="name" type="text" value="{{ Session::get('name') }}" required 
+                                class="form-input-puffy !pl-12">
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <label for="password" class="form-label-puffy">
+                            Password
+                        </label>
+                        <div class="mt-2 relative" x-data="{ show: false }">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <iconify-icon icon="mdi:lock-outline" class="text-xl text-slate-400 group-focus-within:text-cyan-500 transition-colors"></iconify-icon>
+                            </div>
+                            
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 cursor-pointer z-10" @click="show = !show">
+                                <iconify-icon :icon="show ? 'mdi:eye-off-outline' : 'mdi:eye-outline'" 
+                                    class="text-xl text-slate-400 hover:text-cyan-500 transition">
+                                </iconify-icon>
+                            </div>
+
+                            <input id="password" name="password" :type="show ? 'text' : 'password'" required 
+                                class="form-input-puffy !pl-12 !pr-12">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <label class="relative flex items-center cursor-pointer group/check">
+                            <input type="checkbox" name="remember" class="peer sr-only">
+                            <div class="w-5 h-5 border-2 border-slate-200 dark:border-slate-800 rounded-md transition-all 
+                                peer-checked:bg-cyan-500 peer-checked:border-cyan-500 flex items-center justify-center">
+                                <iconify-icon icon="mdi:check" class="text-white text-xs scale-0 peer-checked:scale-100 transition-transform"></iconify-icon>
+                            </div>
+                            <span class="ml-3 text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover/check:text-slate-800 dark:group-hover/check:text-slate-400 transition-colors">
+                                Ingat Saya
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card-footer-puffy">
+                    <button type="button" class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-rose-500 transition-colors">
+                        Lupa Password?
+                    </button>
+                    <button type="submit" class="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all">
+                        Masuk Sekarang
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-  <!-- Vendor JS Files -->
-  <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/chart.js/chart.umd.js') }}"></script>
-  <script src="{{ asset('assets/vendor/echarts/echarts.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/quill/quill.js') }}"></script>
-  <!-- <script src="assets/vendor/simple-datatables/simple-datatables.js"></script> -->
-
-  <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
-
-  <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
-
-  <!-- Template Main JS File -->
-  <script src="{{ asset('assets/js/main.js') }}"></script>
-  <script src="{{ asset('assets/js/custom.js') }}"></script>
-  <script src="{{ asset('assets/js/release.js') }}"></script>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <!-- Make sure you put this AFTER Leaflet's CSS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleIcons = document.querySelectorAll('.toggle-password');
-
-        toggleIcons.forEach(icon => {
-            icon.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.classList.remove('bi-eye-fill');
-                    this.classList.add('bi-eye-slash-fill');
-                } else {
-                    input.type = 'password';
-                    this.classList.remove('bi-eye-slash-fill');
-                    this.classList.add('bi-eye-fill');
-                }
-            });
-        });
-    });
-</script>
-
-  <script>
-    function showSuccessAlert(message) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: message,
-            confirmButtonText: 'Okay'
-        });
-    }
-
-    function showErrorAlert(message) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: message,
-            confirmButtonText: 'Try Again'
-        });
-    }
-
-    // Trigger alerts based on session messages
-    @if (session('success'))
-        showSuccessAlert("{{ session('success') }}");
-    @endif
-
-    @if (session('error'))
-        showErrorAlert("{{ session('error') }}");
-    @endif
-
-    @if ($errors->any())
-        let errorMessage = '';
-        @foreach ($errors->all() as $error)
-            errorMessage += '{{ $error }}\n';
-        @endforeach
-
-        Swal.fire({
-            icon: 'error',
-            title: 'Eror',
-            text: errorMessage,
-            confirmButtonText: 'Try Again'
-        });
-    @endif
-</script>
-
-  @yield('script')
-
-</body>
-
-</html>
+</x-layouts.guest>

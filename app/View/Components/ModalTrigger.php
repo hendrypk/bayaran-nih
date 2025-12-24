@@ -24,7 +24,7 @@ class ModalTrigger extends Component
     ) {
         $this->title = $title;
         $this->modal = $modal;
-        $this->size = in_array($size, ['xs', 'sm', 'lg', 'xl', 'full']) ? $size : '';
+        $this->size = $size;
         $this->args = $args;
     }
 

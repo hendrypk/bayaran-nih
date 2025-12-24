@@ -1,0 +1,12 @@
+@import "sweetalert2/dist/sweetalert2.min.css";
+@import "flatpickr/dist/flatpickr.min.css";
+@import "daterangepicker/daterangepicker.css";
+@import "leaflet/dist/leaflet.css";
+@import "quill/dist/quill.snow.css";
+@import "quill/dist/quill.bubble.css";
+@import "./custom.css";
+@import "./plugins/sidebar.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -1,0 +1,184 @@
+[x-cloak] { display: none !important; }
+/* Search box */
+
+/* Reset default DataTables styles */
+table.dataTable {
+  @apply w-full text-sm text-left border-collapse;
+}
+table.dataTable th {
+  @apply px-6 py-3 font-semibold bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300;
+}
+table.dataTable td {
+  @apply px-6 py-4 text-slate-600 dark:text-slate-400;
+}
+table.dataTable tbody tr:hover {
+  @apply bg-slate-50 dark:bg-slate-800/30 transition-colors;
+}
+
+/* Search box */
+.dataTables_wrapper .dataTables_filter {
+  @apply  flex items-center;
+}
+.dataTables_wrapper .dataTables_filter label {
+  @apply font-normal text-sm mr-2;
+}
+.dataTables_wrapper .dataTables_filter input {
+  @apply border rounded px-3 py-2 ml-2 bg-white text-slate-800 
+         dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 
+         focus:outline-none focus:ring-2 focus:ring-cyan-500;
+}
+
+/* Length dropdown */
+.dataTables_wrapper .dataTables_length {
+  @apply  flex items-center;
+}
+.dataTables_wrapper .dataTables_length label {
+  @apply font-normal text-sm mr-2;
+}
+.dataTables_wrapper .dataTables_length select {
+  @apply border rounded px-3 py-2 ml-2 bg-white text-slate-800 
+         dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 
+         focus:outline-none focus:ring-2 focus:ring-cyan-500;
+}
+
+/* Info text */
+.dataTables_wrapper .dataTables_info {
+  @apply mt-2 text-sm text-slate-500 dark:text-slate-400;
+}
+
+/* Pagination */
+.dataTables_wrapper .dataTables_paginate {
+  @apply px-4 py-2 flex items-center justify-end;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  @apply inline-flex items-center px-3 py-1 mx-1 rounded 
+         bg-slate-100 text-slate-700 font-medium 
+         hover:bg-cyan-400 hover:text-white 
+         dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-cyan-400 
+         transition-colors;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  @apply bg-cyan-400 text-white;
+}
+
+
+/* Select2 */
+/* Wrapper */
+@layer components {
+  .select2-container {
+    @apply w-full;
+  }
+
+  /* Single select box */
+  .select2-container .select2-selection--single {
+    @apply flex items-center border rounded-md px-3 py-2 
+          bg-white text-slate-800 shadow-sm 
+          dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100;
+  }
+
+  /* Placeholder & selected text */
+  .select2-container .select2-selection__rendered {
+    @apply text-sm text-slate-700 dark:text-slate-200;
+  }
+
+  /* Dropdown arrow */
+  .select2-container .select2-selection__arrow {
+    @apply text-slate-500 dark:text-slate-300;
+  }
+
+  /* Dropdown menu */
+  .select2-container .select2-dropdown {
+    @apply border rounded-md mt-1 bg-white dark:bg-slate-700 
+          dark:border-slate-600 shadow-lg;
+  }
+
+  /* Dropdown options */
+  .select2-container .select2-results__option {
+    @apply px-3 py-2 text-sm cursor-pointer text-slate-700 dark:text-slate-200;
+  }
+  .select2-container .select2-results__option--highlighted {
+    @apply bg-cyan-500 text-white;
+  }
+
+  /* Multiple select chips */
+  .select2-container .select2-selection--multiple {
+    @apply flex flex-wrap gap-1 border rounded-md px-2 py-1 
+          bg-white dark:bg-slate-700 dark:border-slate-600;
+  }
+  .select2-container .select2-selection__choice {
+    @apply inline-flex items-center px-2 py-1 rounded bg-cyan-100 text-cyan-700 
+          dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-medium;
+  }
+  .select2-container .select2-selection__choice__remove {
+    @apply ml-1 text-red-500 hover:text-red-700 cursor-pointer;
+  }
+
+}
+
+@layer components {
+  /* --- Base Input & Select --- */
+  .form-input-puffy {
+      @apply w-full px-5 py-4 rounded-[1.5rem] outline-none border transition-all shadow-inner;
+      
+      /* Light Mode: Fokus lebih subtle dengan border slate */
+      @apply bg-white border-slate-200 text-slate-800 focus:ring-4 focus:ring-slate-500/5 focus:border-slate-400;
+      
+      /* Dark Mode: Fokus dengan aksen neon cyan */
+      @apply dark:bg-slate-950 dark:border-slate-800 dark:text-white dark:focus:ring-cyan-500/10 dark:focus:border-cyan-500;
+  }
+
+  /* --- Custom Select Style --- */
+  .form-select-puffy {
+      @apply form-input-puffy appearance-none cursor-pointer !important;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+      background-position: right 1.25rem center !important;
+      background-repeat: no-repeat !important;
+      background-size: 1.5em 1.5em !important;
+      padding-right: 3.5rem !important;
+  }
+
+  /* Styling internal list dropdown */
+  .form-select-puffy option {
+      @apply bg-white text-slate-800 dark:bg-slate-900 dark:text-white;
+  }
+
+  /* --- Dynamic Label --- */
+.form-label-puffy {
+      @apply block text-[10px] font-black uppercase tracking-[0.2em] mb-2 transition-all duration-300;
+      @apply text-slate-400 dark:text-slate-500;
+
+      /* Menggunakan group-focus-within (Cara Standar) */
+      .group:focus-within & {
+          @apply text-slate-800 dark:text-cyan-500 translate-x-1;
+      }
+
+      /* Selektor Tambahan: Jika label tepat berada SEBELUM select yang fokus */
+      &:has(+ select:focus), 
+      &:has(+ input:focus) {
+          @apply text-slate-800 dark:text-cyan-500 translate-x-1;
+      }
+  }
+}
+
+
+@layer components {
+  /* Container Utama Card */
+  .card-puffy {
+      @apply bg-white dark:bg-slate-900 shadow-xl rounded-[2rem] border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300;
+  }
+
+  /* Bagian Header (Judul/Icon) */
+  .card-header-puffy {
+      @apply px-8 py-6 border-b border-slate-50 dark:border-slate-800/50 flex items-center justify-between;
+  }
+
+  /* Bagian Body (Tempat Form/Konten) */
+  .card-body-puffy {
+      @apply px-8 py-8;
+  }
+
+  /* Bagian Footer (Tombol Aksi) */
+  .card-footer-puffy {
+      @apply px-8 py-6 bg-slate-50/50 dark:bg-slate-950/30 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-end gap-4;
+  }
+}

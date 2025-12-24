@@ -1,68 +1,54 @@
-<div id="x-ilz-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" data-bs-keyboard="false">
+<div 
+    id="x-ilz-modal"
+    x-data="_livewireModal()"
+    x-on:open-x-ilz-modal.window="onOpen($event)"
+    x-on:closeModal.window="onClose()"
+    x-show="ready"
+    {{-- x-transition.opacity --}}
+    x-cloak
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+>
+
     @livewire('livewire-modal')
 </div>
 
+
 @push('scripts')
-    <script>
-        function _livewireModal() {
-            return {
-                ready: !1, modal: "", size: "", centered: false, scrollable: false, heading: "Loading...", boot() {
-                    function e() {
-                        Livewire.dispatch("closeModal");
-                        this.ready = !1
-                    }
+<script>
+    function _livewireModal() {
+        return {
+            ready: false,
+            modal: "",
+            size: "",
+            centered: false,
+            scrollable: false,
+            heading: "Loading...",
 
-                    document.getElementById("x-ilz-modal").addEventListener("hidden.bs.modal", i => e())
-                }, onOpen(e) {
-                        this.heading = e.detail.title,
-                        this.modal = e.detail.modal,
-                        this.size = e.detail.size || null;
-                        this.centered = e.detail.centered || false;
-                        this.scrollable = e.detail.scrollable || false;
-                        this.ready = false;
+            boot() {
+                // tidak perlu listener bootstrap lagi
+            },
 
-                        const modalDialog = document.querySelector('#x-ilz-modal .modal-dialog');
-                        modalDialog.classList.remove('modal-sm','modal-lg','modal-xl','modal-xxl');
+            onOpen(e) {
+                this.heading   = e.detail.title;
+                this.modal     = e.detail.modal;
+                this.size      = e.detail.size || '';
+                this.centered  = e.detail.centered || false;
+                this.scrollable= e.detail.scrollable || false;
+                this.ready     = true;
+                Livewire.dispatch('initModal', {modal: e.detail.modal, args: e.detail.args});
+            },
 
-                        if(this.size) {
-                            modalDialog.classList.add(`modal-${this.size}`);
-                        }
-                        if(this.centered) {
-                            modalDialog.classList.add('modal-dialog-centered');
-                        } else {
-                            modalDialog.classList.remove('modal-dialog-centered');
-                        }
-                        if(this.scrollable) {
-                            modalDialog.classList.add('modal-dialog-scrollable');
-                        } else {
-                            modalDialog.classList.remove('modal-dialog-scrollable');
-                        }
-                        new bootstrap.Modal(document.getElementById("x-ilz-modal")).show();
-
-                        // this.size = Object.prototype.hasOwnProperty.call(e.detail, "size") ? e.detail.size : null,
-                        // this.centered = Object.prototype.hasOwnProperty.call(e.detail, "centered") ? e.detail.centered : !1,
-                        // this.scrollable = Object.prototype.hasOwnProperty.call(e.detail, "scrollable") ? e.detail.scrollable : !1,
-                        // this.ready = !1, new bootstrap.Modal(document.getElementById("x-ilz-modal")).show();
-                    Livewire.dispatch('initModal', {modal: e.detail.modal, args: e.detail.args});
-                }
+            onClose() {
+                this.ready = false;
+                Livewire.dispatch("closeModal");
             }
         }
+    }
 
-        function _openModal(title, modal, args, size = '', centered = false, scrollable = false) {
-            window.dispatchEvent(new CustomEvent("open-x-ilz-modal", {
-                detail: {
-                    title: title,
-                    modal: modal,
-                    size: size,
-                    centered: centered,
-                    scrollable: scrollable,
-                    args: args
-                }
-            }))
-        }
-
-        window.addEventListener('closeModal', event => {
-            $('#x-ilz-modal').modal('hide');
-        })
-    </script>
+    function _openModal(title, modal, args, size = '', centered = false, scrollable = false) {
+        window.dispatchEvent(new CustomEvent("open-x-ilz-modal", {
+            detail: { title, modal, size, centered, scrollable, args }
+        }));
+    }
+</script>
 @endpush

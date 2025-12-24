@@ -79,6 +79,11 @@ return [
     */
 
     'locale' => 'en',
+    'available_locales' => [
+        'en'=>'united-states',
+        'id'=>'indonesia',
+    ],
+
 
     'fallback_locale' => 'en',
 

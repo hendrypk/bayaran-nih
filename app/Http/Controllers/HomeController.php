@@ -28,7 +28,7 @@ class HomeController extends Controller
         $maritalSummary = $this->getEmployeeMaritalStatusSummary();
         $workDurationSummary = $this->getEmployeeWorkDurationSummary();
 
-        return view('home', compact(
+        return view('dashboard', compact(
             'employeeStatusSummary',
             // 'officeProductionSummary',
             'genderSummary',

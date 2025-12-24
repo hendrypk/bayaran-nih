@@ -56,7 +56,7 @@ class KpiModal extends Component
                 ]
             ];
         }
-
+// dd($this->indicators);
         $this->calculateTotalWeight();
     }
 

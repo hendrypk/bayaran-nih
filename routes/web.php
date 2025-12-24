@@ -35,6 +35,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PresenceSummaryController;
 use App\Http\Controllers\EmployeePositionChangeController;
 use App\Http\Controllers\LaporHrController;
+use App\Http\Controllers\SetLocaleController;
 
 //error page
 Route::get('/test',[Test::class, 'test'])->name('test');
@@ -98,6 +99,8 @@ Route::middleware(['auth:web'])->group(function () {
     //Dashboard
     // Route::get('/home', function () {return view('home');})->name('home');
     Route::get('home', [HomeController::class, 'index'])->name('home');
+    Route::get('log-viewer')->name('log');
+    Route::get('setlocale/{locale}', SetLocaleController::class)->name('setlocale');
 
     //Options
     Route::prefix('options')->group(function () {
@@ -306,7 +309,8 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view role']], function() {
         Route::prefix('role')->group(function () {
             Route::get('', [RoleController::class, 'index'])->name('role.index');
-            Route::get('{id}/detail', [RoleController::class, 'detail'])->name('role.detail');
+            Route::get('form', [RoleController::class, 'form'])->name('role.form');
+            Route::get('detail/{id}', [RoleController::class, 'detail'])->name('role.detail');
             Route::get('{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
             Route::get('create', [RoleController::class, 'create'])->name('role.create');
             Route::post('store', [RoleController::class, 'store'])->name('role.store');
@@ -364,7 +368,7 @@ Route::middleware(['auth:web'])->group(function () {
 //Employee Middleware Group
 Route::middleware(['auth:employee'])->group(function () {
     //logout
-    Route::get('logout',[AuthController::class,'logout'])->name('auth.logout');
+    Route::post('logout',[AuthController::class,'logout'])->name('auth.logout');
     // Employee App
     Route::get('/', [EmployeeAppController::class, 'index'])->name('employee.app');
 

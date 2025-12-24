@@ -25,6 +25,7 @@ return [
         'role' => 'Peran',
         'user' => 'Pengguna',
         'log_out' => 'Keluar',
+        'setting' => 'Pengaturan',
     ],
     'placeholder' => [
         'search' => 'Cari...',
