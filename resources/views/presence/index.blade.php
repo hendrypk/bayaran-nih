@@ -1,273 +1,93 @@
-@extends('_layout.main')
-@section('title', __('sidebar.label.presences'))
-@section('content')
+<x-layouts.app>
+    <x-slot:title>
+        @lang('sidebar.label.presences')
+    </x-slot>
 
+<div x-data="{ 
+      selectedPresence: null,
+      showDetail: false,
+      toggleDetail(data) {
+          this.showDetail = !(this.selectedPresence && this.selectedPresence.id === data.id);
+          this.selectedPresence = this.showDetail ? data : null;
+      }
+  }" class="flex flex-col lg:flex-row gap-6 px-4 pb-10 items-start">
 
-{{ Breadcrumbs::render('presence') }}
-<div class="row align-items-center mb-3">
-        <div class="mb-2 d-xl-flex justify-content-between">
-            <div class="d-grid gap-2">
-                <div class="d-flex gap-2 align-items-center">
-                    <div class="form-control-feedback form-control-feedback-start w-75">
-                        <input type="text" class="form-control form-control-sm" id="search" placeholder="Search...">
-                        <div class="form-control-feedback-icon form-control-feedback-icon-sm">
-                            <i class="ph-magnifying-glass ph-sm"></i>
-                        </div>
-                    </div>
-                    <select class="form-select form-select-sm w-50" id="status">
-                        <option value="" selected>All</option>
+    <div :class="showDetail ? 'lg:w-2/3' : 'w-full'" class="transition-all duration-500 ease-in-out">
+
+    <div class="px-4 py-4 m-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            
+            {{-- Bagian Kiri: Judul --}}
+            <div class="flex-shrink-0">
+                <h5 class="text-lg font-bold text-slate-800 dark:text-white">
+                    {{ __('attendance.label.presence_list') }}
+                </h5>
+                <p class="text-sm text-slate-500">Monitoring kehadiran karyawan secara real-time.</p>
+            </div>
+
+            {{-- Bagian Kanan: Filter & Actions --}}
+            <div class="flex flex-col md:flex-row flex-wrap items-center gap-4 w-full lg:justify-end">
+                
+                {{-- Date Range Picker --}}
+                <div class="w-full md:w-auto">
+                    <livewire:date-range-picker :ranges="[1,2,7,8,3,4,9,10,11]" :defaultRange="7" :updateUrl="true" :dateLimit="360"
+                        :maxDate="0" startDate="{{ app('request')->input('startDate') }}"
+                        endDate="{{ app('request')->input('endDate') }}"/>
+                </div>
+
+                {{-- Status & Search --}}
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <select id="status" class="w-full md:w-40 px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none cursor-pointer">
+                        <option value="">Semua Status</option>
                         <option value="presence" selected>Presence</option>
                         <option value="leave">Leave</option>
                         <option value="sick">Sick</option>
                         <option value="permit">Permit</option>
                         <option value="absence">Absence</option>
                     </select>
-                    <select class="form-select form-select-sm w-25" id="page_length">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-            </div>
-            <div class="ms-auto d-grid gap-2">
 
-                <livewire:date-range-picker :ranges="[1,2,7,8,3,4,9,10,11]" :defaultRange="7" :updateUrl="true" :dateLimit="360"
-                                            :maxDate="0" startDate="{{ app('request')->input('startDate') }}"
-                                            endDate="{{ app('request')->input('endDate') }}"/>
-                <div class="d-flex gap-2 justify-content-end">
-                    <button id="downloadExcel" class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
-                        <i class="ri-download-cloud-2-fill"></i>
-                        <span>{{ __('general.label.export') }}</span>
+                    <div class="relative w-full md:w-48">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </span>
+                        <input type="text" id="search" placeholder="Cari..." 
+                            class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none">
+                    </div>
+                </div>
+
+                {{-- Buttons Action --}}
+                <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                    <button id="downloadExcel" title="{{ __('general.label.export') }}" class="inline-flex items-center justify-center p-2 bg-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 rounded-lg transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 11l5 5l5-5m-5-7v12"/></svg>
                     </button>
 
-                    {{-- @can('presence export')
-                        <form action="{{ route('presence.export') }}" method="POST" class="m-0">
-                            @csrf
-                            <input type="hidden" id="exportStart" name="start_date" value="{{ request()->get('start_date') }}">
-                            <input type="hidden" id="exportEnd" name="end_date" value="{{ request()->get('end_date') }}">
-                            <input type="hidden" id="exportStatus" name="status" value="{{ request()->get('status') }}">
-                        
-                            <button type="submit" class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
-                                <i class="ri-download-cloud-2-fill"></i>
-                                <span>{{ __('general.label.export') }}</span>
-                            </button>
-                        </form>
-                    @endcan --}}
-
-                    <a href="{{ route('presence.import') }}" 
-                    class="btn btn-tosca btn-sm d-flex align-items-center gap-1">
-                        <i class="ri-file-upload-fill"></i>
-                        <span>{{ __('general.label.import') }}</span>
+                    <a href="{{ route('presence.import') }}" title="{{ __('general.label.import') }}"
+                        class="inline-flex items-center justify-center p-2 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 rounded-lg transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2m-4-11l-4-4l-4 4m4-4v12"/></svg>
                     </a>
+
                     @can('create presence')
                     <x-modal-trigger
-                        class="btn btn-tosca"
-                        title="{{ __('attendance.label.add_manual_presence') }}"
+                        class="inline-flex items-center justify-center p-2 bg-tosca-100 text-tosca-600 hover:bg-tosca-600 hover:text-white dark:bg-tosca-900/30 dark:text-tosca-400 rounded-lg transition-all"
                         modal="presence-manual-modal"
-                        size="lg">
-                        <i class="ri-add-circle-line"></i>
+                        title="{{ __('attendance.label.add_manual_presence') }}"
+                        size="max-w-4xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c7.2 0 9 1.8 9 9s-1.8 9-9 9s-9-1.8-9-9s1.8-9 9-9m3 9H9m3-3v6"/></svg>
                     </x-modal-trigger>
                     @endcan
                 </div>
-                
             </div>
+            
         </div>
     </div>
+    <div class="px-4 pb-4">
+        @livewire('presence-table')
 </div>
-<div class="content-container">
-
-    <div class="row">
-            <div class="col-md">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-header d-flex align-items-center py-0">
-                        <div class="col-md-9">
-                            <h5 class="card-title mb-0 py-3">{{ __('attendance.label.presence_list') }}</h5>
-                        </div>
-                    </div>
-                    <div class="card-table-wrapper"> 
-                        {!! $p->table(['id' => 'presence_table','class'=>'table table-responsive'], false) !!}
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+    <x-presence.panel-detail />
 
 </div>
-@endsection
-
-@push('scripts')
-    {!! $p->scripts() !!}
-        <script>
-        let startDate = '{{ app('request')->input('startDate') }}';
-        let endDate = '{{ app('request')->input('endDate') }}';
-        let search = '{{ app('request')->input('search') }}';
-        let status = '{{ app('request')->input('status') }}';
-        document.addEventListener('DOMContentLoaded', function () {
-            Livewire.on('dateRangeChanged', ({start, end}) => {
-                startDate = start;
-                endDate = end;
-                console.log();
-                // check if datatable is initialized
-                if ($.fn.DataTable.isDataTable('#presence_table')) {
-                    // reload datatable
-                    $('#presence_table').DataTable().ajax.reload();
-                }
-            });
-        });
-        $(document).ready(function () {
-            if (!status) status = '';            // set status select option selected based on query string
-            $('#status').val(status);
-            // set search input value based on query string
-            $('#search').val(search);
-            if (search !== '') {
-                // apply datatable search based on query string
-                $('#presence_table').DataTable().search(search).draw();
-            }
-
-            $('#search').on('keyup', function () {
-                // replace url with new query string
-                let url = new URL(window.location.href);
-                url.searchParams.set('search', this.value);
-                window.history.replaceState({}, '', url);
-                $('#presence_table').DataTable().search(this.value).draw();
-            });
-            $('#page_length').on('change', function () {
-                $('#presence_table').DataTable().page.len(this.value).draw();
-            });
-            $('#status').on('change', function () {
-                status = this.value;
-                // replace url with new query string
-                let url = new URL(window.location.href);
-                url.searchParams.set('status', status);
-                window.history.replaceState({}, '', url);
-                $('#presence_table').DataTable().ajax.reload();
-                dispatchFilters();
-            });
-            $(document).on('click', '#downloadExcel', function() {
-    const form = $('<form>', {
-        action: "{{ route('presence.export') }}",
-        method: 'POST'
-    });
-
-    // CSRF token
-    form.append($('<input>', {
-        type: 'hidden',
-        name: '_token',
-        value: '{{ csrf_token() }}'
-    }));
-
-    // Filter inputs
-    form.append($('<input>', {type: 'hidden', name: 'start_date', value: startDate}));
-    form.append($('<input>', {type: 'hidden', name: 'end_date', value: endDate}));
-    form.append($('<input>', {type: 'hidden', name: 'status', value: status}));
-    form.append($('<input>', {type: 'hidden', name: 'search', value: search}));
-
-    // Append & submit
-    $('body').append(form);
-    form.submit();
-});
+    
 
 
-            // $(document).on('click', '#print', function(){
-            //     // $(".buttons-print")[0].click(); //trigger the click event
-            //     // $(".buttons-excel")[0].click(); //trigger the click event
-            //     // go to route sales.quotation.download-list
-            //     window.location.href = '?startDate=' + startDate + '&endDate=' + endDate + '&status=' + status;
-            // });
-
-            dispatchFilters();
-        });
-
-        function dispatchFilters() {
-            Livewire.dispatch('filterChanged', {filters: {status_id: status} });
-        }
-    </script>
-@endpush
-
-@section('script')
-<script>
-    let mapIn = null;
-    let mapOut = null;
-    let markerIn = null;
-    let markerOut = null;
-
-    document.addEventListener('livewire:init', () => {
-
-        Livewire.on('load-presence-map', (data) => {
-
-            const inLoc  = data.checkInLocation;
-            const outLoc = data.checkOutLocation;
-
-            if (!mapIn) {
-                mapIn = L.map('mapCheckIn');
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapIn);
-            }
-
-            if (inLoc) {
-                const [lat, lng] = inLoc.split(',').map(Number);
-
-                setTimeout(() => {
-                    mapIn.invalidateSize();
-                    mapIn.setView([lat, lng], 16);
-
-                    if (markerIn) mapIn.removeLayer(markerIn);
-                    markerIn = L.marker([lat, lng]).addTo(mapIn).bindPopup("Lokasi Check In");
-                }, 100);
-            }
-
-            if (!mapOut) {
-                mapOut = L.map('mapCheckOut');
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapOut);
-            }
-
-            if (outLoc) {
-                const [lat2, lng2] = outLoc.split(',').map(Number);
-
-                setTimeout(() => {
-                    mapOut.invalidateSize();
-                    mapOut.setView([lat2, lng2], 16);
-
-                    if (markerOut) mapOut.removeLayer(markerOut);
-                    markerOut = L.marker([lat2, lng2]).addTo(mapOut).bindPopup("Lokasi Check Out");
-                }, 100);
-            }
-
-            setTimeout(() => {
-                if (mapIn) mapIn.invalidateSize();
-                if (mapOut) mapOut.invalidateSize();
-            }, 500);
-        });
-
-    });
-
-    document.addEventListener('shown.bs.modal', function(e) {
-        if (e.target.id === 'presenceDetailModal') {
-
-            setTimeout(() => {
-                if (mapIn) mapIn.invalidateSize();
-                if (mapOut) mapOut.invalidateSize();
-            }, 80);
-        }
-    });
-    document.addEventListener('hidden.bs.modal', function(e) {
-    if (e.target.id === 'x-ilz-modal') {
-
-        if (mapIn) {
-            mapIn.remove();
-            mapIn = null;
-        }
-
-        if (mapOut) {
-            mapOut.remove();
-            mapOut = null;
-        }
-
-        markerIn = null;
-        markerOut = null;
-    }
-});
-
-</script>
-@endsection
+</x-layouts.app>

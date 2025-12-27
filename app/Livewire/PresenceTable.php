@@ -53,74 +53,76 @@ class PresenceTable extends Component
         );
     }
 
-    public function render()
-    {
-        $start = $this->startDate;
-        $end   = $this->endDate;
+public function render()
+{
+    $start = $this->startDate;
+    $end   = $this->endDate;
 
-        // Generate array tanggal dari start ke end
-        $allDates = [];
-        $current = strtotime($start);
-        $last    = strtotime($end);
+    $allDates = [];
+    $current = strtotime($start);
+    $last    = strtotime($end);
+    while ($current <= $last) {
+        $allDates[] = date('Y-m-d', $current);
+        $current = strtotime('+1 day', $current);
+    }
 
-        while ($current <= $last) {
-            $allDates[] = date('Y-m-d', $current);
-            $current = strtotime('+1 day', $current);
-        }
+    $employees = Employee::with([
+            'workDay.days',
+            'position.division',
+            'position.department',
+            'presences' => fn($q) => $q->whereBetween('date', [$start, $end])
+        ])
+        ->whereNull('resignation')
+        ->where(fn ($q) => $this->filterByUserPosition($q))
+        ->get();
 
-        $employees = Employee::with(
-            [
-                'workDay.days',
-                'presences' => fn($q) => $q->whereBetween('date', [$start, $end])
-            ]
-        )
-            ->whereNull('resignation')
-            ->where(fn ($q) => $this->filterByUserPosition($q))
-            ->get();
+    $presenceData = [];
+    $absenceData  = [];
 
-        $allDates = $this->setDateRange($start, $end);
+    foreach ($employees as $employee) {
+        $workDay = $employee->workDay->first();
+        
+        foreach ($allDates as $date) {
+            $dayName = strtolower(date('l', strtotime($date)));
+            $isOffday = $workDay ? $workDay->days->where('day', $dayName)->contains(fn($day) => $day->is_offday) : false;
 
-        $presenceData = [];
-        $absenceData  = [];
+            $presence = $employee->presences->first(fn($p) => \Carbon\Carbon::parse($p->date)->format('Y-m-d') === $date);
 
-        foreach ($employees as $employee) {
-            $workDay = $employee->workDay->first();
-            foreach ($allDates as $date) {
-                $dayName = strtolower(date('l', strtotime($date)));
-                $isOffday = $workDay ? $workDay->days->where('day', $dayName)->contains(fn($day) => $day->is_offday) : false;
+            if ($presence && !$isOffday) {
+                // Tambahkan URL Spatie Media Library
+                $presence->photo_in_url = $presence->getFirstMediaUrl('presence-in');
+                $presence->photo_out_url = $presence->getFirstMediaUrl('presence-out');
+                
+                // Pastikan relasi employee & position ikut ter-encode ke JSON
+                $presence->load(['employee.position']); 
+                
+                $presenceData[] = $presence;
+            }
 
-                $presence = $employee->presences->first(fn($p) => \Carbon\Carbon::parse($p->date)->format('Y-m-d') === $date);
-
-                if ($presence && !$isOffday) {
-                    $presenceData[] = $presence;
-                }
-
-                if (!$presence && !$isOffday) {
-                    $absenceData[] = [
-                        'employee' => $employee,
-                        'date' => $date,
-                    ];
-                }
+            if (!$presence && !$isOffday) {
+                $absenceData[] = [
+                    'id' => 'abs-' . $employee->id . '-' . $date, // Dummy ID untuk Alpine key
+                    'date' => $date,
+                    'status' => 'absence',
+                    'employee' => $employee,
+                    'check_in' => null,
+                    'check_out' => null,
+                    'location_in' => null,
+                    'location_out' => null,
+                    'photo_in_url' => null,
+                    'photo_out_url' => null,
+                ];
             }
         }
-
-        $workDays = $employees->mapWithKeys(fn($e) => [
-            $e->id => $e->workDay->map(fn($wd) => [
-                'id' => $wd->id,
-                'name' => $wd->name
-            ])
-        ])->toArray();
-
-        return view('livewire.presence-table', [
-            'presences' => $presenceData,
-            'absences'  => $absenceData,
-            'workDays'  => $workDays,
-            'employees' => $employees,
-            'startDate' => $start,
-            'endDate'   => $end,
-            'status'    => $this->status,
-            'allDates'  => $allDates,
-        ]);
     }
+
+    return view('livewire.presence-table', [
+        // Kirim data berdasarkan status filter
+        'presences' => ($this->status === 'absence') ? $absenceData : $presenceData,
+        'startDate' => $start,
+        'endDate'   => $end,
+        'status'    => $this->status,
+    ]);
+}
 
 }

@@ -95,12 +95,19 @@ class PresenceManualModal extends Component
             $this->resetWorkDays();
             return;
         }
-
-        $this->position = $employee->position->name;
-        $this->workDays = $employee->workDay->map(fn($item) => [
-            'id' => $item->id,
-            'name' => $item->name,
-        ])->toArray();
+        if ($employee) {
+            $this->position = $employee->position->name ?? '-';
+            // Simpan sebagai collection agar mudah di-pluck di blade
+            $this->workDays = $employee->workDay->map(fn($item) => [
+                'id' => $item->id,
+                'name' => $item->name,
+            ])->toArray();
+        }
+        // $this->position = $employee->position->name;
+        // $this->workDays = $employee->workDay->map(fn($item) => [
+        //     'id' => $item->id,
+        //     'name' => $item->name,
+        // ])->toArray();
 
         $this->workDayId = null;
     }

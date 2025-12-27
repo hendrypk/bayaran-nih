@@ -141,6 +141,47 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 });
+document.addEventListener('alpine:init', () => {
+    Alpine.data('presenceDetailMap', () => ({
+        maps: { in: null, out: null },
+        markers: { in: null, out: null },
+
+        initMap(type, location) {
+            if (!location) return;
+
+            // Pastikan kontainer DOM sudah ada
+            this.$nextTick(() => {
+                const coords = location.split(',');
+                const lat = parseFloat(coords[0]);
+                const lng = parseFloat(coords[1]);
+                const containerId = type === 'in' ? 'mapInDetail' : 'mapOutDetail';
+                const container = document.getElementById(containerId);
+
+                if (!container) return;
+
+                // 1. Jika peta belum diinisialisasi
+                if (!this.maps[type]) {
+                    this.maps[type] = L.map(containerId, {
+                        zoomControl: true,
+                        attributionControl: false
+                    }).setView([lat, lng], 16);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.maps[type]);
+                    this.markers[type] = L.marker([lat, lng]).addTo(this.maps[type]);
+                } else {
+                    // 2. Jika sudah ada, cukup update posisi
+                    this.maps[type].setView([lat, lng], 16);
+                    this.markers[type].setLatLng([lat, lng]);
+                }
+
+                // 3. Penting: Supaya tiles tidak abu-abu (render ulang ukuran)
+                setTimeout(() => {
+                    this.maps[type].invalidateSize();
+                }, 400);
+            });
+        }
+    }));
+});
 
 // FullCalendar
 import { Calendar } from "@fullcalendar/core";

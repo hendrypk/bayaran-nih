@@ -1,102 +1,81 @@
-<div class="card-table-wrapper">
-    <table class="table datatable table-hover">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>{{ __('employee.label.eid') }}</th>
-                <th>{{ __('general.label.name') }}</th>
-                <th>{{ __('attendance.label.work_day') }}</th>
-                <th>{{ __('general.label.date') }}</th>
-                <th>{{ __('attendance.label.check_in') }}</th>
-                <th>{{ __('attendance.label.check_out') }}</th>
-                <th>{{ __('attendance.label.late_arrival') }}</th>
-                <th>{{ __('attendance.label.late_check_in') }}</th>
-                <th>{{ __('attendance.label.check_out_early') }}</th>
-                <th>{{ __('general.label.edit') }}</th>
-                <th>{{ __('general.label.delete') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-        @if($status === 'absence')
-            @foreach($absences as $no => $item)
-                {{-- @foreach ($allDates as $date) --}}
-                        <tr>
-                            <th scope="row">{{ $no + 1 }}</th>
-                            <td>{{ $item['employee']->eid ?? '-' }}</td>
-                            <td>{{ $item['employee']->name ?? '-' }}</td>
-                            <td>
-                                @if($item['employee']->workDay && $item['employee']->workDay->count())
-                                    {{ $item['employee']->workDay->pluck('name')->join(', ') }}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td>{{ \Carbon\Carbon::parse($item['date'])->format('j M Y') }}</td>
-                            <td colspan="" class="text-center text-muted">Belum check in</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    
-                {{-- @endforeach --}}
-            @endforeach
-        @else
-            @foreach($presences as $no => $data)
-                <tr class="{{ $data['created_at'] != $data['updated_at'] ? 'row-edited' : '' }}">
-                    <th scope="row">{{ $no + 1 }}</th>
-                    <td>{{ $data->employee->eid ?? '-' }}</td>
-                    <td>{{ $data->employee->name ?? '-' }}</td>
-                    <td>{{ $data->workDay->name ?? '-' }}</td>
-                    <td>{{ \Carbon\Carbon::parse($data['date'])->format('d F Y') }}</td>
-                    <td>
-                        <a href="javascript:void(0)" class="btn btn-link p-0"
-                           onclick="showLocationAndPhoto('Check-in','{{ $data['location_in'] }}','{{ $data->getFirstMediaUrl('presence-in') }}')">
-                           {{ $data->check_in }}
-                        </a>
-                    </td>
-                    <td>
-                        <a href="javascript:void(0)" class="btn btn-link p-0"
-                           onclick="showLocationAndPhoto('Check-out','{{ $data['location_out'] }}','{{ $data['photo_in_url'] }}')">
-                           {{ $data->check_out }}
-                        </a>
-                    </td>
-                    <td>
-                        @if($data->late_arrival == 1)
-                            {{ __('attendance.label.late') }}
-                        @else
-                            {{ __('attendance.label.ontime') }}
-                        @endif
-                    </td>
-                    <td>{{ $data->late_check_in }}</td>
-                    <td>{{ $data->check_out_early }}</td>
-                    <td>
-                        @can('update presence')
-                            <button type="button" class="btn btn-green" data-bs-toggle="modal" data-bs-target="#editPresence"
-                                data-id="{{ $data->id }}"
-                                data-employee-id="{{ $data->employee->id ?? '' }}"
-                                data-name="{{ $data->employee->name ?? '' }}"
-                                data-date="{{ formatDate($data->date, 'd-m-Y') }}"
-                                data-workDay="{{ $data->work_day_id }}"
-                                data-workday-name="{{ $data->workDay->name ?? '' }}"
-                                data-checkin="{{ $data->check_in }}"
-                                data-checkout="{{ $data->check_out }}">
-                                <i class="ri-edit-line"></i>
-                            </button>
-                        @endcan
-                    </td>
-                    <td>
-                        @can('delete presence')
-                            <button type="button" class="btn btn-red" onclick="confirmDelete({{ $data->id }}, '{{ addslashes($data->employee->name ?? '') }}', 'presences')">
-                                <i class="ri-delete-bin-fill"></i>
-                            </button>
-                        @endcan
-                    </td>
-                </tr>
-            @endforeach
-        @endif
-        </tbody>
-    </table>
-</div>
+
+
+    {{-- Tabel Utama --}}
+        <div class="bg-white dark:bg-slate-900 shadow-sm rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <x-ui.datatable 
+                id="presenceTable" 
+                :headers="['Tanggal', 'Karyawan', 'Status', 'In/Out', 'Late/Early']">
+                @foreach($presences as $data)
+                    @php 
+                        $isAbsence = is_array($data); 
+                        $emp = $isAbsence ? $data['employee'] : $data->employee;
+                        $date = $isAbsence ? $data['date'] : $data->date;
+                    @endphp
+                    <tr @click="toggleDetail({{ json_encode($data) }})"
+                        :class="selectedPresence && selectedPresence.id === {{ $isAbsence ? 'null' : $data->id }} ? 'bg-tosca-50 dark:bg-tosca-900/20 ring-1 ring-inset ring-tosca-500' : ''"
+                        class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-all cursor-pointer">
+                        
+                        <td class="py-4 px-4">
+                            <div class="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {{ \Carbon\Carbon::parse($date)->format('d M Y') }}
+                            </div>
+                            <div class="text-[10px] text-slate-400 font-medium uppercase">{{ \Carbon\Carbon::parse($date)->format('l') }}</div>
+                        </td>
+
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 font-bold border border-slate-200 dark:border-slate-700">
+                                    {{ substr($emp->name, 0, 1) }}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-tosca-600 transition-colors">{{ $emp->name }}</div>
+                                    <div class="text-[10px] text-slate-400 font-medium tracking-tight">EID: {{ $emp->eid }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            @php
+                                $statusStyles = [
+                                    'presence' => 'bg-emerald-100 text-emerald-700',
+                                    'absence'  => 'bg-rose-100 text-rose-700',
+                                    'leave'    => 'bg-blue-100 text-blue-700',
+                                    'sick'     => 'bg-amber-100 text-amber-700',
+                                    'permit'   => 'bg-indigo-100 text-indigo-700',
+                                    'halfday'  => 'bg-purple-100 text-purple-700',
+                                ];
+                                $curStatus = $isAbsence ? 'absence' : $data->status;
+                                $style = $statusStyles[$curStatus] ?? 'bg-slate-100 text-slate-600';
+                            @endphp
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest {{ $style }}">
+                                {{ $curStatus }}
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            @if(!$isAbsence)
+                                <div class="text-xs font-bold text-slate-700">{{ $data->check_in ?? '--:--' }}</div>
+                                <div class="text-xs font-bold text-slate-400">{{ $data->check_out ?? '--:--' }}</div>
+                            @else
+                                <span class="text-slate-300">--</span>
+                            @endif
+                        </td>
+
+                        <td>
+                            @if(!$isAbsence)
+                                <div class="flex flex-col gap-1">
+                                    @if($data->late_check_in > 0)
+                                        <span class="text-[10px] font-bold text-rose-500">L: {{ $data->late_check_in }}m</span>
+                                    @endif
+                                    @if($data->check_out_early > 0)
+                                        <span class="text-[10px] font-bold text-amber-500">E: {{ $data->check_out_early }}m</span>
+                                    @endif
+                                </div>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </x-ui.datatable>
+        </div>
+
+    {{-- Side Panel Detail (Gunakan komponen baru) --}}

@@ -29,9 +29,12 @@ class PresenceController extends Controller
         $this->presenceService = $presenceService;
     }
 
+    public function index(){
+        return view('presence.index');
+    }
 
 //Presences List
-    public function index(PresencesDataTable $dt){
+    public function indexOld(PresencesDataTable $dt){
         if (request()->ajax()) {
             return $dt->ajax();
         }

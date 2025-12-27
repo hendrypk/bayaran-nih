@@ -39,7 +39,7 @@
                         placeholder="Pilih Jadwal Kerja"
                     />
                 </div>
-                <div class="group" wire:ignore>
+                <div class="group" wire:key="workday-wrapper-{{ $employeeId }}">
                     <x-ui.label for="date" required>
                         {{ __('general.label.date') }}
                     </x-ui.label>
@@ -57,7 +57,7 @@
                     <input 
                         type="time" 
                         step="1"
-                        wire:model.live="checkIn"
+                        wire:model="checkIn"
                         class="form-input-puffy">
                 </div>
                 <div class="group">
@@ -67,7 +67,7 @@
                     <input 
                         type="time" 
                         step="1"
-                        wire:model.live="checkOut"
+                        wire:model="checkOut"
                         class="form-input-puffy">
                 </div>
             </div>
