@@ -11,20 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('resignation');
-        });
+        // 1. Tambahkan kolom is_active jika belum ada
+        if (!Schema::hasColumn('employees', 'is_active')) {
+            Schema::table('employees', function (Blueprint $table) {
+                $table->boolean('is_active')->default(true)->after('resignation');
+            });
+        }
 
-        // Jika resignation ada isinya (NOT NULL), maka is_active = false (0)
+        // 2. Jika resignation ada isinya, maka is_active = false
+        // Menggunakan perbandingan string yang lebih aman
         \DB::table('employees')
             ->whereNotNull('resignation')
-            ->where('resignation', '!=', '')
+            ->where('resignation', '<>', '') // Gunakan operator <> 
+            ->where('resignation', '<>', '0') // Tambahkan pengecekan string '0' jika ada
             ->update(['is_active' => false]);
-            
-        // Jika resignation kosong (NULL atau string kosong), pastikan tetap true (1)
+
+        // 3. Pastikan yang tidak memiliki data resign tetap active
         \DB::table('employees')
-            ->whereNull('resignation')
-            ->orWhere('resignation', '')
+            ->where(function($query) {
+                $query->whereNull('resignation')
+                    ->orWhere('resignation', '=', '');
+            })
             ->update(['is_active' => true]);
     }
 
