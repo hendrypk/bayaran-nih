@@ -22,16 +22,11 @@ return new class extends Migration
         // Menggunakan perbandingan string yang lebih aman
         \DB::table('employees')
             ->whereNotNull('resignation')
-            ->where('resignation', '<>', '') // Gunakan operator <> 
-            ->where('resignation', '<>', '0') // Tambahkan pengecekan string '0' jika ada
             ->update(['is_active' => false]);
 
         // 3. Pastikan yang tidak memiliki data resign tetap active
         \DB::table('employees')
-            ->where(function($query) {
-                $query->whereNull('resignation')
-                    ->orWhere('resignation', '=', '');
-            })
+            ->whereNull('resignation')
             ->update(['is_active' => true]);
     }
 
