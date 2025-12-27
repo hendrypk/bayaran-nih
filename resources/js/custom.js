@@ -144,3 +144,17 @@ $('.datatables').DataTable({
   dom: '<"flex items-center justify-between mb-4"lf>rt<"flex items-center justify-between mt-4"ip>'
 });
 
+
+// /*===================================
+//     Datepicker
+// =====================================*/
+// $(document).ready(function() {
+//     $('.datepicker').flatpickr({
+//         disableMobile: true,
+//         dateFormat: 'Y-m-d',
+//         altInput: true,
+//         altInputClass: 'form-input-puffy dark:bg-slate-950 dark:text-white',
+//         altFormat: 'l, j F Y',
+//         static: true
+//     });
+// });

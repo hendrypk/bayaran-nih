@@ -191,10 +191,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view employee']], function() {
         Route::prefix('employee')->group(function () {
             Route::get('', [EmployeeController::class,'index'])->name('employee.list'); 
-            Route::get('add', [EmployeeController::class,'form'])->name('employee.add');
+            Route::get('add', [EmployeeController::class,'create'])->name('employee.add');
+            Route::get('/detail/{id}', [EmployeeController::class, 'detail'])->name('employee.detail');             
+            Route::get('edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit'); 
+
             Route::post('submit', [EmployeeController::class,'submit'])->name('employee.submit'); 
-            Route::get('{id}', [EmployeeController::class, 'detail'])->name('employee.detail'); 
-            Route::get('{id}/edit', [EmployeeController::class, 'form'])->name('employee.edit'); 
             Route::post('{id}/update', [EmployeeController::class, 'update'])->name('employee.update'); 
             Route::post('{id}/delete', [EmployeeController::class, 'delete'])->name('employee.delete'); 
             Route::post('{id}/account-reset', [EmployeeController::class, 'resetUsernamePassword'])->name('employee.account.reset');

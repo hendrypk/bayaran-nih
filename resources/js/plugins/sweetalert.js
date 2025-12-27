@@ -1,4 +1,5 @@
 document.addEventListener('livewire:init', () => {
+    console.log('ada?');
     const swalConfig = {
         success: {
             defaultTitle: '🎉 Yeay!',

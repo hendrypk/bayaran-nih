@@ -1,10 +1,20 @@
 {{-- resources/views/components/ui/label.blade.php --}}
 @props([
+    'required' => false,
+    'icon' => null,
     'label' => null,
     'name' => null,
 ])
 
 <label for="{{ $name }}" 
-       class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-    {{ $label }}
+       class="form-label-puffy">
+           @if($icon)
+        <iconify-icon icon="{{ $icon }}" class="text-slate-400"></iconify-icon>
+    @endif
+
+    {{ $slot }}
+
+    @if($required)
+        <span class="text-red-500">*</span>
+    @endif
 </label>

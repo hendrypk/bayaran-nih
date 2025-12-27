@@ -237,8 +237,20 @@ import tinymce from "tinymce";
 window.tinymce = tinymce;
 
 // Select2
-import "select2";
-import "select2/dist/css/select2.css";
+// Import Select2 setelah jQuery global tersedia
+import select2 from 'select2';
+
+// Inisialisasi secara eksplisit agar menempel ke jQuery
+select2(); 
+$('.select2-puffy').select2({
+    // Memaksa search muncul di box utama, bukan di dropdown
+    // Catatan: Secara default Select2 Multiple sudah melakukan ini.
+    // Untuk Single, ini akan memastikan search field aktif di atas.
+    dropdownParent: $('#some-container'), 
+    searchInputPlaceholder: 'Cari...'
+});
+// Import CSS-nya
+import 'select2/dist/css/select2.css';
 
 // Custom scripts
 import './custom';

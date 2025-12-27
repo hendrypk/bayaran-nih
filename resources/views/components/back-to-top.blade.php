@@ -1,6 +1,15 @@
+<div x-data="{ show: false }"
+     @scroll.window="show = window.pageYOffset > 500"
+     x-cloak>
     <a href="#"
-      class="fixed bottom-4 right-4 flex items-center justify-center w-10 h-10 rounded-full bg-cyan-400 text-white shadow hover:bg-cyan-600 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
-      </svg>
+       x-show="show"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 translate-y-4"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="opacity-100 translate-y-0"
+       x-transition:leave-end="opacity-0 translate-y-4"
+       class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-cyan-400 text-white shadow-xl hover:bg-cyan-600 hover:scale-110 active:scale-95 transition-all duration-300">
+        <i class="mdi mdi-chevron-up text-2xl"></i>
     </a>
+</div>

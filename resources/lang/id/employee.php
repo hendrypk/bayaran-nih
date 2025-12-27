@@ -19,6 +19,7 @@ return [
         'gender' => 'Jenis Kelamin',
         'religion' => 'Agama',
         'marital_status' => 'Status Pernikahan',
+        'last_education' => 'Pendidikan Terakhir',
         'education' => 'Pendidikan',
         'email' => 'Email',
         'whatsapp' => 'Nomor WhatsApp',

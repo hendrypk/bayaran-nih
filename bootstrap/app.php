@@ -33,3 +33,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+$app->register(Laravolt\Indonesia\ServiceProvider::class);
+
+// class aliases
+class_alias(Laravolt\Indonesia\Facade::class, 'Indonesia');
+$app->configure('laravolt');

@@ -20,6 +20,7 @@ return [
         'religion' => 'Religion',
         'marital_status' => 'Marital Status',
         'education' => 'Education',
+        'last_education' => 'Last Education',
         'email' => 'Email',
         'whatsapp' => 'WhatsApp Number',
         'bank' => 'Bank',

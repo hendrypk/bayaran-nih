@@ -9,7 +9,7 @@
 
 @if($label)
     <label for="{{ $name ?? $attributes->get('id') }}" 
-           class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+           class="form-label-puffy">
         {{ $label }}
     </label>
 @endif
@@ -18,7 +18,7 @@
     <input type="checkbox"
            @if($name) id="{{ $name }}" @endif
            {{ $attributes->merge([
-               'class' => 'w-6 h-6 rounded border-slate-300 text-tosca-600 focus:ring-tosca-500'
+               'class' => 'form-input-puffy'
            ]) }}
            @if($model) wire:model="{{ $model }}" @endif
            placeholder="{{ $placeholder }}">

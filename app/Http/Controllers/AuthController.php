@@ -38,7 +38,7 @@ public function login (Request $request){
     $admin = User::where('username', $username)->first();
     if($admin) {
         if(auth::guard('web')->attempt($infoLogin, $remember)) {
-            return redirect()->route('home')->with('success'. 'You are success login as administrator!');
+            return redirect()->route('home')->with('success', 'You are success login as administrator!');
         }
         return back()->with('error', 'Login failed, please check your password.');
     }

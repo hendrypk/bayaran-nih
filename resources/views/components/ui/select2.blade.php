@@ -1,46 +1,51 @@
-{{-- resources/views/components/ui/select2.blade.php --}}
 @props([
     'label' => null,
     'name' => null,
-    'model' => null, // default wire:model
-    'placeholder' => null,
-    'options' => [], // array [value => text]
+    'placeholder' => 'Pilih opsi',
+    'options' => [],
+    'multiple' => false,
 ])
 
-<div class="mb-4">
+<div class="group relative"
+     x-data="{ 
+        value: @entangle($attributes->wire('model')), 
+        instance: null 
+     }"
+     x-init="
+        $nextTick(() => {
+            instance = $($refs.selectInput).select2({
+                width: '100%',
+                placeholder: '{{ $placeholder }}',
+                allowClear: true
+            });
+
+            // Set nilai awal dari Livewire ke Select2
+            instance.val(value).trigger('change');
+
+            // Kirim nilai dari Select2 ke Livewire
+            instance.on('change', function () {
+                value = $(this).val();
+            });
+
+            // Monitor perubahan dari Livewire (luar) untuk update Select2
+            $watch('value', (newValue) => {
+                instance.val(newValue).trigger('change.select2');
+            });
+        });
+     ">
     @if($label)
-        <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            {{ $label }}
-        </label>
+        <label class="form-label-puffy">{{ $label }}</label>
     @endif
 
-    <select id="{{ $name }}"
-            {{ $attributes->merge([
-                'class' => 'select2 w-full rounded-md border-slate-300 shadow-sm px-3 py-2
-                            focus:border-tosca-500 focus:ring focus:ring-tosca-200
-                            dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100'
-            ]) }}
-            @if($model) wire:model="{{ $model }}" @endif>
-        @if($placeholder)
-            <option value="">{{ $placeholder }}</option>
+    <select x-ref="selectInput"
+            name="{{ $name }}"
+            {{ $multiple ? 'multiple' : '' }}
+            class="form-input-puffy w-full">
+        @if(!$multiple)
+            <option value=""></option>
         @endif
-
-        @foreach($options as $value => $text)
-            <option value="{{ $value }}">{{ $text }}</option>
+        @foreach($options as $key => $text)
+            <option value="{{ $key }}">{{ $text }}</option>
         @endforeach
     </select>
 </div>
-
-@push('scripts')
-<script>
-    document.addEventListener("livewire:navigated", () => {
-        $('.select2').select2();
-
-        // sync dengan Livewire
-        $('.select2').on('change', function (e) {
-            let data = $(this).val();
-            @this.set($(this).attr('wire:model'), data);
-        });
-    });
-</script>
-@endpush

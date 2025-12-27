@@ -61,59 +61,91 @@ table.dataTable tbody tr:hover {
   @apply bg-cyan-400 text-white;
 }
 
-
-/* Select2 */
-/* Wrapper */
 @layer components {
-  .select2-container {
-    @apply w-full;
-  }
+    /* --- SELECTION BOX (COMMON) --- */
+    .select2-container--default .select2-selection--single,
+    .select2-container--default .select2-selection--multiple {
+        /* Samakan dengan .form-input-puffy */
+        @apply border transition-all shadow-inner outline-none !important;
+        @apply bg-white border-slate-200 rounded-[1.5rem] !important;
+        @apply dark:bg-slate-950 dark:border-slate-800 !important;
+    }
 
-  /* Single select box */
-  .select2-container .select2-selection--single {
-    @apply flex items-center border rounded-md px-3 py-2 
-          bg-white text-slate-800 shadow-sm 
-          dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100;
-  }
+    /* --- SINGLE SELECT --- */
+    .select2-container--default .select2-selection--single {
+        @apply h-[56px] flex items-center px-3 !important;
+    }
 
-  /* Placeholder & selected text */
-  .select2-container .select2-selection__rendered {
-    @apply text-sm text-slate-700 dark:text-slate-200;
-  }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        @apply text-slate-800 dark:text-white px-2 font-medium !important;
+    }
 
-  /* Dropdown arrow */
-  .select2-container .select2-selection__arrow {
-    @apply text-slate-500 dark:text-slate-300;
-  }
+    /* --- MULTIPLE SELECT --- */
+    .select2-container--default .select2-selection--multiple {
+        @apply min-h-[56px] flex items-center flex-wrap p-2 gap-1.5 !important;
+    }
 
-  /* Dropdown menu */
-  .select2-container .select2-dropdown {
-    @apply border rounded-md mt-1 bg-white dark:bg-slate-700 
-          dark:border-slate-600 shadow-lg;
-  }
+    /* --- FOCUS STATE (Sesuai spesifikasi .form-input-puffy) --- */
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        /* Light Mode */
+        @apply ring-4 ring-slate-500/5 border-slate-400 !important;
+        /* Dark Mode */
+        @apply dark:ring-cyan-500/10 dark:border-cyan-500 !important;
+    }
 
-  /* Dropdown options */
-  .select2-container .select2-results__option {
-    @apply px-3 py-2 text-sm cursor-pointer text-slate-700 dark:text-slate-200;
-  }
-  .select2-container .select2-results__option--highlighted {
-    @apply bg-cyan-500 text-white;
-  }
+    /* --- CHIPS / TAGS (Multiple) --- */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        /* Dibuat lebih puffy/rounded */
+        @apply bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 
+               border-none rounded-xl text-xs font-bold px-3 py-1.5 m-0.5
+               inline-flex items-center gap-2 shadow-sm !important;
+    }
 
-  /* Multiple select chips */
-  .select2-container .select2-selection--multiple {
-    @apply flex flex-wrap gap-1 border rounded-md px-2 py-1 
-          bg-white dark:bg-slate-700 dark:border-slate-600;
-  }
-  .select2-container .select2-selection__choice {
-    @apply inline-flex items-center px-2 py-1 rounded bg-cyan-100 text-cyan-700 
-          dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-medium;
-  }
-  .select2-container .select2-selection__choice__remove {
-    @apply ml-1 text-red-500 hover:text-red-700 cursor-pointer;
-  }
+    /* Tombol Hapus pada Chip */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        @apply text-slate-400 hover:text-red-500 transition-colors mr-1 !important;
+        border: none !important;
+        background: transparent !important;
+    }
 
+    /* --- DROPDOWN PANEL --- */
+    .select2-dropdown {
+        /* Border disamakan dengan input saat fokus */
+        @apply bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800
+               rounded-[1.5rem] shadow-2xl overflow-hidden mt-2 z-[9999] !important;
+    }
+
+    /* --- LIST OPTIONS --- */
+    .select2-results__option {
+        @apply px-5 py-3 text-sm text-slate-600 dark:text-slate-400 transition-colors !important;
+    }
+
+    /* Hover/Highlight (Sesuai aksen .form-input-puffy dark mode) */
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        @apply bg-slate-100 dark:bg-cyan-500/20 text-slate-900 dark:text-cyan-400 !important;
+    }
+
+    /* State Terpilih */
+    .select2-container--default .select2-results__option--selected,
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        @apply bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold !important;
+    }
+
+    /* --- SEARCH FIELD INSIDE DROPDOWN --- */
+    .select2-search--dropdown .select2-search__field {
+        @apply bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800
+               rounded-xl px-4 py-2 mx-2 mt-2 outline-none text-sm !important;
+    }
+
+    /* Arrow Icon untuk Single Select */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        @apply h-full right-4 flex items-center !important;
+    }
 }
+
+
+
 
 @layer components {
   /* --- Base Input & Select --- */
@@ -127,20 +159,6 @@ table.dataTable tbody tr:hover {
       @apply dark:bg-slate-950 dark:border-slate-800 dark:text-white dark:focus:ring-cyan-500/10 dark:focus:border-cyan-500;
   }
 
-  /* --- Custom Select Style --- */
-  .form-select-puffy {
-      @apply form-input-puffy appearance-none cursor-pointer !important;
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
-      background-position: right 1.25rem center !important;
-      background-repeat: no-repeat !important;
-      background-size: 1.5em 1.5em !important;
-      padding-right: 3.5rem !important;
-  }
-
-  /* Styling internal list dropdown */
-  .form-select-puffy option {
-      @apply bg-white text-slate-800 dark:bg-slate-900 dark:text-white;
-  }
 
   /* --- Dynamic Label --- */
 .form-label-puffy {
@@ -149,12 +167,6 @@ table.dataTable tbody tr:hover {
 
       /* Menggunakan group-focus-within (Cara Standar) */
       .group:focus-within & {
-          @apply text-slate-800 dark:text-cyan-500 translate-x-1;
-      }
-
-      /* Selektor Tambahan: Jika label tepat berada SEBELUM select yang fokus */
-      &:has(+ select:focus), 
-      &:has(+ input:focus) {
           @apply text-slate-800 dark:text-cyan-500 translate-x-1;
       }
   }

@@ -37,5 +37,30 @@
 
     @livewireScripts
     {{ $scripts ?? '' }}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Karena kita sudah pakai window.App, kita cek ketersediaannya
+        const checkApp = setInterval(() => {
+            if (window.App) {
+                @if(session('success'))
+                    App.notify({ type: 'success', message: "{{ session('success') }}" });
+                @endif
+
+                @if(session('error'))
+                    App.notify({ type: 'error', message: "{{ session('error') }}" });
+                @endif
+
+                @if($errors->any())
+                    App.notify({ 
+                        type: 'error', 
+                        title: 'Validasi Gagal', 
+                        message: "{!! implode('\n', $errors->all()) !!}" 
+                    });
+                @endif
+                clearInterval(checkApp);
+            }
+        }, 50);
+    });
+</script>
   </body>
 </html>

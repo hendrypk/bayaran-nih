@@ -33,6 +33,22 @@ class EmployeeController extends Controller
         return view('employee.index', compact('employee'));
     }
 
+    public function create()
+    {
+        return view('employee.create');
+    }
+
+    // App\Http\Controllers\EmployeeController.php
+    public function detail($id)
+    {
+        return view('employee.detail', compact('id'));
+    }
+
+    public function edit($id)
+    {
+        return view('employee.edit', compact('id'));
+    }
+
     public function index(Request $request) {
         $status = $request->get('status', 'all');
         
@@ -81,26 +97,26 @@ class EmployeeController extends Controller
     }
 
     //employee detail
-    public function detail($id)
-    {
-        $employee = Employee::with('position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
-        $presences = Presence::where('employee_id', $id)->get();
-        $careers = $employee->positionChange()->orderBy('effective_date', 'desc')->get();
+    // public function detail($id)
+    // {
+    //     $employee = Employee::with('position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
+    //     $presences = Presence::where('employee_id', $id)->get();
+    //     $careers = $employee->positionChange()->orderBy('effective_date', 'desc')->get();
         
-        $startDate = new DateTime($employee->joining_date);
-        $dateBirth = new DateTime($employee->date_birth);
-        $currentDate = new DateTime();
-        $yo = $startDate->diff($currentDate);
-        $joining_date = $startDate->diff($currentDate);
+    //     $startDate = new DateTime($employee->joining_date);
+    //     $dateBirth = new DateTime($employee->date_birth);
+    //     $currentDate = new DateTime();
+    //     $yo = $startDate->diff($currentDate);
+    //     $joining_date = $startDate->diff($currentDate);
 
-        $years = $joining_date->y;
-        $months = $joining_date->m;
-        $days = $joining_date->d;
+    //     $years = $joining_date->y;
+    //     $months = $joining_date->m;
+    //     $days = $joining_date->d;
 
-        $totalOvertime = Overtime::where('employee_id', $employee->eid)
-            ->sum('total');
-        return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime', 'careers'));
-    }
+    //     $totalOvertime = Overtime::where('employee_id', $employee->eid)
+    //         ->sum('total');
+    //     return view('employee.detail', compact('employee', 'presences', 'yo', 'years', 'months', 'days', 'totalOvertime', 'careers'));
+    // }
 
     //submit employee
     public function submit(EmployeeRequest $request)

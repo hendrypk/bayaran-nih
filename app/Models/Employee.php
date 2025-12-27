@@ -74,15 +74,21 @@ class Employee extends Authenticatable implements HasMedia
         return $this->belongsTo(PayrollOption::class, 'id', 'name');
     }
 
-    public function kpis()
-    {
-        return $this->belongsTo(PerformanceKpiName::class, 'kpi_id');
-    }
+// app/Models/Employee.php
 
-    public function pas()
-    {
-        return $this->belongsTo(PerformanceAppraisalName::class, 'pa_id');
-    }
+public function kpis()
+{
+    // foreignId kpi_id merujuk ke table performance_kpi_names
+    return $this->belongsToMany(PerformanceKpiName::class, 'employee_kpis', 'employee_id', 'kpi_id')
+                ->withTimestamps();
+}
+
+public function appraisals()
+{
+    // foreignId pa_id merujuk ke table performance_appraisal_name
+    return $this->belongsToMany(PerformanceAppraisalName::class, 'employee_pas', 'employee_id', 'pa_id')
+                ->withTimestamps();
+}
 
     public function overtimes(){
         return $this->hasMany(Overtime::class, 'employee_id');
@@ -147,17 +153,17 @@ class Employee extends Authenticatable implements HasMedia
         'Bank Mega'
     ];
 
-    public static function options(): array
-    {
-        return [
-            'genders' => self::GENDERS,
-            'bloods' => self::BLOODS,
-            'marriages' => self::MARRIAGES,
-            'religions' => self::RELIGIONS,
-            'educations' => self::EDUCATIONS,
-            'banks' => self::BANKS,
-        ];
-    }
+public static function options(): array
+{
+    return [
+        'genders' => array_combine(self::GENDERS, self::GENDERS),
+        'bloods' => array_combine(self::BLOODS, self::BLOODS),
+        'marriages' => array_combine(self::MARRIAGES, self::MARRIAGES),
+        'religions' => array_combine(self::RELIGIONS, self::RELIGIONS),
+        'educations' => array_combine(self::EDUCATIONS, self::EDUCATIONS),
+        'banks' => array_combine(self::BANKS, self::BANKS),
+    ];
+}
 
     public function positionChange()
     {
