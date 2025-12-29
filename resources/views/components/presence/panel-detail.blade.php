@@ -1,6 +1,6 @@
 <template x-if="showDetail && selectedPresence">
     <div 
-        class="hidden lg:block lg:w-1/3 sticky top-6 z-20"
+        class="hidden lg:block lg:w-1/4 sticky top-6 z-20"
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-x-12">
         
@@ -72,11 +72,6 @@
                     </div>
                 </div>
 
-                {{-- 5. Footer Info --}}
-                <div class="p-3 bg-slate-50 dark:bg-slate-800/30 rounded-2xl">
-                    <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">Koordinat In</p>
-                    <p class="text-[10px] font-mono text-slate-600 dark:text-slate-400 truncate" x-text="selectedPresence.location_in || '-'"></p>
-                </div>
             </div>
         </div>
     </div>

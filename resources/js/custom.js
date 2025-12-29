@@ -126,23 +126,23 @@ $(function () {
 /*===================================
     Datatables
 =====================================*/
-$('.datatables').DataTable({
-  responsive: true,
-  autoWidth: false,
-  language: {
-    search: "Cari:",
-    lengthMenu: "Tampilkan _MENU_ data",
-    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-    paginate: {
-      first: "Awal",
-      last: "Akhir",
-      next: "›",
-      previous: "‹"
-    },
-    zeroRecords: "Tidak ada data yang cocok"
-  },
-  dom: '<"flex items-center justify-between mb-4"lf>rt<"flex items-center justify-between mt-4"ip>'
-});
+// $('.datatables').DataTable({
+//   responsive: true,
+//   autoWidth: false,
+//   language: {
+//     search: "Cari:",
+//     lengthMenu: "Tampilkan _MENU_ data",
+//     info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+//     paginate: {
+//       first: "Awal",
+//       last: "Akhir",
+//       next: "›",
+//       previous: "‹"
+//     },
+//     zeroRecords: "Tidak ada data yang cocok"
+//   },
+//   dom: '<"flex items-center justify-between mb-4"lf>rt<"flex items-center justify-between mt-4"ip>'
+// });
 
 
 // /*===================================
