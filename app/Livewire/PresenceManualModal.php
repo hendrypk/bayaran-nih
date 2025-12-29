@@ -56,12 +56,17 @@ class PresenceManualModal extends Component
 
     public function loadPresenceData($presenceId)
     {
-        $p = Presence::findOrFail($presenceId);
+        // Eager load relasi employee.position dan workDay agar efisien
+        $p = Presence::with(['employee.position', 'workDay'])->findOrFail($presenceId);
 
+        $this->presenceId = $p->id;
         $this->employeeId = (int) $p->employee_id;
         $this->workDayId  = (int) $p->work_day_id;
 
-        // Format date supaya compatible dengan input type="date"
+        // 1. Ambil data Position dari relasi yang sudah di-load
+        $this->position = $p->employee->position->name ?? '-';
+
+        // 2. Format date
         $this->date = Carbon::parse($p->date)->format('Y-m-d');
 
         $this->checkIn = $p->check_in;
@@ -70,16 +75,16 @@ class PresenceManualModal extends Component
         $this->checkOutEarly = $p->check_out_early;
         $this->lateCheckIn = $p->late_check_in;
 
-        // Load workDays untuk employee yang terpilih
-        $employee = collect($this->employees)->firstWhere('id', $this->employeeId);
-        $this->workDays = collect($employee['workDayIds'])->map(function($id){
-            // Bisa ambil nama workDay dari WorkScheduleGroup kalau perlu
-            $group = WorkScheduleGroup::find($id);
-            return [
-                'id' => $group->id,
-                'name' => $group->name,
-            ];
-        })->toArray();
+        // 3. Load list workDays untuk dropdown (dari data $this->employees yang sudah di-mount)
+        $employeeData = collect($this->employees)->firstWhere('id', $this->employeeId);
+        if ($employeeData) {
+            $this->workDays = WorkScheduleGroup::whereIn('id', $employeeData['workDayIds'])
+                ->get(['id', 'name'])
+                ->toArray();
+        }
+
+        // 4. PENTING: Panggil fungsi ini agar Arrival, Start, End, dll terisi di kartu detail
+        $this->loadWorkDayData();
     }
 
 
@@ -365,25 +370,27 @@ class PresenceManualModal extends Component
         }
     }
 
-    public function delete($id = null)
+    public function delete($id) // Hapus default null agar wajib diisi
     {
-        $id = $id ?? $this->presenceId;
-
+        // Pastikan ID yang mau dihapus dikirim secara eksplisit
         if (!$id) {
-            $this->dispatch('swal:error', message: 'Tidak ada data untuk dihapus.');
+            $this->dispatch('swal:error', message: 'ID tidak valid.');
             return;
         }
 
         try {
             $p = Presence::findOrFail($id);
-            $p->deleter = auth()->id();
-            $p->save();
+
+            // Update deleter sebelum soft delete
+            $p->update(['deleter' => auth()->id()]);
             $p->delete();
 
             $this->dispatch('close-modal');
-            $this->dispatch('swal:success', message: 'Presensi berhasil dihapus.');
+            $this->dispatch('swal:success', message: 'Data berhasil dihapus.');
+            
+            return redirect(request()->header('Referer'));
         } catch (\Exception $e) {
-            $this->dispatch('swal:error', message: 'Gagal menghapus data: ' . $e->getMessage());
+            $this->dispatch('swal:error', message: 'Gagal menghapus: ' . $e->getMessage());
         }
     }
 

@@ -34,7 +34,7 @@
                     </x-ui.label>
                     <x-ui.select2 
                         name="workDayId"
-                        wire:model="workDayId"
+                        wire:model.live="workDayId"
                         :options="collect($workDays)->pluck('name', 'id')"
                         placeholder="Pilih Jadwal Kerja"
                     />
@@ -45,7 +45,7 @@
                     </x-ui.label>
                     <x-ui.datepicker 
                         name="date" 
-                        wire:model="date" />
+                        wire:model.live="date" />
                 </div>
             </div>
 

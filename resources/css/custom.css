@@ -216,42 +216,83 @@ table.dataTable tbody tr:hover {
       border: 2px solid #ffffff;
   }
 }
-
 @layer components {
     /* Container Utama */
     .flatpickr-calendar {
-        @apply bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl rounded-[1.5rem] !important;
+        @apply bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl rounded-[1.5rem] p-2 !important;
         font-family: inherit !important;
+        border: 1px solid !important;
     }
 
-    /* Header & Nama Hari */
-    .flatpickr-months .flatpickr-month,
-    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    /* Header Bulan & Navigasi */
+    .flatpickr-months .flatpickr-month {
+        @apply text-slate-800 dark:text-white fill-slate-800 dark:fill-white !important;
+    }
+
+    .flatpickr-current-month .flatpickr-monthDropdown-months {
+        @apply font-bold !important;
+    }
+
+    /* Nama Hari (Sen, Sel, ...) */
     span.flatpickr-weekday {
-        @apply text-slate-500 dark:text-slate-400 font-black uppercase !important;
+        @apply text-slate-400 dark:text-slate-500 font-black uppercase !important;
         font-size: 10px !important;
         letter-spacing: 0.1em;
     }
 
-    /* Gaya Angka Tanggal */
+    /* Angka Tanggal Umum */
     .flatpickr-day {
         @apply text-slate-700 dark:text-slate-300 transition-all duration-200 !important;
-        border-radius: 0.75rem !important;
+        border-radius: 0.75rem !important; /* Membuat kotak tanggal sedikit membulat */
+        margin-top: 2px !important;
     }
 
-    /* HOVER EFFECT: Cyan Modern */
-    .flatpickr-day:hover {
-        @apply bg-cyan-50 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-400/20 !important;
+    /* Tanggal Hari Ini */
+    .flatpickr-day.today {
+        @apply border-cyan-500 text-cyan-600 dark:text-cyan-400 !important;
     }
 
-    /* SELECTED STATE: Cyan Solid */
-    .flatpickr-day.selected {
+    /* Efek Hover */
+    .flatpickr-day:hover, 
+    .flatpickr-day.prevMonthDay:hover, 
+    .flatpickr-day.nextMonthDay:hover {
+        @apply bg-cyan-50 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 border-transparent !important;
+    }
+
+    /* --- RANGE SELECTION LOGIC --- */
+
+    /* Ujung Awal & Akhir Rentang */
+    .flatpickr-day.selected.startRange,
+    .flatpickr-day.selected.endRange {
         @apply bg-cyan-500 border-cyan-500 text-white shadow-lg shadow-cyan-500/40 !important;
+      
+        z-index: 2;
     }
 
-    /* Navigasi Arrows */
-    .flatpickr-prev-month:hover svg, 
-    .flatpickr-next-month:hover svg {
-        @apply fill-cyan-500 !important;
+    /* Area Di Tengah Rentang (In-between) */
+    .flatpickr-day.inRange {
+        @apply bg-cyan-50 dark:bg-cyan-500/15 border-transparent text-cyan-700 dark:text-cyan-300 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important; /* Menghilangkan rounded agar terlihat menyambung */
     }
+
+    /* Membulatkan ujung kiri start dan ujung kanan end saja */
+    .flatpickr-day.startRange {
+        border-radius: 0.75rem 0 0 0.75rem !important;
+    }
+    .flatpickr-day.endRange {
+        border-radius: 0 0.75rem 0.75rem 0 !important;
+    }
+    .flatpickr-day.startRange.endRange {
+        border-radius: 0.75rem !important; /* Jika hanya pilih 1 hari */
+    }
+
+    /* Shadow & Arrow Customization */
+    .flatpickr-months .flatpickr-prev-month, 
+    .flatpickr-months .flatpickr-next-month {
+        @apply hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors !important;
+        padding: 10px !important;
+    }
+
 }
+

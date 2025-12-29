@@ -2,7 +2,9 @@
     <x-slot:title>
         @lang('sidebar.label.presences')
     </x-slot>
-    <div x-data="presenceDetailMap" 
+    <div 
+        x-data="presenceDetailMap" 
+        @filter-changed.window="showDetail = false; selectedPresence = null"
         x-effect="if(showDetail && selectedPresence) { 
             initMap('in', selectedPresence.location_in); 
             initMap('out', selectedPresence.location_out); 
@@ -71,4 +73,5 @@
     </div>
         <x-presence.panel-detail />
     </div>
+    
 </x-layouts.app>

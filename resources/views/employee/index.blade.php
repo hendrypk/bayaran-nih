@@ -67,7 +67,8 @@
     <div class="bg-white dark:bg-slate-900 shadow-sm rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden">
       <x-ui.datatable 
           id="employeeTable" 
-          :headers="['#', 'Karyawan', 'Posisi', 'Status']">
+          :headers="['#', 'Karyawan', 'Posisi', 'Status']"
+          :collection="$employee">
           @foreach($employee as $no => $data)
               <tr 
                   @click="toggleDetail({{ json_encode($data) }})"
