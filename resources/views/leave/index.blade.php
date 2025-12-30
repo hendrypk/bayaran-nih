@@ -1,88 +1,105 @@
-@extends('_layout.main')
-@section('title', __('sidebar.label.leave'))
-@section('content')
+<x-layouts.app>
+    <x-slot:title> @lang('sidebar.label.leaves') </x-slot:title>
+    <x-page-header>Manajemen Cuti & Izin</x-page-header>
 
-{{ Breadcrumbs::render('leave') }}
-<div class="row align-items-center">
-    <div class="col-md-9">
-        <x-absence-date-filter action="{{ route('leave.index') }}" 
-                        :startDate="request()->get('start_date')" 
-                        :endDate="request()->get('end_date')" />
-    </div>
-    <div class="col-md-3 d-flex justify-content-end">
-        @can('create leave')
-                    <x-modal-trigger
-                        class="btn btn-primary btn-md"
-                        title="{{ __('attendance.label.add_leave') }}"
-                        modal="leave-modal"
-                        size="md">
-                        <i class="ri-add-circle-line"></i>
-                    </x-modal-trigger>
-        @endcan
-    </div>
-</div>
+    {{-- State Alpine untuk toggle detail panel jika diperlukan --}}
+    <div class="flex flex-col lg:flex-row gap-6 px-4 pb-10 items-start">
 
-<div class="row">
-    <div class="col-md">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header d-flex align-items-center py-0">
-                    <div class="col-md-10">
-                        <h5 class="card-title mb-0 py-3">{{ __('attendance.label.leave_list') }}</h5>
-                    </div>
+        {{-- Main Content --}}
+        <div :class="showDetail ? 'lg:w-3/4' : 'w-full'" class="transition-all duration-500 ease-in-out w-full">
+            
+            {{-- Bagian 1: Stats Cards (Disesuaikan dengan Konstanta Status Anda) --}}<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    @foreach([
+        [
+            'label' => 'Total Hadir', 
+            'count' => ($counts['presence'] ?? 0) + ($counts['halfday'] ?? 0), 
+            'icon' => 'lucide:user-check', 
+            'color' => 'emerald',
+            'sub'   => ($counts['halfday'] ?? 0) . ' Setengah Hari'
+        ],
+        [
+            'label' => 'Izin & Sakit', 
+            'count' => ($counts['permit'] ?? 0) + ($counts['sick'] ?? 0), 
+            'icon' => 'lucide:clipboard-list', 
+            'color' => 'indigo',
+            'sub'   => ($counts['sick'] ?? 0) . ' Sakit'
+        ],
+        [
+            'label' => 'Cuti Karyawan', 
+            'count' => $counts['leave'] ?? 0, 
+            'icon' => 'lucide:palm-tree', 
+            'color' => 'cyan',
+            'sub'   => 'Cuti Tahunan/Khusus'
+        ],
+        [
+            'label' => 'Ketidakhadiran', 
+            'count' => $counts['absence'] ?? 0, 
+            'icon' => 'lucide:user-x', 
+            'color' => 'rose',
+            'sub'   => 'Tanpa Keterangan (Alpa)'
+        ],
+    ] as $val)
+    <div class="group bg-white dark:bg-slate-900 p-5 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-{{ $val['color'] }}-100 dark:hover:border-{{ $val['color'] }}-900/30">
+        <div class="flex items-center justify-between">
+            {{-- Info Section --}}
+            <div class="space-y-1">
+                <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.12em]">
+                    {{ $val['label'] }}
+                </p>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-3xl font-black text-slate-800 dark:text-white tracking-tighter">
+                        {{ number_format($val['count']) }}
+                    </h3>
+                    <span class="text-[10px] font-bold text-slate-400">Karyawan</span>
                 </div>
-                    <table class="table datatable table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">{{ __('employee.label.eid') }}</th>
-                                <th scope="col">{{ __('general.label.name') }}</th>
-                                <th scope="col">{{ __('attendance.label.apply_date') }}</th>
-                                <th scope="col">{{ __('attendance.label.absence_date') }}</th>
-                                <th scope="col">{{ __('general.label.category') }}</th>
-                                <th scope="col">{{ __('general.label.note') }}</th>
-                                <th scope="col">{{ __('general.label.status') }}</th>
-                                <th scope="col">{{ __('general.label.edit') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($leaves as $no=>$leave)
-                            <tr>
-                                <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $leave->employee->eid }}</td>
-                                <td>{{ $leave->employee->name }}</td>
-                                <td>{{ formatDate($leave->created_at) }}</td>
-                                <td>{{ formatDate($leave->start_date) }}</td>
-                                <td>{{ ucfirst($leave->category) }}</td>
-                                <td>{{ $leave->note }}</td>
-                                <td>
-                                    @if ($leave->status === 'accepted')
-                                        <span class="px-2 py-1 rounded bg-success bg-opacity-10 text-success fw-semibold"><i class="ri-check-double-line"></i></span>
-                                    @elseif ($leave->status === 'rejected')
-                                        <span class="px-2 py-1 rounded bg-danger bg-opacity-10 text-danger fw-semibold"><i class="ri-close-line"></i></span>
-                                    @else
-                                        <span class="px-2 py-1 rounded bg-primary bg-opacity-10 text-primary fw-semibold"><i class="ri-time-line"></i></span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @can('update leave')
-                                        <x-modal-trigger
-                                            class="btn btn-success btn-sm"
-                                            title="{{ __('attendance.label.edit_leave') }}"
-                                            modal="leave-modal"
-                                            :args="['leaveId' => $leave->id]"
-                                            size="md">
-                                            <i class="ri-edit-line"></i>
-                                        </x-modal-trigger>
-                                    @endcan                                
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <p class="text-[9px] font-medium text-{{ $val['color'] }}-600/70 dark:text-{{ $val['color'] }}-400/50 italic">
+                    {{ $val['sub'] }}
+                </p>
+            </div>
+
+            {{-- Icon Section --}}
+            <div class="relative">
+                {{-- Glow Decor --}}
+                <div class="absolute inset-0 bg-{{ $val['color'] }}-400 blur-2xl opacity-0 group-hover:opacity-20 transition-all duration-500"></div>
+                
+                <div class="relative w-16 h-16 rounded-[1.25rem] bg-{{ $val['color'] }}-50 dark:bg-{{ $val['color'] }}-900/20 flex items-center justify-center text-{{ $val['color'] }}-600 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500">
+                    <iconify-icon icon="{{ $val['icon'] }}" width="32"></iconify-icon>
+                </div>
             </div>
         </div>
     </div>
+    @endforeach
 </div>
 
-@endsection
+            {{-- Bagian 2: Main Table Container --}}
+            <div class="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                {{-- Header Tabel --}}
+                <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/50">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h4 class="text-sm font-black uppercase tracking-tighter text-slate-700 dark:text-slate-300">Log Riwayat Cuti & Izin</h4>
+                        
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mr-2">
+                                <x-action-button type="download" label="Export" class="!bg-transparent !shadow-none hover:!bg-white dark:hover:!bg-slate-700 text-xs" />
+                            </div>
+
+                            @can('create leave')
+                                <x-action-button 
+                                    type="add" 
+                                    label="Input Manual" 
+                                    modal="leave-manual-modal" 
+                                    modalTitle="Input Cuti/Izin"
+                                    class="!rounded-xl shadow-lg shadow-tosca-100 dark:shadow-none" 
+                                />
+                            @endcan
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Livewire Table untuk Leave --}}
+                @livewire('leave-table')
+            </div>
+        </div>
+
+    </div>
+</x-layouts.app>
