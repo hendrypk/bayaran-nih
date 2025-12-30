@@ -16,51 +16,56 @@ use Maatwebsite\Excel\Facades\Excel;
 class OvertimeController extends Controller
 {
 
-//Overtimes List
-    function index(Request $request){
-        $query = Overtime::query();
-        $today = now();
-        $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
-        $defaultEndDate = $today->toDateString();
-        $startDate = $request->input('start_date', $defaultStartDate);
-        $endDate = $request->input('end_date', $defaultEndDate);
-        $userDivision = Auth::user()->division_id;
-        $userDepartment = Auth::user()->department_id;
-
-        if ($userDivision && !$userDepartment) {
-            $query->whereHas('employees', function ($query) use ($userDivision) {
-                $query->whereHas('position', function ($query) use ($userDivision) {
-                    $query->where('division_id', $userDivision);
-                });
-            });
-        } elseif (!$userDivision && $userDepartment) {
-            $query->whereHas('employees', function ($query) use ($userDepartment) {
-                $query->whereHas('position', function ($query) use ($userDepartment) {
-                    $query->where('department_id', $userDepartment);
-                });
-            });
-        }
-    
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        }
-        $overtimes = $query->get();
-        
-        $query = Employee::query();
-        if ($userDivision && !$userDepartment) {
-            $query->whereHas('position',function ($query) use ($userDivision) {
-                $query->where('division_id', $userDivision);
-            });
-        } elseif (!$userDivision && $userDepartment) {
-            $query->whereHas('position', function ($query) use ($userDepartment) {
-                $query->where('department_id', $userDepartment);
-            });
-        } 
-        $query->whereNull('resignation');
-        $employees = $query->get();
-
-        return view('overtime.index', compact('overtimes', 'employees'));
+    public function index()
+    {
+        return view('overtime.index');
     }
+
+//Overtimes List
+    // function index(Request $request){
+    //     $query = Overtime::query();
+    //     $today = now();
+    //     $defaultStartDate = $today->copy()->startOfMonth()->toDateString();
+    //     $defaultEndDate = $today->toDateString();
+    //     $startDate = $request->input('start_date', $defaultStartDate);
+    //     $endDate = $request->input('end_date', $defaultEndDate);
+    //     $userDivision = Auth::user()->division_id;
+    //     $userDepartment = Auth::user()->department_id;
+
+    //     if ($userDivision && !$userDepartment) {
+    //         $query->whereHas('employees', function ($query) use ($userDivision) {
+    //             $query->whereHas('position', function ($query) use ($userDivision) {
+    //                 $query->where('division_id', $userDivision);
+    //             });
+    //         });
+    //     } elseif (!$userDivision && $userDepartment) {
+    //         $query->whereHas('employees', function ($query) use ($userDepartment) {
+    //             $query->whereHas('position', function ($query) use ($userDepartment) {
+    //                 $query->where('department_id', $userDepartment);
+    //             });
+    //         });
+    //     }
+    
+    //     if ($startDate && $endDate) {
+    //         $query->whereBetween('date', [$startDate, $endDate]);
+    //     }
+    //     $overtimes = $query->get();
+        
+    //     $query = Employee::query();
+    //     if ($userDivision && !$userDepartment) {
+    //         $query->whereHas('position',function ($query) use ($userDivision) {
+    //             $query->where('division_id', $userDivision);
+    //         });
+    //     } elseif (!$userDivision && $userDepartment) {
+    //         $query->whereHas('position', function ($query) use ($userDepartment) {
+    //             $query->where('department_id', $userDepartment);
+    //         });
+    //     } 
+    //     $query->whereNull('resignation');
+    //     $employees = $query->get();
+
+    //     return view('overtime.index', compact('overtimes', 'employees'));
+    // }
 
 //Overtime Add
     function submit (Request $request){

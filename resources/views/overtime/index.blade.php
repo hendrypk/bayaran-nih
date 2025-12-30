@@ -1,363 +1,79 @@
-@extends('_layout.main')
-@section('title', __('sidebar.label.overtime'))
-@section('content')
+<x-layouts.app>
+    <x-slot:title>
+        @lang('sidebar.label.overtime')
+    </x-slot>
 
+    <div 
+        x-data="{ 
+            showDetail: false, 
+            selectedPresence: null,
+            initMap(type, loc) { /* Fungsi map Anda */ }
+        }" 
+        @filter-changed.window="showDetail = false; selectedPresence = null"
+        @open-overtime-detail.window="selectedPresence = $event.detail; showDetail = true"
+        class="flex flex-col lg:flex-row gap-6 px-4 pb-10 items-start">
 
-{{ Breadcrumbs::render('overtime') }}
-<div class="row align-items-center">
-    <div class="col-md-9">
-        <x-date-filter action="{{ route('overtime.list') }}" 
-                        :startDate="request()->get('start_date')" 
-                        :endDate="request()->get('end_date')" />
-    </div>
-    <div class="col-md-3 d-flex justify-content-end">
-        <form action="{{ route('overtime.export') }}" method="POST" class="me-2" style="margin: 0;">
-            @csrf
-            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-            <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-            <button type="submit" class="btn btn-tosca"><i class="ri-download-cloud-2-fill"></i></button>
-        </form>
-        <button type="button" class="btn btn-untosca btn-sm"
-                data-bs-toggle="modal" 
-                data-bs-target="#addOvertime">
-            <i class="ri-add-circle-line"></i>
-        </button>
-    </div>
-</div>
+        <div :class="showDetail ? 'lg:w-3/4' : 'w-full'" class="transition-all duration-500 ease-in-out">
 
-<div class="row">
-    <div class="col-md">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header d-flex align-items-center py-0">
-                    <div class="col-md-9">
-                        <h5 class="card-title mb-0 py-3">{{ __('attendance.label.overtime_list') }}</h5>
+            <div class="px-4 py-4 m-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    
+                    <div class="flex-shrink-0">
+                        <h5 class="text-lg font-bold text-slate-800 dark:text-white">
+                            {{ __('attendance.label.overtime_list') }}
+                        </h5>
+                        <p class="text-sm text-slate-500">Monitoring lembur karyawan secara transparan.</p>
                     </div>
-                    {{-- <div class="col-md-1">
-                        <form action="{{ route('overtime.export') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="start_date" value="{{ request()->get('start_date') }}">
-                            <input type="hidden" name="end_date" value="{{ request()->get('end_date') }}">
-                            <button type="submit" class="btn btn-tosca"><i class="ri-download-cloud-2-fill"></i></button>
-                        </form>
+
+                    <div class="flex flex-col md:flex-row flex-wrap items-center gap-4 w-full lg:justify-end">
+                        <div class="flex items-center gap-2 w-full md:w-auto">
+                            <select id="status" class="w-full md:w-40 px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none cursor-pointer">
+                                <option value="">Semua Status</option>
+                                <option value="overtime" selected>Presence</option>
+                                <option value="leave">Leave</option>
+                                <option value="sick">Sick</option>
+                                <option value="permit">Permit</option>
+                                <option value="absence">Absence</option>
+                            </select>
+
+                            <div class="relative w-full md:w-48">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                </span>
+                                <input type="text" id="search" placeholder="Cari..." 
+                                    class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                            <button id="downloadExcel" title="{{ __('general.label.export') }}" class="inline-flex items-center justify-center p-2 bg-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 rounded-lg transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 11l5 5l5-5m-5-7v12"/></svg>
+                            </button>
+
+                            <a href="{{ route('presence.import') }}" title="{{ __('general.label.import') }}"
+                                class="inline-flex items-center justify-center p-2 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 rounded-lg transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2m-4-11l-4-4l-4 4m4-4v12"/></svg>
+                            </a>
+
+                            @can('create overtime')
+                            <x-modal-trigger
+                                class="inline-flex items-center justify-center p-2 bg-tosca-100 text-tosca-600 hover:bg-tosca-600 hover:text-white dark:bg-tosca-900/30 dark:text-tosca-400 rounded-lg transition-all"
+                                modal="overtime-manual-modal"
+                                title="{{ __('attendance.label.add_manual_presence') }}"
+                                size="max-w-4xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c7.2 0 9 1.8 9 9s-1.8 9-9 9s-9-1.8-9-9s1.8-9 9-9m3 9H9m3-3v6"/></svg>
+                            </x-modal-trigger>
+                            @endcan
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-untosca"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#addOvertime">
-                        <i class="ri-add-circle-line"></i>
-                        </button>
-                    </div> --}}
                 </div>
-        
-                <!-- Table with hoverable rows -->
-                    <table class="table datatable table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">{{ __('employee.label.eid') }}</th>
-                                <th scope="col">{{ __('general.label.name') }}</th>
-                                <th scope="col">{{ __('general.label.date') }}</th>
-                                <th scope="col">{{ __('general.label.start_at') }}</th>
-                                <th scope="col">{{ __('general.label.end_at') }}</th>
-                                <th scope="col">{{ __('general.label.total') }}</th>
-                                <th scope="col">{{ __('attendance.label.note_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.note_out') }}</th>
-                                <th scope="col">{{ __('attendance.label.location_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.location_out') }}</th>
-                                <th scope="col">{{ __('attendance.label.photo_in') }}</th>
-                                <th scope="col">{{ __('attendance.label.photo_out') }}</th>
-                                <th scope="col">{{ __('general.label.status') }}</th>
-                                <th scope="col">{{ __('general.label.edit') }}</th>
-                                <th scope="col">{{ __('general.label.delete') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($overtimes as $no=>$overtime)
-                            <tr>
-                                <th scope="row">{{ $no+1 }}</th>
-                                <td>{{ $overtime->employees->eid }}</td>
-                                <td>{{ $overtime->employees->name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($overtime->start_at)->format('h:i:s') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($overtime->end_at)->format('h:i:s') }}</td>
-                                <td> {{ $overtime->total }}</td>
-                                <td> {{ $overtime->note_in }}</td>
-                                <td> {{ $overtime->note_out }}</td>
-                                <td>
-                                    <button class="btn btn-blue" onclick="showLocationModal('location_in', '{{ $overtime['location_in'] }}')">
-                                        <i class="ri-road-map-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-blue" onclick="showLocationModal('location_out', '{{ $overtime['location_out'] }}')">
-                                        <i class="ri-road-map-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/overtimes/' . $overtime['photo_in']) }}')">
-                                            <i class="ri-gallery-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-yellow" data-bs-toggle="modal" data-bs-target="#photoModal"
-                                            onclick="showPhoto('{{ Storage::url('public/overtimes/' . $overtime['photo_out']) }}')">
-                                            <i class="ri-gallery-line"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    @if ($overtime->status === 1)
-                                        <i class="status-leave accept ri-check-double-fill"></i>
-                                    @else
-                                        <i class="status-leave reject ri-close-fill"></i>
-                                    @endif
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-green"
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#overtimeEdit" 
-                                        data-id="{{ $overtime->id }}" 
-                                        data-name="{{ $overtime->employees->name }}"
-                                        data-employee_id="{{ $overtime->employee_id }}"
-                                        data-date="{{ $overtime->date }}"
-                                        data-start="{{ $overtime->start_at ? $overtime->start_at->format('H:i:s') : '' }}"
-                                        data-end="{{ $overtime->end_at ? $overtime->end_at->format('H:i:s') : '' }}"
-                                        data-note="{{ $overtime->note_in }}">
-                                        <i class="ri-edit-line"></i>
-                                    </button>
-                                </td>
-                                    <td>
-                                        {{-- <button type="button" class="btn btn-outline-danger"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#deleteModal" 
-                                            data-entity="overtime" 
-                                            data-id="{{ $overtime->id }}" 
-                                            data-name="{{ $overtime->employee_id }}"
-                                            data-date="{{ \Carbon\Carbon::parse($overtime->date)->format('d F Y') }}">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button> --}}
+            </div>
 
-                                        <button type="button" class="btn btn-red" 
-                                            onclick="confirmDelete({{ $overtime->id }}, '{{ $overtime->employees->name }}', 'overtimes')">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button>
-                                    </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                <!-- End Table with hoverable rows -->
+            <div class="px-4 pb-4">
+                @livewire('overtime-table')
             </div>
         </div>
+
+        <x-overtime.panel-detail />
     </div>
-</div>
-
-@endsection
-@section('script')
-<script>
-    //Script for Delete Modal
-  document.addEventListener('DOMContentLoaded', function () {
-    const deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-      const button = event.relatedTarget;
-      const entity = button.getAttribute('data-entity'); // e.g., 'position', 'department', etc.
-      const id = button.getAttribute('data-id'); // Entity ID
-      const name = button.getAttribute('data-name'); // Entity name (optional)
-      const date = button.getAttribute('data-date'); // Entity date (optional)
-      
-      // Update modal title and body text
-      const entityNameElement = document.getElementById('entityName');
-      entityNameElement.textContent = entity;
-      
-      // Update form action URL
-      const form = document.getElementById('deleteForm');
-      form.action = `/${entity}/${id}/delete`;
-
-      // Optionally update the modal title to include the entity's name
-      const modalTitle = document.getElementById('deleteModalLabel');
-      modalTitle.textContent = `Delete ${entity.charAt(0).toUpperCase() + entity.slice(1)}: ${name} on ${date}`;
-    });
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('overtimeEdit');
-    editModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Button that triggered the modal
-        const id = button.getAttribute('data-id');
-        const employee_id = button.getAttribute('data-employee_id');
-        const name = button.getAttribute('data-name');
-        const date = button.getAttribute('data-date');
-        const start = button.getAttribute('data-start');
-        const end = button.getAttribute('data-end');
-        const note = button.getAttribute('data-note');
-
-        console.log('start', start);
-        console.log('end', end);
-        console.log('note', note);
-        // Set the form action URL
-        const form = document.getElementById('editOvertimeForm');
-        let actionUrl = form.getAttribute('action');
-        form.setAttribute('action', actionUrl.replace('__id__', id));
-        console.log(actionUrl)
-
-        // Populate the form fields
-        document.getElementById('selectEmployee').value = employee_id;
-        document.getElementById('inputDate').value = date;
-        document.getElementById('inputStart').value = start;
-        document.getElementById('inputEnd').value = end;
-        document.getElementById('inputNote').value = note;
-
-        // Update modal title
-        const modalTitle = document.getElementById('modalEditOvertimeTitle');
-        modalTitle.textContent = `Edit Overtime for ${name}`;
-    });
-});
-
-function confirmDelete(id, name, entity) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete the " + entity + ": " + name,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '',
-            cancelButtonColor: '',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/${entity}/${id}/delete`, { 
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: data.message, // Use message from the server
-                            icon: 'success'
-                        }).then(() => {
-                            // Reload the page or redirect to another route
-                            window.location.href = data.redirect; // Redirect to the desired route
-                        });
-                    } else {
-                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            }
-        });
-    }
-
-// Set the image src in the modal
-function showPhoto(photoUrl) {
-    const img = new Image();
-
-    // Cek apakah gambar tersedia
-    img.onload = function() {
-        // Jika gambar berhasil dimuat, set gambar ke dalam modal dan buka modal
-        document.getElementById('modalPhoto').src = photoUrl;
-        
-        // Buka modal setelah gambar dimuat
-        const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-        photoModal.show();
-    };
-
-    img.onerror = function() {
-        // Jika gambar gagal dimuat, tampilkan error menggunakan SweetAlert
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Gambar tidak ditemukan!',
-        });
-    };
-
-    // Menetapkan URL gambar untuk memulai pengecekan
-    img.src = photoUrl;
-}
-
-
-//Show map
-let mapPresence, marker;  // Variabel untuk peta dan marker
-
-// Inisialisasi peta
-function initMapPresence() {
-    const mapElement = document.getElementById('mapPresence');
-
-    if (!mapElement) {
-        console.error('Element with ID "mapPresence" not found!');
-        return;
-    }
-
-    // Membuat peta dengan lat, lng default
-    mapPresence = L.map('mapPresence');  // Set lat, lng dan zoom default
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mapPresence);
-}
-
-// Menampilkan lokasi pada modal
-function showLocationModal(locationType, location) {
-    if (!mapPresence) {
-        console.error('Map is not initialized. Please call initMapPresence first.');
-        return;
-    }
-
-    if (!location) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Lokasi presensi tidak ditemukan!',
-        });
-        return;
-    }
-
-    // Memecah lat, lng yang diterima
-    const [lat, lng] = location.split(',').map(Number);
-
-    if (isNaN(lat) || isNaN(lng)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Koordinat lokasi tidak valid!',
-        });
-        return;
-    }
-
-    // Menampilkan modal Bootstrap
-    const modal = new bootstrap.Modal(document.getElementById('locationModal'));
-    modal.show();
-
-    // Menghapus marker lama jika ada
-    if (marker) mapPresence.removeLayer(marker);
-
-    // Update peta dan tambahkan marker
-    mapPresence.setView([lat, lng], 15);  // Set peta ke lat, lng yang baru
-    marker = L.marker([lat, lng]).addTo(mapPresence).bindPopup(`${locationType}`).openPopup();
-}
-
-// Memanggil initMapPresence setelah halaman selesai dimuat
-document.addEventListener('DOMContentLoaded', function () {
-    initMapPresence();
-});
-
-
-</script>
-@endsection
-
-@include('overtime.add')
-@include('overtime.edit')
-@include('modal.delete')
-@include('presence.photo')
-@include('presence.map')
+</x-layouts.app>

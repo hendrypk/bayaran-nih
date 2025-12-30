@@ -24,24 +24,6 @@
                     </div>
 
                     <div class="flex flex-col md:flex-row flex-wrap items-center gap-4 w-full lg:justify-end">
-                        <div class="flex items-center gap-2 w-full md:w-auto">
-                            <select id="status" class="w-full md:w-40 px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none cursor-pointer">
-                                <option value="">Semua Status</option>
-                                <option value="presence" selected>Presence</option>
-                                <option value="leave">Leave</option>
-                                <option value="sick">Sick</option>
-                                <option value="permit">Permit</option>
-                                <option value="absence">Absence</option>
-                            </select>
-
-                            <div class="relative w-full md:w-48">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                                </span>
-                                <input type="text" id="search" placeholder="Cari..." 
-                                    class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none">
-                            </div>
-                        </div>
 
                         <div class="flex items-center gap-2 w-full md:w-auto justify-end">
                             <button id="downloadExcel" title="{{ __('general.label.export') }}" class="inline-flex items-center justify-center p-2 bg-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:bg-emerald-900/30 dark:text-emerald-400 rounded-lg transition-all">

@@ -111,32 +111,16 @@
                     <div class="text-slate-800 font-bold text-xs">{{ $checkOutEarly > 0 ? $checkOutEarly.' min' : 'Normal' }}</div>
                 </div>
             </div>
-
-            <div class="flex items-center justify-between mt-8">
-                <div>
-                    @if($isEditing)
-                        <x-swal-confirm 
-                            title="Hapus Presensi?" 
-                            text="Data akan dihapus permanen"
-                            callback="delete"
-                            :id="$presenceId"
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl font-bold text-sm transition-all border border-rose-100">
-                            <i class="ri-delete-bin-fill"></i>
-                            <span>Hapus</span>
-                        </x-swal-confirm>
-                    @endif
-                </div>
-
-                <div class="flex gap-3">
-                    <button class="px-6 py-2 text-sm font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all" wire:click="$dispatch('closeModal')">
-                        Batal
-                    </button>
-                    <button class="px-8 py-2 bg-tosca-500 hover:bg-tosca-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-tosca-500/30" wire:click="save">
-                        Simpan Data
-                    </button>
-                </div>
-            </div>
-
         </div>
+        @if($isEditing)
+            <x-slot:footer_left>
+                <x-swal-confirm 
+                    title="Hapus Presensi?" 
+                    text="Data Presensi Akan Dihapus Permanen..."
+                    callback="delete"
+                    :id="$presenceId" 
+                />
+            </x-slot:footer_left>
+        @endif
     </x-ui.modal>
 </div>
