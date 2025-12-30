@@ -1,6 +1,6 @@
 <div class="space-y-4">
     {{-- Header & Filters --}}
-    <div class="px-4 py-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="px-4 py-4 ">
         <div class="flex flex-col lg:flex-row gap-4 justify-between items-end">
             <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                 {{-- Date Range --}}
@@ -24,7 +24,7 @@
                             });
                         }
                     }">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Rentang Tanggal</label>
+                    {{-- <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Rentang Tanggal</label> --}}
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -35,7 +35,7 @@
 
                 {{-- Status Filter --}}
                 <div class="w-full md:w-44">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Filter Status</label>
+                    {{-- <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Filter Status</label> --}}
                     <select wire:model.live="status" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none cursor-pointer font-bold text-slate-700 dark:text-slate-200">
                         <option value="all">Semua Status</option>
                         <option value="presence">Hadir</option>
@@ -47,7 +47,7 @@
 
                 {{-- Show Per Page --}}
                 <div class="w-full md:w-28">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Baris</label>
+                    {{-- <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Baris</label> --}}
                     <select wire:model.live="perPage" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 font-bold outline-none text-tosca-600 cursor-pointer">
                         <option value="10">10</option>
                         <option value="25">25</option>
@@ -69,7 +69,7 @@
     </div>
 
     {{-- Datatable Section with Background Fixed --}}
-    <div class="relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="relative \">
         
         {{-- Loading Overlay --}}
         <div wire:loading class="absolute inset-0 bg-white/50 dark:bg-slate-900/50 z-10 flex items-center justify-center backdrop-blur-[1px]">

@@ -4,7 +4,7 @@
     'collection' => null // Tambahkan ini untuk data pagination
 ])
 
-<div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="bg-white dark:bg-slate-900 rounded-2xl ">
     <div class="overflow-x-auto">
         <table id="{{ $id }}" class="datatable min-w-full table-auto text-sm text-left border-collapse">
             <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400">

@@ -1,10 +1,13 @@
-<div class="p-6">
-    <form wire:submit.prevent="save" class="space-y-6">
-        
-        <div>
-            <x-ui.label for="employeeId" class="mb-2 inline-block font-bold">
-                {{ __('general.label.name') }} <span class="text-rose-500">*</span>
-            </x-ui.label>
+<x-ui.modal>
+    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl">    
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                
+                {{-- FIX 1: Gunakan wire:ignore pada pembungkus Select2 --}}
+                <div class="space-y-2" wire:ignore>
+                    <x-ui.label for="employeeId" class="text-sm font-bold text-slate-700 dark:text-slate-200">
+                        {{ __('general.label.name') }} <span class="text-rose-500">*</span>
+                    </x-ui.label>
                     <x-ui.select2 
                         name="employeeId"
                         id="employeeId"
@@ -12,70 +15,91 @@
                         :options="collect($employees)->pluck('name', 'id')"
                         placeholder="{{ __('attendance.label.select_employee') }}"
                     />
-            @error('employeeId') <span class="text-xs text-rose-500 mt-1">{{ $message }}</span> @enderror
-        </div>
+                </div>
+                {{-- Error diletakkan di luar wire:ignore agar tetap reaktif --}}
+                @error('employeeId') <p class="text-[11px] text-rose-500 font-medium mt-1">{{ $message }}</p> @enderror
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div wire:key="{{ $employeeId }}">
-                <x-ui.label class="mb-2 inline-block font-bold">Tanggal Lembur</x-ui.label>
+                {{-- FIX 2: Gunakan wire:ignore pada pembungkus Datepicker --}}
+                <div class="space-y-2" wire:ignore>
+                    <x-ui.label class="text-sm font-bold text-slate-700 dark:text-slate-200">Tanggal Lembur</x-ui.label>
                     <x-ui.datepicker 
                         name="date" 
-                        wire:model="date" />
-                @error('date') <span class="text-xs text-rose-500 mt-1">{{ $message }}</span> @enderror
+                        wire:model="date" 
+                        class="w-full h-10" />
+                </div>
+                @error('date') <p class="text-[11px] text-rose-500 font-medium mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <x-ui.label class="mb-2 inline-block font-bold">Mulai</x-ui.label>
+            {{-- Bagian Waktu & Notes --}}
+            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                {{-- Input jam biasanya aman tanpa wire:ignore karena menggunakan input tipe time standar --}}
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                    <div class="flex-1 space-y-2">
+                        <x-ui.label class="text-xs uppercase tracking-wider text-slate-500 font-bold">Jam Mulai</x-ui.label>
+                        <input type="time" wire:model.live="start"
+                            class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-tosca-500 py-2.5 px-4 text-sm font-semibold">
+                    </div>
 
-                    <input 
-                        type="time" 
-                        wire:model.live="start"
-                        class="form-input-puffy">
+                    <div class="hidden md:flex items-center justify-center pt-6 text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+                    </div>
+
+                    <div class="flex-1 space-y-2">
+                        <x-ui.label class="text-xs uppercase tracking-wider text-slate-500 font-bold">Jam Selesai</x-ui.label>
+                        <input type="time" wire:model.live="end"
+                            class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-tosca-500 py-2.5 px-4 text-sm font-semibold">
+                    </div>
                 </div>
-                <div>
-                    <x-ui.label class="mb-2 inline-block font-bold">Selesai</x-ui.label>
-                    
-                    <input 
-                        type="time" 
-                        wire:model.live="end"
-                        class="form-input-puffy">
+
+                @if($start && $end)
+                <div class="mt-4 flex items-center gap-3 px-4 py-2 bg-tosca-500/10 border border-tosca-500/20 rounded-xl">
+                    <p class="text-xs font-bold text-tosca-700 dark:text-tosca-400">
+                        Total Durasi: <span class="text-sm ml-1">{{ $this->duration() }}</span>
+                    </p>
                 </div>
+                @endif
+            </div>
+
+            <div class="space-y-2">
+                <x-ui.label class="text-sm font-bold text-slate-700 dark:text-slate-200">Keterangan / Alasan Lembur</x-ui.label>
+                <textarea wire:model.live.debounce.500ms="note" rows="3" 
+                    placeholder="Apa yang dikerjakan selama lembur?"
+                    class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-tosca-500 outline-none text-sm resize-none"></textarea>
+                @error('note') <p class="text-[11px] text-rose-500 font-medium">{{ $message }}</p> @enderror
             </div>
         </div>
-
-        <div>
-            <x-ui.label class="mb-2 inline-block font-bold">Keterangan / Alasan</x-ui.label>
-            <textarea wire:model.live="note" rows="3" 
-                      placeholder="Tuliskan detail pekerjaan lembur..."
-                      class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-tosca-500 outline-none transition-all resize-none"></textarea>
-            @error('note') <span class="text-xs text-rose-500 mt-1">{{ $message }}</span> @enderror
-        </div>
-
-        @if($start && $end)
-        <div class="p-4 bg-tosca-50 dark:bg-tosca-900/20 border border-tosca-100 dark:border-tosca-800 rounded-xl flex justify-between items-center">
-            <span class="text-sm text-tosca-700 dark:text-tosca-400 font-medium italic">Estimasi Durasi:</span>
-            <span class="text-lg font-bold text-tosca-600 dark:text-tosca-400">
-                {{ $this->calculateDuration() }} 
-            </span>
-        </div>
+        @if($isEditing)
+            <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full {{ is_null($status) ? 'bg-amber-500 animate-pulse' : ($status == 1 ? 'bg-emerald-500' : 'bg-rose-500') }}"></div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            Status Saat Ini: 
+                            <span class="{{ is_null($status) ? 'text-amber-500' : ($status == 1 ? 'text-emerald-500' : 'text-rose-500') }}">
+                                {{ is_null($status) ? 'Pending' : ($status == 1 ? 'Approved' : 'Rejected') }}
+                            </span>
+                        </p>
+                    </div>
+                    <p class="text-[9px] text-slate-400 mt-1 italic leading-none">*Klik Save Changes untuk menerapkan perubahan status</p>
+                </div>
+            </div>
         @endif
+                @if($isEditing)
+            <x-slot:footer_left>
+                <div class="flex items-center gap-2">
+                    <button type="button" wire:click="setStatus(0)" 
+                        class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all
+                        {{ $status === 0 ? 'bg-rose-600 text-white shadow-lg shadow-rose-200' : 'bg-rose-50 text-rose-600 hover:bg-rose-100' }}">
+                        Reject
+                    </button>
 
-        <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
-            <button type="button" 
-                    x-on:click="$dispatch('close-modal')" 
-                    class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
-                Batal
-            </button>
-            <button type="submit" 
-                    wire:loading.attr="disabled"
-                    class="px-10 py-2.5 bg-tosca-500 hover:bg-tosca-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-tosca-500/30 flex items-center gap-2">
-                <span wire:loading.remove>Simpan Lembur</span>
-                <span wire:loading class="flex items-center gap-2">
-                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    Memproses...
-                </span>
-            </button>
-        </div>
-    </form>
-</div>
+                    <button type="button" wire:click="setStatus(1)" 
+                        class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all
+                        {{ $status === 1 ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' }}">
+                        Approve
+                    </button>
+                </div>
+            </x-slot:footer_left>
+        @endif
+    </div>
+</x-ui.modal>
