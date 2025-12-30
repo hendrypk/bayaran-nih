@@ -37,7 +37,7 @@
                 <div class="w-full md:w-44">
                     {{-- <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Filter Status</label> --}}
                     <select wire:model.live="status" class="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-tosca-500 outline-none cursor-pointer font-bold text-slate-700 dark:text-slate-200">
-                        <option value="all">Semua Status</option>
+                        {{-- <option value="all">Semua Status</option> --}}
                         <option value="presence">Hadir</option>
                         <option value="absence">Alpa</option>
                         <option value="sick">Sakit</option>
@@ -92,7 +92,7 @@
                     $status = $isAbs ? 'absence' : $data->status;
                 @endphp
                 <tr 
-                    @click="{{ $status === 'presence' ? 'toggleDetail('.json_encode($data).')' : '' }}" 
+                    @click="{{ $status === 'presence' ? 'toggleDetail(' . \Illuminate\Support\Js::from($data) . ')' : '' }}" 
                     class="group transition-all border-b border-slate-100 dark:border-slate-800 
                     {{ $status === 'presence' ? 'hover:bg-tosca-50/30 dark:hover:bg-tosca-900/10 cursor-pointer' : 'cursor-default' }}">
                      

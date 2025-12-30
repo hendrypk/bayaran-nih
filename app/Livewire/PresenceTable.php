@@ -23,7 +23,7 @@ class PresenceTable extends Component
     protected $queryString = [
         'startDate' => ['except' => ''],
         'endDate' => ['except' => ''],
-        'status' => ['except' => 'all'],
+        'status' => ['except' => ''],
         'search' => ['except' => ''],
         'perPage' => ['except' => 10],
     ];
@@ -93,7 +93,7 @@ public function mount()
                 $presence = $presencesByDate->get($dateStr);
 
                 // Logika Filter
-                if (in_array($this->status, ['all', 'absence']) && !$presence) {
+                if (in_array($this->status, ['absence']) && !$presence) {
                     $allData->push([
                         'id' => "abs-{$employee->id}-{$dateStr}",
                         'date' => $dateStr,
@@ -103,7 +103,7 @@ public function mount()
                         'check_out' => null
                     ]);
                 } elseif ($presence) {
-                    if ($this->status === 'all' || $this->status === 'presence' || $presence->status === $this->status) {
+                    if ($this->status === 'presence' || $presence->status === $this->status) {
                         $allData->push($presence);
                     }
                 }
