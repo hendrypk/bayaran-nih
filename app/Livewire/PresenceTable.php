@@ -33,7 +33,7 @@ class PresenceTable extends Component
     public function mount()
     {
         // Samakan dengan nama di $queryString
-        $this->startDate = request('startDate', now()->startOfMonth()->format('Y-m-d'));
+        $this->startDate = request('startDate', now()->format('Y-m-d'));
         $this->endDate   = request('endDate', now()->format('Y-m-d'));
     }
 
@@ -111,6 +111,17 @@ class PresenceTable extends Component
         }
 
         return $allData->sortByDesc('date');
+    }
+
+    public function getStatusCountsProperty()
+    {
+        return [
+            'presence' => $this->getProcessedData()->where('status', 'presence')->count(),
+            'absence'  => $this->getProcessedData()->where('status', 'absence')->count(),
+            'permit'   => $this->getProcessedData()->where('status', 'permit')->count(),
+            'sick'     => $this->getProcessedData()->where('status', 'sick')->count(),
+            'leave'    => $this->getProcessedData()->where('status', 'leave')->count(),
+        ];
     }
 
     public function render()

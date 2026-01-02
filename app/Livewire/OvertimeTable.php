@@ -11,26 +11,22 @@ class OvertimeTable extends Component
 {
     use WithPagination;
 
-    // Filter properties
     public $search = '';
-    public $status = 'all';
+    public $status = 'pending';
     public $perPage = 10;
     public $startDate, $endDate;
 
-    // Query string agar filter tetap ada saat page di-refresh
     protected $queryString = [
         'search' => ['except' => ''],
-        'status' => ['except' => 'all'],
+        'status' => ['except' => 'pending'],
         'startDate' => ['except' => ''],
         'endDate' => ['except' => ''],
     ];
 
 public function mount()
 {
-    // Cek apakah startDate sudah terisi dari URL (Query String)
-    // Jika kosong, baru berikan default awal bulan
     if (!$this->startDate) {
-        $this->startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $this->startDate = Carbon::now()->format('Y-m-d');
     }
     
     if (!$this->endDate) {
@@ -38,7 +34,6 @@ public function mount()
     }
 }
 
-    // Reset pagination saat filter berubah
     public function updatedSearch() { $this->resetPage(); }
     public function updatedStatus() { $this->resetPage(); }
 
