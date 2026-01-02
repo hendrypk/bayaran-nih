@@ -2,7 +2,7 @@
     <x-slot:title>Daftar Lembur</x-slot:title>
     <x-page-header :links="[
         ['label' => 'Lembur', 'url' => route('overtime.list')],
-        ['label' => 'Log Presensi']
+        ['label' => 'Log Lembur']
     ]">
         Log Lembur
     </x-page-header>

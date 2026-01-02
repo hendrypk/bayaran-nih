@@ -176,6 +176,11 @@
                             </td>
                         </tr>
                     @empty
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-slate-400 italic">
+                            Wah, sepertinya belum ada data presensi nih 😅
+                        </td>
+                    </tr>
                     @endforelse
                     
                 </x-ui.datatable>

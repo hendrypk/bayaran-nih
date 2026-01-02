@@ -115,7 +115,12 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="py-12 text-center text-slate-400 italic">Data lembur tidak ditemukan</td></tr>
+                    
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-slate-400 italic">
+                            Wah, sepertinya belum ada data lembur nih 😅
+                        </td>
+                    </tr>
                     @endforelse
                 </x-ui.datatable>
             </div>
