@@ -3,18 +3,17 @@
     'required' => false,
     'icon' => null,
     'label' => null,
-    'name' => null,
+    'for' => null, 
 ])
 
-<label for="{{ $name }}" 
-       class="form-label-puffy">
-           @if($icon)
-        <iconify-icon icon="{{ $icon }}" class="text-slate-400"></iconify-icon>
+<label for="{{ $for }}" {{ $attributes->merge(['class' => 'form-label-puffy']) }}>
+    @if($icon)
+        <iconify-icon icon="{{ $icon }}" class="text-slate-400 mr-1"></iconify-icon>
     @endif
 
-    {{ $slot }}
+    {{ $slot->isEmpty() ? $label : $slot }}
 
     @if($required)
-        <span class="text-red-500">*</span>
+        <span class="text-red-500 font-bold ml-1">*</span>
     @endif
 </label>

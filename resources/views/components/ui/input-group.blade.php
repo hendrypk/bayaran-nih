@@ -1,42 +1,48 @@
-{{-- resources/views/components/ui/input-group.blade.php --}}
+{{-- EXAMPLE 
+
+<x-ui.input-group
+prefix="mdi:magnify"
+wire:model.live.debounce.500ms="search"
+type="text"
+placeholder="Cari sesuatu di sini..."
+/>
+--}}
+
 @props([
     'type' => 'text',
     'label' => null,
     'name' => null,
-    'model' => null,
     'placeholder' => null,
-    'prefix' => null,   // teks di depan input
-    'suffix' => null,   // teks di belakang input
+    'prefix' => null,
+    'suffix' => null,
 ])
 
-<div class="mb-4">
+<div class="{{ $attributes->get('class') }}">
     @if($label)
-        <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+        <label for="{{ $name }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             {{ $label }}
         </label>
     @endif
 
-    <div class="flex rounded-md shadow-sm">
+    <div class="relative flex items-center">
         @if($prefix)
-            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-300 bg-slate-50 text-slate-500 text-sm">
-                {{ $prefix }}
-            </span>
+            <div class="absolute left-4 flex items-center pointer-events-none text-slate-400">
+                <iconify-icon icon="{{ $prefix }}" width="20"></iconify-icon>
+            </div>
         @endif
 
-        <input type="{{ $type }}"
-               id="{{ $name }}"
-               {{ $attributes->merge([
-                   'class' => 'flex-1 block w-full rounded-none border-slate-300 px-3 py-2
-                               focus:border-tosca-500 focus:ring focus:ring-tosca-200
-                               dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100'
-               ]) }}
-               @if($model) wire:model="{{ $model }}" @endif
-               placeholder="{{ $placeholder }}">
+        <input 
+            type="{{ $type }}"
+            id="{{ $name }}"
+            {{ $attributes->whereDoesntStartWith('class') }}
+            placeholder="{{ $placeholder }}"
+            class="form-input-puffy w-full {{ $prefix ? 'pl-11' : '' }} {{ $suffix ? 'pr-11' : '' }}"
+        >
 
         @if($suffix)
-            <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-slate-300 bg-slate-50 text-slate-500 text-sm">
-                {{ $suffix }}
-            </span>
+            <div class="absolute right-4 flex items-center pointer-events-none text-slate-400">
+                <iconify-icon icon="{{ $suffix }}" width="20"></iconify-icon>
+            </div>
         @endif
     </div>
 </div>

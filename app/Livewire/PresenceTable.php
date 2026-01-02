@@ -16,7 +16,7 @@ class PresenceTable extends Component
 
     public $startDate;
     public $endDate;
-    public $status = 'all';
+    public $status = 'presence';
     public $search = '';
     public $perPage = 10;
 
@@ -30,12 +30,12 @@ class PresenceTable extends Component
 
     protected $listeners = ['dateRangeChanged' => 'setDateRange', 'refreshTable'];
 
-public function mount()
-{
-    // Samakan dengan nama di $queryString
-    $this->startDate = request('startDate', now()->startOfMonth()->format('Y-m-d'));
-    $this->endDate   = request('endDate', now()->format('Y-m-d'));
-}
+    public function mount()
+    {
+        // Samakan dengan nama di $queryString
+        $this->startDate = request('startDate', now()->startOfMonth()->format('Y-m-d'));
+        $this->endDate   = request('endDate', now()->format('Y-m-d'));
+    }
 
     public function setDateRange($start, $end)
     {
@@ -69,7 +69,7 @@ public function mount()
                 'workDay.days',
                 'position.division',
                 'position.department',
-                'presences' => fn($q) => $q->whereBetween('date', [$this->startDate, $this->endDate])
+                'presences' => fn($q) => $q->with('media')->whereBetween('date', [$this->startDate, $this->endDate])
             ])
             ->whereNull('resignation')
             ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))

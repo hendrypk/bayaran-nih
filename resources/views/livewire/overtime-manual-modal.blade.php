@@ -1,9 +1,8 @@
 <x-ui.modal>
-    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl">    
-        <div class="space-y-6">
+    <div class="card-body-puffy">
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 
-                {{-- FIX 1: Gunakan wire:ignore pada pembungkus Select2 --}}
                 <div class="space-y-2" wire:ignore>
                     <x-ui.label for="employeeId" class="text-sm font-bold text-slate-700 dark:text-slate-200">
                         {{ __('general.label.name') }} <span class="text-rose-500">*</span>
@@ -16,10 +15,8 @@
                         placeholder="{{ __('attendance.label.select_employee') }}"
                     />
                 </div>
-                {{-- Error diletakkan di luar wire:ignore agar tetap reaktif --}}
                 @error('employeeId') <p class="text-[11px] text-rose-500 font-medium mt-1">{{ $message }}</p> @enderror
 
-                {{-- FIX 2: Gunakan wire:ignore pada pembungkus Datepicker --}}
                 <div class="space-y-2" wire:ignore>
                     <x-ui.label class="text-sm font-bold text-slate-700 dark:text-slate-200">Tanggal Lembur</x-ui.label>
                     <x-ui.datepicker 
@@ -32,12 +29,15 @@
 
             {{-- Bagian Waktu & Notes --}}
             <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
-                {{-- Input jam biasanya aman tanpa wire:ignore karena menggunakan input tipe time standar --}}
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <div class="flex-1 space-y-2">
                         <x-ui.label class="text-xs uppercase tracking-wider text-slate-500 font-bold">Jam Mulai</x-ui.label>
-                        <input type="time" wire:model.live="start"
-                            class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-tosca-500 py-2.5 px-4 text-sm font-semibold">
+
+                        <x-ui.input 
+                            type="time"
+                            step="1"
+                            wire:model.live='start'
+                            />
                     </div>
 
                     <div class="hidden md:flex items-center justify-center pt-6 text-slate-300">
@@ -46,8 +46,11 @@
 
                     <div class="flex-1 space-y-2">
                         <x-ui.label class="text-xs uppercase tracking-wider text-slate-500 font-bold">Jam Selesai</x-ui.label>
-                        <input type="time" wire:model.live="end"
-                            class="w-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-tosca-500 py-2.5 px-4 text-sm font-semibold">
+                        <x-ui.input 
+                            type="time"
+                            step="1"
+                            wire:model.live='end'
+                            />
                     </div>
                 </div>
 
@@ -62,9 +65,10 @@
 
             <div class="space-y-2">
                 <x-ui.label class="text-sm font-bold text-slate-700 dark:text-slate-200">Keterangan / Alasan Lembur</x-ui.label>
-                <textarea wire:model.live.debounce.500ms="note" rows="3" 
-                    placeholder="Apa yang dikerjakan selama lembur?"
-                    class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-tosca-500 outline-none text-sm resize-none"></textarea>
+                <x-ui.textarea 
+                    wire:model.live.debounce.500ms="note" 
+                    rows="3" 
+                    placeholder="Apa yang dikerjakan selama lembur?"/>
                 @error('note') <p class="text-[11px] text-rose-500 font-medium">{{ $message }}</p> @enderror
             </div>
         </div>
@@ -101,5 +105,4 @@
                 </div>
             </x-slot:footer_left>
         @endif
-    </div>
 </x-ui.modal>

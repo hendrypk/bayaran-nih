@@ -83,7 +83,7 @@ public function kpis()
                 ->withTimestamps();
 }
 
-public function appraisals()
+public function pas()
 {
     // foreignId pa_id merujuk ke table performance_appraisal_name
     return $this->belongsToMany(PerformanceAppraisalName::class, 'employee_pas', 'employee_id', 'pa_id')

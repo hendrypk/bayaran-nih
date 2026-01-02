@@ -348,6 +348,7 @@ class EmployeeAppController extends Controller
                     [
                         'employee_id' => Auth::id(),
                         'date' => $today,
+                        'status' =>'presence'
                     ],
                     [
                         'work_day_id' => $request->workDay,

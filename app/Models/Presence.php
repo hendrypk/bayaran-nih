@@ -38,9 +38,12 @@ class Presence extends Model implements HasMedia
     
     protected $dates = ['deleted_at']; 
 
-    // protected $casts = [
-    //     'date' => 'date',
-    // ];
+    protected $appends = [
+        'photo_in_url',
+        'photo_out_url',
+        'latlng_in',
+        'latlng_out',
+    ];
 
     protected $casts = [
         'late_arrival' => 'integer',
@@ -56,30 +59,6 @@ class Presence extends Model implements HasMedia
     const STATUS_ABSENCE = 'absence';
     const STATUS_PRESENCE = 'presence';
 
-    public $start_date;
-    public $end_date;
-
-    protected $listeners = ['dateRangeChanged' => 'updateDateRange'];
-    
-    public function updateDateRange($payload)
-    {
-        $this->start_date = $payload['start_date'];
-        $this->end_date   = $payload['end_date'];
-    }
-
-    public function render()
-    {
-        $query = Presence::with('employee','workDay');
-
-        if ($this->start_date && $this->end_date) {
-            $query->whereBetween('date', [$this->start_date, $this->end_date]);
-        }
-
-        return view('livewire.presence-table', [
-            'presence' => $query->get(),
-        ]);
-    }
-    
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id', 'id');
@@ -106,6 +85,49 @@ class Presence extends Model implements HasMedia
                     ->count();
     }
 
+    public function getPhotoInUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('presence-in') ?: null;
+    }
 
+    public function getPhotoOutUrlAttribute()
+    {
+        return $this->getFirstMediaUrl('presence-out') ?: null;
+    }
+
+    public function getLatlngInAttribute()
+    {
+        return $this->location_in;
+    }
+
+    public function getLatlngOutAttribute()
+    {
+        return $this->location_out; 
+    }
+
+    public $start_date;
+    // public $end_date;
+
+    // protected $listeners = ['dateRangeChanged' => 'updateDateRange'];
+    
+    // public function updateDateRange($payload)
+    // {
+    //     $this->start_date = $payload['start_date'];
+    //     $this->end_date   = $payload['end_date'];
+    // }
+
+    // public function render()
+    // {
+    //     $query = Presence::with('employee','workDay');
+
+    //     if ($this->start_date && $this->end_date) {
+    //         $query->whereBetween('date', [$this->start_date, $this->end_date]);
+    //     }
+
+    //     return view('livewire.presence-table', [
+    //         'presence' => $query->get(),
+    //     ]);
+    // }
+    
 
 }

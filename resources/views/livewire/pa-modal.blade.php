@@ -37,39 +37,16 @@
 
                 </button>
             </div>
-
-            <hr class="my-4 border-slate-200 dark:border-slate-700">
-
-                <div class="mt-3 flex justify-between items-center">
-                    @if($isEditing)
-                        <x-swal-confirm 
-                            title="Hapus PA?" 
-                            text="Apakah Anda yakin ingin menghapus PA {{ $name }}?"
-                            callback="delete"
-                            :id="$editingId"
-                            class="inline-flex items-center p-2 bg-rose-100 text-rose-600 hover:bg-rose-600 hover:text-white 
-                                   dark:bg-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white rounded-lg transition-all">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-                            viewBox="0 0 24 24"><path fill="none" stroke="currentColor" 
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M4 7h16M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-5 5l4 4m0-4l-4 4"/></svg>
-                        </x-swal-confirm>
-                    @else
-                        <div></div>
-                    @endif
-
-                    <div class="flex gap-2">
-                        <x-action-button type="cancel" @click="onClose()">
-                            @lang('general.label.cancel')
-                        </x-action-button>
-
-                        <x-action-button type="save" wire:click="save">
-                            @lang('general.label.save')
-                        </x-action-button>
-                    </div>
-                </div>
-
+        @if($isEditing)
+            <x-slot:footer_left>
+                <x-swal-confirm 
+                    title="Hapus Presensi?" 
+                    text="Data Presensi Akan Dihapus Permanen..."
+                    callback="delete"
+                    :id="$editingId" 
+                />
+            </x-slot:footer_left>
+        @endif
         </div>
     </x-ui.modal>
 </div>

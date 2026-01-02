@@ -73,50 +73,103 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 
-    // 2. DATA: Presence Detail (Untuk Preview/Read-only)
-    Alpine.data('presenceDetailMap', () => ({
-        selectedPresence: null,
-        showDetail: false,
-        maps: { in: null, out: null },
-        markers: { in: null, out: null },
+    // // 2. DATA: Presence Detail (Untuk Preview/Read-only)
+    //     Alpine.data('detailPanelHandler', () => ({
+    //         selectedData: null,
+    //         showDetail: false,
+    //         maps: {},
 
-        toggleDetail(data) {
-            const isSame = this.selectedPresence?.id === data.id;
-            this.showDetail = isSame ? !this.showDetail : true;
-            this.selectedPresence = isSame && !this.showDetail ? null : data;
+    //         toggleDetail(data) {
+    //             const isSame = this.selectedData?.id === data.id;
+                
+    //             // Cleanup map lama jika data berganti
+    //             if (!isSame) this.cleanup();
+
+    //             this.showDetail = isSame ? !this.showDetail : true;
+    //             this.selectedData = isSame && !this.showDetail ? null : data;
+
+    //             // Inisialisasi Map jika panel dibuka
+    //             if (this.showDetail) {
+    //                 this.$nextTick(() => {
+    //                     this.initMap('in', data.latlng_in);
+    //                     this.initMap('out', data.latlng_out);
+    //                 });
+    //             }
+    //         },
+
+    //         initMap(type, loc) {
+    //             if (!loc || loc === '-' || loc === null) return;
+                
+    //             const containerId = `map-${type}`;
+    //             const container = document.getElementById(containerId);
+    //             if (!container) return;
+
+    //             const [lat, lng] = loc.split(',').map(parseFloat);
+
+    //             // Logic Map (Leaflet)
+    //             if (!this.maps[type]) {
+    //                 this.maps[type] = L.map(containerId).setView([lat, lng], 15);
+    //                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.maps[type]);
+    //                 L.marker([lat, lng]).addTo(this.maps[type]);
+    //             } else {
+    //                 this.maps[type].setView([lat, lng], 15);
+    //             }
+
+    //             // Fix gray tiles issue
+    //             setTimeout(() => this.maps[type].invalidateSize(), 400);
+    //         },
+
+    //         cleanup() {
+    //             Object.values(this.maps).forEach(map => {
+    //                 if (map) map.remove();
+    //             });
+    //             this.maps = {};
+    //         }
+    //     }));
+        
+    // Alpine.data('presenceDetailMap', () => ({
+    //     selectedPresence: null,
+    //     showDetail: false,
+    //     maps: { in: null, out: null },
+    //     markers: { in: null, out: null },
+
+    //     toggleDetail(data) {
+    //         const isSame = this.selectedPresence?.id === data.id;
+    //         this.showDetail = isSame ? !this.showDetail : true;
+    //         this.selectedPresence = isSame && !this.showDetail ? null : data;
             
-            // Opsional: Reset maps saat ganti data agar tidak "nyangkut" posisi lama
-            if (!isSame) this.cleanupMaps();
-        },
+    //         // Opsional: Reset maps saat ganti data agar tidak "nyangkut" posisi lama
+    //         if (!isSame) this.cleanupMaps();
+    //     },
 
-        initMap(type, location) {
-            if (!location || location === '-') return;
+    //     initMap(type, location) {
+    //         if (!location || location === '-') return;
 
-            this.$nextTick(() => {
-                const containerId = type === 'in' ? 'mapInDetail' : 'mapOutDetail';
-                if (!document.getElementById(containerId)) return;
+    //         this.$nextTick(() => {
+    //             const containerId = type === 'in' ? 'mapInDetail' : 'mapOutDetail';
+    //             if (!document.getElementById(containerId)) return;
 
-                const [lat, lng] = location.split(',').map(parseFloat);
+    //             const [lat, lng] = location.split(',').map(parseFloat);
 
-                if (!this.maps[type]) {
-                    this.maps[type] = createBaseMap(containerId, lat, lng);
-                    this.markers[type] = L.marker([lat, lng]).addTo(this.maps[type]);
-                } else {
-                    this.maps[type].setView([lat, lng], 16);
-                    this.markers[type].setLatLng([lat, lng]);
-                }
+    //             if (!this.maps[type]) {
+    //                 this.maps[type] = createBaseMap(containerId, lat, lng);
+    //                 this.markers[type] = L.marker([lat, lng]).addTo(this.maps[type]);
+    //             } else {
+    //                 this.maps[type].setView([lat, lng], 16);
+    //                 this.markers[type].setLatLng([lat, lng]);
+    //             }
 
-                setTimeout(() => this.maps[type]?.invalidateSize(), 400);
-            });
-        },
+    //             setTimeout(() => this.maps[type]?.invalidateSize(), 400);
+    //         });
+    //     },
 
-        cleanupMaps() {
-            ['in', 'out'].forEach(type => {
-                if (this.maps[type]) {
-                    this.maps[type].remove();
-                    this.maps[type] = null;
-                }
-            });
-        }
-    }));
+    //     cleanupMaps() {
+    //         ['in', 'out'].forEach(type => {
+    //             if (this.maps[type]) {
+    //                 this.maps[type].remove();
+    //                 this.maps[type] = null;
+    //             }
+    //         });
+    //     }
+    // }));
 });

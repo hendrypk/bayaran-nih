@@ -1,6 +1,5 @@
 <x-ui.modal id="option-modal" 
 x-data="{ tableTitle: '', isEdit: false }" 
-    {{-- Tambahkan listener khusus untuk dispatch dari server --}}
     @open-x-ilz-modal.window="
         if($event.detail.modal === 'option-modal') {
             tableTitle = $event.detail.args.tableTitle;
@@ -20,14 +19,16 @@ x-data="{ tableTitle: '', isEdit: false }"
         </div>
     </x-slot:title>
 
-    <div class="space-y-6 py-4">
+    <div class="space-y-6 p-4">
         {{-- 1. INPUT NAMA (Global untuk semua) --}}
         @if($tableId !== 'locations')
             <div class="group">
-                <label class="form-label-puffy">
-                    Nama <span x-text="tableTitle"></span>
-                </label>
-                <input type="text" wire:model="name" placeholder="Input nama..." class="form-input-puffy">
+                <x-ui.label for="name"> @lang('general.label.name') </x-ui.label>
+                <x-ui.input 
+                    type="text"
+                    wire:model="name"
+                    placeholder="input nama..."    
+                />
                 @error('name') 
                     <span class="text-[10px] text-rose-500 font-bold mt-2 block uppercase tracking-wider">{{ $message }}</span> 
                 @enderror
@@ -38,58 +39,57 @@ x-data="{ tableTitle: '', isEdit: false }"
         @if($tableId === 'positions')
             <div class="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div>
-                    <label class="form-label-puffy">Pilih Pangkat</label>
-                    <select wire:model="job_title_id" class="form-select-puffy">
-                        <option value="">-- Pilih Pangkat --</option>
-                        @foreach($jobTitles as $jt) <option value="{{ $jt->id }}">{{ $jt->name }}</option> @endforeach
-                    </select>
+                    <x-ui.label for="job_title"> Jabatan </x-ui.label>
+                    <x-ui.select2 
+                        name="job_title_id"
+                        id="job_title_id"
+                        wire:model.live="job_title_id"
+                        :options="collect($jobTitles)->pluck('name', 'id')"
+                        placeholder="Pilih Jabatan"
+                    />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label class="form-label-puffy">Departemen</label>
-                        <select wire:model.live="department_id" class="form-select-puffy">
-                            <option value="">-- Pilih Dept --</option>
-                            @foreach($departments as $dept) <option value="{{ $dept->id }}">{{ $dept->name }}</option> @endforeach
-                        </select>
+                        <x-ui.label for="job_title"> Department </x-ui.label>
+                        <x-ui.select2 
+                            name="department_id"
+                            id="department_id"
+                            wire:model.live="department_id"
+                            :options="collect($departments)->pluck('name', 'id')"
+                            placeholder="Pilih Department"
+                        />
                     </div>
                     <div>
-                        <label class="form-label-puffy">Divisi</label>
-                        <select wire:model="division_id" class="form-select-puffy">
-                            <option value="">-- Pilih Divisi --</option>
-                            @foreach($divisions as $div) <option value="{{ $div->id }}">{{ $div->name }}</option> @endforeach
-                        </select>
+                        <x-ui.label for="job_title"> Divisi </x-ui.label>
+                        <x-ui.select2 
+                            name="division_id"
+                            id="division_id"
+                            wire:model.live="division_id"
+                            :options="collect($divisions)->pluck('name', 'id')"
+                            placeholder="Pilih Divisi"
+                        />
                     </div>
                 </div>
             </div>
 
         {{-- 3. KONDISI: JABATAN / PANGKAT --}}
         @elseif($tableId === 'job_titles')
-            <div class="animate-in fade-in slide-in-from-top-4 duration-500">
-                <label class="form-label-puffy">Kode Jabatan (Generator NIP)</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                        <iconify-icon icon="mdi:barcode-scan" class="text-xl text-slate-400 group-focus-within:text-cyan-500 transition-colors"></iconify-icon>
-                    </div>
-                    <input type="text" 
-                        wire:model="section" 
-                        placeholder="Contoh: DIR, MGR, STF..."
-                        class="form-input-puffy !pl-12 uppercase tracking-widest font-bold placeholder:font-normal placeholder:tracking-normal">
-                </div>
-                <p class="mt-2 text-[9px] text-slate-500 italic tracking-wide pl-1">
-                    * Kode unik 3-4 karakter yang akan muncul dalam deret angka NIP.
-                </p>            
-            </div>
+        <div class="group  animate-in fade-in slide-in-from-top-4 duration-500">
+            <x-ui.label for="section"> Level Jabatan </x-ui.label>
+            <x-ui.select2 
+                name="section"
+                id="section"
+                class="block w-full"
+                wire:model.live="section"
+                :options="collect(range(1, 10))->mapWithKeys(fn($i) => [$i => 'Level ' . $i])"
+                placeholder="Pilih Level Jabatan"
+            />
 
-        {{-- 4. KONDISI: DIVISI --}}
-        @elseif($tableId === 'divisions')
-            <div class="animate-in fade-in slide-in-from-top-4 duration-500">
-                <label class="form-label-puffy">Pilih Departemen</label>
-                <select wire:model="department_id" class="w-full px-5 py-4 rounded-[1.5rem] bg-slate-950 border-slate-800 text-white focus:border-cyan-500 outline-none border">
-                    <option value="">-- Pilih Departemen --</option>
-                    @foreach($departments as $dept) <option value="{{ $dept->id }}">{{ $dept->name }}</option> @endforeach
-                </select>
-            </div>
+            <p class="mt-2 text-[9px] text-slate-500 italic tracking-wide pl-1">
+                * Pilih level 1 (tertinggi) sampai 10 untuk menentukan struktur NIP.
+            </p>            
+        </div>
 
         {{-- 4. KONDISI: HOLIDAY --}}
         @elseif($tableId === 'holidays')
@@ -109,7 +109,7 @@ x-data="{ tableTitle: '', isEdit: false }"
                         altInput: true,
                         altInputClass: 'form-input-puffy dark:bg-slate-950 dark:text-white',
                         altFormat: 'l, j F Y',
-                        static: true,
+                        static: false,
                         {{-- Set nilai awal jika sudah ada saat render --}}
                         defaultDate: value,
                         onChange: (selectedDates, dateStr) => {
@@ -265,17 +265,15 @@ x-data="{ tableTitle: '', isEdit: false }"
             </div>
         @endif
     </div>
-
-    {{-- FOOTER --}}
-    <x-slot:footer>
-        <div class="flex gap-2">
-            <x-action-button type="cancel" @click="onClose()">
-                @lang('general.label.cancel')
-            </x-action-button>
-
-            <x-action-button type="save" wire:click="save">
-                @lang('general.label.save')
-            </x-action-button>
-        </div>
-    </x-slot:footer>
+@if($isEditing)
+        <x-slot:footer_left>
+            <x-swal-confirm 
+                title="Hapus Data?" 
+                text="Data ini akan dihapus permanen..."
+                callback="delete"
+                {{-- Encode array menjadi JSON string --}}
+                :id="json_encode(['id' => $selectedId, 'tableId' => $tableId])" 
+            />
+        </x-slot:footer_left>
+    @endif
 </x-ui.modal>

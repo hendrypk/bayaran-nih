@@ -36,7 +36,7 @@
       <x-navbar />
       <x-sidebar />
 
-      <main id="main" class="mt-16 p-6">
+      <main id="main" class="mt-16 py-6 px-16">
           {{ $slot }}
       </main>
 

@@ -134,6 +134,7 @@ import 'select2/dist/css/select2.css';
 // Custom scripts
 import './custom';
 import './leaflet';
+import './attendance-maps';
 import './plugins/sweetalert';
 
 // Import semua gambar agar bisa dipakai oleh bundler

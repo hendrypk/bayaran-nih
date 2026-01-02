@@ -45,30 +45,41 @@ class PaForm extends Component
         $this->loadEmployeeData($value);
     }
 
-    public function loadEmployeeData($id, $paResult = null)
-    {
-        $employee = Employee::with('position', 'pas.appraisals')->find($id);
+public function loadEmployeeData($id, $paResult = null)
+{
+    // Eager load relasi
+    $employee = Employee::with(['position', 'pas' => function($query) {
+        $query->where('is_default', 1)->orWhere('is_default', 0)->latest(); 
+    }, 'pas.appraisals'])->find($id);
 
-        if(!$employee) {
-            $this->eid = '';
-            $this->positionName = '';
-            $this->paName = '';
-            $this->pas = collect();
-            return;
-        }
-
-        $this->eid = $employee->eid ?? '';
-        $this->positionName = $employee->position->name ?? '';
-        $this->paName = $employee->pas->name ?? '';
-        $this->paId = $employee->pas->id ?? null;
-
-        if($paResult) {
-            $this->pas = $employee->pas ? $employee->pas->appraisals : collect();
-        } else {
-            $this->pas = $employee->pas ? $employee->pas->appraisals : collect();
-            $this->achievement = [];
-        }
+    if(!$employee) {
+        $this->reset(['eid', 'positionName', 'paName', 'pas', 'paId']);
+        return;
     }
+
+    $this->eid = $employee->eid ?? '';
+    $this->positionName = $employee->position->name ?? '';
+
+    // KARENA 'pas' ADALAH HASMANY, KITA AMBIL ITEM PERTAMA (FIRST)
+    $employeePa = $employee->pas->first(); 
+
+    if ($employeePa && $employeePa->appraisalName) {
+        // Ambil nama dari relasi ke Master PA (PerformanceAppraisalName)
+        $this->paName = $employeePa->appraisalName->name ?? '';
+        $this->paId   = $employeePa->appraisalName->id ?? null;
+        
+        // Ambil daftar aspek penilaian (appraisals)
+        $this->pas = $employeePa->appraisalName->appraisals ?? collect();
+    } else {
+        $this->paName = 'Belum diatur';
+        $this->paId = null;
+        $this->pas = collect();
+    }
+
+    if(!$paResult) {
+        $this->achievement = [];
+    }
+}
 
     public function getGradeProperty()
     {

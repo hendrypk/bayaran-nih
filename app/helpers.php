@@ -119,3 +119,21 @@ if (! function_exists('formatTimeHI')) {
         return Carbon::parse($time)->format('H:i');
     }
 }
+
+if (!function_exists('formatDateTime')) {
+    function formatDateTime($dateTime, $format = 'dddd, D MMM YYYY HH:mm'): string
+    {
+        if (!$dateTime) return '';
+
+        try {
+            $locale = app()->getLocale();
+            
+            return \Carbon\Carbon::parse($dateTime)
+                ->locale($locale)
+                ->isoFormat($format);
+
+        } catch (\Exception $e) {
+            return $dateTime; 
+        }
+    }
+}

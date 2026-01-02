@@ -2,9 +2,8 @@
 @props([
     'label' => null,
     'name' => null,
-    'model' => null, // default wire:model
     'placeholder' => null,
-    'rows' => 3,
+    'rows' => null,
 ])
 
 @if($label)
@@ -16,9 +15,6 @@
 <textarea id="{{ $name }}"
           rows="{{ $rows }}"
           {{ $attributes->merge([
-              'class' => 'block w-full rounded-md border-slate-300 shadow-sm px-3 py-2
-                          focus:border-tosca-500 focus:ring focus:ring-tosca-200
-                          dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100'
+              'class' => 'form-input-puffy'
           ]) }}
-          @if($model) wire:model="{{ $model }}" @endif
           placeholder="{{ $placeholder }}"></textarea>

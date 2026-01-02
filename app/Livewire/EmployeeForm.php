@@ -31,7 +31,7 @@ class EmployeeForm extends Component
     // --- STEP 3: PERFORMANCE & LEAVE ---
     public $managers, $dueLeave, $leaveStock;
     public $kpis = [];
-    public $appraisals = [];
+    public $pas = [];
 
     // --- STEP 4: PAYROLL ---
     public $bank, $bank_number;
@@ -60,7 +60,7 @@ class EmployeeForm extends Component
                 $this->isReadOnly = true;
             }
             
-            $employee = Employee::with(['workDay', 'OfficeLocations', 'appraisals', 'kpis'])->findOrFail($id);
+            $employee = Employee::with(['workDay', 'OfficeLocations', 'pas', 'kpis'])->findOrFail($id);
             
             // Mapping Data Karyawan ke Properti Livewire
             $this->name         = $employee->name;
@@ -90,7 +90,7 @@ class EmployeeForm extends Component
             // Relation Data (Sync Many-to-Many ke Array)
             $this->workDay         = $employee->workDay->pluck('id')->toArray();
             $this->officeLocations = $employee->OfficeLocations->pluck('id')->toArray();
-            $this->appraisals      = $employee->appraisals->pluck('id')->toArray();
+            $this->pas      = $employee->pas->pluck('id')->toArray();
             $this->kpis            = $employee->kpis->pluck('id')->toArray();
         }
     }
@@ -156,9 +156,9 @@ class EmployeeForm extends Component
 
             // --- KINERJA / KPI (Step 3) ---
             'kpis'            => 'nullable|array',
-            'kpis.*'          => 'exists:performance_kpi_names,id',
-            'appraisals'      => 'nullable|array',
-            'appraisals.*'    => 'exists:performance_appraisal_names,id',
+            'kpis.*'          => 'exists:performance_kpi_name,id',
+            'pas'      => 'nullable|array',
+            'pas.*'    => 'exists:performance_appraisal_name,id',
             'managers'        => 'nullable|exists:employees,id', // Untuk penilai/atasan
 
             'dueLeave' => 'nullable|date',
@@ -224,7 +224,7 @@ public function save()
     //         'dueLeave'   => $this->dueLeave,
     //         'leaveStock' => $this->leaveStock,
     //         'kpis'       => $this->kpis,       // Harus Array
-    //         'appraisals' => $this->appraisals, // Harus Array
+    //         'pas' => $this->pas, // Harus Array
     //     ],
     //     'STEP_4_PAYROLL' => [
     //         'bank'        => $this->bank,
@@ -297,7 +297,7 @@ public function save()
         // sync() akan menghapus yang lama dan mengganti dengan yang baru (otomatis handle editing)
         $employee->workDay()->sync($this->workDay ?? []);
         $employee->officeLocations()->sync($this->officeLocations ?? []);
-        $employee->appraisals()->sync($this->appraisals ?? []);
+        $employee->pas()->sync($this->pas ?? []);
         $employee->kpis()->sync($this->kpis ?? []);
 
         DB::commit();

@@ -84,10 +84,6 @@ class OptionModal extends Component
             $item->division_id = $this->division_id;
         }
 
-        if ($this->tableId === 'divisions') {
-            $item->department_id = $this->department_id;
-        }
-
         if ($this->tableId === 'locations') {
             $item->latitude = $this->latitude;
             $item->longitude = $this->longitude;
@@ -101,6 +97,57 @@ class OptionModal extends Component
         $this->dispatch('close-modal');
         $this->dispatch('refresh-table'); 
         $this->resetForm();
+    }
+
+    public function delete($data = null)
+    {
+        if (is_array($data)) {
+            $id = $data['id'] ?? $this->selectedId;
+            $tableId = $data['tableId'] ?? $this->tableId;
+        } else {
+            $id = $data ?? $this->selectedId;
+            $tableId = $this->tableId;
+        }
+
+        if (!$id) {
+            return $this->dispatch('swal:error', message: 'ID data tidak ditemukan.');
+        }
+
+        try {
+            $modelName = $this->getModelClass();
+            $item = $modelName::findOrFail($id);
+
+            $isUsed = false;
+            $relationColumn = '';
+
+            switch ($tableId) {
+                case 'positions': $relationColumn = 'position_id'; break;
+            }
+
+            if ($relationColumn) {
+                $isUsed = \App\Models\Employee::where($relationColumn, $id)->exists();
+            }
+
+            if ($tableId === 'locations') {
+                $isUsed = \DB::table('employee_office_location')->where('office_location_id', $id)->exists();
+            }
+
+            if ($isUsed) {
+                return $this->dispatch('swal:error', 
+                    message: "Data gagal dihapus! Masih terdapat karyawan yang terdaftar menggunakan data ini."
+                );
+            }
+
+            $item->delete();
+
+            $this->dispatch('swal:success', message: 'Data berhasil dihapus.');
+            $this->dispatch('close-modal');
+            $this->dispatch('refresh-table');
+            $this->resetForm();
+
+        } catch (\Exception $e) {
+            $this->dispatch('swal:error', message: 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     private function getValidationRules()

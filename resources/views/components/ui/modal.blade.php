@@ -1,3 +1,7 @@
+@props([
+    'showFooter' => true, {{-- Defaultnya muncul --}}
+])
+
 <div {{ $attributes }} class="bg-blue-50 dark:bg-slate-800 text-slate-800 dark:text-gray-100 rounded-lg shadow-md overflow-hidden">
     <div x-show="ready" class="w-full h-[2px]">
         <div wire:loading.class.remove="hidden" class="hidden bg-blue-500 h-[2px] animate-pulse"></div>
@@ -7,6 +11,7 @@
         {{ $slot }}
     </div>
 
+    @if ($showFooter)        
     <div class="border-t border-slate-50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
         @if(isset($footer_custom))
             {{-- Level 3: Kontrol Penuh --}}
@@ -37,6 +42,8 @@
             </div>
         @endif
     </div>
+    @endif
+
 </div>
 
 {{-- <div {{ $attributes }}>

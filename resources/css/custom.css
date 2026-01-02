@@ -1,298 +1,356 @@
+/* --- 0. ROOT VARIABLES --- */
+:root {
+    --puffy-radius-lg: 2rem;
+    --puffy-radius-md: 1.5rem;
+    --puffy-radius-sm: 1rem;
+    --puffy-accent: theme('colors.tosca.500'); /* Gunakan satu aksen konsisten */
+    --puffy-accent-soft: theme('colors.tosca.500 / 0.1');
+}
+
 [x-cloak] { display: none !important; }
-/* Search box */
 
-/* Reset default DataTables styles */
-table.dataTable {
-  @apply w-full text-sm text-left border-collapse;
-}
-table.dataTable th {
-  @apply px-6 py-3 font-semibold bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300;
-}
-table.dataTable td {
-  @apply px-6 py-4 text-slate-600 dark:text-slate-400;
-}
-table.dataTable tbody tr:hover {
-  @apply bg-slate-50 dark:bg-slate-800/30 transition-colors;
-}
-
-/* Search box */
-.dataTables_wrapper .dataTables_filter {
-  @apply  flex items-center;
-}
-.dataTables_wrapper .dataTables_filter label {
-  @apply font-normal text-sm mr-2;
-}
-.dataTables_wrapper .dataTables_filter input {
-  @apply border rounded px-3 py-2 ml-2 bg-white text-slate-800 
-         dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 
-         focus:outline-none focus:ring-2 focus:ring-cyan-500;
-}
-
-/* Length dropdown */
-.dataTables_wrapper .dataTables_length {
-  @apply  flex items-center;
-}
-.dataTables_wrapper .dataTables_length label {
-  @apply font-normal text-sm mr-2;
-}
-.dataTables_wrapper .dataTables_length select {
-  @apply border rounded px-3 py-2 ml-2 bg-white text-slate-800 
-         dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 
-         focus:outline-none focus:ring-2 focus:ring-cyan-500;
-}
-
-/* Info text */
-.dataTables_wrapper .dataTables_info {
-  @apply mt-2 text-sm text-slate-500 dark:text-slate-400;
-}
-
-/* Pagination */
-.dataTables_wrapper .dataTables_paginate {
-  @apply px-4 py-2 flex items-center justify-end;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  @apply inline-flex items-center px-3 py-1 mx-1 rounded 
-         bg-slate-100 text-slate-700 font-medium 
-         hover:bg-cyan-400 hover:text-white 
-         dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-cyan-400 
-         transition-colors;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button.current {
-  @apply bg-cyan-400 text-white;
-}
-
+/* --- 1. DATATABLES CORE --- */
 @layer components {
-    /* --- SELECTION BOX (COMMON) --- */
+    /* --- DATATABLE PUFFY STYLE --- */
+    .puffy-table-wrapper {
+        table.dataTable {
+            @apply w-full text-left border-separate border-spacing-0;
+
+            thead th {
+                /* Header lebih mungil dan elegan */
+                @apply px-6 py-4 text-[10px] font-black uppercase tracking-[0.15em];
+                @apply bg-slate-50/80 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400;
+                @apply border-b border-slate-100 dark:border-slate-800/50;
+            }
+
+            tbody tr {
+                @apply transition-all duration-200;
+                
+                td {
+                    @apply px-6 py-4 border-b border-slate-50 dark:border-slate-800/30;
+                    @apply text-slate-600 dark:text-slate-300;
+                }
+
+                &:hover td {
+                    @apply bg-slate-50/50 dark:bg-slate-800/20;
+                    @apply text-slate-900 dark:text-white;
+                }
+
+                &:last-child td {
+                    @apply border-b-0;
+                }
+            }
+        }
+    }
+
+    /* --- PAGINATION STYLING --- */
+    .puffy-pagination {
+        nav {
+            @apply flex gap-1;
+        }
+        
+        /* Gaya untuk link pagination Laravel */
+        .relative.inline-flex.items-center {
+            @apply px-3 py-1.5 rounded-xl text-[11px] font-black uppercase transition-all border-none !important;
+            @apply bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 shadow-sm;
+            
+            &[aria-current="page"] {
+                @apply bg-tosca-500 text-white shadow-lg shadow-tosca-500/20 !important;
+            }
+
+            &:hover:not([aria-current="page"]) {
+                @apply bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white;
+            }
+        }
+    }
+}
+
+/* --- 2. FORM COMPONENTS (Puffy Inset) --- */
+@layer components {
+    /* Container Input & Select */
+    .form-puffy-group {
+        @apply relative transition-all duration-300;
+    }
+
+    .form-input-puffy {
+        /* Ukuran dikecilkan: py-2.5 menghasilkan tinggi sekitar 42-44px */
+        @apply w-full px-4 py-2.5 rounded-[1rem] outline-none border transition-all shadow-inner text-sm;
+        
+        /* Light Mode */
+        @apply bg-white border-slate-200 text-slate-800 focus:ring-4 focus:ring-slate-500/5 focus:border-slate-400;
+        
+        /* Dark Mode */
+        @apply dark:bg-slate-950 dark:border-slate-800 dark:text-white dark:focus:ring-tosca-500/10 dark:focus:border-tosca-500;
+    }
+
+    .form-label-puffy {
+        @apply block text-sm font-bold transition-all duration-300 mb-2 text-slate-600 dark:text-slate-400;
+        
+        .group:focus-within & {
+            @apply text-tosca-600 dark:text-tosca-400 translate-x-1;
+        }
+    }
+}
+
+/* --- 3. SELECT2 REFACTOR (Unified Style) --- */
+@layer components {
+    /* --- WRAPPER UTAMA --- */
+    .select2-container--default {
+        @apply w-full !important;
+    }
+
+    /* --- BOX SELEKSI (Single & Multiple) --- */
     .select2-container--default .select2-selection--single,
-    .select2-container--default .select2-selection--multiple {
-        /* Samakan dengan .form-input-puffy */
+    .select2-container--default .select2-selection--multiple {@apply h-[42px] !important; /* Menyamakan tinggi secara eksplisit */
         @apply border transition-all shadow-inner outline-none !important;
-        @apply bg-white border-slate-200 rounded-[1.5rem] !important;
+        @apply bg-white border-slate-200 rounded-[1rem] !important;
         @apply dark:bg-slate-950 dark:border-slate-800 !important;
     }
 
-    /* --- SINGLE SELECT --- */
-    .select2-container--default .select2-selection--single {
-        @apply h-[56px] flex items-center px-3 !important;
-    }
-
+    /* --- SINGLE SELECT SPESIFIK --- */
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        @apply text-slate-800 dark:text-white px-2 font-medium !important;
+        @apply text-slate-700 dark:text-slate-200 px-4 font-bold text-sm !important;
     }
 
-    /* --- MULTIPLE SELECT --- */
-    .select2-container--default .select2-selection--multiple {
-        @apply min-h-[56px] flex items-center flex-wrap p-2 gap-1.5 !important;
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        @apply text-slate-400 dark:text-slate-600 font-medium !important;
     }
 
-    /* --- FOCUS STATE (Sesuai spesifikasi .form-input-puffy) --- */
-    .select2-container--default.select2-container--focus .select2-selection--single,
-    .select2-container--default.select2-container--focus .select2-selection--multiple {
-        /* Light Mode */
-        @apply ring-4 ring-slate-500/5 border-slate-400 !important;
-        /* Dark Mode */
-        @apply dark:ring-cyan-500/10 dark:border-cyan-500 !important;
+    /* --- MULTIPLE SELECT SPESIFIK (Chips) --- */
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        @apply flex flex-wrap gap-1.5 p-2 !important;
     }
 
-    /* --- CHIPS / TAGS (Multiple) --- */
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        /* Dibuat lebih puffy/rounded */
-        @apply bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 
-               border-none rounded-xl text-xs font-bold px-3 py-1.5 m-0.5
-               inline-flex items-center gap-2 shadow-sm !important;
+        @apply bg-tosca-50 dark:bg-tosca-500/20 text-tosca-700 dark:text-tosca-300 
+               border border-tosca-100 dark:border-tosca-500/30 rounded-lg 
+               text-[10px] font-black uppercase tracking-wider px-3 py-1 m-0 
+               flex items-center gap-2 !important;
     }
 
-    /* Tombol Hapus pada Chip */
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        @apply text-slate-400 hover:text-red-500 transition-colors mr-1 !important;
-        border: none !important;
-        background: transparent !important;
+        @apply text-tosca-500 hover:text-rose-500 transition-colors border-none p-0 mr-1 !important;
+        @apply bg-transparent !important;
     }
 
-    /* --- DROPDOWN PANEL --- */
+    /* --- STATE: FOCUS & OPEN --- */
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--multiple,
+    .select2-container--default.select2-container--open .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--multiple {
+        @apply ring-4 ring-tosca-500/5 border-tosca-400 dark:border-tosca-500 !important;
+    }
+
+    /* --- DROPDOWN PANEL (Floating) --- */
     .select2-dropdown {
-        /* Border disamakan dengan input saat fokus */
-        @apply bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800
-               rounded-[1.5rem] shadow-2xl overflow-hidden mt-2 z-[9999] !important;
+        @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800
+               rounded-[1.5rem] shadow-2xl overflow-hidden mt-2 z-[9999]  !important;
     }
 
-    /* --- LIST OPTIONS --- */
-    .select2-results__option {
-        @apply px-5 py-3 text-sm text-slate-600 dark:text-slate-400 transition-colors !important;
+    /* --- BOX PENCARIAN DI DALAM DROPDOWN --- */
+    .select2-search--dropdown {
+        @apply p-3 !important;
     }
 
-    /* Hover/Highlight (Sesuai aksen .form-input-puffy dark mode) */
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        @apply bg-slate-100 dark:bg-cyan-500/20 text-slate-900 dark:text-cyan-400 !important;
-    }
-
-    /* State Terpilih */
-    .select2-container--default .select2-results__option--selected,
-    .select2-container--default .select2-results__option[aria-selected=true] {
-        @apply bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-bold !important;
-    }
-
-    /* --- SEARCH FIELD INSIDE DROPDOWN --- */
     .select2-search--dropdown .select2-search__field {
-        @apply bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800
-               rounded-xl px-4 py-2 mx-2 mt-2 outline-none text-sm !important;
+        @apply bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700
+               rounded-xl px-4 py-2 outline-none text-sm transition-all !important;
+        @apply focus:ring-2 focus:ring-tosca-500/20 focus:border-tosca-500 !important;
     }
 
-    /* Arrow Icon untuk Single Select */
+    /* --- DAFTAR HASIL / OPTIONS --- */
+    .select2-results__options {
+        @apply max-h-72 overflow-y-auto p-1 !important;
+    }
+
+    .select2-results__option {
+        @apply px-4 py-2.5 mx-1 my-0.5 text-sm text-slate-600 dark:text-slate-400 
+               rounded-xl transition-all flex items-center !important;
+    }
+
+    /* Hover & Highlight */
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        @apply bg-tosca-50 dark:bg-tosca-500/10 text-tosca-600 dark:text-tosca-400 !important;
+    }
+
+    /* Terpilih (Selected) */
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        @apply bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-black !important;
+    }
+
+    /* --- ELEMEN LAINNYA --- */
     .select2-container--default .select2-selection--single .select2-selection__arrow {
-        @apply h-full right-4 flex items-center !important;
+        @apply h-full right-3 flex items-center !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        @apply border-slate-400 dark:border-slate-600 !important;
+        border-width: 5px 4px 0 4px !important;
+    }
+
+    /* Loading State */
+    .select2-results__option--load-more {
+        @apply text-xs font-bold text-slate-400 text-center py-2 !important;
     }
 }
 
-
-
-
+/* --- 4. FLATPICKR REFACTOR (Unified Range) --- */
 @layer components {
-  /* --- Base Input & Select --- */
-  .form-input-puffy {
-      @apply w-full px-5 py-4 rounded-[1.5rem] outline-none border transition-all shadow-inner;
-      
-      /* Light Mode: Fokus lebih subtle dengan border slate */
-      @apply bg-white border-slate-200 text-slate-800 focus:ring-4 focus:ring-slate-500/5 focus:border-slate-400;
-      
-      /* Dark Mode: Fokus dengan aksen neon cyan */
-      @apply dark:bg-slate-950 dark:border-slate-800 dark:text-white dark:focus:ring-cyan-500/10 dark:focus:border-cyan-500;
-  }
-
-
-  /* --- Dynamic Label --- */
-.form-label-puffy {
-      @apply block text-[10px] font-black tracking-[0.2em] mb-2 transition-all duration-300;
-      @apply text-slate-400 dark:text-slate-500;
-
-      /* Menggunakan group-focus-within (Cara Standar) */
-      .group:focus-within & {
-          @apply text-slate-800 dark:text-cyan-500 translate-x-1;
-      }
-  }
-}
-
-
-@layer components {
-  /* Container Utama Card */
-  .card-puffy {
-      @apply bg-white dark:bg-slate-900 shadow-xl rounded-[2rem] border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300;
-  }
-
-  /* Bagian Header (Judul/Icon) */
-  .card-header-puffy {
-      @apply px-8 py-6 border-b border-slate-50 dark:border-slate-800/50 flex items-center justify-between;
-  }
-
-  /* Bagian Body (Tempat Form/Konten) */
-  .card-body-puffy {
-      @apply px-8 py-8;
-  }
-
-  /* Bagian Footer (Tombol Aksi) */
-  .card-footer-puffy {
-      @apply px-8 py-6 bg-slate-50/50 dark:bg-slate-950/30 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-end gap-4;
-  }
-}
-
-@layer components {
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    background: #06b6d4;
-    cursor: pointer;
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
-  }
-
-  input[type=range]::-moz-range-thumb {
-      height: 12px;
-      width: 12px;
-      border-radius: 50%;
-      background: #06b6d4;
-      cursor: pointer;
-      border: 2px solid #ffffff;
-  }
-}
-@layer components {
-    /* Container Utama */
+    /* --- FLATPICKR PUFFY (DARK MODE + RANGE LOGIC) --- */
+    
     .flatpickr-calendar {
-        @apply bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl rounded-[1.5rem] p-2 !important;
-        font-family: inherit !important;
-        border: 1px solid !important;
+        /* Container utama */
+        @apply bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl !important;
+        @apply dark:text-slate-200 !important;
     }
 
-    /* Header Bulan & Navigasi */
-    .flatpickr-months .flatpickr-month {
-        @apply text-slate-800 dark:text-white fill-slate-800 dark:fill-white !important;
+    /* --- HEADER & NAVIGATION --- */
+    .flatpickr-current-month { 
+        @apply dark:text-white !important; 
     }
-
+    
     .flatpickr-current-month .flatpickr-monthDropdown-months {
-        @apply font-bold !important;
+        @apply dark:bg-slate-900 dark:hover:bg-slate-800 !important;
     }
 
-    /* Nama Hari (Sen, Sel, ...) */
-    span.flatpickr-weekday {
-        @apply text-slate-400 dark:text-slate-500 font-black uppercase !important;
-        font-size: 10px !important;
-        letter-spacing: 0.1em;
+    .flatpickr-current-month input.cur-year { 
+        @apply dark:text-white !important; 
     }
 
-    /* Angka Tanggal Umum */
-    .flatpickr-day {
-        @apply text-slate-700 dark:text-slate-300 transition-all duration-200 !important;
-        border-radius: 0.75rem !important; /* Membuat kotak tanggal sedikit membulat */
-        margin-top: 2px !important;
-    }
-
-    /* Tanggal Hari Ini */
-    .flatpickr-day.today {
-        @apply border-cyan-500 text-cyan-600 dark:text-cyan-400 !important;
-    }
-
-    /* Efek Hover */
-    .flatpickr-day:hover, 
-    .flatpickr-day.prevMonthDay:hover, 
-    .flatpickr-day.nextMonthDay:hover {
-        @apply bg-cyan-50 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 border-transparent !important;
-    }
-
-    /* --- RANGE SELECTION LOGIC --- */
-
-    /* Ujung Awal & Akhir Rentang */
-    .flatpickr-day.selected.startRange,
-    .flatpickr-day.selected.endRange {
-        @apply bg-cyan-500 border-cyan-500 text-white shadow-lg shadow-cyan-500/40 !important;
-      
-        z-index: 2;
-    }
-
-    /* Area Di Tengah Rentang (In-between) */
-    .flatpickr-day.inRange {
-        @apply bg-cyan-50 dark:bg-cyan-500/15 border-transparent text-cyan-700 dark:text-cyan-300 !important;
-        box-shadow: none !important;
-        border-radius: 0 !important; /* Menghilangkan rounded agar terlihat menyambung */
-    }
-
-    /* Membulatkan ujung kiri start dan ujung kanan end saja */
-    .flatpickr-day.startRange {
-        border-radius: 0.75rem 0 0 0.75rem !important;
-    }
-    .flatpickr-day.endRange {
-        border-radius: 0 0.75rem 0.75rem 0 !important;
-    }
-    .flatpickr-day.startRange.endRange {
-        border-radius: 0.75rem !important; /* Jika hanya pilih 1 hari */
-    }
-
-    /* Shadow & Arrow Customization */
     .flatpickr-months .flatpickr-prev-month, 
     .flatpickr-months .flatpickr-next-month {
-        @apply hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors !important;
-        padding: 10px !important;
+        /* Arrow icon */
+        @apply dark:fill-slate-400 dark:hover:fill-tosca-400 !important;
     }
 
+    span.flatpickr-weekday { 
+        @apply text-slate-400 dark:text-slate-500 font-bold !important; 
+    }
+
+    /* --- DAYS & HOVER STATE --- */
+    .flatpickr-day {
+        @apply dark:text-slate-300 transition-all !important;
+        /* Default hover: Sedikit transparan */
+        &:hover {
+            @apply bg-tosca-500/20 text-tosca-700 dark:text-tosca-400 border-transparent !important;
+        }
+    }
+
+    /* Indikator Hari Ini */
+    .flatpickr-day.today {
+        @apply border-tosca-500 text-tosca-600 dark:text-tosca-400 !important;
+        &:hover {
+            @apply bg-tosca-500 text-white !important;
+        }
+    }
+
+    /* 1. Square Rounded untuk Single Date Selection */
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange.endRange {
+        @apply bg-tosca-600 border-tosca-600 text-white shadow-lg shadow-tosca-500/20 !important;
+        @apply rounded-lg !important; /* Square Rounded */
+    }
+
+    /* 2. Start Date (Hanya Rounded Kiri) */
+    .flatpickr-day.startRange:not(.endRange) {
+        @apply bg-tosca-600 border-tosca-600 text-white !important;
+        @apply rounded-l-lg rounded-r-none !important;
+    }
+
+    /* 3. End Date (Hanya Rounded Kanan) */
+    .flatpickr-day.endRange:not(.startRange) {
+        @apply bg-tosca-600 border-tosca-600 text-white !important;
+        @apply rounded-r-lg rounded-l-none !important;
+    }
+
+    /* 4. Area Tengah Rentang (In-Range) */
+    .flatpickr-day.inRange,
+    .flatpickr-day.inRange:hover,
+    .flatpickr-day.prevMonthDay.inRange,
+    .flatpickr-day.nextMonthDay.inRange {
+        @apply bg-tosca-500/15 dark:bg-tosca-500/20 !important;
+        @apply text-tosca-700 dark:text-tosca-300 !important;
+        @apply rounded-none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        border-color: transparent !important;
+    }
+
+    .flatpickr-day.inRange::after,
+    .flatpickr-day.inRange::before 
+    .flatpickr-day.inRange:hover::before,
+    .flatpickr-day.inRange:hover::after{
+        content: none !important;display: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Tooltip Arrow (Segitiga di atas kalender) */
+    .flatpickr-calendar.arrowTop:before, 
+    .flatpickr-calendar.arrowTop:after {
+        @apply border-b-white dark:border-b-slate-900 !important;
+    }
 }
 
+/* --- 5. CARD SYSTEM --- */
+/* --- 5. MODULAR CARD SYSTEM --- */
+@layer components {
+    /* Container Utama */
+    .card-puffy {
+        @apply bg-white dark:bg-slate-900 shadow-xl rounded-[var(--puffy-radius-lg)] border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300;
+    }
+
+    /* Header Card */
+    .card-puffy-header {
+        @apply px-8 py-5 border-b border-slate-50 dark:border-slate-800/50 flex items-center justify-between gap-4;
+    }
+
+    /* Judul di dalam Header */
+    .card-puffy-title {
+        @apply text-lg font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-3;
+    }
+    
+    /* Subtitle atau deskripsi kecil di bawah judul */
+    .card-puffy-subtitle {
+        @apply text-xs font-medium text-slate-500 dark:text-slate-400 mt-1;
+    }
+
+    /* Body Card */
+    .card-puffy-body {
+        @apply px-8 py-5;
+    }
+
+    /* Footer Card */
+    .card-puffy-footer {
+        @apply px-8 py-5 bg-slate-50/50 dark:bg-slate-950/30 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-end gap-3;
+    }
+
+    /* Variasi Card: Borderless atau Inset (opsional) */
+    .card-puffy-inset {
+        @apply bg-slate-50 dark:bg-slate-950 shadow-inner border-slate-100 dark:border-slate-900;
+    }
+}
+
+@layer components {
+    .puffy-select-mimic {
+        /* Reset bawaan & Tipografi */
+        @apply appearance-none bg-transparent border-none outline-none cursor-pointer;
+        @apply text-[11px] font-black text-tosca-600 dark:text-tosca-400;
+        @apply py-1 pl-1 pr-6 w-full; /* Ruang untuk panah */
+
+        /* Mimic Panah Select2 menggunakan SVG */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M7 9l3 3 3-3' stroke='%2314b8a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+        background-position: right 0.2rem center;
+        background-repeat: no-repeat;
+        background-size: 1.2rem;
+    }
+
+    /* Hilangkan background default option di beberapa browser */
+    .puffy-select-mimic option {
+        @apply bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200;
+    }
+
+    /* Penyesuaian saat Focus Within pada Parent */
+    .focus-within\:border-tosca-500 {
+        border-color: #14b8a6 !important;
+    }
+}

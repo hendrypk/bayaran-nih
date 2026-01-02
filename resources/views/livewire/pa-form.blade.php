@@ -1,143 +1,162 @@
-<div>
+<div class="p-6">
     <x-ui.modal>
-        <form wire:submit.prevent="save" method="POST">
-            @csrf
-            @method('POST')
-            <div class="row mb-3">
-                <div class="col-3">
-                    <label for="employee" class="form-label">{{ __('general.label.name') }}</label>
-                    <select class="select-form" id="employee" wire:model="employeeId" wire:change="$set('employeeId', $event.target.value)">
-                        <option value="">@lang('performance.placeholders.select_employee')</option>
-                        @foreach ($employees as $employee)
-                            <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-2">
-                    <label for="eid" class="form-label">{{ __('employee.label.eid') }}</label>
-                    <input type="text" class="input-form" wire:model="eid" disabled readonly>
+        {{-- Header Section --}}
+        <div class="mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-white uppercase tracking-tight">
+                {{ $isEditing ? __('Edit Penilaian Kinerja') : __('Tambah Penilaian Kinerja') }}
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">
+                @lang('performance.label.pa_name') : <span class="font-bold text-tosca-600">{{ $paName }}</span>
+            </p>
+        </div>
+
+        {{-- Main Content (Tanpa Form Tag) --}}
+        <div class="space-y-8">
+            
+            {{-- Section 1: Data Karyawan & Periode --}}
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div class="md:col-span-4">
+                        <x-ui.select2 
+                        label="{{ __('general.label.name') }}" 
+                        wire:model.live="employeeId"
+                        placeholder="{{ __('performance.placeholders.select_employee') }}"
+                        :options="$employees->pluck('name', 'id')"
+                        />
                 </div>
 
-                <div class="col-3">
-                    <label for="position" class="form-label">{{ __('employee.label.job_title') }}</label>
-                    <input type="text" class="input-form" wire:model="positionName" disabled readonly>  
+                <div class="md:col-span-2">
+                    <x-ui.input 
+                        label="{{ __('employee.label.eid') }}" 
+                        wire:model="eid" 
+                        readonly disabled 
+                        class="bg-slate-50 dark:bg-slate-800 font-bold" />
                 </div>
-                <div class="col-2">
-                    <label class="form-label">{{ __('general.label.month') }}</label>
-                    <select class="select-form" wire:model="month" wire:change="$set('month', $event.target.value)">>
+
+                <div class="md:col-span-6">
+                    <x-ui.input 
+                        label="{{ __('employee.label.job_title') }}" 
+                        wire:model="positionName" 
+                        readonly disabled 
+                        class="bg-slate-50 dark:bg-slate-800 font-bold" />
+                </div>
+
+                <div class="md:col-span-3">
+                    <x-ui.select2 label="{{ __('general.label.month') }}" wire:model.live="month">
                         @foreach(range(1, 12) as $m)
-                            @php 
-                                $month = DateTime::createFromFormat('!m', $m)->format('n');
-                                $monthName = DateTime::createFromFormat('!m', $m)->format('F');
-                            @endphp
-                            <option value="{{ $month }}">{{ $monthName }}</option>
-                    @endforeach
-                    </select>
+                            <option value="{{ $m }}">{{ DateTime::createFromFormat('!m', $m)->format('F') }}</option>
+                        @endforeach
+                    </x-ui.select2>
                 </div>
                 
-                <div class="col-2">
-                    <label class="form-label">{{ __('general.label.year') }}</label>
-                    <select class="select-form" wire:model="year" wire:change="$set('year', $event.target.value)">>
+                <div class="md:col-span-3">
+                    <x-ui.select2 label="{{ __('general.label.year') }}" wire:model.live="year">
                         @foreach(range(date('Y') - 1, date('Y') + 5) as $y)
-                        <option value="{{ $y }}">{{ $y }}</option>
+                            <option value="{{ $y }}">{{ $y }}</option>
                         @endforeach
-                    </select>
+                    </x-ui.select2>
                 </div>
             </div>
-            <div class="col mb-3">
-                <label for="" class="form-label">@lang('performance.label.pa_name') : <span>{{$paName}}</span></label>
-            </div>
-            <div class="col">
+
+            {{-- Section 2: Tabel Input Nilai --}}
+            <div class="overflow-hidden rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
                 @if($pas && $pas->count())
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center">@lang('performance.label.aspect')</th>
-                            <th class="text-center">@lang('performance.label.description')</th>
-                            <th class="text-center">@lang('performance.label.achievement')</th>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-800/50">
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">@lang('performance.label.aspect')</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">@lang('performance.label.description')</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-32">@lang('performance.label.achievement')</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                         @foreach($pas as $index => $pa)
-                        <tr>
-                            <td class="text-center">{{ $pa->aspect ?? '—' }}</td>
-                            <td class="text-center">{{ $pa->description ?? '—' }}</td>
-                            <td class="text-center">
-                                <input type="number" 
-                                class="form-control"
-                                wire:model.lazy="achievement.{{ $index }}"
-                                min="0"
-                                max="100"
-                                step="0.01">
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-200">{{ $pa->aspect ?? '—' }}</td>
+                            <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{{ $pa->description ?? '—' }}</td>
+                            <td class="px-6 py-4">
+                                <x-ui.input 
+                                    type="number" 
+                                    wire:model.blur="achievement.{{ $index }}"
+                                    class="text-center !rounded-xl !py-1 font-bold text-tosca-600 focus:ring-tosca-500" />
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
-                    <tfoot class="table-secondary">
-                        <tr>
-                            <th colspan="2" class="text-end">@lang('performance.label.grade')</th>
-                            <th class="text-center"> {{ $this->grade }}</th>
+                    <tfoot>
+                        <tr class="bg-tosca-50 dark:bg-tosca-900/20 border-t border-tosca-100 dark:border-tosca-800">
+                            <td colspan="2" class="px-6 py-5 text-sm font-black text-tosca-700 dark:text-tosca-400 text-right uppercase tracking-widest">
+                                @lang('performance.label.grade')
+                            </td>
+                            <td class="px-6 py-5 text-center font-black text-2xl text-tosca-600 dark:text-tosca-400">
+                                {{ $this->grade }}
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
                 @else
-                <p class="text-muted">Tidak ada PA untuk employee ini.</p>
+                <div class="p-16 text-center">
+                    <iconify-icon icon="lucide:search-x" width="48" class="text-slate-300 mb-4"></iconify-icon>
+                    <p class="text-slate-400 italic text-sm font-medium">Silahkan pilih karyawan untuk memulai penilaian.</p>
+                </div>
                 @endif
             </div>
 
+            {{-- Section 3: Log Activity (Hanya Edit) --}}
             @if($isEditing)
-            <div class="small mt-3 mb-2">
-                <div class="d-flex">
-                    <span class="fw-bold" style="width:130px;">@lang('general.label.created_by')</span>
-                    <span>
-                        : {{ $creator ?? '-' }} 
-                        @if($creator && $created)
-                            / {{ $created->format('d M Y H:i') }}
-                        @endif
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                    <div class="p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm text-slate-400">
+                        <iconify-icon icon="lucide:plus-circle" width="18"></iconify-icon>
+                    </div>
+                    <div class="text-[11px]">
+                        <span class="block text-slate-400 uppercase font-black tracking-tighter">@lang('general.label.created_by')</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300">{{ $creator ?? '-' }}</span>
+                        <span class="text-slate-400 italic font-medium">{{ $created ? ' • ' . $created->format('d M Y H:i') : '' }}</span>
+                    </div>
                 </div>
-                <div class="d-flex">
-                    <span class="fw-bold" style="width:130px;">@lang('general.label.updated_by')</span>
-                    <span>
-                        : {{ $updater ?? '-' }} 
-                        @if($updater && $updated)
-                            / {{ $updated->format('d M Y H:i') }}
-                        @endif
-                    </span>
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                    <div class="p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm text-slate-400">
+                        <iconify-icon icon="lucide:refresh-cw" width="18"></iconify-icon>
+                    </div>
+                    <div class="text-[11px]">
+                        <span class="block text-slate-400 uppercase font-black tracking-tighter">@lang('general.label.updated_by')</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300">{{ $updater ?? '-' }}</span>
+                        <span class="text-slate-400 italic font-medium">{{ $updated ? ' • ' . $updated->format('d M Y H:i') : '' }}</span>
+                    </div>
                 </div>
             </div>
             @endif
 
-            <div class="d-flex justify-content-between align-items-center">
-                @if($isEditing)
-                    <x-swal-confirm 
-                        title="Hapus PA Karyawan?" 
-                        text="Apakah Anda yakin ingin menghapus PA Karyawan?"
-                        callback="delete"
-                        :id="$paResultId"
-                        class="btn btn-red btn-sm">
-                        <i class="ri-delete-bin-fill"></i>
-                    </x-swal-confirm>
-                @else
-                <div></div>
-                @endif
+            {{-- Footer Section --}}
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
+                <div class="w-full sm:w-auto">
+                    @if($isEditing)
+                        <x-swal-confirm 
+                            title="Hapus Penilaian?" 
+                            text="Tindakan ini permanen."
+                            callback="delete"
+                            :id="$paResultId"
+                            class="flex items-center gap-2 px-4 py-2 text-rose-500 hover:bg-rose-50 rounded-xl font-bold text-xs transition-all tracking-wide">
+                            <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                            HAPUS DATA
+                        </x-swal-confirm>
+                    @endif
+                </div>
 
-                <div class="d-flex gap-2">
-                    <button class="btn btn-untosca" wire:click="$dispatch('closeModal')">
+                <div class="flex items-center gap-4 w-full sm:w-auto">
+                    <button type="button" 
+                            wire:click="$dispatch('closeModal')"
+                            class="flex-1 sm:flex-none px-6 py-2.5 text-slate-400 font-black text-xs uppercase tracking-widest hover:text-slate-600 transition-colors">
                         @lang('general.label.cancel')
                     </button>
-                    <button class="btn btn-tosca btn-sm" wire:click="save">
-                        @lang('general.label.save')
+                    <button type="button" 
+                            wire:click="save"
+                            class="flex-1 sm:flex-none px-10 py-3 bg-tosca-600 hover:bg-tosca-700 text-white font-black rounded-2xl text-xs shadow-xl shadow-tosca-100 dark:shadow-none transition-all uppercase tracking-[0.2em]">
+                        <span wire:loading.remove wire:target="save">@lang('general.label.save')</span>
+                        <span wire:loading wire:target="save">MEMPROSES...</span>
                     </button>
                 </div>
             </div>
-            {{-- <div class="row mb-2 mt-3 justify-content-end">
-                <div class="d-grid gap-2 col-2">
-                    <button type="button" class="btn btn-red" data-bs-dismiss="modal">{{ __('general.label.cancel') }}</button>
-                </div>
-                <div class="d-grid gap-2 col-2">
-                    <button type="submit" class="btn btn-tosca">{{ __('general.label.save') }}</button>
-                </div>
-            </div> --}}
-        </form>
+        </div>
     </x-ui.modal>
 </div>

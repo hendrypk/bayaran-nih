@@ -26,9 +26,7 @@
     <input type="{{ $type }}"
            @if($name) id="{{ $name }}" @endif
            {{ $attributes->merge([
-               'class' => 'block w-full rounded-md shadow-sm px-3 py-2
-                           focus:border-tosca-500 focus:ring focus:ring-tosca-200
-                           dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100'
+               'class' => 'form-input-puffy'
            ]) }}
            @if($model) wire:model="{{ $model }}" @endif
            placeholder="{{ $placeholder }}">

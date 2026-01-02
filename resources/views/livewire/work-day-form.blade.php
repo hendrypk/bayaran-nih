@@ -146,38 +146,16 @@
                             <p class="text-xs text-slate-500 italic">
                     * Klik tombol <strong>"Samakan"</strong> di header untuk menyalin nilai hari Senin ke semua hari.
                 </p>
-            <x-slot:footer>
-                <div class="flex items-center justify-between w-full">
-                    <div class="flex items-center gap-4">
-                        @if($isEditing)
-                        <x-swal-confirm 
-                            title="Hapus jadwal kerja?" 
-                            text="Apakah Anda yakin ingin menghapus jadwal kerja {{ $name }}?"
-                            callback="delete"
-                            :id="$selectedId"
-                            class="inline-flex items-center p-2 bg-rose-100 text-rose-600 hover:bg-rose-600 hover:text-white 
-                                   dark:bg-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white rounded-lg transition-all">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-                            viewBox="0 0 24 24"><path fill="none" stroke="currentColor" 
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M4 7h16M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-5 5l4 4m0-4l-4 4"/></svg>
-                        </x-swal-confirm>
-                        @endif
-                    </div>
-
-                    <div class="flex gap-2">
-                        <x-action-button type="cancel" @click="onClose()">
-                            @lang('general.label.cancel')
-                        </x-action-button>
-
-                        <x-action-button type="save" wire:click="save" wire:loading.attr="disabled">
-                            <span wire:loading.remove wire:target="save">@lang('general.label.save')</span>
-                            <span wire:loading wire:target="save">Menyimpan...</span>
-                        </x-action-button>
-                    </div>
-                </div>
-            </x-slot:footer>
+        @if($isEditing)
+            <x-slot:footer_left>
+                <x-swal-confirm 
+                    title="Hapus Presensi?" 
+                    text="Data Presensi Akan Dihapus Permanen..."
+                    callback="delete"
+                    :id="$selectedId" 
+                />
+            </x-slot:footer_left>
+        @endif
         </form>
     </div>
 </x-ui.modal>

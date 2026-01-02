@@ -394,7 +394,7 @@
                             <x-ui.label for="appraisal_category" required>Performance Appraisal (PA)</x-ui.label>
                             <x-ui.select2 
                                 name="appraisal_category"
-                                wire:model="appraisals"
+                                wire:model="pas"
                                 data-step="2" required
                                 :options="$appraisalCategories->pluck('name', 'id')"
                                 placeholder="Pilih PA"

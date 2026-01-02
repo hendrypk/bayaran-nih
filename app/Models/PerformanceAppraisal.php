@@ -17,7 +17,7 @@ class PerformanceAppraisal extends Model
     
     public function appraisals()
     {
-        return $this->hasMany(GradePa::class, 'appraisal_id');
+        return $this->hasMany(PerformanceAppraisalName::class, 'appraisal_id');
     }
 
 }
