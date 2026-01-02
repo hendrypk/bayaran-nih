@@ -3,9 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Overtime;
+use App\Models\Employee;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class OvertimeTable extends Component
 {
@@ -14,63 +17,94 @@ class OvertimeTable extends Component
     public $search = '';
     public $status = 'pending';
     public $perPage = 10;
-    public $startDate, $endDate;
+    public $startDate;
+    public $endDate;
+
+    public $statusCounts = [
+        'pending' => 0,
+        'approve' => 0,
+        'reject'  => 0,
+        'all'     => 0,
+    ];
 
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => 'pending'],
         'startDate' => ['except' => ''],
         'endDate' => ['except' => ''],
+        'perPage' => ['except' => 10],
     ];
 
-public function mount()
-{
-    if (!$this->startDate) {
-        $this->startDate = Carbon::now()->format('Y-m-d');
-    }
-    
-    if (!$this->endDate) {
-        $this->endDate = Carbon::now()->format('Y-m-d');
-    }
-}
+    protected $listeners = ['dateRangeChanged' => 'setDateRange', 'refreshTable'];
 
-    public function updatedSearch() { $this->resetPage(); }
-    public function updatedStatus() { $this->resetPage(); }
+    public function mount()
+    {
+        $this->startDate = $this->startDate ?: now()->format('Y-m-d');
+        $this->endDate   = $this->endDate   ?: now()->format('Y-m-d');
+    }
+
+    public function updated($property)
+    {
+        if (in_array($property, ['search', 'status', 'perPage'])) {
+            $this->resetPage();
+        }
+    }
 
     public function setDateRange($start, $end)
     {
-        $this->startDate = $start;
-        $this->endDate = $end;
+        $dates = collect([$start, $end])->sort();
+        $this->startDate = $dates->first();
+        $this->endDate = $dates->last();
         $this->resetPage();
+    }
+
+    /**
+     * Ambil dan proses data Overtime
+     */
+    protected function getProcessedData()
+    {
+        $period = CarbonPeriod::create($this->startDate, $this->endDate);
+
+        $query = Overtime::with('employee')
+            ->whereBetween('date', [$this->startDate, $this->endDate])
+            ->when($this->search, fn($q) => $q->whereHas('employee', fn($q2) => $q2->where('name', 'like', "%{$this->search}%")));
+
+        $allOvertimes = $query->get();
+
+        // Hitung count per status
+        $this->statusCounts['pending'] = $allOvertimes->whereNull('status')->count();
+        $this->statusCounts['approve'] = $allOvertimes->where('status', 1)->count();
+        $this->statusCounts['reject']  = $allOvertimes->where('status', 0)->count();
+        $this->statusCounts['all']     = $allOvertimes->count();
+
+        // Filter sesuai tab active
+        if ($this->status === 'pending') {
+            $allOvertimes = $allOvertimes->whereNull('status');
+        } elseif ($this->status === 'approve') {
+            $allOvertimes = $allOvertimes->where('status', 1);
+        } elseif ($this->status === 'reject') {
+            $allOvertimes = $allOvertimes->where('status', 0);
+        }
+
+        return $allOvertimes->sortByDesc('date')->values();
     }
 
     public function render()
     {
-        $query = Overtime::with('employee')
-            ->whereBetween('date', [$this->startDate, $this->endDate])
-            ->when($this->search, function ($q) {
-                $q->whereHas('employee', function ($query) {
-                    $query->where('name', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->when($this->status !== 'all', function ($q) {
-                if ($this->status === 'pending') {
-                    $q->whereNull('status');
-                } elseif ($this->status === 'approve') {
-                    $q->where('status', 1);
-                } elseif ($this->status === 'reject') {
-                    $q->where('status', 0);
-                }
-            })
-            ->orderBy('date', 'desc')
-            ->orderBy('created_at', 'desc');
+        $data = $this->getProcessedData();
+        $currentPage = $this->getPage();
+        $perPageLimit = ($this->perPage === 'all') ? max($data->count(), 1) : $this->perPage;
 
-        $overtimes = ($this->perPage === 'all') 
-            ? $query->get() 
-            : $query->paginate($this->perPage);
+        $paginatedData = new LengthAwarePaginator(
+            $data->forPage($currentPage, $perPageLimit)->values(),
+            $data->count(),
+            $perPageLimit,
+            $currentPage,
+            ['path' => url()->current()]
+        );
 
         return view('livewire.overtime-table', [
-            'overtimes' => $overtimes
+            'overtimes' => $paginatedData
         ]);
     }
 }

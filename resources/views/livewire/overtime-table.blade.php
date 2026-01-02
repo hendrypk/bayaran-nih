@@ -1,8 +1,8 @@
 <div class="card-puffy">
 
     <div class="card-puffy-header">
-        <div class="flex items-center gap-3 w-full lg:w-auto">
-            <div class="flex items-center gap-2">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-3 w-full">
+            <div class="w-full lg:w-64 flex-shrink-0">
                 <x-ui.input-group
                     prefix="mdi:magnify"
                     wire:model.live.debounce.500ms="search"
@@ -10,20 +10,26 @@
                     placeholder="Cari sesuatu di sini..."
                     />
                 </div>
-            <div class="relative" wire:ignore>
+            <div class="flex-shrink-0 min-w-[260px]" wire:ignore>
                 <x-ui.date-range-picker 
                     :startDate="$startDate" 
                     :endDate="$endDate" 
                     />
                 </div>
-            <x-ui.tab 
-                :active="$status"
-                :options="[
-                    'pending' => 'Pending', 
-                    'approve'  => 'Disetujui', 
-                    'reject'     => 'Ditolak', 
-                    ]" 
-                />
+            <div class="w-full lg:flex-1">
+                <div class="overflow-x-auto scrollbar-hide">
+                    <div class="min-w-max">
+                        <x-ui.tab 
+                            :active="$status"
+                            :options="[
+                                'pending' => ['label' => 'Pending', 'count' => $this->statusCounts['pending']],
+                                'approve'  => ['label' => 'Disetujui', 'count' => $this->statusCounts['approve']],
+                                'reject'     => ['label' => 'Ditolak', 'count' => $this->statusCounts['reject']],
+                                ]" 
+                            />
+                    </div>
+                </div>
+            </div>
             </div>
         
         <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
