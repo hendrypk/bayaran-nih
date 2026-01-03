@@ -32,24 +32,20 @@ class PresenceTable extends Component
 
     public function mount()
     {
-        // Samakan dengan nama di $queryString
         $this->startDate = request('startDate', now()->format('Y-m-d'));
         $this->endDate   = request('endDate', now()->format('Y-m-d'));
     }
 
     public function setDateRange($start, $end)
     {
-        // Pastikan tanggal terkecil selalu jadi startDate
         $dates = collect([$start, $end])->sort();
-        
         $this->startDate = $dates->first();
         $this->endDate = $dates->last();
-        
+
         $this->resetPage();
-        $this->dispatch('filter-changed'); // Untuk menutup sidebar detail
+        $this->dispatch('filter-changed');
     }
 
-    // Reset pagination otomatis saat filter berubah
     public function updated($property)
     {
         if (in_array($property, ['search', 'status', 'perPage'])) {
@@ -59,24 +55,25 @@ class PresenceTable extends Component
     }
 
     /**
-     * Mengambil dan memproses data gabungan Presence & Absence
+     * Query master data: semua karyawan + presensi sesuai range tanggal
      */
-    protected function getProcessedData()
+    protected function prepareMasterData()
     {
         $period = CarbonPeriod::create($this->startDate, $this->endDate);
-        
-        $employees = Employee::with([
-                'workDay.days',
-                'position.division',
-                'position.department',
-                'presences' => fn($q) => $q->with('media')->whereBetween('date', [$this->startDate, $this->endDate])
-            ])
-            ->whereNull('resignation')
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
-            ->where(fn($q) => $this->filterByUserPosition($q))
-            ->get();
 
-        $allData = collect();
+        $employees = Employee::with([
+            'workDay.days',
+            'position.division',
+            'position.department',
+            'presences' => fn($q) => $q->with('media')
+                ->whereBetween('date', [$this->startDate, $this->endDate])
+        ])
+        ->whereNull('resignation')
+        ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+        ->where(fn($q) => $this->filterByUserPosition($q))
+        ->get();
+
+        $masterData = collect();
 
         foreach ($employees as $employee) {
             $workDay = $employee->workDay->first();
@@ -85,72 +82,112 @@ class PresenceTable extends Component
             foreach ($period as $date) {
                 $dateStr = $date->format('Y-m-d');
                 $dayName = strtolower($date->format('l'));
-                
-                // Lewati jika hari libur karyawan
+
+                // Lewati hari libur
                 $isOffday = $workDay ? $workDay->days->where('day', $dayName)->contains('is_offday', true) : false;
                 if ($isOffday) continue;
 
                 $presence = $presencesByDate->get($dateStr);
 
-                // Logika Filter
-                if (in_array($this->status, ['absence']) && !$presence) {
-                    $allData->push([
-                        'id' => "abs-{$employee->id}-{$dateStr}",
-                        'date' => $dateStr,
-                        'status' => 'absence',
-                        'employee' => $employee,
-                        'check_in' => null, 
-                        'check_out' => null
-                    ]);
-                } elseif ($presence) {
-                    if ($this->status === 'presence' || $presence->status === $this->status) {
-                        $allData->push($presence);
-                    }
-                }
+                // Default: jika tidak ada presensi → absence
+                $masterData->push($presence ?? [
+                    'id' => "abs-{$employee->id}-{$dateStr}",
+                    'date' => $dateStr,
+                    'status' => 'absence',
+                    'employee' => $employee,
+                    'check_in' => null,
+                    'check_out' => null
+                ]);
             }
         }
 
-        return $allData->sortByDesc('date');
+        return $masterData->sortByDesc('date')->values();
     }
 
-    public function getStatusCountsProperty()
+    /**
+     * Filter master data berdasarkan status
+     */
+    protected function filterDataByStatus($data)
+    {
+        if (!$this->status || $this->status === 'all') return $data;
+
+        return $data->filter(fn($item) => match($this->status) {
+            'presence' => $item['status'] === 'presence',
+            'late'     => $item['status'] === 'late',
+            'absence'  => $item['status'] === 'absence',
+            'permit'   => $item['status'] === 'permit',
+            'sick'     => $item['status'] === 'sick',
+            'leave'    => $item['status'] === 'leave',
+            default    => true,
+        })->values();
+    }
+
+    /**
+     * Hitung stats berdasarkan master data
+     */
+    protected function computeStats($data)
     {
         return [
-            'presence' => $this->getProcessedData()->where('status', 'presence')->count(),
-            'absence'  => $this->getProcessedData()->where('status', 'absence')->count(),
-            'permit'   => $this->getProcessedData()->where('status', 'permit')->count(),
-            'sick'     => $this->getProcessedData()->where('status', 'sick')->count(),
-            'leave'    => $this->getProcessedData()->where('status', 'leave')->count(),
+            'total'   => $data->count(),
+            'present' => $data->where('status', 'presence')->count(),
+            'ontime'  => $data->where('status', 'presence')->filter(fn($item) => ($item['late_check_in'] ?? 0) == 0)->count(),
+            'late'    => $data->where('status', 'presence')->filter(fn($item) => ($item['late_check_in'] ?? 0) > 0)->count(),
+            'absence' => $data->whereIn('status', ['absence', 'leave', 'sick'])->count(),
+            'permit'  => $data->where('status', 'permit')->count(),
+            'sick'    => $data->where('status', 'sick')->count(),
+            'leave'   => $data->where('status', 'leave')->count(),
+        ];
+    }
+
+    /**
+     * Hitung jumlah per status untuk tab / widget
+     */
+    public function getStatusCountsProperty()
+    {
+        $data = $this->prepareMasterData();
+
+        return [
+            'presence' => $data->where('status', 'presence')->count(),
+            'absence'  => $data->where('status', 'absence')->count(),
+            'permit'   => $data->where('status', 'permit')->count(),
+            'sick'     => $data->where('status', 'sick')->count(),
+            'leave'    => $data->where('status', 'leave')->count(),
         ];
     }
 
     public function render()
     {
-        $data = $this->getProcessedData();
-        $currentPage = $this->getPage();
-        $perPageLimit = ($this->perPage === 'all') ? max($data->count(), 1) : $this->perPage;
+        $masterData = $this->prepareMasterData();
+        $filteredData = $this->filterDataByStatus($masterData);
+        $stats = $this->computeStats($masterData);
 
-        // Buat Paginator Manual
+        $currentPage = $this->getPage();
+        $perPageLimit = ($this->perPage === 'all') ? max($filteredData->count(), 1) : $this->perPage;
+
         $paginatedData = new LengthAwarePaginator(
-            $data->forPage($currentPage, $perPageLimit)->values(),
-            $data->count(),
+            $filteredData->forPage($currentPage, $perPageLimit)->values(),
+            $filteredData->count(),
             $perPageLimit,
             $currentPage,
             ['path' => url()->current()]
         );
 
         return view('livewire.presence-table', [
-            'presences' => $paginatedData
+            'presences' => $paginatedData,
+            'stats' => $stats
         ]);
     }
 
     protected function filterByUserPosition($query)
     {
         $user = Auth::user();
-        return $query->when($user->division_id && !$user->department_id, fn($q) =>
-            $q->whereHas('position', fn($pos) => $pos->where('division_id', $user->division_id))
-        )->when(!$user->division_id && $user->department_id, fn($q) =>
-            $q->whereHas('position', fn($pos) => $pos->where('department_id', $user->department_id))
-        );
+
+        return $query
+            ->when($user->division_id && !$user->department_id, fn($q) =>
+                $q->whereHas('position', fn($pos) => $pos->where('division_id', $user->division_id))
+            )
+            ->when(!$user->division_id && $user->department_id, fn($q) =>
+                $q->whereHas('position', fn($pos) => $pos->where('department_id', $user->department_id))
+            );
     }
 }

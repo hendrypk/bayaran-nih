@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\EmployeeResetPasswordNotification;
-
+use Illuminate\Database\Eloquent\Builder;
 
 class Employee extends Authenticatable implements HasMedia
 // class Employee extends Authenticatable Implements HasMedia
@@ -178,6 +178,26 @@ public static function options(): array
     public function paResults()
     {
         return $this->hasMany(PerformanceAppraisalResult::class, 'employee_id');
+    }
+
+    // Scope untuk memfilter karyawan yang masih aktif (belum resign)
+    public function scopeActive(Builder $query): void
+    {
+        $query->whereNull('resignation');
+    }
+
+    // Method untuk standarisasi format data yang sering digunakan di UI (Select2/Dropdown)
+    public static function getForSelection()
+    {
+        return self::active()
+            ->with('workDay:id') // Hanya ambil ID untuk efisiensi memory
+            ->get()
+            ->map(fn($emp) => [
+                'id' => (int) $emp->id,
+                'eid' => $emp->eid,
+                'name' => $emp->name,
+                'workDayIds' => $emp->workDay->pluck('id')->map(fn($id) => (int)$id)->toArray(),
+            ]);
     }
 
 

@@ -33,6 +33,25 @@
                 </div>
             </div>
         </div>
+
+            <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+                <x-action-button 
+                    type="download" 
+                    modal="coming-soon" 
+                    />
+                <x-action-button 
+                    type="import" 
+                    modal="coming-soon" 
+                    />
+                @can('create leave')
+                    <x-action-button 
+                        type="add" 
+                        label="Ijin" 
+                        modal="leave-manual-modal"
+                        modalTitle="Tambah Ijin" 
+                        />
+                @endcan
+            </div>
     </div>
     <div class="card-pffy-body">
         <div wire:loading class="absolute inset-0 bg-white/50 dark:bg-slate-900/50 z-10 flex items-center justify-center backdrop-blur-[1px]">
