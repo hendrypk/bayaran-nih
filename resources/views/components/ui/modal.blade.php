@@ -7,7 +7,7 @@
         <div wire:loading.class.remove="hidden" class="hidden bg-blue-500 h-[2px] animate-pulse"></div>
     </div>
 
-    <div class="p-4">
+    <div class="p-4 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
         {{ $slot }}
     </div>
 
