@@ -34,5 +34,5 @@
         </tbody>
     </table>
 
-    {{ $gradePa->links() }}
+    {{-- {{ $gradePa->links() }} --}}
 </div>
