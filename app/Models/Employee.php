@@ -55,12 +55,30 @@ class Employee extends Authenticatable implements HasMedia
         return $this->belongsTo(Position::class, 'position_id');
     }
 
+    // public function scopeSameOrg($query, $user)
+    // {
+    //     return $query->whereHas('position', fn ($q) =>
+    //         $user->division_id && $q->where('division_id', $user->division_id) ||
+    //         $user->department_id && $q->where('department_id', $user->department_id)
+    //     );
+    // }
+
     public function scopeSameOrg($query, $user)
     {
-        return $query->whereHas('position', fn ($q) =>
-            $user->division_id && $q->where('division_id', $user->division_id) ||
-            $user->department_id && $q->where('department_id', $user->department_id)
-        );
+        if ($user->hasRole('administrator') || $user->id === 1) { 
+            return $query;
+        }
+
+        return $query->whereHas('position', function ($q) use ($user) {
+            $q->where(function ($sub) use ($user) {
+                if ($user->division_id) {
+                    $sub->where('division_id', $user->division_id);
+                }
+                if ($user->department_id) {
+                    $sub->orWhere('department_id', $user->department_id);
+                }
+            });
+        });
     }
 
     public function workDay()
