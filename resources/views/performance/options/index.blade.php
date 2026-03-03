@@ -7,10 +7,16 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
-                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.indicator_for_kpi') }}</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.kpi_long') }}</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
-                                <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addIndicatorModal">{{ __('performance.label.add_indicator') }}</button>
+                                <x-modal-trigger
+                                    class="btn btn-tosca"
+                                    title="{{ __('performance.label.add_indicator') }}"
+                                    modal="kpi-modal"
+                                    size="xl">
+                                    <i class="ph-plus-circle me-1"></i>{{__('performance.label.add_indicator')}}
+                                </x-modal-trigger>
                             </div>
                         @endcan
                     </div>
@@ -20,8 +26,6 @@
                                     <th scope="col">#</th>
                                     <th scope="col">{{ __('general.label.name') }}</th>
                                     <th scope="col">{{ __('general.label.view') }}</th>
-                                    {{-- <th scope="col">Edit</th> --}}
-                                    <th scope="col">{{ __('general.label.delete') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -31,18 +35,15 @@
                                     <th scope="row">{{ $no+1 }}</th>
                                     <td>{{ $indicator->name }}</td>
                                     <td>
-                                        <a href="{{ route('indicator.detail', [
-                                            'kpi_id' => $indicator->id,
-                                            ]) }}" class="btn btn-blue">
+                                        @can('update pm')
+                                        <x-modal-trigger
+                                            class="btn btn-blue"
+                                            title="Edit KPI"
+                                            modal="kpi-modal"
+                                            :args="['id' => $indicator->id]"
+                                            size="xl">
                                             <i class="ri-eye-fill"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @can('delete pm')
-                                            <button type="button" class="btn btn-red" 
-                                                onclick="confirmDelete({{ $indicator->id }}, '{{ $indicator->name }}', 'indicator')">
-                                                <i class="ri-delete-bin-fill"></i>
-                                            </button>
+                                        </x-modal-trigger>
                                         @endcan
                                     </td>
                                 </tr>
@@ -59,11 +60,16 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-header d-flex align-items-center py-0">
-                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.indicator_for_pa') }}</h5>
+                        <h5 class="card-title mb-0 py-3">{{ __('performance.label.pa_long') }}</h5>
                         @can('create pm')
                             <div class="ms-auto my-auto">
-                                {{-- <button type="button" class="btn btn-tosca" data-bs-toggle="modal" data-bs-target="#addPa">Add PA</button> --}}
-                                <a href="{{ route('add.appraisal.form') }}" class=""><button type="button" class="btn btn-tosca">{{ __('performance.label.add_appraisal') }}</button></a>
+                                <x-modal-trigger
+                                    class="btn btn-tosca"
+                                    title="{{ __('performance.label.add_indicator') }}"
+                                    modal="pa-modal"
+                                    size="lg">
+                                    <i class="ph-plus-circle me-1"></i>{{__('performance.label.add_appraisal')}}
+                                </x-modal-trigger>
                             </div>
                         @endcan
                     </div>
@@ -74,8 +80,6 @@
                                     <th scope="col">#</th>
                                     <th scope="col">{{ __('general.label.name') }}</th>
                                     <th scope="col">{{ __('general.label.view') }}</th>
-                                    {{-- <th scope="col">Edit</th> --}}
-                                    <th scope="col">{{ __('general.label.delete') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,27 +89,15 @@
                                     <td>{{ $appraisal->name }}</td>
                                     <td>
                                         @can('update pm')
-                                        
-                                        <a href="{{ route('appraisal.detail', [
-                                            'appraisal_id' => $appraisal->id,
-                                            ]) }}" class="btn btn-blue">
-                                            <i class="ri-eye-fill"></i>
-                                        </a>
-                                            {{-- <button type="button" 
-                                                class="btn btn-outline-success" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#paEditModal" 
-                                                data-id="{{ $appraisal->id }}" 
-                                                data-name="{{ $appraisal->name }}">
-                                                <i class="ri-edit-box-fill"></i>
-                                            </button> --}}
+                                            <x-modal-trigger
+                                                class="btn btn-blue"
+                                                title="Edit PA"
+                                                modal="pa-modal"
+                                                :args="['id' => $appraisal->id]"
+                                                size="lg">
+                                                <i class="ri-eye-fill"></i>
+                                            </x-modal-trigger>
                                         @endcan
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-red" 
-                                            onclick="confirmDelete({{ $appraisal->id }}, '{{ $appraisal->name }}', 'appraisal')">
-                                            <i class="ri-delete-bin-fill"></i>
-                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -120,6 +112,29 @@
 
 @section('script')
 <script>
+    // document.addEventListener('recalculate-weight', function () {
+    //     calculateTotalWeight();
+    // });
+
+    // document.addEventListener('input', function(e) {
+    //     if (e.target.classList.contains('weight-input')) {
+    //         calculateTotalWeight();
+    //     }
+    // });
+
+    // function calculateTotalWeight() {
+    //     let total = 0;
+
+    //     document.querySelectorAll('.weight-input').forEach(el => {
+    //         const val = parseFloat(el.value);
+    //         if (!isNaN(val)) total += val;
+    //     });
+
+    //     const display = document.getElementById('totalWeight');
+    //     if (display) display.innerText = total;
+    // }
+
+
 
 //script route
 window.routeUrls = {
@@ -308,51 +323,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 //Delete Modal
-function confirmDelete(id, name, entity) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete the " + entity + ": " + name,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '',
-            cancelButtonColor: '',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/${entity}/${id}/delete`, { 
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: data.message, // Use message from the server
-                            icon: 'success'
-                        }).then(() => {
-                            // Reload the page or redirect to another route
-                            window.location.href = data.redirect; // Redirect to the desired route
-                        });
-                    } else {
-                        Swal.fire('Error!', data.message || 'Something went wrong. Try again later.', 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            }
-        });
-    }
 </script>
 @endsection
 @endsection

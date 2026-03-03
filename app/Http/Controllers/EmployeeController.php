@@ -65,10 +65,8 @@ class EmployeeController extends Controller
     //employee detail
     public function detail($id)
     {
-        $employee = Employee::with('job_title', 'position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
-        $presences = Presence::where('employee_id', $id)
-            ->whereNotNull('leave')
-            ->get();
+        $employee = Employee::with('position', 'workDay', 'kpis', 'positionChange.position', 'positionChange.oldPosition')->findOrFail($id);
+        $presences = Presence::where('employee_id', $id)->get();
         $careers = $employee->positionChange()->orderBy('effective_date', 'desc')->get();
         
         $startDate = new DateTime($employee->joining_date);

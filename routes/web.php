@@ -1,5 +1,7 @@
 <?php
 
+use App\DataTables\LeaveDataTable;
+use App\DataTables\PresencesDataTable;
 use App\Models\User;
 use App\Models\Options;
 use App\Http\Controllers\Test;
@@ -202,6 +204,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['middleware' => ['permission:view presence']], function() {
         Route::prefix('presences')->group(function () {
             Route::get('', [PresenceController::class, 'index'])->name('presence.list.admin');
+            Route::get('datatable', function(PresencesDataTable $dt) {return $dt->ajax(); })->name('presences.datatable');
             Route::get('import', [PresenceController::class, 'import'])->name('presence.import');
             Route::post('import/submit', [PresenceController::class, 'importStore'])->name('import');
             Route::post('{id}/delete', [PresenceController::class, 'delete'])->name('presence.delete');
@@ -230,16 +233,18 @@ Route::middleware(['auth:web'])->group(function () {
     //kpi
     Route::group(['middleware' => ['permission:view kpi']], function() {
         Route::prefix('kpi')->group(function () {
-            Route::get('', [KpiController::class, 'indexKpi'])->name('kpi.list');
-            Route::get('add', [KpiController::class, 'addKpi'])->name('kpi.add');
-            Route::post('submit', [KpiController::class, 'create'])->name('kpi.create');
-            Route::get('get-by-kpi-id/{kpiId}', [KpiController::class, 'getKpiByEmployee'])->name('kpi.getByEmployee');
-            Route::get('{employee_id}/{month?}/{year}', [KpiController::class, 'detail'])->name('kpi.detail'); 
-            Route::post('{employee_id}/{month}/{year?}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
-            Route::get('{employee_id}/{month?}/{year?}/edit', [KpiController::class, 'edit'])->name('kpi.edit'); 
-            Route::post('{employee_id}/{month}/{year?}/update', [KpiController::class, 'update'])->name('kpi.update');
-            Route::post('filter', [KpiController::class, 'filterKpisByPosition'])->name('kpi.filter');
-        });
+            Route::get('', [KpiController::class, 'index'])->name('kpi.list');
+            // Route::get('add', [KpiController::class, 'create'])->name('kpi.add');
+            // Route::get('{id}', [KpiController::class, 'detail'])->name('kpi.detail'); 
+            // Route::post('{id}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
+            // Route::get('{id}/edit', [KpiController::class, 'edit'])->name('kpi.edit'); 
+            // Route::post('filter', [KpiController::class, 'filterKpisByPosition'])->name('kpi.filter');
+
+            // Route::post('submit', [KpiController::class, 'create'])->name('kpi.create');
+            // Route::post('{employee_id}/{month}/{year?}/update', [KpiController::class, 'update'])->name('kpi.update');
+            // Route::post('{employee_id}/{month}/{year?}/delete', [KpiController::class, 'delete'])->name('kpi.delete'); 
+            // Route::get('get-by-kpi-id/{kpiId}', [KpiController::class, 'getKpiByEmployee'])->name('kpi.getByEmployee');        
+            });
     });
     
     //appraisal
@@ -248,7 +253,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::get('', [AppraisalController::class, 'index'])->name('pa.list');
             Route::post('submit', [AppraisalController::class, 'create'])->name('pa.add');
             Route::get('get-by-pa-id/{paId}', [AppraisalController::class, 'getPaByEmployee'])->name('pa.getByEmployee');
-            Route::get('{employee_id}/{month?}/{year}', [AppraisalController::class, 'detail'])->name('pa.detail'); 
+            Route::get('{id}', [AppraisalController::class, 'detail'])->name('pa.detail'); 
             Route::get('{employee_id}/{month?}/{year?}/edit', [AppraisalController::class, 'edit'])->name('pa.edit'); 
             Route::post('{employee_id}/{month}/{year?}/update', [AppraisalController::class, 'update'])->name('pa.update'); 
             Route::post('{employee_id}/{month}/{year?}/delete', [AppraisalController::class, 'delete'])->name('pa.delete'); 
@@ -313,7 +318,8 @@ Route::middleware(['auth:web'])->group(function () {
     
     Route::group(['middleware' => ['permission:view leave']], function() {
         Route::prefix('leaves')->group(function () {
-            Route::get('', [LeaveController::class, 'ind'])->name('leaves.index');
+            Route::get('', [LeaveController::class, 'index'])->name('leaves.index');
+            Route::get('datatable', function(LeaveDataTable $dt) {return $dt->ajax(); })->name('leaves.datatable');
             Route::post('submit', [LeaveController::class, 'save'])->name('leaves.create');
             Route::post('{id}/delete', [LeaveController::class, 'destroy'])->name('leaves.delete');
         });

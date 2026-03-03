@@ -5,7 +5,9 @@ return [
         'select_month' => 'Pilih Bulan',
         'select_year' => 'Pilih Tahun',
         'kpi' => 'KPI',
+        'kpi_long' => 'Key Performance Indicator',
         'pa' => 'PA',
+        'pa_long' => 'Performance Appraisal',
         'grade' => 'Nilai',
         'showing' => 'Menampilkan',
         'entries' => 'Entri',
@@ -22,7 +24,7 @@ return [
         'indicator' => 'Indikator',
         'add_indicator' => 'Tambah Indikator',
         'target' => 'Target',
-        'weight' => 'Bobot (%)',
+        'weight' => 'Bobot',
         'submit' => 'Simpan',
         'add_appraisal' => 'Tambah Penilaian',
         'edit_employee_appraisal' => 'Ubah Penilaian Karyawan',
@@ -35,5 +37,17 @@ return [
         'employee_information' => 'Informasi Karyawan',
         'kpi_achievement' => 'Capaian KPI',
         'final_grade' => 'Nilai Akhir',
+        'total_weight' => 'Total Bobot',
+        'description' => 'Deskripsi',
+        'kpi_name' => 'Nama KPI',
+        'pa_name' => 'Nama PA',
+        'result' => 'Hasil',
+        'unit' => 'Satuan',
+
+    ],
+    'placeholders' => [
+        'select_employee' => 'Pilih Karyawan',
+        'select_kpi' => 'Pilih KPI',
+        'select_pa' => 'Pilih PA',
     ]
 ];

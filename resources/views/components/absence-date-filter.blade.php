@@ -23,7 +23,7 @@
             </select>
         </div>
         <div class="col-md-2">
-            <button type="submit" class="btn btn-tosca btn-sm">Filter</button>
+            <button type="submit" class="btn btn-primary btn-md">Filter</button>
         </div>
 
 

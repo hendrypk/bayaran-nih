@@ -5,7 +5,9 @@ return [
         'select_month' => 'Select Month',
         'select_year' => 'Select Year',
         'kpi' => 'KPI',
+        'kpi_long' => 'Key Performance Indicator',
         'pa' => 'PA',
+        'pa_long' => 'Performance Appraisal',
         'grade' => 'Grade',
         'showing' => 'Showing',
         'entries' => 'Entries',
@@ -22,7 +24,7 @@ return [
         'indicator' => 'Indicator',
         'add_indicator' => 'Add Indicator',
         'target' => 'Target',
-        'weight' => 'Weight (%)',
+        'weight' => 'Weight',
         'submit' => 'Submit',
         'add_appraisal' => 'Add Appraisal',
         'edit_employee_appraisal' => 'Edit Employee Appraisal',
@@ -35,5 +37,17 @@ return [
         'employee_information' => 'Employee Information',
         'kpi_achievement' => 'KPI Achievement',
         'final_grade' => 'Final Grade',
+        'total_weight' => 'Total Weight',
+        'description' => 'Description',
+        'kpi_name' => 'KPI Name',
+        'pa_name' => 'PA Name',
+        'result' => 'Result',
+        'unit' => 'Unit',
+
+    ],
+    'placeholders' => [
+        'select_employee' => 'Select Employee',
+        'select_kpi' => 'Select KPI',
+        'select_pa' => 'Select PA',
     ]
 ];

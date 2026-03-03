@@ -13,7 +13,7 @@
                     <h5 class="card-title mb-0 py-3">{{ __('option.label.position') }}</h5>
                     @can('create options')
                         <div class="ms-auto my-auto">
-                            <button id="openAddPositionModal" class="btn btn-tosca">{{ __('option.label.add_position') }}</button>
+                            <button id="openAddPositionModal" class="btn btn-tosca btn-sm">{{ __('option.label.add_position') }}</button>
                             {{-- <button type="button" class="btn btn-red" data-bs-toggle="modal" data-bs-target="#addPosition">Add Position</button> --}}
                         </div>
                     @endcan

@@ -13,18 +13,6 @@
         <div class="section" id="user-section">
             <div id="user-detail" class="d-flex align-items-center">
                 <div class="">
-                    {{-- <div class="col-auto text-center">
-                        <form id="profileForm" action="{{ route('self.upload.profile') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="file" id="fileInput" name="profile_photo" style="display: none;" accept="image/*">
-
-                            <img id="previewImage" 
-                                src="{{ Auth::user()->getFirstMediaUrl('profile_photos') ?: asset('e-presensi/assets/img/avatar.jpg') }}" 
-                                alt="Avatar" 
-                                class="avatar"
-                                style="cursor: pointer; max-width: 200px;">
-                        </form>
-                    </div> --}}
                     <div class="col-auto text-center">
                         <form id="profileForm" action="{{ route('self.upload.profile') }}" method="POST" enctype="multipart/form-data">
                             @csrf
@@ -36,20 +24,6 @@
                                 class="avatar"
                                 style="cursor: pointer; max-width: 200px;">
                         </form>
-
-                        <!-- Loader -->
-                        {{-- <div id="uploadLoader" style="display: none; margin-top: 10px;">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Uploading...</span>
-                            </div>
-                            <div>Uploading...</div>
-                        </div> --}}
-                    </div>
-
-
-                    {{-- <img src="{{ Auth::user()->getFirstMediaUrl('profile_photos') ?: asset('e-presensi/assets/img/avatar.jpg') }}" 
-                        alt="Avatar" 
-                        class="avatar"> --}}
                 </div>
                 <div id="user-info">
                     <h3 id="user-name" class="mb-2">{{ Auth::user()->name }}</h3>
@@ -64,8 +38,6 @@
             <div class="card-menu">
                 <div class="text-center">
                     <div class="list-menu">
-                    {{-- </div>
-                    <div class="list-menu"> --}}
                         <div class="item-menu text-center">
                             @if(!empty($presenceToday) && $presenceToday->check_in && $presenceToday->check_out)
                                 <div class="menu-card danger">

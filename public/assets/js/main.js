@@ -318,3 +318,115 @@
 
 })();
 
+document.addEventListener('livewire:init', () => {
+
+    Livewire.on('swal:success', (data = {}) => {
+      console.log();
+        Swal.fire({
+            title: data.title ?? 'Success',
+            text: data.message ?? 'Data saved successfully!',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+        }). then(() => {
+          window.location.reload();
+        });
+    });
+    Livewire.on('swal:error', (data = {}) => {
+        Swal.fire({
+            title: data.title ?? 'Error',
+            text: data.message ?? 'Something went wrong!',
+            icon: 'error',
+        });
+    });
+});
+
+
+function toDelete(url) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.success) {
+                    Swal.fire('Deleted!', data.message, 'success')
+                        .then(() => window.location.href = data.redirect);
+                } else {
+                    Swal.fire('Error!', data.message || 'Delete failed.', 'error');
+                }
+
+            })
+            .catch(() => {
+                Swal.fire('Error!', 'Failed to delete. Please try again.', 'error');
+            });
+        }
+
+    });
+}
+
+
+Livewire.on('swal:confirm', ({ message, callback }) => {
+    Swal.fire({
+        title: message.title || 'Are you sure?',
+        text: message.text || 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed && callback.target && callback.action) {
+            Livewire.dispatchTo(callback.target, callback.action, callback.params || []);
+        }
+    });
+});
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Select multiple elements using a query selector
+      const datePickers = document.querySelectorAll("#leave-dates, #holiday-dates");
+
+      // Loop over each element and initialize flatpickr
+      datePickers.forEach(function(datePicker) {
+          flatpickr(datePicker, {
+              mode: "multiple",
+              dateFormat: "Y-m-d",
+          });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleIcons = document.querySelectorAll('.toggle-password');
+
+        toggleIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('bi-eye-fill');
+                    this.classList.add('bi-eye-slash-fill');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('bi-eye-slash-fill');
+                    this.classList.add('bi-eye-fill');
+                }
+            });
+        });
+    });

@@ -32,9 +32,9 @@ class Position extends Model
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function employees()
-    {
-        return $this->hasMany(Employee::class, 'position_id');
-    }
+    // public function employees()
+    // {
+    //     return $this->hasMany(Employee::class, 'position_id');
+    // }
     
 }
