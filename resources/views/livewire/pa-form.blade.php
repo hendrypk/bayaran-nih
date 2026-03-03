@@ -65,7 +65,7 @@
                             <td class="text-center">
                                 <input type="number" 
                                 class="form-control"
-                                wire:model.lazy="achievement.{{ $index }}"
+                                wire:model.live="achievement.{{ $index }}"
                                 min="0"
                                 max="100"
                                 step="0.01">
