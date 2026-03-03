@@ -72,11 +72,16 @@ class PaForm extends Component
 
     public function getGradeProperty()
     {
-        if (empty($this->achievement)) {
+        if (empty($this->achievement) || !is_array($this->achievement)) {
             return 0;
         }
 
-        return round(array_sum($this->achievement) / count($this->achievement), 2);
+        $numericValues = array_map('floatval', $this->achievement);
+
+        $total = array_sum($numericValues);
+        $count = count($numericValues);
+
+        return $count > 0 ? round($total / $count, 2) : 0;
     }
 
     public function loadPaResult($id)
@@ -104,8 +109,8 @@ class PaForm extends Component
         return [
             'paId' => 'required|exists:performance_appraisal_name,id',
             'employeeId' => 'required|exists:employees,id',
-            'achievement' => 'required|array',
-            'achievement.*' => 'required|numeric|min:0',
+            'achievement' => 'array',
+            'achievement.*' => 'numeric|min:0',
         ];
     }
 
@@ -118,6 +123,7 @@ class PaForm extends Component
 
     private function basePaResultPayload($month, $year, $userId)
     {
+        
         return [
             'employee_id'  => $this->employeeId,
             'pa_id'       => $this->paId,
@@ -133,12 +139,14 @@ class PaForm extends Component
         $details = [];
 
         foreach ($this->pas as $index => $pa) {
-            $targetValue = $pa->target;
+            $achievementValue = isset($this->achievement[$index]) && $this->achievement[$index] !== '' 
+                ? $this->achievement[$index] 
+                : 0;
 
             $details[] = [
                 'aspect'      => $pa->aspect ?? '',
                 'description' => $pa->description ?? '',
-                'achievement' => $this->achievement[$index] ?? 0,
+                'achievement' => $achievementValue,
                 'created_at'  => now(),
             ];
         }
@@ -156,12 +164,15 @@ class PaForm extends Component
 
         $month  = trim($this->month ?: date('n'));
         $year   = trim($this->year  ?: date('Y'));
-        $userId = auth()->id();;
+        $userId = auth()->id();
+        $currentId = $this->isEditing ? $this->paResultId : null;
 
         $exists = \App\Models\PerformanceAppraisalResult::where('employee_id', $this->employeeId)
             ->where('month', $month)
             ->where('year', $year)
-            ->where('id', '!=', $this->paResultId)
+            ->when($currentId, function ($q) use ($currentId) {
+                return $q->where('id', '!=', $currentId);
+            })
             ->exists();
 
         if ($exists) {
