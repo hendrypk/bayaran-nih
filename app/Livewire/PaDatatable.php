@@ -38,7 +38,7 @@ public function render()
         ->where('year', $this->year)
         ->whereHas('employees', fn($q) => $q->sameOrg($user));
 
-    $gradePa = $query->paginate(10);
+    $gradePa = $query->get();
 
     return view('livewire.pa-datatable', [
         'gradePa' => $gradePa
