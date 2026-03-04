@@ -47,7 +47,7 @@ class KpiDatatable extends Component
                                                       ->where('department_id', $userDepartment));
         }
 
-        $gradeKpi = $query->paginate(10);
+        $gradeKpi = $query->get();
         return view('livewire.kpi-datatable', [
             'gradeKpi' => $gradeKpi
         ]);

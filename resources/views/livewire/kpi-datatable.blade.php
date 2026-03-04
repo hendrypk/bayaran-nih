@@ -33,5 +33,4 @@
         </tbody>
     </table>
 
-    {{ $gradeKpi->links() }}
 </div>
