@@ -86,10 +86,10 @@
 @push('scripts')
     {!! $p->scripts() !!}
         <script>
-        let startDate = '{{ app('request')->input('startDate') }}';
-        let endDate = '{{ app('request')->input('endDate') }}';
-        let search = '{{ app('request')->input('search') }}';
-        let status = '{{ app('request')->input('status') }}';
+        let startDate = '{{ request('startDate') ?: now()->startOfMonth()->format('Y-m-d') }}';
+        let endDate   = '{{ request('endDate') ?: now()->format('Y-m-d') }}';
+        let search    = '{{ request('search', '') }}';
+        let status    = '{{ request('status', 'presence') }}';
         document.addEventListener('DOMContentLoaded', function () {
             Livewire.on('dateRangeChanged', ({start, end}) => {
                 startDate = start;
