@@ -72,22 +72,31 @@ class PresenceController extends Controller
     }
 
 //Presences Export
-    public function export(Request $request) {
-        $startDate = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
-        $endDate   = $request->end_date ?? now()->format('Y-m-d');
-        $status    = $request->status;
-        // dd($status);
-        try {
-            $formattedStartDate = Carbon::parse($startDate)->format('Y-m-d');
-            $formattedEndDate   = Carbon::parse($endDate)->format('Y-m-d');
+public function export(Request $request) 
+{
+    // Use input() or query() to avoid Symfony 7.4 deprecation
+    $startDate = $request->input('start_date') ?: now()->startOfMonth()->format('Y-m-d');
+    $endDate   = $request->input('end_date') ?: now()->format('Y-m-d');
+    $status    = $request->input('status', 'presence');
+    $search    = $request->input('search');
 
-            $fileName = "presence_{$formattedStartDate}_to_{$formattedEndDate}.xlsx";
+    try {
+        $fileName = "presence_export_" . now()->format('Ymd_His') . ".xlsx";
 
-            return Excel::download(new PresencesExport($formattedStartDate, $formattedEndDate, $status), $fileName);
-        } catch (\InvalidArgumentException $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
-        }
+        return Excel::download(
+            new PresencesExport(
+                $startDate, 
+                $endDate, 
+                $status, 
+                Auth::user(), 
+                $search
+            ), 
+            $fileName
+        );
+    } catch (\Exception $e) {
+        return redirect()->back()->withErrors(['error' => 'Export failed: ' . $e->getMessage()]);
     }
+}
 
 }
 

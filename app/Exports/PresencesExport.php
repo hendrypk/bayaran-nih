@@ -15,30 +15,32 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class PresencesExport implements FromQuery, WithMapping, WithHeadings, WithStyles, WithColumnFormatting, ShouldAutoSize
 {
-    protected $start, $end, $status;
+    protected $start, $end, $status, $user, $search;
     protected mixed $employee_id;
     protected int $rowNumber = 1;
 
-    public function __construct($date_start, $date_end, $status, $employee_id=null)
+    public function __construct($start, $end, $status, $user, $search = null)
     {
-        if (empty($date_start) || empty($date_end)) {
-            throw new \InvalidArgumentException('Start and end dates are required. Please select date!');
-        }
-    
-        $this->start = $date_start;
-        $this->end = $date_end;
+        $this->start  = $start;
+        $this->end    = $end;
         $this->status = $status;
-        $this->employee_id = $employee_id;
+        $this->user   = $user;
+        $this->search = $search;
     }
 
     public function query()
     {
         return Presence::query()
-            ->with('employee.position', 'workDay')
+            ->with(['employee.position'])
             ->where('status', $this->status)
             ->whereBetween('date', [$this->start, $this->end])
-            ->when($this->employee_id, function ($query) {
-                $query->where('employee_id', $this->employee_id);
+            ->whereHas('employee', function ($q) {
+                // Apply your Tenant/Org filter
+                $q->sameOrg($this->user)
+                  // Apply search if present
+                  ->when($this->search, function($sq) {
+                      $sq->where('name', 'like', '%' . $this->search . '%');
+                  });
             });
     }
 
