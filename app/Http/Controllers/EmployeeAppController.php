@@ -350,6 +350,7 @@ class EmployeeAppController extends Controller
                         'date' => $today,
                     ],
                     [
+                        'status' => Presence::STATUS_PRESENCE,
                         'work_day_id' => $request->workDay,
                         'check_in' => $now->toTimeString(),
                         'late_check_in' => $lateResult['lateCheckIn'] ?? 0,
@@ -637,7 +638,6 @@ class EmployeeAppController extends Controller
         }
         
         $query = Presence::where('employee_id', Auth::id())
-            ->whereNull('leave_status')
             ->whereNotNull('work_day_id')
             ->whereBetween('date', [$startDate, $endDate]);
 
@@ -881,17 +881,19 @@ class EmployeeAppController extends Controller
     public function leaveIndex()
     {
         $employeeId = Auth::id();
-        $leaves = Presence::where('employee_id', $employeeId)->whereNotNull('leave')->get();
+        $leaves = Leave::where('employee_id', $employeeId)
+            ->orderBy('start_date', 'desc')
+            ->get();
         return view('_employee_app.leave.index', compact('leaves'));
     }
 
     public function leaveApply()
     {
         $category = [
-            PRESENCE::LEAVE_ANNUAL,
-            PRESENCE::LEAVE_SICK,
-            PRESENCE::LEAVE_FULL_DAY_PERMIT,
-            PRESENCE::LEAVE_HALF_DAY_PERMIT,
+            Presence::STATUS_HALFDAY,
+            Presence::STATUS_LEAVE,
+            Presence::STATUS_PERMIT,
+            Presence::STATUS_SICK
         ];
         return view('_employee_app.leave.modal', compact('category'));
     }
@@ -914,17 +916,20 @@ class EmployeeAppController extends Controller
         $category = $request->input('category');
         $note = $request->input('note');
 
-        $existLeave = Presence::where('employee_id', $employeeId)
-            ->whereIn('date', $leaveDates)
-            ->whereNotNull('leave_status')
-            ->pluck('date')->toArray();
+        $existLeave = Leave::where('employee_id', $employeeId)
+            ->whereIn('start_date', $leaveDates)
+            ->whereIn('status', [
+                Leave::LEAVE_ACC,
+                Leave::LEAVE_REJECT,
+            ])
+            ->pluck('start_date')->toArray();
         $existPresence = Presence::where('employee_id', $employeeId)
             ->whereIn('date', $leaveDates)
-            ->whereNotNull('check_in')
+            ->where('status', Presence::STATUS_PRESENCE)
             ->pluck('date')->toArray();
         
         $leaveCount = count($leaveDates);
-        if ($category === Presence::LEAVE_ANNUAL) {
+        if ($category === Presence::STATUS_LEAVE) {
             if ($employee->annual_leave < $leaveCount) {
                 return redirect()->back()->withErrors('Sisa cuti tahunan tidak mencukupi untuk pengajuan ini.');
             }
@@ -939,12 +944,21 @@ class EmployeeAppController extends Controller
                 break;
             default;
                 foreach ($leaveDates as $date) {
-                    Presence::create([
-                        'eid' => $eid,
+
+                    $presence = Presence::create([
                         'employee_id' => $employeeId,
                         'date' => $date,
-                        'leave' => $category,
-                        'leave_note' => $note,
+                        'status' => $category,
+                    ]);
+                    
+                    Leave::create([
+                        'presence_id' => $presence->id,
+                        'employee_id' => $employeeId,
+                        'start_date' => $date,
+                        'end_date' => $date,
+                        'category' => $category,
+                        'status' => Leave::LEAVE_PENDING,
+                        'note' => $note,
                     ]);
                 }
         }

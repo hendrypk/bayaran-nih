@@ -76,18 +76,27 @@ trait PresenceSummaryTrait
     private function calculateEffectiveDays($employee, $start, $end)
     {
         $wd = $employee->workDay->first();
+        if (!$wd) {
+            return $start->diffInDays($end); 
+        }
         $dayOffs = $wd->days->filter(fn($day) => $day->is_offday)->pluck('day');
         // $dayOffs = WorkDay::where('name', $wdName)->where('day_off', 1)->pluck('day');
+
+
 
         $dayOffCount = 0;
 
         foreach ($dayOffs as $dayOffName) {
-            $dayOffWeekday = Carbon::parse($dayOffName)->dayOfWeek;
-
-            for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
-                if ($date->dayOfWeek === $dayOffWeekday) {
-                    $dayOffCount++;
+            try {
+                $dayOffWeekday = Carbon::parse($dayOffName)->dayOfWeek;
+                
+                for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+                    if ($date->dayOfWeek === $dayOffWeekday) {
+                        $dayOffCount++;
+                    }
                 }
+            } catch (\Exception $e) {
+                continue; 
             }
         }
 
