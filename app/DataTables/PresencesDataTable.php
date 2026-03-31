@@ -50,7 +50,8 @@ class PresencesDataTable extends DataTable
                 $search = request()->get('search')['value'] ?? null;
                 if ($search) {
                     $query->where(function ($q) use ($search) {
-                        $q->orWhere('emplpoyees.name', 'like', '%'.$search.'%');
+                        $q->orWhere('employees.name', 'like', '%'.$search.'%')
+                          ->orWhere('employees.eid', 'like', '%'.$search.'%');
                     });
                 }
             })
@@ -166,7 +167,7 @@ class PresencesDataTable extends DataTable
                     ->selectStyleSingle()
                     ->parameters([
                         'lengthChange' => false,
-                        'searching'    => false,
+                        'searching'    => true,
                         'dom'          => 'lrtip'
                     ])
                         ->buttons([
