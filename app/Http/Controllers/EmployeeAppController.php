@@ -350,6 +350,7 @@ class EmployeeAppController extends Controller
                         'date' => $today,
                     ],
                     [
+                        'status' => Presence::STATUS_PRESENCE,
                         'work_day_id' => $request->workDay,
                         'check_in' => $now->toTimeString(),
                         'late_check_in' => $lateResult['lateCheckIn'] ?? 0,
