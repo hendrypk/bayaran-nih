@@ -33,16 +33,22 @@
                     @foreach($leaves as $no=>$leave)
                     <tr>
                         <td>{{ $no+1 }}</td>
-                        <td>{{ $leave->date }}</td>
-                        <td>{{ ucfirst($leave->leave) }}</td>
-                        <td>{{ $leave->leave_note }}</td>
+                        <td>{{ formatDate($leave->start_date) }}</td>
+                        <td>{{ ucfirst($leave->category) }}</td>
+                        <td>{{ $leave->note }}</td>
                         <td>
-                            @if ($leave->leave_status === 0)
-                            <i class="status-leave reject ri-close-fill"></i>
-                            @elseif ($leave->leave_status === 1)
-                                <i class="status-leave accept ri-check-double-fill"></i>
+                            @if ($leave->status === 'accepted')
+                                <span class="px-2 py-1 rounded fw-semibold" style="background-color: rgba(25, 135, 84, 0.1); color: #198754;">
+                                    <i class="ri-check-double-line"></i>
+                                </span>
+                            @elseif ($leave->status === 'rejected')
+                                <span class="px-2 py-1 rounded fw-semibold" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                    <i class="ri-close-line"></i>
+                                </span>
                             @else
-                            <i class="">{{ __('general.label.pending') }}</i>
+                                <span class="px-2 py-1 rounded fw-semibold" style="background-color: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                                    <i class="ri-time-line"></i>
+                                </span>
                             @endif
                         </td>
                     </tr>    

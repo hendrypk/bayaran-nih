@@ -12,6 +12,7 @@ class Leave extends Model
     protected $table = 'leaves';
     protected $fillable = [
         'employee_id',
+        'presence_id',
         'start_date',
         'end_date',
         'category',
