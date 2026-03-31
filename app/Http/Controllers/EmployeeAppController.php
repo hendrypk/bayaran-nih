@@ -638,7 +638,6 @@ class EmployeeAppController extends Controller
         }
         
         $query = Presence::where('employee_id', Auth::id())
-            ->whereNull('leave_status')
             ->whereNotNull('work_day_id')
             ->whereBetween('date', [$startDate, $endDate]);
 

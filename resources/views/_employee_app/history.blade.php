@@ -13,13 +13,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        {{-- <th>No</th> --}}
+                        <th>#</th>
                         <th>{{ __('general.label.date') }}</th>
+                        <th>{{ __('general.label.status') }}</th>
                         <th>{{ __('attendance.label.check_in') }}</th>
                         <th>{{ __('attendance.label.check_out') }}</th>
-                        <th>{{ __('attendance.label.late_arrival') }}</th>
+                        {{-- <th>{{ __('attendance.label.late_arrival') }}</th>
                         <th>{{ __('attendance.label.late_check_in') }}</th>
-                        <th>{{ __('attendance.label.check_out_early') }}</th>
+                        <th>{{ __('attendance.label.check_out_early') }}</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -27,13 +28,14 @@
                     
                     @foreach($presences as $no=>$presence)
                     <tr>
-                        {{-- <td>{{ $no+1 }}</td> --}}
+                        <td>{{ $no+1 }}</td>
                         <td>{{ formatDate($presence->date) }}</td>
+                        <td>{{ ucfirst($presence->status) }}</td>
                         <td>{{ $presence->check_in }}</td>
                         <td>{{ $presence->check_out ?? '-' }}</td>
-                        <td>{{ $presence->late_arrival == 1 ? 'Late' : "On Time" }}</td>
+                        {{-- <td>{{ $presence->late_arrival == 1 ? 'Late' : "On Time" }}</td>
                         <td>{{ $presence->late_check_in}}</td>
-                        <td>{{ $presence->check_out_early ?? '0' }}</td>
+                        <td>{{ $presence->check_out_early ?? '0' }}</td> --}}
                     </tr>    
                     @endforeach
                     
