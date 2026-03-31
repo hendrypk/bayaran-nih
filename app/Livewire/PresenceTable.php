@@ -14,12 +14,14 @@ class PresenceTable extends Component
     public $startDate;
     public $endDate;
     public $status = 'presence';
+    public $search;
 
     protected $listeners = ['dateRangeChanged' => 'setDateRange'];
 
     public function mount()
     {
         $this->status = request()->get('status');
+        $this->search = request()->get('search');
         $this->startDate = request()->get('start_date') ?: now()->startOfMonth()->format('Y-m-d');
         $this->endDate = request()->get('end_date') ?: now()->format('Y-m-d');
     }

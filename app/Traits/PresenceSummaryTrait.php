@@ -29,7 +29,7 @@ trait PresenceSummaryTrait
 
             // ----- Presence -----
             $employee->presence = Presence::where('employee_id', $employee->id)
-                ->where('status', 'presence')
+                ->where('status', Presence::STATUS_PRESENCE)
                 ->whereBetween('date', [$countStartDate, $countEndDate])
                 ->count('date');
 
