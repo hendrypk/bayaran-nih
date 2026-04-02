@@ -38,7 +38,7 @@ class FinalGradeController extends Controller
 
     public function export(Request $request)
     {
-        $selectedMonth = $request->input('month', date('F'));
+        $selectedMonth = $request->input('month', date('n'));
         $selectedYear = $request->input('year', date('Y'));
 
         return Excel::download(new FinalGradeExport($selectedMonth, $selectedYear), 'final_grades.xlsx');

@@ -4,69 +4,76 @@ namespace App\Traits;
 
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 
 trait FinalGradeTrait
 {
     /**
-     * Get the employees with their final grades based on the selected month and year.
+     * Fetch employees with their calculated final grades (PA + KPI) 
+     * filtered by a specific month and year.
      *
-     * @param string $selectedMonth
-     * @param string $selectedYear
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param string|int $selectedMonth The month (numeric format expected by DB)
+     * @param string|int $selectedYear The year (e.g., 2026)
+     * @return Collection
      */
-    public function getEmployeesWithFinalGrade($selectedMonth, $selectedYear)
+    public function getEmployeesWithFinalGrade($selectedMonth, $selectedYear): Collection
     {
-        $userDivision = Auth::user()->division_id;
-        $userDepartment = Auth::user()->department_id;
+        $user = Auth::user();
 
-        $query = Employee::query();
-        $query->whereNull('resignation');
-        
-        if ($userDivision && !$userDepartment) {
-            $query->where('division_id', $userDivision);
-        } elseif (!$userDivision && $userDepartment) {
-            $query->where('department_id', $userDepartment);
+        // 1. Ensure month is numeric if the database stores it as an integer/numeric string
+        // This prevents "Not Found" issues if 'January' is passed instead of '1'
+        if (!is_numeric($selectedMonth)) {
+            $selectedMonth = date('n', strtotime($selectedMonth));
         }
 
-        $employees = $query->with([
-            'paResults' => function($query) use ($selectedMonth, $selectedYear) {
-                $query->select('employee_id', 'month', 'year', DB::raw('avg(grade) as final_pa'))
-                    ->where('month', $selectedMonth)
-                    ->where('year', $selectedYear)
-                    ->groupBy('employee_id', 'month', 'year');
-            },
-            'kpiResults' => function($query) use ($selectedMonth, $selectedYear) {
-                $query->select('employee_id', 'month', 'year', DB::raw('sum(grade) as final_kpi'))
-                    ->where('month', $selectedMonth)
-                    ->where('year', $selectedYear)
-                    ->groupBy('employee_id', 'month', 'year');
-            }
-        ])->get();
+        return Employee::query()
+            ->whereNull('resignation')
+            // 2. Filter by Organization using fluent 'when' helpers
+            ->when($user->division_id && !$user->department_id, function ($q) use ($user) {
+                $q->where('division_id', $user->division_id);
+            })
+            ->when(!$user->division_id && $user->department_id, function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            })
+            // 3. Eager Load results with a reusable filter
+            ->with([
+                'paResults' => fn($q) => $this->applyPeriodFilter($q, $selectedMonth, $selectedYear),
+                'kpiResults' => fn($q) => $this->applyPeriodFilter($q, $selectedMonth, $selectedYear),
+            ])
+            ->get()
+            ->map(function ($employee) {
+                // 4. Extract grades using Null Coalescing (defaults to 0 if no record exists)
+                $finalPa  = $employee->paResults->first()->grade ?? 0;
+                $finalKpi = $employee->kpiResults->first()->grade ?? 0;
 
-        foreach ($employees as $employee) {
-            $final_pa = 0;
-            $final_kpi = 0;
+                // 5. Calculate Weights
+                $kpiWeightRatio = $employee->bobot_kpi / 100;
+                $paWeightRatio  = 1 - $kpiWeightRatio;
 
-            if ($employee->paResults->isNotEmpty()) {
-                $final_pa = $employee->paResults->first()->final_pa;
-            }
+                // 6. Calculate Final Score
+                $score = ($finalKpi * $kpiWeightRatio) + ($finalPa * $paWeightRatio);
 
-            if ($employee->kpiResults->isNotEmpty()) {
-                $final_kpi = $employee->kpiResults->first()->final_kpi;
-            }
+                // 7. Append calculated attributes to the model instance
+                $employee->finalGrade = number_format($score, 2, '.', '');
+                $employee->final_pa   = number_format($finalPa, 2, '.', '');
+                $employee->final_kpi  = number_format($finalKpi, 2, '.', '');
+                $employee->kpi_weight = $employee->bobot_kpi;
+                $employee->pa_weight  = 100 - $employee->bobot_kpi;
 
-            $bobot_kpi = $employee->bobot_kpi / 100;
-            $bobot_pa = 1 - $bobot_kpi;
-            $kpi_value = $final_kpi * $bobot_kpi;
-            $pa_value = $final_pa * $bobot_pa;
-            $finalGrade = $kpi_value + $pa_value;
-            $employee->finalGrade = number_format($finalGrade, 2, '.', '');
-            $employee->final_pa = number_format($final_pa, 2, '.', '');
-            $employee->kpi_weight = $employee->bobot_kpi;
-            $employee->pa_weight = 100 - $employee->bobot_kpi ;
-        }
+                return $employee;
+            });
+    }
 
-        return $employees;
+    /**
+     * Reusable filter for Appraisal and KPI relations to keep code DRY.
+     * * @param \Illuminate\Database\Eloquent\Relations\HasMany $query
+     * @param int $month
+     * @param int $year
+     */
+    private function applyPeriodFilter($query, $month, $year)
+    {
+        return $query->select('id', 'employee_id', 'month', 'year', 'grade')
+            ->where('month', $month)
+            ->where('year', $year);
     }
 }

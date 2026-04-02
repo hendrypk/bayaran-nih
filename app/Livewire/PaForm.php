@@ -29,7 +29,7 @@ class PaForm extends Component
 
     public function mount($paId = null)
     {
-        $this->employees = Employee::all();
+        $this->employees = Employee::whereNull('resignation')->get();
 
         $this->month = $this->month ?: date('n');
         $this->year  = $this->year ?: date('Y');
